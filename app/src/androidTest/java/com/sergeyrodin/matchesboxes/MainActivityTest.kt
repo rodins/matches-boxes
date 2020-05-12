@@ -9,6 +9,9 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
+import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
+import com.sergeyrodin.matchesboxes.util.monitorActivity
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
