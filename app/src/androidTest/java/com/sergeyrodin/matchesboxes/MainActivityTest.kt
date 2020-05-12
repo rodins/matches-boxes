@@ -19,7 +19,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
-    private lateinit var componentsDataSource: ComponentsDataSource
+    //private lateinit var componentsDataSource: ComponentsDataSource
 
     private val dataBindingIdlingResource = DataBindingIdlingResource()
 
@@ -35,7 +35,7 @@ class MainActivityTest {
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 
-    @Before
+    /*@Before
     fun init() {
         componentsDataSource = ServiceLocator.provideComponentsDataSource(getApplicationContext())
     }
@@ -43,16 +43,16 @@ class MainActivityTest {
     @After
     fun reset() {
         ServiceLocator.resetDataSource()
-    }
+    }*/
 
     @Test
     fun addBag_BagNameDisplayed() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.add_bag_fab)).perform(click())
+        /*onView(withId(R.id.add_bag_fab)).perform(click())
         onView(withId(R.id.bag_name_edit)).perform(typeText("New bag"))
-        onView(withId(R.id.bag_save_fab)).perform(click())
+        onView(withId(R.id.bag_save_fab)).perform(click())*/
         onView(withText("New bag")).check(matches(isDisplayed()))
     }
 
