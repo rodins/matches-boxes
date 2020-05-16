@@ -193,4 +193,18 @@ class RadioComponentsDaoTest {
 
         assertThat(loaded, `is`(nullValue()))
     }
+
+    @Test
+    fun deleteBag_radioComponentIsNull() = runBlockingTest{
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(RADIO_COMPONENT)
+        radioComponentsDatabase.radioComponentsDatabaseDao.deleteBag(BAG)
+
+        val loaded = radioComponentsDatabase.radioComponentsDatabaseDao.getRadioComponentById(
+            RADIO_COMPONENT.id)
+
+        assertThat(loaded, `is`(nullValue()))
+    }
 }
