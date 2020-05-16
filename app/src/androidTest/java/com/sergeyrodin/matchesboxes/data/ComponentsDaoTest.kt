@@ -21,6 +21,7 @@ private val MATCHES_BOX_SET = MatchesBoxSet(1, "MatchesBoxSet", BAG.id)
 private val MATCHES_BOX = MatchesBox(1, "Matches box", MATCHES_BOX_SET.id)
 private val RADIO_COMPONENT = RadioComponent(1, "Radio Component", 4, MATCHES_BOX.id)
 
+@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @SmallTest
 class RadioComponentsDaoTest {
@@ -42,7 +43,7 @@ class RadioComponentsDaoTest {
 
     // Bag
     @Test
-    fun insertAndGetBagById() {
+    fun insertAndGetBagById() = runBlockingTest{
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
 
         val loaded = radioComponentsDatabase.radioComponentsDatabaseDao.getBagById(BAG.id)
@@ -51,7 +52,7 @@ class RadioComponentsDaoTest {
     }
 
     @Test
-    fun updateAndGetBagById() {
+    fun updateAndGetBagById() = runBlockingTest{
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
 
         val bagUpdated = Bag(BAG.id, "Updated bag")
@@ -63,7 +64,7 @@ class RadioComponentsDaoTest {
     }
 
     @Test
-    fun deleteBag_equalsNull() {
+    fun deleteBag_equalsNull() = runBlockingTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.deleteBag(BAG)
 
@@ -74,7 +75,7 @@ class RadioComponentsDaoTest {
 
     // MatchesBoxSet
     @Test
-    fun insertAndGetMatchesBoxSetById() {
+    fun insertAndGetMatchesBoxSetById() = runBlockingTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
 
@@ -85,7 +86,7 @@ class RadioComponentsDaoTest {
     }
 
     @Test
-    fun updateAndGetMatchesBoxSetById() {
+    fun updateAndGetMatchesBoxSetById() = runBlockingTest{
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
         val matchesBoxesUpdated = MatchesBoxSet(MATCHES_BOX_SET.id, "Updated matches boxes", BAG.id)
@@ -98,7 +99,7 @@ class RadioComponentsDaoTest {
     }
 
     @Test
-    fun deleteMatchesBoxSet_equalsNull() {
+    fun deleteMatchesBoxSet_equalsNull() = runBlockingTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
         radioComponentsDatabase.radioComponentsDatabaseDao.deleteMatchesBoxSet(MATCHES_BOX_SET)
@@ -110,7 +111,7 @@ class RadioComponentsDaoTest {
 
     // MatchesBox
     @Test
-    fun insertAndGetMatchesBoxById() {
+    fun insertAndGetMatchesBoxById() = runBlockingTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
@@ -122,7 +123,7 @@ class RadioComponentsDaoTest {
     }
 
     @Test
-    fun updateAndGetMatchesBoxById()  {
+    fun updateAndGetMatchesBoxById() = runBlockingTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
@@ -136,7 +137,7 @@ class RadioComponentsDaoTest {
     }
 
     @Test
-    fun deleteMatchesBox_equalsNull() {
+    fun deleteMatchesBox_equalsNull() = runBlockingTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
@@ -149,7 +150,7 @@ class RadioComponentsDaoTest {
 
     // Component
     @Test
-    fun insertAndGetRadioComponenById() {
+    fun insertAndGetRadioComponenById() = runBlockingTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
@@ -162,7 +163,7 @@ class RadioComponentsDaoTest {
     }
 
     @Test
-    fun updateAndGetRadioComponentById() {
+    fun updateAndGetRadioComponentById() = runBlockingTest{
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
@@ -180,7 +181,7 @@ class RadioComponentsDaoTest {
     }
 
     @Test
-    fun deleteRadioComponent_equalsNull() {
+    fun deleteRadioComponent_equalsNull() = runBlockingTest{
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
