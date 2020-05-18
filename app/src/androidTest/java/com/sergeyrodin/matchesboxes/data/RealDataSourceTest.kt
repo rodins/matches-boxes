@@ -53,7 +53,7 @@ class RealDataSourceTest{
 
         val loaded = subject.getBagById(BAG.id)
 
-        assertThat(loaded.name, `is`(BAG.name))
+        assertThat(loaded?.name, `is`(BAG.name))
     }
 
     @Test
@@ -65,7 +65,7 @@ class RealDataSourceTest{
 
         val loaded = subject.getBagById(BAG.id)
 
-        assertThat(loaded.name, `is`(bagUpdated.name))
+        assertThat(loaded?.name, `is`(bagUpdated.name))
     }
 
     @Test
@@ -85,8 +85,8 @@ class RealDataSourceTest{
 
         val loaded = subject.getMatchesBoxSetById(MATCHES_BOX_SET.id)
 
-        assertThat(loaded.name, `is`(MATCHES_BOX_SET.name))
-        assertThat(loaded.bagId, `is`(MATCHES_BOX_SET.bagId))
+        assertThat(loaded?.name, `is`(MATCHES_BOX_SET.name))
+        assertThat(loaded?.bagId, `is`(MATCHES_BOX_SET.bagId))
     }
 
     @Test
@@ -98,8 +98,8 @@ class RealDataSourceTest{
 
         val loaded = subject.getMatchesBoxSetById(MATCHES_BOX_SET.id)
 
-        assertThat(loaded.name, `is`(matchesBoxesUpdated.name))
-        assertThat(loaded.bagId, `is`(matchesBoxesUpdated.bagId))
+        assertThat(loaded?.name, `is`(matchesBoxesUpdated.name))
+        assertThat(loaded?.bagId, `is`(matchesBoxesUpdated.bagId))
     }
 
     @Test
@@ -122,8 +122,8 @@ class RealDataSourceTest{
 
         val loaded = subject.getMatchesBoxById(MATCHES_BOX.id)
 
-        assertThat(loaded.name, `is`(MATCHES_BOX.name))
-        assertThat(loaded.matchesBoxSetId, `is`(MATCHES_BOX.matchesBoxSetId))
+        assertThat(loaded?.name, `is`(MATCHES_BOX.name))
+        assertThat(loaded?.matchesBoxSetId, `is`(MATCHES_BOX.matchesBoxSetId))
     }
 
     @Test
@@ -136,8 +136,8 @@ class RealDataSourceTest{
 
         val loaded = subject.getMatchesBoxById(MATCHES_BOX.id)
 
-        assertThat(loaded.name, `is`(matchesBoxUpdated.name))
-        assertThat(loaded.matchesBoxSetId, `is`(matchesBoxUpdated.matchesBoxSetId))
+        assertThat(loaded?.name, `is`(matchesBoxUpdated.name))
+        assertThat(loaded?.matchesBoxSetId, `is`(matchesBoxUpdated.matchesBoxSetId))
     }
 
     @Test
@@ -162,9 +162,9 @@ class RealDataSourceTest{
 
         val loaded = subject.getRadioComponentById(RADIO_COMPONENT.id)
 
-        assertThat(loaded.name, `is`(RADIO_COMPONENT.name))
-        assertThat(loaded.quantity, `is`(RADIO_COMPONENT.quantity))
-        assertThat(loaded.matchesBoxId, `is`(RADIO_COMPONENT.matchesBoxId))
+        assertThat(loaded?.name, `is`(RADIO_COMPONENT.name))
+        assertThat(loaded?.quantity, `is`(RADIO_COMPONENT.quantity))
+        assertThat(loaded?.matchesBoxId, `is`(RADIO_COMPONENT.matchesBoxId))
     }
 
     @Test
@@ -181,9 +181,9 @@ class RealDataSourceTest{
 
         val loaded = subject.getRadioComponentById(RADIO_COMPONENT.id)
 
-        assertThat(loaded.name, `is`(radioComponentUpdated.name))
-        assertThat(loaded.quantity, `is`(radioComponentUpdated.quantity))
-        assertThat(loaded.matchesBoxId, `is`(radioComponentUpdated.matchesBoxId))
+        assertThat(loaded?.name, `is`(radioComponentUpdated.name))
+        assertThat(loaded?.quantity, `is`(radioComponentUpdated.quantity))
+        assertThat(loaded?.matchesBoxId, `is`(radioComponentUpdated.matchesBoxId))
     }
 
     @Test

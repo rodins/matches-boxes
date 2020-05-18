@@ -11,7 +11,7 @@ interface RadioComponentsDataSource {
 
     suspend fun deleteBag(bag: Bag)
 
-    suspend fun getBagById(bagId: Int): Bag
+    suspend fun getBagById(bagId: Int): Bag?
 
     fun getBags(): LiveData<List<Bag>>
 
@@ -22,7 +22,7 @@ interface RadioComponentsDataSource {
 
     suspend fun deleteMatchesBoxSet(matchesBoxSet: MatchesBoxSet)
 
-    suspend fun getMatchesBoxSetById(matchesBoxSetId: Int): MatchesBoxSet
+    suspend fun getMatchesBoxSetById(matchesBoxSetId: Int): MatchesBoxSet?
 
     fun getMatchesBoxSetsByBagId(bagId: Int): LiveData<List<MatchesBoxSet>>
 
@@ -33,7 +33,7 @@ interface RadioComponentsDataSource {
 
     suspend fun deleteMatchesBox(matchesBox: MatchesBox)
 
-    suspend fun getMatchesBoxById(matchesBoxId: Int): MatchesBox
+    suspend fun getMatchesBoxById(matchesBoxId: Int): MatchesBox?
 
     fun getMatchesBoxesByMatchesBoxSetId(matchesBoxSetId: Int): LiveData<List<MatchesBox>>
 
@@ -44,7 +44,7 @@ interface RadioComponentsDataSource {
 
     suspend fun deleteRadioComponent(radioComponent: RadioComponent)
 
-    suspend fun getRadioComponentById(radioComponentId: Int): RadioComponent
+    suspend fun getRadioComponentById(radioComponentId: Int): RadioComponent?
 
     fun getRadioComponentsByMatchesBoxId(matchesBoxId: Int): LiveData<List<RadioComponent>>
 

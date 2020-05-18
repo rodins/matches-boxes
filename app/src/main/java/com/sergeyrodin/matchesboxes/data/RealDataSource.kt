@@ -16,7 +16,7 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
         radioComponentsDatabaseDao.deleteBag(bag)
     }
 
-    override suspend fun getBagById(bagId: Int): Bag {
+    override suspend fun getBagById(bagId: Int): Bag? {
         return radioComponentsDatabaseDao.getBagById(bagId)
     }
 
@@ -36,7 +36,7 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
         radioComponentsDatabaseDao.deleteMatchesBoxSet(matchesBoxSet)
     }
 
-    override suspend fun getMatchesBoxSetById(matchesBoxSetId: Int): MatchesBoxSet {
+    override suspend fun getMatchesBoxSetById(matchesBoxSetId: Int): MatchesBoxSet? {
         return radioComponentsDatabaseDao.getMatchesBoxSetById(matchesBoxSetId)
     }
 
@@ -56,7 +56,7 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
         radioComponentsDatabaseDao.deleteMatchesBox(matchesBox)
     }
 
-    override suspend fun getMatchesBoxById(matchesBoxId: Int): MatchesBox {
+    override suspend fun getMatchesBoxById(matchesBoxId: Int): MatchesBox? {
         return radioComponentsDatabaseDao.getMatchesBoxById(matchesBoxId)
     }
 
@@ -76,7 +76,7 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
         radioComponentsDatabaseDao.deleteRadioComponent(radioComponent)
     }
 
-    override suspend fun getRadioComponentById(radioComponentId: Int): RadioComponent {
+    override suspend fun getRadioComponentById(radioComponentId: Int): RadioComponent? {
         return radioComponentsDatabaseDao.getRadioComponentById(radioComponentId)
     }
 
