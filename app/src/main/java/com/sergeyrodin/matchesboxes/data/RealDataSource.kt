@@ -60,8 +60,8 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
         return radioComponentsDatabaseDao.getMatchesBoxById(matchesBoxId)
     }
 
-    override fun getMatchesBoxesFromMatchesBoxSetId(matchesBoxSetId: Int): LiveData<List<MatchesBox>> {
-        return radioComponentsDatabaseDao.getMatchesBoxesFromMatchesBoxSetId(matchesBoxSetId)
+    override fun getMatchesBoxesByMatchesBoxSetId(matchesBoxSetId: Int): LiveData<List<MatchesBox>> {
+        return radioComponentsDatabaseDao.getMatchesBoxesByMatchesBoxSetId(matchesBoxSetId)
     }
 
     override suspend fun insertRadioComponent(radioComponent: RadioComponent) {

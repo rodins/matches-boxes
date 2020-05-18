@@ -50,8 +50,8 @@ interface RadioComponentsDatabaseDao {
     @Query("SELECT * FROM matches_boxes WHERE id = :matchesBoxId")
     suspend fun getMatchesBoxById(matchesBoxId: Int): MatchesBox
 
-    @Query("SELECT * FROM matches_boxes WHERE id = :matchesBoxSetId")
-    fun getMatchesBoxesFromMatchesBoxSetId(matchesBoxSetId: Int): LiveData<List<MatchesBox>>
+    @Query("SELECT * FROM matches_boxes WHERE matches_box_set_id = :matchesBoxSetId")
+    fun getMatchesBoxesByMatchesBoxSetId(matchesBoxSetId: Int): LiveData<List<MatchesBox>>
 
     // RadioComponents
     @Insert

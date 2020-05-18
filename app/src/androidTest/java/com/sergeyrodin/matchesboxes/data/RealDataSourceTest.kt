@@ -5,7 +5,9 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
@@ -208,5 +210,88 @@ class RealDataSourceTest{
         val loaded = subject.getRadioComponentById(RADIO_COMPONENT.id)
 
         assertThat(loaded, `is`(CoreMatchers.nullValue()))
+    }
+
+    // LiveData tests
+
+    @Test
+    fun addFourBags_sizeEquals() = runBlockingTest {
+        val bag1 = Bag(1, "Bag1")
+        val bag2 = Bag(2, "Bag2")
+        val bag3 = Bag(3, "Bag3")
+        val bag4 = Bag(4, "Bag4")
+        subject.insertBag(bag1)
+        subject.insertBag(bag2)
+        subject.insertBag(bag3)
+        subject.insertBag(bag4)
+
+        val loaded = subject.getBags().getOrAwaitValue()
+
+        assertThat(loaded.size, `is`(4))
+    }
+
+    @Test
+    fun addFiveMatchesBoxSets_sizeEquals() = runBlockingTest {
+        val bag1 = Bag(1, "Bag1")
+        val bag2 = Bag(2, "Bag2")
+        subject.insertBag(bag1)
+        subject.insertBag(bag2)
+        val matchesBoxSet1 = MatchesBoxSet(1, "MBS1", bag1.id)
+        val matchesBoxSet2 = MatchesBoxSet(2, "MBS2", bag1.id)
+        val matchesBoxSet3 = MatchesBoxSet(3, "MBS3", bag2.id)
+        val matchesBoxSet4 = MatchesBoxSet(4, "MBS4", bag2.id)
+        val matchesBoxSet5 = MatchesBoxSet(5, "MBS5", bag2.id)
+        subject.insertMatchesBoxSet(matchesBoxSet1)
+        subject.insertMatchesBoxSet(matchesBoxSet2)
+        subject.insertMatchesBoxSet(matchesBoxSet3)
+        subject.insertMatchesBoxSet(matchesBoxSet4)
+        subject.insertMatchesBoxSet(matchesBoxSet5)
+
+        val loaded1 = subject.getMatchesBoxSetsByBagId(bag1.id).getOrAwaitValue()
+        val loaded2 = subject.getMatchesBoxSetsByBagId(bag2.id).getOrAwaitValue()
+
+        assertThat(loaded1.size, `is`(2))
+        assertThat(loaded2.size, `is`(3))
+    }
+
+    @Test
+    fun addFiveMatchesBoxes_sizeEquals() = runBlockingTest {
+        subject.insertBag(BAG)
+        val matchesBoxSet1 = MatchesBoxSet(1, "MBS1", BAG.id)
+        val matchesBoxSet2 = MatchesBoxSet(2, "MBS2", BAG.id)
+        subject.insertMatchesBoxSet(matchesBoxSet1)
+        subject.insertMatchesBoxSet(matchesBoxSet2)
+        subject.insertMatchesBox(MatchesBox(1, "MB1", matchesBoxSet1.id))
+        subject.insertMatchesBox(MatchesBox(2, "MB2", matchesBoxSet1.id))
+        subject.insertMatchesBox(MatchesBox(3, "MB3", matchesBoxSet2.id))
+        subject.insertMatchesBox(MatchesBox(4, "MB4", matchesBoxSet2.id))
+        subject.insertMatchesBox(MatchesBox(5, "MB5", matchesBoxSet2.id))
+
+        val loaded1 = subject.getMatchesBoxesByMatchesBoxSetId(matchesBoxSet1.id).getOrAwaitValue()
+        val loaded2 = subject.getMatchesBoxesByMatchesBoxSetId(matchesBoxSet2.id).getOrAwaitValue()
+
+        assertThat(loaded1.size, `is`(2))
+        assertThat(loaded2.size, `is`(3))
+    }
+
+    @Test
+    fun addFewRadioComponents_sizeEquals() = runBlockingTest {
+        subject.insertBag(BAG)
+        subject.insertMatchesBoxSet(MATCHES_BOX_SET)
+        val matchesBox1 = MatchesBox(1, "MB1", MATCHES_BOX_SET.id)
+        val matchesBox2 = MatchesBox(2, "MB2", MATCHES_BOX_SET.id)
+        subject.insertMatchesBox(matchesBox1)
+        subject.insertMatchesBox(matchesBox2)
+        subject.insertRadioComponent(RadioComponent(1, "RC1", 4, matchesBox1.id))
+        subject.insertRadioComponent(RadioComponent(2, "RC2", 10, matchesBox1.id))
+        subject.insertRadioComponent(RadioComponent(3, "RC3", 5, matchesBox2.id))
+        subject.insertRadioComponent(RadioComponent(4, "RC4", 5, matchesBox2.id))
+        subject.insertRadioComponent(RadioComponent(5, "RC5", 5, matchesBox2.id))
+
+        val loaded1 = subject.getRadioComponentsByMatchesBoxId(matchesBox1.id).getOrAwaitValue()
+        val loaded2 = subject.getRadioComponentsByMatchesBoxId(matchesBox2.id).getOrAwaitValue()
+
+        assertThat(loaded1.size, `is`(2))
+        assertThat(loaded2.size, `is`(3))
     }
 }
