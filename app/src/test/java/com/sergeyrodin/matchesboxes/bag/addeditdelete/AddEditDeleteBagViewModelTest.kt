@@ -7,8 +7,7 @@ import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.nullValue
+import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -95,11 +94,7 @@ class AddEditDeleteBagViewModelTest {
         subject.saveBag("New bag")
 
         val added = subject.eventAdded.getOrAwaitValue()
-        val edited = subject.eventEdited.getOrAwaitValue()
-        val deleted = subject.eventDeleted.getOrAwaitValue()
-        assertThat(added, `is`(true))
-        assertThat(edited, `is`(false))
-        assertThat(deleted, `is`(false))
+        assertThat(added, `is`(not(nullValue())))
     }
 
     @Test
@@ -110,12 +105,8 @@ class AddEditDeleteBagViewModelTest {
 
         subject.saveBag("Updated bag")
 
-        val added = subject.eventAdded.getOrAwaitValue()
         val edited = subject.eventEdited.getOrAwaitValue()
-        val deleted = subject.eventDeleted.getOrAwaitValue()
-        assertThat(added, `is`(false))
-        assertThat(edited, `is`(true))
-        assertThat(deleted, `is`(false))
+        assertThat(edited, `is`(not(nullValue())))
     }
 
     @Test
@@ -126,11 +117,7 @@ class AddEditDeleteBagViewModelTest {
 
         subject.deleteBag()
 
-        val added = subject.eventAdded.getOrAwaitValue()
-        val edited = subject.eventEdited.getOrAwaitValue()
         val deleted = subject.eventDeleted.getOrAwaitValue()
-        assertThat(added, `is`(false))
-        assertThat(edited, `is`(false))
-        assertThat(deleted, `is`(true))
+        assertThat(deleted, `is`(not(nullValue())))
     }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
@@ -14,16 +15,16 @@ class AddEditDeleteBagViewModel(private val dataSource: RadioComponentsDataSourc
     val name: LiveData<String>
         get() = _name
 
-    private val _eventAdded = MutableLiveData(false)
-    val eventAdded: LiveData<Boolean>
+    private val _eventAdded = MutableLiveData<Event<Unit>>()
+    val eventAdded: LiveData<Event<Unit>>
         get() = _eventAdded
 
-    private val _eventEdited = MutableLiveData(false)
-    val eventEdited: LiveData<Boolean>
+    private val _eventEdited = MutableLiveData<Event<Unit>>()
+    val eventEdited: LiveData<Event<Unit>>
         get() = _eventEdited
 
-    private val _eventDeleted = MutableLiveData(false)
-    val eventDeleted: LiveData<Boolean>
+    private val _eventDeleted = MutableLiveData<Event<Unit>>()
+    val eventDeleted: LiveData<Event<Unit>>
         get() = _eventDeleted
 
     private var bag: Bag? = null
@@ -51,7 +52,7 @@ class AddEditDeleteBagViewModel(private val dataSource: RadioComponentsDataSourc
         viewModelScope.launch {
             dataSource.deleteBag(bag!!)
         }
-        _eventDeleted.value = true
+        _eventDeleted.value = Event(Unit)
     }
 
     private fun addNewBag(newName: String) {
@@ -59,7 +60,7 @@ class AddEditDeleteBagViewModel(private val dataSource: RadioComponentsDataSourc
             val newBag = Bag(name = newName)
             dataSource.insertBag(newBag)
         }
-        _eventAdded.value = true
+        _eventAdded.value = Event(Unit)
     }
 
     private fun updateBag(newName: String) {
@@ -67,18 +68,6 @@ class AddEditDeleteBagViewModel(private val dataSource: RadioComponentsDataSourc
             bag?.name = newName
             dataSource.updateBag(bag!!)
         }
-        _eventEdited.value = true
-    }
-
-    fun doneEventAdded() {
-        _eventAdded.value = false
-    }
-
-    fun doneEventEdited() {
-        _eventEdited.value = false
-    }
-
-    fun doneEventDeleted() {
-        _eventDeleted.value = false
+        _eventEdited.value = Event(Unit)
     }
 }
