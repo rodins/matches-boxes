@@ -93,7 +93,7 @@ class AddEditDeleteBagViewModelTest {
 
         subject.saveBag("New bag")
 
-        val added = subject.eventAdded.getOrAwaitValue()
+        val added = subject.eventAdded.getOrAwaitValue().getContentIfNotHandled()
         assertThat(added, `is`(not(nullValue())))
     }
 
@@ -105,7 +105,7 @@ class AddEditDeleteBagViewModelTest {
 
         subject.saveBag("Updated bag")
 
-        val edited = subject.eventEdited.getOrAwaitValue()
+        val edited = subject.eventEdited.getOrAwaitValue().getContentIfNotHandled()
         assertThat(edited, `is`(not(nullValue())))
     }
 
@@ -117,7 +117,7 @@ class AddEditDeleteBagViewModelTest {
 
         subject.deleteBag()
 
-        val deleted = subject.eventDeleted.getOrAwaitValue()
+        val deleted = subject.eventDeleted.getOrAwaitValue().getContentIfNotHandled()
         assertThat(deleted, `is`(not(nullValue())))
     }
 }
