@@ -4,13 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
-import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class BagsLIstViewModelTest {
+class BagsListViewModelTest {
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -66,5 +66,25 @@ class BagsLIstViewModelTest {
         val noItemsTextVisible = subject.isNoItemsTextVisible.getOrAwaitValue()
 
         assertThat(noItemsTextVisible, `is`(false))
+    }
+
+    @Test
+    fun addItem_eventNotNull() {
+        dataSource.addBags()
+
+        subject.addItem()
+
+        val event = subject.addItemEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(event, `is`(not(nullValue())))
+    }
+
+    @Test
+    fun selectItem_eventNumberMatches() {
+        dataSource.addBags()
+
+        subject.selectItem(1)
+
+        val value = subject.selectItemEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(value, `is`(1))
     }
 }
