@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="bag"
+            type="com.sergeyrodin.matchesboxes.data.Bag" />
+
+        <variable
+            name="clickListener"
+            type="com.sergeyrodin.matchesboxes.bag.list.BagListener" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:onClick="@{() -> clickListener.onClick(bag.id)}">
+
+        <TextView
+            android:id="@+id/bag_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{bag.name}"
+            android:textSize="20sp"
+            tools:text="Bug text is here" />
+    </LinearLayout>
+</layout>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.sergeyrodin.matchesboxes.bag.list.BagsListViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".bag.list.BagsListFragment">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/bags_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:bagsListData="@{viewModel.bagsList}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <TextView
+                android:id="@+id/no_bags_added_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:text="@string/no_bags_added"
+                app:noDataTextVisible="@{viewModel.isNoItemsTextVisible}"/>
+        </FrameLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_category_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            app:srcCompat="@drawable/ic_add"
+            app:fabSize="normal"
+            app:layout_anchor="@id/bags_list"
+            app:layout_anchorGravity="bottom|right|end" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
