@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/navigation"
+    app:startDestination="@id/bagsListFragment">
+
+    <fragment
+        android:id="@+id/bagsListFragment"
+        android:name="com.sergeyrodin.matchesboxes.bag.list.BagsListFragment"
+        android:label="BagsListFragment" >
+        <action
+            android:id="@+id/action_bagsListFragment_to_addEditDeleteBagFragment"
+            app:destination="@id/addEditDeleteBagFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addEditDeleteBagFragment"
+        android:name="com.sergeyrodin.matchesboxes.bag.addeditdelete.AddEditDeleteBagFragment"
+        android:label="AddEditDeleteBagFragment" >
+        <action
+            android:id="@+id/action_addEditDeleteBagFragment_to_bagsListFragment"
+            app:destination="@id/bagsListFragment" />
+        <argument
+            android:name="id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
+</navigation>

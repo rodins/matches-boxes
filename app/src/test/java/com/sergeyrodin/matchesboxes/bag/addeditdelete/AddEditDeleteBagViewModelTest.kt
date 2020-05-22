@@ -33,7 +33,7 @@ class AddEditDeleteBagViewModelTest {
 
     @Test
     fun addNewBag_nameEquals() {
-        subject.start(null)
+        subject.start(-1)
 
         subject.saveBag("New bag")
 
@@ -79,7 +79,7 @@ class AddEditDeleteBagViewModelTest {
     @Test
     fun nullAdded_nameIsEmpty() {
         dataSource.addBags()
-        subject.start(null)
+        subject.start(-1)
 
         val name = subject.name.getOrAwaitValue()
 
@@ -89,7 +89,7 @@ class AddEditDeleteBagViewModelTest {
     @Test
     fun bagAdded_eventTrue() {
         dataSource.addBags()
-        subject.start(null)
+        subject.start(-1)
 
         subject.saveBag("New bag")
 
