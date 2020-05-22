@@ -23,7 +23,7 @@
             tools:context=".categories.addedit.AddEditCategoryFragment">
 
             <EditText
-                android:id="@+id/category_edit"
+                android:id="@+id/bag_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/enter_bag_name"
@@ -33,7 +33,7 @@
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/update_fab"
+            android:id="@+id/save_bag_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"

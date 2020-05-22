@@ -30,6 +30,10 @@ class AddEditDeleteBagFragment : Fragment() {
         val args by navArgs<AddEditDeleteBagFragmentArgs>()
         viewModel.start(args.id)
 
+        binding.saveBagFab.setOnClickListener {
+            viewModel.saveBag(binding.bagEdit.text.toString())
+        }
+
         return binding.root
     }
 
