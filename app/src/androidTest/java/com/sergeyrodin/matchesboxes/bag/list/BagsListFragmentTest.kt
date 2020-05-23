@@ -2,10 +2,12 @@ package com.sergeyrodin.matchesboxes.bag.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.R
@@ -18,6 +20,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
 
 @MediumTest
 @RunWith(AndroidJUnit4::class)
@@ -59,11 +63,21 @@ class BagsListFragmentTest {
 
     @Test
     fun noBags_addButtonClicked() {
-        // TODO: write this test
+        dataSource.addBags()
+
+        val scenario = launchFragmentInContainer<BagsListFragment>(null, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+        onView(withId(R.id.add_bag_fab)).perform(click())
+        verify(navController).navigate(
+            BagsListFragmentDirections.actionBagsListFragmentToAddEditDeleteBagFragment(ADD_NEW_BAG_ID)
+        )
     }
 
     @Test
     fun fewBags_itemClicked() {
-        // TODO: write this test
+        // TODO: write this test, go to MatchesBoxSetListFragment
     }
 }

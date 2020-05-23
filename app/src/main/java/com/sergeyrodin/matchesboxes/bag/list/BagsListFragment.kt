@@ -6,10 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentBagsListBinding
+
+const val ADD_NEW_BAG_ID = -1
 
 /**
  * A simple [Fragment] subclass.
@@ -31,6 +34,12 @@ class BagsListFragment : Fragment() {
         binding.bagsList.adapter = adapter
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+
+        binding.addBagFab.setOnClickListener {
+            findNavController().navigate(
+                BagsListFragmentDirections.actionBagsListFragmentToAddEditDeleteBagFragment(ADD_NEW_BAG_ID)
+            )
+        }
 
         return binding.root
     }

@@ -20,7 +20,6 @@
             app:destination="@id/bagsListFragment" />
         <argument
             android:name="id"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            app:argType="integer" />
     </fragment>
 </navigation>
