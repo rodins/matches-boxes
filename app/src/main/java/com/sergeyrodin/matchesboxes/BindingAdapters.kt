@@ -7,7 +7,7 @@ import com.sergeyrodin.matchesboxes.bag.list.BagAdapter
 import com.sergeyrodin.matchesboxes.data.Bag
 
 @BindingAdapter("bagsListData")
-fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<Bag>) {
+fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<Bag>?) {
     val adapter = recyclerView.adapter as BagAdapter
     adapter.submitList(list)
 }

@@ -9,6 +9,7 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
 import com.sergeyrodin.matchesboxes.util.monitorActivity
@@ -19,7 +20,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
-    //private lateinit var componentsDataSource: ComponentsDataSource
+    private lateinit var dataSource: RadioComponentsDataSource
 
     private val dataBindingIdlingResource = DataBindingIdlingResource()
 
@@ -35,24 +36,24 @@ class MainActivityTest {
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 
-    /*@Before
+    @Before
     fun init() {
-        componentsDataSource = ServiceLocator.provideComponentsDataSource(getApplicationContext())
+        dataSource = ServiceLocator.provideRadioComponentsDataSource(getApplicationContext())
     }
 
     @After
     fun reset() {
         ServiceLocator.resetDataSource()
-    }*/
+    }
 
     @Test
     fun addBag_BagNameDisplayed() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        /*onView(withId(R.id.add_bag_fab)).perform(click())
-        onView(withId(R.id.bag_name_edit)).perform(typeText("New bag"))
-        onView(withId(R.id.bag_save_fab)).perform(click())*/
+        onView(withId(R.id.add_bag_fab)).perform(click())
+        onView(withId(R.id.bag_edit)).perform(typeText("New bag"))
+        onView(withId(R.id.save_bag_fab)).perform(click())
         onView(withText("New bag")).check(matches(isDisplayed()))
     }
 
