@@ -1,9 +1,13 @@
 package com.sergeyrodin.matchesboxes.bag.addeditdelete
 
+import android.content.Context
+import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -113,7 +117,7 @@ class AddEditDeleteBagFragmentTest {
     fun bagIdArg_emptyInput_nameNotChanged() {
         val bag = Bag(1, "Old bag")
         dataSource.addBags(bag)
-        val bundle = AddEditDeleteBagFragmentArgs.Builder(ADD_NEW_BAG_ID).build().toBundle()
+        val bundle = AddEditDeleteBagFragmentArgs.Builder(bag.id).build().toBundle()
         launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.bag_edit)).perform(replaceText(" "))
@@ -121,5 +125,34 @@ class AddEditDeleteBagFragmentTest {
 
         val updatedBag = dataSource.getBags().getOrAwaitValue()[0]
         Assert.assertThat(updatedBag.name, `is`("Old bag"))
+    }
+
+    @Test
+    fun deleteBagAndNavigate() {
+        val bag = Bag(1, "Bag to delete")
+        dataSource.addBags(bag)
+        val bundle = AddEditDeleteBagFragmentArgs.Builder(bag.id).build().toBundle()
+        val scenario = launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment{
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        clickDeleteAction(scenario)
+
+        val bags = dataSource.getBags().getOrAwaitValue()
+        Assert.assertThat(bags.size, `is`(0))
+        verify(navController).navigate(
+            AddEditDeleteBagFragmentDirections.actionAddEditDeleteBagFragmentToBagsListFragment()
+        )
+    }
+
+    private fun clickDeleteAction(scenario: FragmentScenario<AddEditDeleteBagFragment>) {
+        // Create dummy menu item with the desired item id
+        val context = getApplicationContext<Context>()
+        val deleteMenuItem = ActionMenuItem(context, 0, R.id.action_delete, 0, 0, null)
+        scenario.onFragment{
+            it.onOptionsItemSelected(deleteMenuItem)
+        }
     }
 }

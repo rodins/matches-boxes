@@ -1,10 +1,8 @@
 package com.sergeyrodin.matchesboxes.bag.addeditdelete
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -13,24 +11,29 @@ import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 
 import com.sergeyrodin.matchesboxes.R
+import com.sergeyrodin.matchesboxes.bag.list.ADD_NEW_BAG_ID
 import com.sergeyrodin.matchesboxes.databinding.FragmentAddEditDeleteBagBinding
 
 class AddEditDeleteBagFragment : Fragment() {
+    private val viewModel by viewModels<AddEditDeleteBagViewModel> {
+        AddEditDeleteBagViewModelFactory(
+            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
+        )
+    }
+
+    private var isActionDeleteVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentAddEditDeleteBagBinding.inflate(inflater)
-        val viewModel by viewModels<AddEditDeleteBagViewModel> {
-            AddEditDeleteBagViewModelFactory(
-                (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-            )
-        }
+
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
         val args by navArgs<AddEditDeleteBagFragmentArgs>()
+        isActionDeleteVisible = args.id != ADD_NEW_BAG_ID
         viewModel.start(args.id)
 
         binding.saveBagFab.setOnClickListener {
@@ -56,7 +59,23 @@ class AddEditDeleteBagFragment : Fragment() {
             )
         })
 
+        setHasOptionsMenu(true)
+
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.delete_menu, menu)
+        val item = menu.findItem(R.id.action_delete)
+        item.isVisible = isActionDeleteVisible
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.action_delete) {
+            viewModel.deleteBag()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }

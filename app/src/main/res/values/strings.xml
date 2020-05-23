@@ -8,4 +8,5 @@
     <string name="bag_added">Bag added</string>
     <string name="bag_updated">Bag updated</string>
     <string name="bag_deleted">Bag deleted</string>
+    <string name="delete">Delete</string>
 </resources>
