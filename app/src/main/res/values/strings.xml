@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">MatchesBoxes</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="no_bags_added">No bags added</string>
     <string name="enter_bag_name">Enter bag name</string>
     <string name="bag_added">Bag added</string>
     <string name="bag_updated">Bag updated</string>
     <string name="bag_deleted">Bag deleted</string>
     <string name="delete">Delete</string>
+    <string name="bags_label">Bags</string>
+    <string name="edit_bag_label">Edit Bag</string>
 </resources>

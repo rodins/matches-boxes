@@ -6,7 +6,7 @@
     <fragment
         android:id="@+id/bagsListFragment"
         android:name="com.sergeyrodin.matchesboxes.bag.list.BagsListFragment"
-        android:label="BagsListFragment" >
+        android:label="@string/bags_label" >
         <action
             android:id="@+id/action_bagsListFragment_to_addEditDeleteBagFragment"
             app:destination="@id/addEditDeleteBagFragment" />
@@ -14,7 +14,7 @@
     <fragment
         android:id="@+id/addEditDeleteBagFragment"
         android:name="com.sergeyrodin.matchesboxes.bag.addeditdelete.AddEditDeleteBagFragment"
-        android:label="AddEditDeleteBagFragment" >
+        android:label="@string/edit_bag_label" >
         <action
             android:id="@+id/action_addEditDeleteBagFragment_to_bagsListFragment"
             app:destination="@id/bagsListFragment" />
