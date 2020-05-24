@@ -12,6 +12,7 @@ import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
@@ -53,7 +54,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun addBag_bagNameDisplayed() = runBlocking{
+    fun addBag_bagNameDisplayed() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
@@ -65,7 +66,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun addBag_deleteButtonIsNotDisplayed() = runBlocking{
+    fun addBag_deleteButtonIsNotDisplayed() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
@@ -77,7 +78,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun noBags_addBagClick_textEquals() = runBlocking{
+    fun noBags_addBagClick_textEquals() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
@@ -89,7 +90,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun addBag_showToast() = runBlocking{
+    fun addBag_showToast() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
         var activity: MainActivity? = null
@@ -104,6 +105,19 @@ class MainActivityTest {
         onView(withText(R.string.bag_added))
             .inRoot(withDecorView(not(activity?.window?.decorView)))
             .check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun addMatchesBoxSet_nameMatches() = runBlocking{
+        dataSource.insertBag(Bag(1, "Bag"))
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText("Bag")).perform(click())
+
+        onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }

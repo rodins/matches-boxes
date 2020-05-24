@@ -9,4 +9,5 @@
     <string name="delete">Delete</string>
     <string name="bags_label">Bags</string>
     <string name="edit_bag_label">Edit Bag</string>
+    <string name="no_matches_box_sets_added">No matches box sets added</string>
 </resources>
