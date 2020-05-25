@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/navigation"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
     app:startDestination="@id/bagsListFragment">
 
     <fragment
@@ -10,6 +12,9 @@
         <action
             android:id="@+id/action_bagsListFragment_to_addEditDeleteBagFragment"
             app:destination="@id/addEditDeleteBagFragment" />
+        <action
+            android:id="@+id/action_bagsListFragment_to_matchesBoxSetsListFragment"
+            app:destination="@id/matchesBoxSetsListFragment" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteBagFragment"
@@ -20,6 +25,15 @@
             app:destination="@id/bagsListFragment" />
         <argument
             android:name="id"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/matchesBoxSetsListFragment"
+        android:name="com.sergeyrodin.matchesboxes.matchesboxset.list.MatchesBoxSetsListFragment"
+        android:label="fragment_matches_box_sets_list"
+        tools:layout="@layout/fragment_matches_box_sets_list" >
+        <argument
+            android:name="bagId"
             app:argType="integer" />
     </fragment>
 </navigation>
