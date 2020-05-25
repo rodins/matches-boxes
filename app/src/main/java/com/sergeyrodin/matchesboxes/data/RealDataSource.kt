@@ -61,7 +61,7 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
         }
     }
 
-    override fun getMatchesBoxSetsByBagId(bagId: Int): LiveData<List<MatchesBoxSet>> {
+    override suspend fun getMatchesBoxSetsByBagId(bagId: Int): List<MatchesBoxSet> {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getMatchesBoxSetsByBagId(bagId)
         }

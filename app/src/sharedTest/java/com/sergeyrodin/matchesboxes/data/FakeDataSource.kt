@@ -8,7 +8,6 @@ class FakeDataSource : RadioComponentsDataSource{
     private val bagsLiveData = MutableLiveData<List<Bag>>()
 
     private val matchesBoxSetList = mutableListOf<MatchesBoxSet>()
-    private val matchesBoxSetLiveData = MutableLiveData<List<MatchesBoxSet>>()
 
     private val matchesBoxList = mutableListOf<MatchesBox>()
     private val matchesBoxLiveData = MutableLiveData<List<MatchesBox>>()
@@ -80,11 +79,10 @@ class FakeDataSource : RadioComponentsDataSource{
         }
     }
 
-    override fun getMatchesBoxSetsByBagId(bagId: Int): LiveData<List<MatchesBoxSet>> {
-        matchesBoxSetLiveData.value = matchesBoxSetList.filter {
+    override suspend fun getMatchesBoxSetsByBagId(bagId: Int): List<MatchesBoxSet> {
+        return matchesBoxSetList.filter {
             it.bagId == bagId
         }
-        return matchesBoxSetLiveData
     }
 
     // MatchesBox

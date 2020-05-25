@@ -247,11 +247,20 @@ class RealDataSourceTest{
         subject.insertMatchesBoxSet(matchesBoxSet4)
         subject.insertMatchesBoxSet(matchesBoxSet5)
 
-        val loaded1 = subject.getMatchesBoxSetsByBagId(bag1.id).getOrAwaitValue()
-        val loaded2 = subject.getMatchesBoxSetsByBagId(bag2.id).getOrAwaitValue()
+        val loaded1 = subject.getMatchesBoxSetsByBagId(bag1.id)
+        val loaded2 = subject.getMatchesBoxSetsByBagId(bag2.id)
 
         assertThat(loaded1.size, `is`(2))
         assertThat(loaded2.size, `is`(3))
+    }
+
+    @Test
+    fun bagAndNoMatchesBoxSets_sizeZero() = runBlockingTest{
+        subject.insertBag(BAG)
+
+        val list = subject.getMatchesBoxSetsByBagId(BAG.id)
+
+        assertThat(list.size, `is`(0))
     }
 
     @Test

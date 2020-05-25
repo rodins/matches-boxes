@@ -35,7 +35,7 @@ interface RadioComponentsDatabaseDao {
     suspend fun getMatchesBoxSetById(matchesBoxSetId: Int): MatchesBoxSet
 
     @Query("SELECT * FROM matches_box_sets WHERE bag_id = :bagId")
-    fun getMatchesBoxSetsByBagId(bagId: Int): LiveData<List<MatchesBoxSet>>
+    suspend fun getMatchesBoxSetsByBagId(bagId: Int): List<MatchesBoxSet>
 
     // MatchesBox
     @Insert
