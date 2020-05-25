@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 
 import com.sergeyrodin.matchesboxes.R
@@ -36,10 +37,14 @@ class BagsListFragment : Fragment() {
         binding.viewModel = viewModel
 
         binding.addBagFab.setOnClickListener {
+            viewModel.addItem()
+        }
+
+        viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 BagsListFragmentDirections.actionBagsListFragmentToAddEditDeleteBagFragment(ADD_NEW_BAG_ID)
             )
-        }
+        })
 
         return binding.root
     }
