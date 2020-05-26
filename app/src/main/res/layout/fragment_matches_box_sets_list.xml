@@ -21,5 +21,13 @@
             app:matchesBoxSetListData="@{viewModel.matchesBoxSets}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:text="@string/no_matches_box_sets_added"
+            app:noDataTextVisible="@{viewModel.isNoMatchesBoxSetsTextVisible}"/>
+
     </FrameLayout>
 </layout>

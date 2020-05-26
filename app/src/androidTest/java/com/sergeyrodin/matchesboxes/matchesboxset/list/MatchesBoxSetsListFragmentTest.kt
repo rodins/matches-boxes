@@ -54,4 +54,14 @@ class MatchesBoxSetsListFragmentTest {
         onView(withText("MBS2")).check(matches(isDisplayed()))
         onView(withText("MBS3")).check(matches(isDisplayed()))
     }
+
+    @Test
+    fun noSets_textDisplayed() {
+        val bagId = 1
+        dataSource.addMatchesBoxSets()
+        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bagId).build().toBundle()
+        launchFragmentInContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme)
+
+        onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
+    }
 }
