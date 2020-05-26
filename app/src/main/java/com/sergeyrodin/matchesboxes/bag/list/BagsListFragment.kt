@@ -46,6 +46,12 @@ class BagsListFragment : Fragment() {
             )
         })
 
+        viewModel.selectItemEvent.observe(viewLifecycleOwner, EventObserver{
+            findNavController().navigate(
+                BagsListFragmentDirections.actionBagsListFragmentToMatchesBoxSetsListFragment(it)
+            )
+        })
+
         return binding.root
     }
 

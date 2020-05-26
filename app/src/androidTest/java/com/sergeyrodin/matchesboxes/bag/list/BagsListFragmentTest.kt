@@ -78,6 +78,19 @@ class BagsListFragmentTest {
 
     @Test
     fun fewBags_itemClicked() {
-        // TODO: write this test, go to MatchesBoxSetListFragment
+        dataSource.addBags(
+            Bag(1, "Bag1"),
+            Bag(2, "Bag2")
+        )
+
+        val scenario = launchFragmentInContainer<BagsListFragment>(null, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+        onView(withText("Bag2")).perform(click())
+        verify(navController).navigate(
+            BagsListFragmentDirections.actionBagsListFragmentToMatchesBoxSetsListFragment(2)
+        )
     }
 }
