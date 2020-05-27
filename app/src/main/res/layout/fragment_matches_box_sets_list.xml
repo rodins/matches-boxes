@@ -9,25 +9,43 @@
             type="com.sergeyrodin.matchesboxes.matchesboxset.list.MatchesBoxSetsListViewModel" />
     </data>
 
-    <FrameLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".matchesboxset.list.MatchesBoxSetsListFragment">
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/items"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:matchesBoxSetListData="@{viewModel.matchesBoxSets}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            tools:context=".matchesboxset.list.MatchesBoxSetsListFragment">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textSize="18sp"
-            android:text="@string/no_matches_box_sets_added"
-            app:noDataTextVisible="@{viewModel.isNoMatchesBoxSetsTextVisible}"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/items"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:matchesBoxSetListData="@{viewModel.matchesBoxSets}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    </FrameLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:text="@string/no_matches_box_sets_added"
+                app:noDataTextVisible="@{viewModel.isNoMatchesBoxSetsTextVisible}"/>
+
+        </FrameLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_set_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:onClick="@{() -> viewModel.addItem()}"
+            app:srcCompat="@drawable/ic_add"
+            app:fabSize="normal"
+            app:layout_anchor="@id/items"
+            app:layout_anchorGravity="bottom|right|end" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </layout>

@@ -7,11 +7,11 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 
 import com.sergeyrodin.matchesboxes.R
-import com.sergeyrodin.matchesboxes.bag.list.ADD_NEW_BAG_ID
 import com.sergeyrodin.matchesboxes.databinding.FragmentAddEditDeleteBagBinding
 
 class AddEditDeleteBagFragment : Fragment() {
@@ -33,7 +33,7 @@ class AddEditDeleteBagFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         val args by navArgs<AddEditDeleteBagFragmentArgs>()
-        isActionDeleteVisible = args.id != ADD_NEW_BAG_ID
+        isActionDeleteVisible = args.id != ADD_NEW_ITEM_ID
         viewModel.start(args.id)
 
         binding.saveBagFab.setOnClickListener {

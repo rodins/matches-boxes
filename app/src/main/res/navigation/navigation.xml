@@ -35,5 +35,17 @@
         <argument
             android:name="bagId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_matchesBoxSetsListFragment_to_addEditDeleteMatchesBoxSetFragment"
+            app:destination="@id/addEditDeleteMatchesBoxSetFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addEditDeleteMatchesBoxSetFragment"
+        android:name="com.sergeyrodin.matchesboxes.matchesboxset.addeditdelete.AddEditDeleteMatchesBoxSetFragment"
+        android:label="fragment_add_edit_delete_matches_box_set"
+        tools:layout="@layout/fragment_add_edit_delete_matches_box_set" >
+        <argument
+            android:name="matchesBoxSetId"
+            app:argType="integer" />
     </fragment>
 </navigation>

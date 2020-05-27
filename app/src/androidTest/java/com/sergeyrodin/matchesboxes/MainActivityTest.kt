@@ -120,8 +120,8 @@ class MainActivityTest {
         onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
 
         onView(withId(R.id.add_set_fab)).perform(click())
-        onView(withId(R.id.set_edit)).perform(typeText("MBS1"))
-        onView(withId(R.id.set_save)).perform(click())
+        //onView(withId(R.id.set_edit)).perform(typeText("MBS1"))
+        //onView(withId(R.id.set_save)).perform(click())
         onView(withText("MBS1")).check(matches(isDisplayed()))
 
         activityScenario.close()

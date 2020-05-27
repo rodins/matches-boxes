@@ -7,7 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavArgs
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
+import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 
 import com.sergeyrodin.matchesboxes.R
@@ -38,6 +41,13 @@ class MatchesBoxSetsListFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.items.adapter = adapter
+
+        viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
+            findNavController().navigate(
+                MatchesBoxSetsListFragmentDirections
+                    .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(ADD_NEW_ITEM_ID)
+            )
+        })
 
         return binding.root
     }

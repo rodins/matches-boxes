@@ -7,13 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 
-import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentBagsListBinding
-
-const val ADD_NEW_BAG_ID = -1
 
 /**
  * A simple [Fragment] subclass.
@@ -42,7 +40,7 @@ class BagsListFragment : Fragment() {
 
         viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
-                BagsListFragmentDirections.actionBagsListFragmentToAddEditDeleteBagFragment(ADD_NEW_BAG_ID)
+                BagsListFragmentDirections.actionBagsListFragmentToAddEditDeleteBagFragment(ADD_NEW_ITEM_ID)
             )
         })
 
