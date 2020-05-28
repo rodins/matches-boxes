@@ -38,8 +38,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
         }
 
         viewModel.addedEvent.observe(viewLifecycleOwner, EventObserver{
-            // TODO: uncomment toast when able to test it
-            //Toast.makeText(context, R.string.matches_box_set_added, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.matches_box_set_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxSetFragmentDirections
                     .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(args.bagId)

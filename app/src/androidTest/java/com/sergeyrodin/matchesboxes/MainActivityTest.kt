@@ -127,4 +127,26 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun addSet_showToast() = runBlocking{
+        dataSource.insertBag(Bag(1, "Bag"))
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+        var activity: MainActivity? = null
+        activityScenario.onActivity{
+            activity = it
+        }
+
+        onView(withText("Bag")).perform(click())
+        onView(withId(R.id.add_set_fab)).perform(click())
+        onView(withId(R.id.set_edit)).perform(typeText("MBS1"))
+        onView(withId(R.id.save_set_fab)).perform(click())
+
+        onView(withText(R.string.matches_box_set_added))
+            .inRoot(withDecorView(not(activity?.window?.decorView)))
+            .check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
 }
