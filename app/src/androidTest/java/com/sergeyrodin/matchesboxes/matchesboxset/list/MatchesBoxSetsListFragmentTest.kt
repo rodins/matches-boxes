@@ -1,9 +1,13 @@
 package com.sergeyrodin.matchesboxes.matchesboxset.list
 
+import android.content.Context
+import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -13,6 +17,7 @@ import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
+import com.sergeyrodin.matchesboxes.bag.addeditdelete.AddEditDeleteBagFragment
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import org.junit.After
@@ -85,5 +90,32 @@ class MatchesBoxSetsListFragmentTest {
             MatchesBoxSetsListFragmentDirections
                 .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(ADD_NEW_ITEM_ID, bagId)
         )
+    }
+
+    @Test
+    fun clickEditAction_navigationMatches() {
+        val bagId = 1
+        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bagId).build().toBundle()
+        val scenario = launchFragmentInContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        clickEditAction(scenario)
+
+        verify(navController).navigate(
+            MatchesBoxSetsListFragmentDirections
+                .actionMatchesBoxSetsListFragmentToAddEditDeleteBagFragment(bagId)
+        )
+    }
+
+    private fun clickEditAction(scenario: FragmentScenario<MatchesBoxSetsListFragment>) {
+        // Create dummy menu item with the desired item id
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val editMenuItem = ActionMenuItem(context, 0, R.id.action_edit, 0, 0, null)
+        scenario.onFragment{
+            it.onOptionsItemSelected(editMenuItem)
+        }
     }
 }

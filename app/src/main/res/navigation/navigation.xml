@@ -38,6 +38,9 @@
         <action
             android:id="@+id/action_matchesBoxSetsListFragment_to_addEditDeleteMatchesBoxSetFragment"
             app:destination="@id/addEditDeleteMatchesBoxSetFragment" />
+        <action
+            android:id="@+id/action_matchesBoxSetsListFragment_to_addEditDeleteBagFragment"
+            app:destination="@id/addEditDeleteBagFragment" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteMatchesBoxSetFragment"

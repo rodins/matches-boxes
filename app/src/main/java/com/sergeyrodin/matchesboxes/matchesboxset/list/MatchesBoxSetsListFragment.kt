@@ -1,10 +1,8 @@
 package com.sergeyrodin.matchesboxes.matchesboxset.list
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavArgs
 import androidx.navigation.fragment.findNavController
@@ -21,6 +19,8 @@ import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxSetsListBindin
  */
 class MatchesBoxSetsListFragment : Fragment() {
 
+    private val args by navArgs<MatchesBoxSetsListFragmentArgs>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,7 +32,6 @@ class MatchesBoxSetsListFragment : Fragment() {
             )
         }
 
-        val args by navArgs<MatchesBoxSetsListFragmentArgs>()
         viewModel.start(args.bagId)
 
         val adapter = MatchesBoxSetAdapter(MatchesBoxSetListener{
@@ -50,7 +49,24 @@ class MatchesBoxSetsListFragment : Fragment() {
             )
         })
 
+        setHasOptionsMenu(true)
+
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.edit_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.action_edit) {
+            findNavController().navigate(
+                MatchesBoxSetsListFragmentDirections
+                    .actionMatchesBoxSetsListFragmentToAddEditDeleteBagFragment(args.bagId)
+            )
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }

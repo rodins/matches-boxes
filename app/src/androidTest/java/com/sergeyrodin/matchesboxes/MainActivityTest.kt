@@ -4,8 +4,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.withDecorView
@@ -158,6 +157,24 @@ class MainActivityTest {
         onView(withText("Bag")).perform(click())
         onView(withId(R.id.add_set_fab)).perform(click())
         onView(withId(R.id.action_delete)).check(doesNotExist())
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun editBagClick_nameEquals() = runBlocking{
+        dataSource.insertBag(Bag(1, "Bag"))
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText("Bag")).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.bag_edit)).check(matches(withText("Bag")))
+
+        onView(withId(R.id.bag_edit)).perform(replaceText("Bag updated"))
+        onView(withId(R.id.save_bag_fab)).perform(click())
+        pressBack()
+        onView(withText("Bag updated")).check(matches(isDisplayed()))
 
         activityScenario.close()
     }

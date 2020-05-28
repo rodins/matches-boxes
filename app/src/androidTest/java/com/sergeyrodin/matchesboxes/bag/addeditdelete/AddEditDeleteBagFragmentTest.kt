@@ -153,4 +153,5 @@ class AddEditDeleteBagFragmentTest {
             it.onOptionsItemSelected(deleteMenuItem)
         }
     }
+
 }
