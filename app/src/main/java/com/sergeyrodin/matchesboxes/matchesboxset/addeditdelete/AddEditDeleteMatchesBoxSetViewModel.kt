@@ -54,8 +54,8 @@ class AddEditDeleteMatchesBoxSetViewModel(private val dataSource: RadioComponent
     fun deleteMatchesBoxSet() {
         viewModelScope.launch {
             dataSource.deleteMatchesBoxSet(matchesBoxSet!!)
-            _deletedEvent.value = Event(Unit)
         }
+        _deletedEvent.value = Event(Unit)
     }
 
     private fun addMatchesBoxSet(name: String) {

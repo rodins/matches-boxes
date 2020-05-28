@@ -47,5 +47,11 @@
         <argument
             android:name="matchesBoxSetId"
             app:argType="integer" />
+        <argument
+            android:name="bagId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_addEditDeleteMatchesBoxSetFragment_to_matchesBoxSetsListFragment"
+            app:destination="@id/matchesBoxSetsListFragment" />
     </fragment>
 </navigation>

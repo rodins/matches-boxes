@@ -45,7 +45,7 @@ class MatchesBoxSetsListFragment : Fragment() {
         viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 MatchesBoxSetsListFragmentDirections
-                    .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(ADD_NEW_ITEM_ID)
+                    .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(args.bagId, ADD_NEW_ITEM_ID)
             )
         })
 

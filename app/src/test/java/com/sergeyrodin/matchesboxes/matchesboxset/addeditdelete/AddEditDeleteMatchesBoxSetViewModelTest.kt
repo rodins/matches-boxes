@@ -1,6 +1,7 @@
 package com.sergeyrodin.matchesboxes.matchesboxset.addeditdelete
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
@@ -28,7 +29,7 @@ class AddEditDeleteMatchesBoxSetViewModelTest {
     @Test
     fun addNewSet_nameEquals() = runBlocking{
         val bagId = 1
-        subject.start(bagId, -1)
+        subject.start(bagId, ADD_NEW_ITEM_ID)
 
         subject.saveMatchesBoxSet("MBS1")
 
@@ -68,6 +69,7 @@ class AddEditDeleteMatchesBoxSetViewModelTest {
         val deleted = subject.deletedEvent.getOrAwaitValue().getContentIfNotHandled()
 
         assertThat(sets.size, `is`(0))
+        assertThat(deleted, `is`(not(nullValue())))
     }
 
     @Test
