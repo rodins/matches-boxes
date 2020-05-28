@@ -10,6 +10,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
@@ -49,7 +50,7 @@ class AppNavigationTest {
     }
 
     @Test
-    fun addBag_navigateBack() = runBlocking{
+    fun addBag_navigateBack() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
@@ -62,7 +63,7 @@ class AppNavigationTest {
     }
 
     @Test
-    fun addBag_navigateUp() = runBlocking{
+    fun addBag_navigateUp() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
@@ -72,6 +73,38 @@ class AppNavigationTest {
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
         onView(withId(R.id.no_bags_added_text)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun addSet_navigateBack() = runBlocking{
+        dataSource.insertBag(Bag(1, "Bag"))
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText("Bag")).perform(click())
+        onView(withId(R.id.add_set_fab)).perform(click())
+
+        pressBack()
+
+        onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun addSet_navigateUp() = runBlocking{
+        dataSource.insertBag(Bag(1, "Bag"))
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText("Bag")).perform(click())
+        onView(withId(R.id.add_set_fab)).perform(click())
+
+        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
+
+        onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
