@@ -83,7 +83,7 @@ class MatchesBoxSetsListFragmentTest {
 
         verify(navController).navigate(
             MatchesBoxSetsListFragmentDirections
-                .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(bagId, ADD_NEW_ITEM_ID)
+                .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(ADD_NEW_ITEM_ID, bagId)
         )
     }
 }
