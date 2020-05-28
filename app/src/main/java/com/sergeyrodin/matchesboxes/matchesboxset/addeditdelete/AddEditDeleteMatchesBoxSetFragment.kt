@@ -16,11 +16,12 @@ import java.util.*
 
 class AddEditDeleteMatchesBoxSetFragment : Fragment() {
 
-    val viewModel by viewModels<AddEditDeleteMatchesBoxSetViewModel> {
+    private val viewModel by viewModels<AddEditDeleteMatchesBoxSetViewModel> {
         AddEditDeleteMatchBoxSetViewModelFactory(
             (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
         )
     }
+    private var isDeleteVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,6 +32,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
         binding.viewModel = viewModel
 
         val args by navArgs<AddEditDeleteMatchesBoxSetFragmentArgs>()
+        isDeleteVisible = args.matchesBoxSetId != -1
         viewModel.start(args.bagId, args.matchesBoxSetId)
 
         binding.saveSetFab.setOnClickListener {
@@ -63,7 +65,8 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.delete_menu, menu)
-        //TODO: make menu item disappear when adding new item
+        val item = menu.findItem(R.id.action_delete)
+        item.setVisible(isDeleteVisible)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
