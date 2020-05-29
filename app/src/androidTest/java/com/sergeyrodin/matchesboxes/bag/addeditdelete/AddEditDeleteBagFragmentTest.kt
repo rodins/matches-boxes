@@ -89,13 +89,21 @@ class AddEditDeleteBagFragmentTest {
         val bag = Bag(1, "Old bag")
         dataSource.addBags(bag)
         val bundle = AddEditDeleteBagFragmentArgs.Builder(bag.id).build().toBundle()
-        launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
+        val scenario = launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment{
+            Navigation.setViewNavController(it.view!!, navController)
+        }
 
         onView(withId(R.id.bag_edit)).perform(replaceText("New bag"))
         onView(withId(R.id.save_bag_fab)).perform(click())
 
         val updatedBag = dataSource.getBags().getOrAwaitValue()[0]
         Assert.assertThat(updatedBag.name, `is`("New bag"))
+        verify(navController).navigate(
+            AddEditDeleteBagFragmentDirections
+                .actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(bag.id)
+        )
     }
 
     @Test

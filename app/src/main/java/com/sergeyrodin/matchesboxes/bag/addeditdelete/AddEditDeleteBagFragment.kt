@@ -23,6 +23,7 @@ class AddEditDeleteBagFragment : Fragment() {
 
     private var isActionDeleteVisible = false
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,7 +50,9 @@ class AddEditDeleteBagFragment : Fragment() {
 
         viewModel.eventEdited.observe(viewLifecycleOwner, EventObserver{
             Toast.makeText(requireContext(), R.string.bag_updated, Toast.LENGTH_SHORT).show()
-            //TODO: add navigation maybe to MatcheboxesSetList
+            findNavController().navigate(
+                AddEditDeleteBagFragmentDirections.actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(args.id)
+            )
         })
 
         viewModel.eventDeleted.observe(viewLifecycleOwner, EventObserver{

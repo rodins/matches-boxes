@@ -162,7 +162,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun editBagClick_nameEquals() = runBlocking{
+    fun editBagClick_editBag_nameEquals() = runBlocking{
         dataSource.insertBag(Bag(1, "Bag"))
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
@@ -173,7 +173,8 @@ class MainActivityTest {
 
         onView(withId(R.id.bag_edit)).perform(replaceText("Bag updated"))
         onView(withId(R.id.save_bag_fab)).perform(click())
-        pressBack()
+        onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
+        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
         onView(withText("Bag updated")).check(matches(isDisplayed()))
 
         activityScenario.close()
