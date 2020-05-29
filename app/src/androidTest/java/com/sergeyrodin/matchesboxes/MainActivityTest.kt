@@ -194,4 +194,47 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun editBag_toastShow() = runBlocking{
+        dataSource.insertBag(Bag(1, "Bag"))
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+        var activity: MainActivity? = null
+        activityScenario.onActivity{
+            activity = it
+        }
+
+        onView(withText("Bag")).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.bag_edit)).perform(replaceText("Bag updated"))
+        onView(withId(R.id.save_bag_fab)).perform(click())
+
+        onView(withText(R.string.bag_updated))
+            .inRoot(withDecorView(not(activity?.window?.decorView)))
+            .check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun deleteBag_toastShow() = runBlocking {
+        dataSource.insertBag(Bag(1, "Bag"))
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+        var activity: MainActivity? = null
+        activityScenario.onActivity{
+            activity = it
+        }
+
+        onView(withText("Bag")).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.action_delete)).perform(click())
+
+        onView(withText(R.string.bag_deleted))
+            .inRoot(withDecorView(not(activity?.window?.decorView)))
+            .check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
 }
