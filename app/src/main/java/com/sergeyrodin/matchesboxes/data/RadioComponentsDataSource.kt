@@ -35,7 +35,7 @@ interface RadioComponentsDataSource {
 
     suspend fun getMatchesBoxById(matchesBoxId: Int): MatchesBox?
 
-    fun getMatchesBoxesByMatchesBoxSetId(matchesBoxSetId: Int): LiveData<List<MatchesBox>>
+    suspend fun getMatchesBoxesByMatchesBoxSetId(matchesBoxSetId: Int): List<MatchesBox>
 
     // RadioComponents
     suspend fun insertRadioComponent(radioComponent: RadioComponent)

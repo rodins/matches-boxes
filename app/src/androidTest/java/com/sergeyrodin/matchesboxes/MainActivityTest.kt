@@ -249,9 +249,9 @@ class MainActivityTest {
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
-        onView(withId(R.id.add_box_fab)).perform(click())
+        /*onView(withId(R.id.add_box_fab)).perform(click())
         onView(withId(R.id.box_edit)).perform(typeText("Box"))
-        onView(withId(R.id.save_box_fab)).perform(click())
+        onView(withId(R.id.save_box_fab)).perform(click())*/
 
         onView(withText("Box")).check(matches(isDisplayed()))
 

@@ -276,8 +276,8 @@ class RealDataSourceTest{
         subject.insertMatchesBox(MatchesBox(4, "MB4", matchesBoxSet2.id))
         subject.insertMatchesBox(MatchesBox(5, "MB5", matchesBoxSet2.id))
 
-        val loaded1 = subject.getMatchesBoxesByMatchesBoxSetId(matchesBoxSet1.id).getOrAwaitValue()
-        val loaded2 = subject.getMatchesBoxesByMatchesBoxSetId(matchesBoxSet2.id).getOrAwaitValue()
+        val loaded1 = subject.getMatchesBoxesByMatchesBoxSetId(matchesBoxSet1.id)
+        val loaded2 = subject.getMatchesBoxesByMatchesBoxSetId(matchesBoxSet2.id)
 
         assertThat(loaded1.size, `is`(2))
         assertThat(loaded2.size, `is`(3))

@@ -92,7 +92,7 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
         }
     }
 
-    override fun getMatchesBoxesByMatchesBoxSetId(matchesBoxSetId: Int): LiveData<List<MatchesBox>> {
+    override suspend fun getMatchesBoxesByMatchesBoxSetId(matchesBoxSetId: Int): List<MatchesBox> {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getMatchesBoxesByMatchesBoxSetId(matchesBoxSetId)
         }
