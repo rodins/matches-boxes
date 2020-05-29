@@ -12,6 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.sergeyrodin.matchesboxes.data.Bag
+import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
@@ -233,6 +234,26 @@ class MainActivityTest {
         onView(withText(R.string.bag_deleted))
             .inRoot(withDecorView(not(activity?.window?.decorView)))
             .check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun addMatchesBox_nameEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.add_box_fab)).perform(click())
+        onView(withId(R.id.box_edit)).perform(typeText("Box"))
+        onView(withId(R.id.save_box_fab)).perform(click())
+
+        onView(withText("Box")).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
