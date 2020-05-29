@@ -179,4 +179,18 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun editBagClick_deleteBag() = runBlocking{
+        dataSource.insertBag(Bag(1, "Bag"))
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText("Bag")).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.action_delete)).perform(click())
+        onView(withText(R.string.no_bags_added)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
 }
