@@ -44,6 +44,9 @@
         <action
             android:id="@+id/action_matchesBoxSetsListFragment_to_addEditDeleteBagFragment"
             app:destination="@id/addEditDeleteBagFragment" />
+        <action
+            android:id="@+id/action_matchesBoxSetsListFragment_to_matchesBoxListFragment"
+            app:destination="@id/matchesBoxListFragment" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteMatchesBoxSetFragment"
@@ -59,5 +62,13 @@
         <action
             android:id="@+id/action_addEditDeleteMatchesBoxSetFragment_to_matchesBoxSetsListFragment"
             app:destination="@id/matchesBoxSetsListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/matchesBoxListFragment"
+        android:name="com.sergeyrodin.matchesboxes.matchesbox.list.MatchesBoxListFragment"
+        android:label="MatchesBoxListFragment" >
+        <argument
+            android:name="setId"
+            app:argType="integer" />
     </fragment>
 </navigation>

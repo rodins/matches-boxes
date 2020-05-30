@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="matchesBox"
+            type="com.sergeyrodin.matchesboxes.data.MatchesBox" />
+
+        <variable
+            name="clickListener"
+            type="com.sergeyrodin.matchesboxes.matchesbox.list.MatchesBoxListener" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:onClick="@{() -> clickListener.onClick(matchesBox.id)}">
+
+        <TextView
+            android:id="@+id/box_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{matchesBox.name}"
+            android:textSize="20sp"
+            tools:text="Matches box text is here" />
+    </LinearLayout>
+
+</layout>

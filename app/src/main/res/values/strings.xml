@@ -16,4 +16,5 @@
     <string name="enter_matches_box_set_name">Enter matches box set name</string>
     <string name="matches_box_set_added">Matches box set added</string>
     <string name="edit">Edit</string>
+    <string name="no_matches_boxes_added">No matches boxes added</string>
 </resources>
