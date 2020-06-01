@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentAddEditDeleteMatchesBoxBinding
@@ -21,15 +23,23 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentAddEditDeleteMatchesBoxBinding.inflate(inflater)
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = viewLifecycleOwner
 
         val args by navArgs<AddEditDeleteMatchesBoxFragmentArgs>()
         viewModel.start(args.setId, args.boxId)
 
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
         binding.saveBoxFab.setOnClickListener{
             viewModel.saveMatchesBox(binding.boxEdit.text.toString())
         }
+
+        /*viewModel.addEvent.observe(viewLifecycleOwner, EventObserver{
+            findNavController().navigate(
+                AddEditDeleteMatchesBoxFragmentDirections
+                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.setId)
+            )
+        })*/
 
         setHasOptionsMenu(true)
 

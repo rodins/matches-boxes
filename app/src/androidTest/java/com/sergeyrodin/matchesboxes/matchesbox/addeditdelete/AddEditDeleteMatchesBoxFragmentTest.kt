@@ -5,6 +5,8 @@ import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -23,6 +25,8 @@ import org.hamcrest.CoreMatchers.`is`
 import org.junit.*
 import org.junit.Assert.*
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
@@ -72,11 +76,11 @@ class AddEditDeleteMatchesBoxFragmentTest{
         val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(setId, ADD_NEW_ITEM_ID).build().toBundle()
         launchFragmentInContainer<AddEditDeleteMatchesBoxFragment>(bundle, R.style.AppTheme)
 
-        onView(withId(R.id.box_edit)).perform(typeText("New box"))
+        onView(withId(R.id.box_edit)).perform(replaceText("New box"))
         onView(withId(R.id.save_box_fab)).perform(click())
 
-        val item = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)[0]
-        Assert.assertThat(item.name, `is`("New box"))
+        val item = dataSource.getMatchesBoxById(1)
+        Assert.assertThat(item?.name, `is`("New box"))
     }
 
     @Test
@@ -92,6 +96,8 @@ class AddEditDeleteMatchesBoxFragmentTest{
 
         val item = dataSource.getMatchesBoxById(box.id)
         Assert.assertThat(item?.name, `is`("Updated box"))
+
+        // TODO: navigation test
     }
 
     @Test

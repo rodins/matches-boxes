@@ -85,5 +85,8 @@
         <argument
             android:name="boxId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_addEditDeleteMatchesBoxFragment_to_matchesBoxListFragment"
+            app:destination="@id/matchesBoxListFragment" />
     </fragment>
 </navigation>
