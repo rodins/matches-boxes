@@ -9,24 +9,42 @@
             type="com.sergeyrodin.matchesboxes.matchesbox.list.MatchesBoxListViewModel" />
     </data>
 
-    <FrameLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".matchesbox.list.MatchesBoxListFragment">
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/items"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:matchesBoxListData="@{viewModel.matchesBoxes}"/>
+            tools:context=".matchesbox.list.MatchesBoxListFragment">
 
-        <TextView
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/items"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:matchesBoxListData="@{viewModel.matchesBoxes}"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/no_matches_boxes_added"
+                app:noDataTextVisible="@{viewModel.isNoItemsTextVisible}"/>
+
+        </FrameLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_box_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/no_matches_boxes_added"
-            app:noDataTextVisible="@{viewModel.isNoItemsTextVisible}"/>
+            android:layout_margin="@dimen/fab_margin"
+            android:onClick="@{() -> viewModel.addMatchesBox()}"
+            app:srcCompat="@drawable/ic_add"
+            app:fabSize="normal"
+            app:layout_anchor="@id/items"
+            app:layout_anchorGravity="bottom|right|end" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    </FrameLayout>
+
 </layout>

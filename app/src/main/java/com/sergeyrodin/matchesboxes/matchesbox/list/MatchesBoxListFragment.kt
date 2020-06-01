@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
+import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 
 import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxListBinding
@@ -31,6 +34,13 @@ class MatchesBoxListFragment : Fragment() {
 
         val adapter = MatchesBoxAdapter(MatchesBoxListener{
             viewModel.selectMatchesBox(it)
+        })
+
+        viewModel.addMatchesBoxEvent.observe(viewLifecycleOwner, EventObserver{
+            findNavController().navigate(
+                MatchesBoxListFragmentDirections
+                    .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxFragment(args.setId, ADD_NEW_ITEM_ID)
+            )
         })
 
         binding.items.adapter = adapter
