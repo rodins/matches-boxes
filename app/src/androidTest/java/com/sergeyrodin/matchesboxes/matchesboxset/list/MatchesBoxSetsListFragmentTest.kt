@@ -93,6 +93,26 @@ class MatchesBoxSetsListFragmentTest {
     }
 
     @Test
+    fun selectItem_navigationCalled() {
+        val bagId = 2
+        val set = MatchesBoxSet(1, "Set", bagId)
+        dataSource.addMatchesBoxSets(set)
+        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bagId).build().toBundle()
+        val scenario = launchFragmentInContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        onView(withText(set.name)).perform(click())
+
+        verify(navController).navigate(
+            MatchesBoxSetsListFragmentDirections
+                .actionMatchesBoxSetsListFragmentToMatchesBoxListFragment(set.id)
+        )
+    }
+
+    @Test
     fun clickEditAction_navigationMatches() {
         val bagId = 1
         val bundle = MatchesBoxSetsListFragmentArgs.Builder(bagId).build().toBundle()
