@@ -70,5 +70,20 @@
         <argument
             android:name="setId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_matchesBoxListFragment_to_addEditDeleteMatchesBoxFragment"
+            app:destination="@id/addEditDeleteMatchesBoxFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addEditDeleteMatchesBoxFragment"
+        android:name="com.sergeyrodin.matchesboxes.matchesbox.addeditdelete.AddEditDeleteMatchesBoxFragment"
+        android:label="fragment_add_edit_delete_matches_box"
+        tools:layout="@layout/fragment_add_edit_delete_matches_box" >
+        <argument
+            android:name="setId"
+            app:argType="integer" />
+        <argument
+            android:name="boxId"
+            app:argType="integer" />
     </fragment>
 </navigation>
