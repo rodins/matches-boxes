@@ -34,12 +34,21 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
             viewModel.saveMatchesBox(binding.boxEdit.text.toString())
         }
 
-        /*viewModel.addEvent.observe(viewLifecycleOwner, EventObserver{
+        viewModel.addEvent.observe(viewLifecycleOwner, EventObserver{
+            // TODO: add toast message
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
                     .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.setId)
             )
-        })*/
+        })
+
+        viewModel.deleteEvent.observe(viewLifecycleOwner, EventObserver{
+            //TODO: add toast message
+            findNavController().navigate(
+                AddEditDeleteMatchesBoxFragmentDirections
+                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.setId)
+            )
+        })
 
         setHasOptionsMenu(true)
 
