@@ -1,7 +1,11 @@
 package com.sergeyrodin.matchesboxes.matchesbox.addeditdelete
 
+import android.content.Context
+import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -13,6 +17,7 @@ import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.MatchesBox
+import com.sergeyrodin.matchesboxes.matchesboxset.addeditdelete.AddEditDeleteMatchesBoxSetFragment
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.*
@@ -87,5 +92,29 @@ class AddEditDeleteMatchesBoxFragmentTest{
 
         val item = dataSource.getMatchesBoxById(box.id)
         Assert.assertThat(item?.name, `is`("Updated box"))
+    }
+
+    @Test
+    fun deleteItem_menuItemClick_sizeZero() = runBlocking{
+        val setId = 2
+        val box = MatchesBox(1, "Box", setId)
+        dataSource.addMatchesBoxes(box)
+        val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(setId, box.id).build().toBundle()
+        val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxFragment>(bundle, R.style.AppTheme)
+        clickDeleteAction(scenario)
+
+        val items = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)
+        Assert.assertThat(items.size, `is`(0))
+    }
+
+    private fun clickDeleteAction(
+        scenario: FragmentScenario<AddEditDeleteMatchesBoxFragment>
+    ) {
+        // Create dummy menu item with the desired item id
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val deleteMenuItem = ActionMenuItem(context, 0, R.id.action_delete, 0, 0, null)
+        scenario.onFragment{
+            it.onOptionsItemSelected(deleteMenuItem)
+        }
     }
 }
