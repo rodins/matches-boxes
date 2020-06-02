@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
@@ -18,6 +19,8 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
         )
     }
 
+    private var hideDelete = true
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -25,6 +28,8 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
         val binding = FragmentAddEditDeleteMatchesBoxBinding.inflate(inflater)
 
         val args by navArgs<AddEditDeleteMatchesBoxFragmentArgs>()
+        hideDelete = args.boxId != ADD_NEW_ITEM_ID
+
         viewModel.start(args.setId, args.boxId)
 
         binding.viewModel = viewModel
@@ -58,7 +63,8 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.delete_menu, menu)
-        //TODO: hide menu item in add item mode
+        val item = menu.findItem(R.id.action_delete)
+        item.isVisible = hideDelete
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

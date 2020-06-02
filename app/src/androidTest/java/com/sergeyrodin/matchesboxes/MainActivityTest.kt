@@ -258,4 +258,22 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun addMatchesBox_hideDeleteButton() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.add_box_fab)).perform(click())
+
+        onView(withId(R.id.action_delete)).check(doesNotExist())
+
+        activityScenario.close()
+    }
+
 }
