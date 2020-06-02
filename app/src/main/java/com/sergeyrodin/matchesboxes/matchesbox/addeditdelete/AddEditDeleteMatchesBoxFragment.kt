@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.matchesbox.addeditdelete
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -40,7 +41,7 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
         }
 
         viewModel.addEvent.observe(viewLifecycleOwner, EventObserver{
-            // TODO: add toast message
+            Toast.makeText(context, R.string.box_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
                     .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.setId)
@@ -54,6 +55,8 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
                     .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.setId)
             )
         })
+
+        // TODO: update matches box navigation and toast
 
         setHasOptionsMenu(true)
 

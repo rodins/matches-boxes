@@ -1,5 +1,6 @@
 package com.sergeyrodin.matchesboxes
 
+import android.view.View
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
@@ -275,5 +276,35 @@ class MainActivityTest {
 
         activityScenario.close()
     }
+
+    @Test
+    fun addMatchesBox_tostShown() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+        var decorView: View? = null
+        activityScenario.onActivity{
+            decorView = it.window.decorView
+        }
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.add_box_fab)).perform(click())
+
+        onView(withId(R.id.box_edit)).perform(typeText("New box"))
+        onView(withId(R.id.save_box_fab)).perform(click())
+
+        onView(withText(R.string.box_added))
+            .inRoot(withDecorView(not(decorView)))
+            .check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    //TODO: toast test matches box deleted
+    //TODO: toast test matches box updated
 
 }
