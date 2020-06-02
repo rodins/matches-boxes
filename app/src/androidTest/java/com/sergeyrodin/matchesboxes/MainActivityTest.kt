@@ -94,9 +94,9 @@ class MainActivityTest {
     fun addBag_showToast() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-        var activity: MainActivity? = null
+        var decorView: View? = null
         activityScenario.onActivity{
-            activity = it
+            decorView = it.window.decorView
         }
 
         onView(withId(R.id.add_bag_fab)).perform(click())
@@ -104,7 +104,7 @@ class MainActivityTest {
         onView(withId(R.id.save_bag_fab)).perform(click())
 
         onView(withText(R.string.bag_added))
-            .inRoot(withDecorView(not(activity?.window?.decorView)))
+            .inRoot(withDecorView(not(decorView)))
             .check(matches(isDisplayed()))
 
         activityScenario.close()
@@ -133,9 +133,9 @@ class MainActivityTest {
         dataSource.insertBag(Bag(1, "Bag"))
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-        var activity: MainActivity? = null
+        var decorView: View? = null
         activityScenario.onActivity{
-            activity = it
+            decorView = it.window.decorView
         }
 
         onView(withText("Bag")).perform(click())
@@ -144,7 +144,7 @@ class MainActivityTest {
         onView(withId(R.id.save_set_fab)).perform(click())
 
         onView(withText(R.string.matches_box_set_added))
-            .inRoot(withDecorView(not(activity?.window?.decorView)))
+            .inRoot(withDecorView(not(decorView)))
             .check(matches(isDisplayed()))
 
         activityScenario.close()
@@ -201,9 +201,9 @@ class MainActivityTest {
         dataSource.insertBag(Bag(1, "Bag"))
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-        var activity: MainActivity? = null
+        var decorView: View? = null
         activityScenario.onActivity{
-            activity = it
+            decorView = it.window.decorView
         }
 
         onView(withText("Bag")).perform(click())
@@ -212,7 +212,7 @@ class MainActivityTest {
         onView(withId(R.id.save_bag_fab)).perform(click())
 
         onView(withText(R.string.bag_updated))
-            .inRoot(withDecorView(not(activity?.window?.decorView)))
+            .inRoot(withDecorView(not(decorView)))
             .check(matches(isDisplayed()))
 
         activityScenario.close()
@@ -223,9 +223,9 @@ class MainActivityTest {
         dataSource.insertBag(Bag(1, "Bag"))
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-        var activity: MainActivity? = null
+        var decorView: View? = null
         activityScenario.onActivity{
-            activity = it
+            decorView = it.window.decorView
         }
 
         onView(withText("Bag")).perform(click())
@@ -233,7 +233,7 @@ class MainActivityTest {
         onView(withId(R.id.action_delete)).perform(click())
 
         onView(withText(R.string.bag_deleted))
-            .inRoot(withDecorView(not(activity?.window?.decorView)))
+            .inRoot(withDecorView(not(decorView)))
             .check(matches(isDisplayed()))
 
         activityScenario.close()
