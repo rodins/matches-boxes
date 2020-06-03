@@ -55,6 +55,8 @@ class MainActivityTest {
         ServiceLocator.resetDataSource()
     }
 
+    // Bag tests
+
     @Test
     fun addBag_bagNameDisplayed() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
@@ -112,59 +114,6 @@ class MainActivityTest {
     }
 
     @Test
-    fun addMatchesBoxSet_nameMatches() = runBlocking{
-        dataSource.insertBag(Bag(1, "Bag"))
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
-
-        onView(withText("Bag")).perform(click())
-
-        onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
-
-        onView(withId(R.id.add_set_fab)).perform(click())
-        onView(withId(R.id.set_edit)).perform(typeText("MBS1"))
-        onView(withId(R.id.save_set_fab)).perform(click())
-        onView(withText("MBS1")).check(matches(isDisplayed()))
-
-        activityScenario.close()
-    }
-
-    @Test
-    fun addSet_showToast() = runBlocking{
-        dataSource.insertBag(Bag(1, "Bag"))
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
-        var decorView: View? = null
-        activityScenario.onActivity{
-            decorView = it.window.decorView
-        }
-
-        onView(withText("Bag")).perform(click())
-        onView(withId(R.id.add_set_fab)).perform(click())
-        onView(withId(R.id.set_edit)).perform(typeText("MBS1"))
-        onView(withId(R.id.save_set_fab)).perform(click())
-
-        onView(withText(R.string.matches_box_set_added))
-            .inRoot(withDecorView(not(decorView)))
-            .check(matches(isDisplayed()))
-
-        activityScenario.close()
-    }
-
-    @Test
-    fun addSet_deleteButtonNotDisplayed() = runBlocking{
-        dataSource.insertBag(Bag(1, "Bag"))
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
-
-        onView(withText("Bag")).perform(click())
-        onView(withId(R.id.add_set_fab)).perform(click())
-        onView(withId(R.id.action_delete)).check(doesNotExist())
-
-        activityScenario.close()
-    }
-
-    @Test
     fun editBagClick_editBag_nameEquals() = runBlocking{
         val bag = Bag(1, "Bag")
         dataSource.insertBag(bag)
@@ -183,6 +132,7 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    // TODO: fix this test
     /*@Test
     fun editBag_nameDisplayed() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
@@ -256,6 +206,66 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    // MatchesBoxSet tests
+
+    @Test
+    fun addMatchesBoxSet_nameMatches() = runBlocking{
+        dataSource.insertBag(Bag(1, "Bag"))
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText("Bag")).perform(click())
+
+        onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.add_set_fab)).perform(click())
+        onView(withId(R.id.set_edit)).perform(typeText("MBS1"))
+        onView(withId(R.id.save_set_fab)).perform(click())
+        onView(withText("MBS1")).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun addSet_showToast() = runBlocking{
+        dataSource.insertBag(Bag(1, "Bag"))
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+        var decorView: View? = null
+        activityScenario.onActivity{
+            decorView = it.window.decorView
+        }
+
+        onView(withText("Bag")).perform(click())
+        onView(withId(R.id.add_set_fab)).perform(click())
+        onView(withId(R.id.set_edit)).perform(typeText("MBS1"))
+        onView(withId(R.id.save_set_fab)).perform(click())
+
+        onView(withText(R.string.matches_box_set_added))
+            .inRoot(withDecorView(not(decorView)))
+            .check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun addSet_deleteButtonNotDisplayed() = runBlocking{
+        dataSource.insertBag(Bag(1, "Bag"))
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText("Bag")).perform(click())
+        onView(withId(R.id.add_set_fab)).perform(click())
+        onView(withId(R.id.action_delete)).check(doesNotExist())
+
+        activityScenario.close()
+    }
+
+    //TODO: update set
+    //TODO: delete set
+
+    // MatchesBox tests
+
     @Test
     fun addMatchesBox_nameEquals() = runBlocking{
         val bag = Bag(1, "Bag")
@@ -295,7 +305,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun addMatchesBox_tostShown() = runBlocking{
+    fun addMatchesBox_toastShown() = runBlocking{
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.insertBag(bag)
@@ -323,5 +333,11 @@ class MainActivityTest {
 
     //TODO: toast test matches box deleted
     //TODO: toast test matches box updated
+
+    // RadioComponent tests
+
+    //TODO: add component
+    //TODO: update component
+    //TODO: delete component
 
 }
