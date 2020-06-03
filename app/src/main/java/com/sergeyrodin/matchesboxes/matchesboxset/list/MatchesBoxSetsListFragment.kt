@@ -72,6 +72,7 @@ class MatchesBoxSetsListFragment : Fragment() {
                 MatchesBoxSetsListFragmentDirections
                     .actionMatchesBoxSetsListFragmentToAddEditDeleteBagFragment(args.bagId)
             )
+            return true
         }
         return super.onOptionsItemSelected(item)
     }

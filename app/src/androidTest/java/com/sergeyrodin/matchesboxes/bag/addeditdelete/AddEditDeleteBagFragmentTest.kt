@@ -73,7 +73,7 @@ class AddEditDeleteBagFragmentTest {
             Navigation.setViewNavController(it.view!!, navController)
         }
 
-        onView(withId(R.id.bag_edit)).perform(typeText("New bag"))
+        onView(withId(R.id.bag_edit)).perform(replaceText("New bag"))
         onView(withId(R.id.save_bag_fab)).perform(click())
 
         val bag = dataSource.getBags().getOrAwaitValue()[0]
@@ -112,7 +112,7 @@ class AddEditDeleteBagFragmentTest {
         val bundle = AddEditDeleteBagFragmentArgs.Builder(ADD_NEW_ITEM_ID).build().toBundle()
         launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
 
-        onView(withId(R.id.bag_edit)).perform(typeText(" "))
+        onView(withId(R.id.bag_edit)).perform(replaceText(" "))
         onView(withId(R.id.save_bag_fab)).perform(click())
 
         val bags = dataSource.getBags().getOrAwaitValue()

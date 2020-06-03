@@ -23,15 +23,13 @@ class AddEditDeleteBagFragment : Fragment() {
 
     private var isActionDeleteVisible = false
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentAddEditDeleteBagBinding.inflate(inflater)
-
-        binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
 
         val args by navArgs<AddEditDeleteBagFragmentArgs>()
         isActionDeleteVisible = args.id != ADD_NEW_ITEM_ID
