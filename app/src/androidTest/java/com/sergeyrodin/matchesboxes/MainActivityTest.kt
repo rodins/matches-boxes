@@ -308,7 +308,30 @@ class MainActivityTest {
         activityScenario.close()
     }
 
-    //TODO: delete set toast
+    @Test
+    fun deleteSet_showToast() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+        var decorView: View? = null
+        activityScenario.onActivity{
+            decorView = it.window.decorView
+        }
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.action_delete)).perform(click())
+
+        onView(withText(R.string.matches_box_set_deleted))
+            .inRoot(withDecorView(not(decorView)))
+            .check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
 
     // MatchesBox tests
 
