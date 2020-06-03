@@ -96,7 +96,11 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
         val set = MatchesBoxSet(1, "MBS1", bagId)
         dataSource.addMatchesBoxSets(set)
         val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(set.id, bagId).build().toBundle()
-        launchFragmentInContainer<AddEditDeleteMatchesBoxSetFragment>(bundle, R.style.AppTheme)
+        val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxSetFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
 
         onView(withId(R.id.set_edit)).perform(replaceText("MBS1 updated"))
         onView(withId(R.id.save_set_fab)).perform(click())
@@ -104,7 +108,10 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
         val item = dataSource.getMatchesBoxSetById(set.id)
         Assert.assertThat(item?.name, `is`("MBS1 updated"))
 
-        // TODO: add navigation test
+        verify(navController).navigate(
+            AddEditDeleteMatchesBoxSetFragmentDirections
+                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(set.id)
+        )
     }
 
     @Test

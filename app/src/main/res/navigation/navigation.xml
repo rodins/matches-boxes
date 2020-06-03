@@ -62,6 +62,9 @@
         <action
             android:id="@+id/action_addEditDeleteMatchesBoxSetFragment_to_matchesBoxSetsListFragment"
             app:destination="@id/matchesBoxSetsListFragment" />
+        <action
+            android:id="@+id/action_addEditDeleteMatchesBoxSetFragment_to_matchesBoxListFragment"
+            app:destination="@id/matchesBoxListFragment" />
     </fragment>
     <fragment
         android:id="@+id/matchesBoxListFragment"
@@ -73,6 +76,9 @@
         <action
             android:id="@+id/action_matchesBoxListFragment_to_addEditDeleteMatchesBoxFragment"
             app:destination="@id/addEditDeleteMatchesBoxFragment" />
+        <action
+            android:id="@+id/action_matchesBoxListFragment_to_addEditDeleteMatchesBoxSetFragment"
+            app:destination="@id/addEditDeleteMatchesBoxSetFragment" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteMatchesBoxFragment"

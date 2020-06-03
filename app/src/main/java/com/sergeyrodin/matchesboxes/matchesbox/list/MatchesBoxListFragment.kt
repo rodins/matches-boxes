@@ -1,32 +1,31 @@
 package com.sergeyrodin.matchesboxes.matchesbox.list
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
-import com.sergeyrodin.matchesboxes.EventObserver
-import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
+import com.sergeyrodin.matchesboxes.*
 
 import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxListBinding
 
 class MatchesBoxListFragment : Fragment() {
-    private val viewModel by viewModels<MatchesBoxListViewModel> {
-        MatchesBoxListViewModelFactory(
-            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-        )
-    }
+
+
+    private val args by navArgs<MatchesBoxListFragmentArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentMatchesBoxListBinding.inflate(inflater)
-        val args by navArgs<MatchesBoxListFragmentArgs>()
+        val viewModel by viewModels<MatchesBoxListViewModel> {
+            MatchesBoxListViewModelFactory(
+                (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
+            )
+        }
+
         viewModel.start(args.setId)
 
         binding.lifecycleOwner = viewLifecycleOwner
@@ -45,7 +44,25 @@ class MatchesBoxListFragment : Fragment() {
 
         binding.items.adapter = adapter
 
+        setHasOptionsMenu(true)
+
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.edit_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.action_edit) {
+            findNavController().navigate(
+                MatchesBoxListFragmentDirections
+                    .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxSetFragment(args.setId, DO_NOT_NEED_THIS_VARIABLE)
+            )
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }

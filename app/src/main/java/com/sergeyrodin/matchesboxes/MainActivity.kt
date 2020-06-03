@@ -6,6 +6,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 
 const val ADD_NEW_ITEM_ID = -1
+const val DO_NOT_NEED_THIS_VARIABLE = -1
 
 class MainActivity : AppCompatActivity() {
 

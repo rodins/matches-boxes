@@ -1,9 +1,13 @@
 package com.sergeyrodin.matchesboxes.matchesbox.list
 
+import android.content.Context
+import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -12,10 +16,12 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
+import com.sergeyrodin.matchesboxes.DO_NOT_NEED_THIS_VARIABLE
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.MatchesBox
+import com.sergeyrodin.matchesboxes.matchesboxset.list.MatchesBoxSetsListFragment
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Assert.*
@@ -103,7 +109,33 @@ class MatchesBoxListFragmentTest {
         )
     }
 
-
     // TODO: test selectItem and navigation to radio components list
+
+    @Test
+    fun editAction_navigationCalled() {
+        val setId = 1
+        val bundle = MatchesBoxListFragmentArgs.Builder(setId).build().toBundle()
+        val scenario = launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        clickEditAction(scenario)
+
+        verify(navController).navigate(
+            MatchesBoxListFragmentDirections
+                .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxSetFragment(setId, DO_NOT_NEED_THIS_VARIABLE)
+        )
+    }
+
+    private fun clickEditAction(scenario: FragmentScenario<MatchesBoxListFragment>) {
+        // Create dummy menu item with the desired item id
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val editMenuItem = ActionMenuItem(context, 0, R.id.action_edit, 0, 0, null)
+        scenario.onFragment{
+            it.onOptionsItemSelected(editMenuItem)
+        }
+    }
 
 }

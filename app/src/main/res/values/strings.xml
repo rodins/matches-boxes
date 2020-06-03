@@ -19,4 +19,5 @@
     <string name="no_matches_boxes_added">No matches boxes added</string>
     <string name="enter_box_name">Enter matches box name</string>
     <string name="box_added">Matches Box added</string>
+    <string name="matches_box_set_updated">Matches Box Set updated</string>
 </resources>

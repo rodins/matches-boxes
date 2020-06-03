@@ -261,8 +261,54 @@ class MainActivityTest {
         activityScenario.close()
     }
 
-    //TODO: update set
-    //TODO: delete set
+    @Test
+    fun updateSet_nameEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.set_edit)).perform(replaceText("Set updated"))
+        onView(withId(R.id.save_set_fab)).perform(click())
+        // TODO: display set name as title to matches boxes list
+        //onView(withText("Set updated")).check(matches(isDisplayed()))
+        onView(withText(R.string.no_matches_boxes_added)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun updateSet_showToast() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+        var decorView: View? = null
+        activityScenario.onActivity{
+            decorView = it.window.decorView
+        }
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.set_edit)).perform(replaceText("Set updated"))
+        onView(withId(R.id.save_set_fab)).perform(click())
+
+        onView(withText(R.string.matches_box_set_updated))
+            .inRoot(withDecorView(not(decorView)))
+            .check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    //TODO: delete set toast
 
     // MatchesBox tests
 
