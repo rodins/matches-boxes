@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
-import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -73,5 +73,17 @@ class RadioComponentsListViewModelTest {
         val visible = subject.noItemsTextVisible.getOrAwaitValue()
 
         assertThat(visible, `is`(false))
+    }
+
+    @Test
+    fun addItem_eventNotNull() {
+        val boxId = 1
+        dataSource.addRadioComponents()
+        subject.start(boxId)
+
+        subject.addItem()
+
+        val value = subject.addItemEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(value, `is`(not(nullValue())))
     }
 }
