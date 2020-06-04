@@ -42,6 +42,13 @@ class MatchesBoxListFragment : Fragment() {
             )
         })
 
+        viewModel.selectMatchesBoxEvent.observe(viewLifecycleOwner, EventObserver{
+            findNavController().navigate(
+                MatchesBoxListFragmentDirections
+                    .actionMatchesBoxListFragmentToRadioComponentsListFragment(it)
+            )
+        })
+
         binding.items.adapter = adapter
 
         setHasOptionsMenu(true)

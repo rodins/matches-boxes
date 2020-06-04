@@ -109,7 +109,24 @@ class MatchesBoxListFragmentTest {
         )
     }
 
-    // TODO: test selectItem and navigation to radio components list
+    @Test
+    fun selectItem_navigationCalled() {
+        val setId = 1
+        val box = MatchesBox(1, "Box1", setId)
+        dataSource.addMatchesBoxes(box)
+        val bundle = MatchesBoxListFragmentArgs.Builder(setId).build().toBundle()
+        val scenario = launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        onView(withText(box.name)).perform(click())
+
+        verify(navController).navigate(
+            MatchesBoxListFragmentDirections.actionMatchesBoxListFragmentToRadioComponentsListFragment(box.id)
+        )
+    }
 
     @Test
     fun editAction_navigationCalled() {
