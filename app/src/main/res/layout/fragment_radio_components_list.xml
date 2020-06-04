@@ -9,26 +9,43 @@
             type="com.sergeyrodin.matchesboxes.component.list.RadioComponentsListViewModel" />
     </data>
 
-    <FrameLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".component.list.RadioComponentsListFragment">
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/list"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:radioComponentsListData="@{viewModel.items}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            tools:context=".component.list.RadioComponentsListFragment">
 
-        <TextView
-            android:id="@+id/no_components_added_text"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/items"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:radioComponentsListData="@{viewModel.items}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <TextView
+                android:id="@+id/no_components_added_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="18sp"
+                android:text="@string/no_components_added"
+                app:noDataTextVisible="@{viewModel.noItemsTextVisible}" />
+
+        </FrameLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_component_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="18sp"
-            android:text="@string/no_components_added"
-            app:noDataTextVisible="@{viewModel.noItemsTextVisible}" />
+            android:layout_margin="@dimen/fab_margin"
+            android:onClick="@{() -> viewModel.addItem()}"
+            app:srcCompat="@drawable/ic_add"
+            app:fabSize="normal"
+            app:layout_anchor="@id/items"
+            app:layout_anchorGravity="bottom|right|end" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    </FrameLayout>
 </layout>

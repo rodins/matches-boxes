@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
+import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentRadioComponentsListBinding
@@ -26,8 +29,15 @@ class RadioComponentsListFragment : Fragment() {
         viewModel.start(args.boxId)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
-        binding.list.adapter = RadioComponentAdapter(RadioComponentListener {
+        binding.items.adapter = RadioComponentAdapter(RadioComponentListener {
             // TODO: viewModel.selectItem(it)
+        })
+
+        viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
+            findNavController().navigate(
+                RadioComponentsListFragmentDirections
+                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(args.boxId, ADD_NEW_ITEM_ID)
+            )
         })
 
         return binding.root

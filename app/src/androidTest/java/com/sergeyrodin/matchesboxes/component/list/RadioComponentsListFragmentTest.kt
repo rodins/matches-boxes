@@ -2,11 +2,15 @@ package com.sergeyrodin.matchesboxes.component.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
@@ -18,6 +22,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
@@ -77,5 +83,24 @@ class RadioComponentsListFragmentTest {
         onView(withText(component1.name)).check(matches(isDisplayed()))
         onView(withText(component2.name)).check(matches(isDisplayed()))
         onView(withText(component3.name)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun addItem_navigationCalled() {
+        val boxId = 1
+        dataSource.addRadioComponents()
+        val bundle = RadioComponentsListFragmentArgs.Builder(boxId).build().toBundle()
+        val scenario = launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        onView(withId(R.id.add_component_fab)).perform(click())
+
+        verify(navController).navigate(
+            RadioComponentsListFragmentDirections
+                .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(boxId, ADD_NEW_ITEM_ID)
+        )
     }
 }
