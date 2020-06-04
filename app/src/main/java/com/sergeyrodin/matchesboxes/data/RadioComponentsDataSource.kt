@@ -46,6 +46,6 @@ interface RadioComponentsDataSource {
 
     suspend fun getRadioComponentById(radioComponentId: Int): RadioComponent?
 
-    fun getRadioComponentsByMatchesBoxId(matchesBoxId: Int): LiveData<List<RadioComponent>>
+    suspend fun getRadioComponentsByMatchesBoxId(matchesBoxId: Int): List<RadioComponent>
 
 }

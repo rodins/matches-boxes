@@ -406,6 +406,37 @@ class MainActivityTest {
     // RadioComponent tests
 
     //TODO: add component
+    @Test
+    fun addComponent_nameEquals() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        // Add bag
+        onView(withId(R.id.add_bag_fab)).perform(click())
+        onView(withId(R.id.bag_edit)).perform(typeText("Bag"))
+        onView(withId(R.id.save_bag_fab)).perform(click())
+
+        // Add matches box set
+        onView(withText("Bag")).perform(click())
+        onView(withId(R.id.add_set_fab)).perform(click())
+        onView(withId(R.id.set_edit)).perform(typeText("Set"))
+        onView(withId(R.id.save_set_fab)).perform(click())
+
+        // Add matches box
+        onView(withText("Set")).perform(click())
+        onView(withId(R.id.add_box_fab)).perform(click())
+        onView(withId(R.id.box_edit)).perform(typeText("Box"))
+        onView(withId(R.id.save_box_fab)).perform(click())
+
+        // Add component
+        onView(withText("Box")).perform(click())
+        //onView(withId(R.id.add_component_fab)).perform(click())
+        //onView(withId(R.id.component_edit)).perform(typeText("Component"))
+        //onView(withId(R.id.save_component_fab)).perform(click())
+        onView(withText("Component")).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
     //TODO: update component
     //TODO: delete component
 
