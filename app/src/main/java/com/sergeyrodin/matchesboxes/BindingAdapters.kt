@@ -4,9 +4,11 @@ import android.view.View
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.bag.list.BagAdapter
+import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
+import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.matchesbox.list.MatchesBoxAdapter
 import com.sergeyrodin.matchesboxes.matchesboxset.list.MatchesBoxSetAdapter
 
@@ -25,6 +27,12 @@ fun bindMatchesBoxSetRecyclerView(recyclerView: RecyclerView, list: List<Matches
 @BindingAdapter("matchesBoxListData")
 fun bindMatchesBoxRecyclerView(recyclerView: RecyclerView, list: List<MatchesBox>?) {
     val adapter = recyclerView.adapter as MatchesBoxAdapter
+    adapter.submitList(list)
+}
+
+@BindingAdapter("radioComponentsListData")
+fun bindRadioComponentRecyclerView(recyclerView: RecyclerView, list: List<RadioComponent>?){
+    val adapter = recyclerView.adapter as RadioComponentAdapter
     adapter.submitList(list)
 }
 

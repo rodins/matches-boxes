@@ -26,6 +26,9 @@ class RadioComponentsListFragment : Fragment() {
         viewModel.start(args.boxId)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+        binding.list.adapter = RadioComponentAdapter(RadioComponentListener {
+            // TODO: viewModel.selectItem(it)
+        })
 
         return binding.root
     }

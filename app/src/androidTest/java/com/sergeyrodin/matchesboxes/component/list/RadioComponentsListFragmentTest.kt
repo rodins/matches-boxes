@@ -4,8 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.R
@@ -62,5 +61,21 @@ class RadioComponentsListFragmentTest {
         launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.no_components_added_text)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun fewItems_textEquals() {
+        val boxId = 1
+        val component1 = RadioComponent(1, "Component1", 1, boxId)
+        val component2 = RadioComponent(2, "Component2", 1, boxId)
+        val component3 = RadioComponent(3, "Component3", 1, boxId)
+        dataSource.addRadioComponents(component1, component2, component3)
+
+        val bundle = RadioComponentsListFragmentArgs.Builder(boxId).build().toBundle()
+        launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
+
+        onView(withText(component1.name)).check(matches(isDisplayed()))
+        onView(withText(component2.name)).check(matches(isDisplayed()))
+        onView(withText(component3.name)).check(matches(isDisplayed()))
     }
 }
