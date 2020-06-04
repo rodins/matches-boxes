@@ -79,6 +79,9 @@
         <action
             android:id="@+id/action_matchesBoxListFragment_to_addEditDeleteMatchesBoxSetFragment"
             app:destination="@id/addEditDeleteMatchesBoxSetFragment" />
+        <action
+            android:id="@+id/action_matchesBoxListFragment_to_radioComponentsListFragment"
+            app:destination="@id/radioComponentsListFragment" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteMatchesBoxFragment"
@@ -94,5 +97,14 @@
         <action
             android:id="@+id/action_addEditDeleteMatchesBoxFragment_to_matchesBoxListFragment"
             app:destination="@id/matchesBoxListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/radioComponentsListFragment"
+        android:name="com.sergeyrodin.matchesboxes.component.list.RadioComponentsListFragment"
+        android:label="fragment_radio_components_list"
+        tools:layout="@layout/fragment_radio_components_list" >
+        <argument
+            android:name="boxId"
+            app:argType="integer" />
     </fragment>
 </navigation>
