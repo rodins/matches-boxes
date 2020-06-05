@@ -124,4 +124,30 @@ class AddEditDeleteRadioComponentViewModelTest{
         val event = subject.updateItemEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(event, `is`(not(nullValue())))
     }
+
+    @Test
+    fun deleteItem_sizeZero() = runBlocking{
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        dataSource.addRadioComponents(component)
+        subject.start(boxId, component.id)
+
+        subject.deleteItem()
+
+        val items = dataSource.getRadioComponentsByMatchesBoxId(boxId)
+        assertThat(items.size, `is`(0))
+    }
+
+    @Test
+    fun deleteItem_deleteEventNotNull() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        dataSource.addRadioComponents(component)
+        subject.start(boxId, component.id)
+
+        subject.deleteItem()
+
+        val event = subject.deleteItemEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(event, `is`(not(nullValue())))
+    }
 }

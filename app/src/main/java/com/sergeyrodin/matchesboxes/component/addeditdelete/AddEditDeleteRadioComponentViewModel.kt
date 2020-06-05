@@ -26,6 +26,10 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     val updateItemEvent: LiveData<Event<Unit>>
         get() = _updateItemEvent
 
+    private val _deleteItemEvent = MutableLiveData<Event<Unit>>()
+    val deleteItemEvent: LiveData<Event<Unit>>
+        get() = _deleteItemEvent
+
     private var matchesBoxId = 0
 
     private var radioComponent: RadioComponent? = null
@@ -47,6 +51,13 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             }else {
                 updateItem(name, quantity)
             }
+        }
+    }
+
+    fun deleteItem() {
+        viewModelScope.launch {
+            dataSource.deleteRadioComponent(radioComponent!!)
+            _deleteItemEvent.value = Event(Unit)
         }
     }
 
