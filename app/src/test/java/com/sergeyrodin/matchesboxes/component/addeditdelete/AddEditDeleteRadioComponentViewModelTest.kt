@@ -96,4 +96,32 @@ class AddEditDeleteRadioComponentViewModelTest{
         val unit = subject.addItemEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(unit, `is`(not(nullValue())))
     }
+
+    @Test
+    fun updateItem_saveItem_nameEquals() = runBlocking{
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        dataSource.addRadioComponents(component)
+        subject.start(boxId, component.id)
+
+        subject.saveItem("Updated component", "4")
+
+        val item = dataSource.getRadioComponentById(component.id)
+        assertThat(item?.name, `is`("Updated component"))
+        assertThat(item?.quantity, `is`(4))
+        assertThat(item?.matchesBoxId, `is`(boxId))
+    }
+
+    @Test
+    fun updateItem_saveItem_updateItemEventNotNull() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        dataSource.addRadioComponents(component)
+        subject.start(boxId, component.id)
+
+        subject.saveItem("Updated component", "4")
+
+        val event = subject.updateItemEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(event, `is`(not(nullValue())))
+    }
 }
