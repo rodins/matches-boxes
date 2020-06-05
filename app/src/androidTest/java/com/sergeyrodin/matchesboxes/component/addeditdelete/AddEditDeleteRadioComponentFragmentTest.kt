@@ -82,4 +82,25 @@ class AddEditDeleteRadioComponentFragmentTest {
         )
     }
 
+    @Test
+    fun updateItem_navigationCalled() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        dataSource.addRadioComponents(component)
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(boxId, component.id).build().toBundle()
+        val scenario = launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        onView(withId(R.id.component_edit)).perform(replaceText("Update component"))
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        verify(navController).navigate(
+            AddEditDeleteRadioComponentFragmentDirections
+                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(boxId)
+        )
+    }
+
 }

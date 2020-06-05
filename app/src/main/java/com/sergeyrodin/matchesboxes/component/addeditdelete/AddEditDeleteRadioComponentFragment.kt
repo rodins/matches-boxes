@@ -37,6 +37,15 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
         }
 
         viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
+            //TODO: add toast
+            findNavController().navigate(
+                AddEditDeleteRadioComponentFragmentDirections
+                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId)
+            )
+        })
+
+        viewModel.updateItemEvent.observe(viewLifecycleOwner, EventObserver{
+            //TODO: add toast
             findNavController().navigate(
                 AddEditDeleteRadioComponentFragmentDirections
                     .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId)
