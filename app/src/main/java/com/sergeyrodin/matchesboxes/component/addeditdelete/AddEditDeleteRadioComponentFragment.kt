@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentAddEditDeleteRadioComponentBinding
@@ -27,6 +29,19 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
         viewModel.start(args.boxId, args.componentId)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+
+        binding.saveComponentFab.setOnClickListener {
+            viewModel.saveItem(
+                binding.componentEdit.text.toString(),
+                binding.quantityEdit.text.toString())
+        }
+
+        viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
+            findNavController().navigate(
+                AddEditDeleteRadioComponentFragmentDirections
+                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId)
+            )
+        })
 
         return binding.root
     }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
@@ -8,19 +9,49 @@
             type="com.sergeyrodin.matchesboxes.component.addeditdelete.AddEditDeleteRadioComponentViewModel" />
     </data>
 
-    <FrameLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".component.addeditdelete.AddEditDeleteRadioComponentFragment">
+        android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/component_edit"
+        <LinearLayout
+            android:id="@+id/layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="16dp"
-            android:text="@{viewModel.name}"
-            android:hint="@string/enter_component_name" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            tools:context=".component.addeditdelete.AddEditDeleteRadioComponentFragment">
 
-    </FrameLayout>
+            <EditText
+                android:id="@+id/component_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="16dp"
+                android:text="@{viewModel.name}"
+                android:hint="@string/enter_component_name" />
+
+            <EditText
+                android:id="@+id/quantity_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/enter_qunatity"
+                android:text="@{viewModel.quantity}"
+                android:layout_marginHorizontal="128dp"
+                android:inputType="numberDecimal"
+                />
+
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/save_component_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            app:srcCompat="@drawable/ic_done"
+            app:fabSize="normal"
+            app:layout_anchor="@id/layout"
+            app:layout_anchorGravity="bottom|right|end" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </layout>

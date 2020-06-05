@@ -132,23 +132,6 @@ class MainActivityTest {
         activityScenario.close()
     }
 
-    // TODO: fix this test
-    /*@Test
-    fun editBag_nameDisplayed() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
-
-        onView(withId(R.id.add_bag_fab)).perform(click())
-        onView(withId(R.id.bag_edit)).perform(typeText("Bag"))
-        onView(withId(R.id.save_bag_fab)).perform(click())
-
-        onView(withText("Bag")).perform(click())
-        onView(withId(R.id.action_edit)).perform(click())
-        onView(withText("Bag")).check(matches(isDisplayed())) // name is not displayed, test is broken
-
-        activityScenario.close()
-    }*/
-
     @Test
     fun editBagClick_deleteBag() = runBlocking{
         dataSource.insertBag(Bag(1, "Bag"))
@@ -430,9 +413,11 @@ class MainActivityTest {
 
         // Add component
         onView(withText("Box")).perform(click())
-        //onView(withId(R.id.add_component_fab)).perform(click())
-        //onView(withId(R.id.component_edit)).perform(typeText("Component"))
-        //onView(withId(R.id.save_component_fab)).perform(click())
+        onView(withId(R.id.add_component_fab)).perform(click())
+        onView(withId(R.id.component_edit)).perform(typeText("Component"))
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        onView(withId(R.id.items)).check(matches(isDisplayed()))
         onView(withText("Component")).check(matches(isDisplayed()))
 
         activityScenario.close()

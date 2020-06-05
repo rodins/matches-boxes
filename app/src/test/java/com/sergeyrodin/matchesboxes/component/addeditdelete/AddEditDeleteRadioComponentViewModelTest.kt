@@ -5,7 +5,8 @@ import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
-import org.hamcrest.CoreMatchers.`is`
+import kotlinx.coroutines.runBlocking
+import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -68,5 +69,31 @@ class AddEditDeleteRadioComponentViewModelTest{
         val quantity = subject.quantity.getOrAwaitValue()
 
         assertThat(quantity, `is`(component.quantity.toString()))
+    }
+
+    @Test
+    fun addItem_saveItem_nameEquals() = runBlocking{
+        val boxId = 1
+        dataSource.addRadioComponents()
+        subject.start(boxId, ADD_NEW_ITEM_ID)
+
+        subject.saveItem("New component", "3")
+
+        val item = dataSource.getRadioComponentsByMatchesBoxId(boxId)[0]
+        assertThat(item.name, `is`("New component"))
+        assertThat(item.quantity, `is`(3))
+        assertThat(item.matchesBoxId, `is`(boxId))
+    }
+
+    @Test
+    fun addItem_addEventNotNull() {
+        val boxId = 1
+        dataSource.addRadioComponents()
+        subject.start(boxId, ADD_NEW_ITEM_ID)
+
+        subject.saveItem("New component", "3")
+
+        val unit = subject.addItemEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(unit, `is`(not(nullValue())))
     }
 }
