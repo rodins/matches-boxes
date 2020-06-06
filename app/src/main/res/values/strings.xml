@@ -26,4 +26,5 @@
     <string name="enter_qunatity">Enter qunatity</string>
     <string name="component_added">Component added</string>
     <string name="component_updated">Component updated</string>
+    <string name="component_deleted">Component deleted</string>
 </resources>
