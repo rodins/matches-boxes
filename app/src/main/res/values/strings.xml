@@ -24,4 +24,5 @@
     <string name="no_components_added">No radio components addede</string>
     <string name="enter_component_name">Enter component name</string>
     <string name="enter_qunatity">Enter qunatity</string>
+    <string name="component_added">Component added</string>
 </resources>
