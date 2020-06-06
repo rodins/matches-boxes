@@ -1,9 +1,13 @@
 package com.sergeyrodin.matchesboxes.component.addeditdelete
 
+import android.content.Context
+import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -16,6 +20,7 @@ import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.matchesbox.addeditdelete.AddEditDeleteMatchesBoxFragment
 import com.sergeyrodin.matchesboxes.matchesbox.addeditdelete.AddEditDeleteMatchesBoxFragmentArgs
+import com.sergeyrodin.matchesboxes.matchesboxset.addeditdelete.AddEditDeleteMatchesBoxSetFragment
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.*
@@ -101,6 +106,37 @@ class AddEditDeleteRadioComponentFragmentTest {
             AddEditDeleteRadioComponentFragmentDirections
                 .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(boxId)
         )
+    }
+
+    @Test
+    fun deleteItem_navigationCalled() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        dataSource.addRadioComponents(component)
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(boxId, component.id).build().toBundle()
+        val scenario = launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        clickDeleteAction(scenario)
+
+        verify(navController).navigate(
+            AddEditDeleteRadioComponentFragmentDirections
+                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(boxId)
+        )
+    }
+
+    private fun clickDeleteAction(
+        scenario: FragmentScenario<AddEditDeleteRadioComponentFragment>
+    ) {
+        // Create dummy menu item with the desired item id
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val deleteMenuItem = ActionMenuItem(context, 0, R.id.action_delete, 0, 0, null)
+        scenario.onFragment{
+            it.onOptionsItemSelected(deleteMenuItem)
+        }
     }
 
 }
