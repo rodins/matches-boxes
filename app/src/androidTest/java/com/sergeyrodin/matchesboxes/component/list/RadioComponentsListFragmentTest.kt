@@ -103,4 +103,25 @@ class RadioComponentsListFragmentTest {
                 .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(boxId, ADD_NEW_ITEM_ID)
         )
     }
+
+    @Test
+    fun selectItem_navigationCalled() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        dataSource.addRadioComponents(component)
+
+        val bundle = RadioComponentsListFragmentArgs.Builder(boxId).build().toBundle()
+        val scenario = launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        onView(withText(component.name)).perform(click())
+
+        verify(navController).navigate(
+            RadioComponentsListFragmentDirections
+                .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(boxId, component.id)
+        )
+    }
 }

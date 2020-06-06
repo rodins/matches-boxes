@@ -30,7 +30,10 @@ class RadioComponentsListFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.items.adapter = RadioComponentAdapter(RadioComponentListener {
-            // TODO: viewModel.selectItem(it)
+            findNavController().navigate(
+                RadioComponentsListFragmentDirections
+                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(args.boxId, it)
+            )
         })
 
         viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
