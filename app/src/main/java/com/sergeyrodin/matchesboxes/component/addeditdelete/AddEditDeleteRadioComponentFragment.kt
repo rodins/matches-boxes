@@ -45,7 +45,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
         })
 
         viewModel.updateItemEvent.observe(viewLifecycleOwner, EventObserver{
-            // TODO: add toast
+            Toast.makeText(context, R.string.component_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteRadioComponentFragmentDirections
                     .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId)
