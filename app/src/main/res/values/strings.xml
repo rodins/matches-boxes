@@ -27,4 +27,5 @@
     <string name="component_added">Component added</string>
     <string name="component_updated">Component updated</string>
     <string name="component_deleted">Component deleted</string>
+    <string name="box_updated">Matches box updated</string>
 </resources>

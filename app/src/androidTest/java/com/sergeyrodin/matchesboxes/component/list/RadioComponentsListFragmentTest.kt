@@ -1,9 +1,13 @@
 package com.sergeyrodin.matchesboxes.component.list
 
+import android.content.Context
+import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -11,10 +15,12 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
+import com.sergeyrodin.matchesboxes.DO_NOT_NEED_THIS_VARIABLE
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.RadioComponent
+import com.sergeyrodin.matchesboxes.matchesboxset.list.MatchesBoxSetsListFragment
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Assert.*
@@ -123,5 +129,34 @@ class RadioComponentsListFragmentTest {
             RadioComponentsListFragmentDirections
                 .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(boxId, component.id)
         )
+    }
+
+    @Test
+    fun boxEditClick_navigationCalled() {
+        val boxId = 1
+        dataSource.addRadioComponents()
+
+        val bundle = RadioComponentsListFragmentArgs.Builder(boxId).build().toBundle()
+        val scenario = launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        clickEditAction(scenario)
+
+        verify(navController).navigate(
+            RadioComponentsListFragmentDirections.actionRadioComponentsListFragmentToAddEditDeleteMatchesBoxFragment(
+                DO_NOT_NEED_THIS_VARIABLE, boxId)
+        )
+    }
+
+    private fun clickEditAction(scenario: FragmentScenario<RadioComponentsListFragment>) {
+        // Create dummy menu item with the desired item id
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val editMenuItem = ActionMenuItem(context, 0, R.id.action_edit, 0, 0, null)
+        scenario.onFragment{
+            it.onOptionsItemSelected(editMenuItem)
+        }
     }
 }

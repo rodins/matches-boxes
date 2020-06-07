@@ -56,7 +56,13 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
             )
         })
 
-        // TODO: update matches box navigation and toast
+        viewModel.updateEvent.observe(viewLifecycleOwner, EventObserver{
+            Toast.makeText(context, R.string.box_updated, Toast.LENGTH_SHORT).show()
+            findNavController().navigate(
+                AddEditDeleteMatchesBoxFragmentDirections
+                    .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(args.boxId)
+            )
+        })
 
         setHasOptionsMenu(true)
 

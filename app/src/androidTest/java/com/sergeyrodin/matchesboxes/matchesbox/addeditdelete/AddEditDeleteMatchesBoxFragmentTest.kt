@@ -105,8 +105,27 @@ class AddEditDeleteMatchesBoxFragmentTest{
 
         val item = dataSource.getMatchesBoxById(box.id)
         Assert.assertThat(item?.name, `is`("Updated box"))
+    }
 
-        // TODO: navigation test
+    @Test
+    fun updateBox_navigationCalled() = runBlocking{
+        val setId = 2
+        val box = MatchesBox(1, "Box", setId)
+        dataSource.addMatchesBoxes(box)
+        val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(setId, box.id).build().toBundle()
+        val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment{
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        onView(withId(R.id.box_edit)).perform(replaceText("Updated box"))
+        onView(withId(R.id.save_box_fab)).perform(click())
+
+        verify(navController).navigate(
+            AddEditDeleteMatchesBoxFragmentDirections
+                .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(box.id)
+        )
     }
 
     @Test

@@ -97,6 +97,9 @@
         <action
             android:id="@+id/action_addEditDeleteMatchesBoxFragment_to_matchesBoxListFragment"
             app:destination="@id/matchesBoxListFragment" />
+        <action
+            android:id="@+id/action_addEditDeleteMatchesBoxFragment_to_radioComponentsListFragment"
+            app:destination="@id/radioComponentsListFragment" />
     </fragment>
     <fragment
         android:id="@+id/radioComponentsListFragment"
@@ -109,6 +112,9 @@
         <action
             android:id="@+id/action_radioComponentsListFragment_to_addEditDeleteRadioComponentFragment"
             app:destination="@id/addEditDeleteRadioComponentFragment" />
+        <action
+            android:id="@+id/action_radioComponentsListFragment_to_addEditDeleteMatchesBoxFragment"
+            app:destination="@id/addEditDeleteMatchesBoxFragment" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteRadioComponentFragment"
