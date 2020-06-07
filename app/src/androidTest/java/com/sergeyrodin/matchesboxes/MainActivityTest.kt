@@ -433,7 +433,33 @@ class MainActivityTest {
         activityScenario.close()
     }
 
-    //TODO: toast test matches box deleted
+    @Test
+    fun deleteBox_showToast() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+        var decorView: View? = null
+        activityScenario.onActivity{
+            decorView = it.window.decorView
+        }
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withText(box.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.action_delete)).perform(click())
+
+        onView(withText(R.string.box_deleted))
+            .inRoot(withDecorView(not(decorView)))
+            .check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
 
     // RadioComponent tests
 
