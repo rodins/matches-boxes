@@ -150,4 +150,46 @@ class AddEditDeleteRadioComponentViewModelTest{
         val event = subject.deleteItemEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(event, `is`(not(nullValue())))
     }
+
+    @Test
+    fun plusButton_addQuantity_quantityEquals() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        dataSource.addRadioComponents(component)
+        subject.start(boxId, component.id)
+
+        subject.quantityPlus()
+
+        val quantity = subject.quantity.getOrAwaitValue()
+        assertThat(quantity, `is`((component.quantity + 1).toString()))
+    }
+
+    @Test
+    fun minusButton_subtractQuantity_quantityEquals() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        dataSource.addRadioComponents(component)
+        subject.start(boxId, component.id)
+
+        subject.quantityMinus()
+
+        val quantity = subject.quantity.getOrAwaitValue()
+        assertThat(quantity, `is`((component.quantity - 1).toString()))
+    }
+
+    @Test
+    fun quantityZero_minusButtonEnabled() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 1, boxId)
+        dataSource.addRadioComponents(component)
+        subject.start(boxId, component.id)
+
+        val minusDisabledFalse = subject.minusEnabled.getOrAwaitValue()
+        assertThat(minusDisabledFalse, `is`(true))
+
+        subject.quantityMinus()
+
+        val minusDisabled = subject.minusEnabled.getOrAwaitValue()
+        assertThat(minusDisabled, `is`(false))
+    }
 }

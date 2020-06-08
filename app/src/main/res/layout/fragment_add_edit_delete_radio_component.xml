@@ -13,35 +13,73 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:gravity="center_vertical"
+            android:orientation="vertical"
             tools:context=".component.addeditdelete.AddEditDeleteRadioComponentFragment">
 
             <EditText
                 android:id="@+id/component_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="16dp"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="24dp"
+                android:hint="@string/enter_component_name"
                 android:text="@{viewModel.name}"
-                android:hint="@string/enter_component_name" />
+                app:layout_constraintBottom_toTopOf="@+id/quantity_edit"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.49"
+                app:layout_constraintVertical_chainStyle="packed" />
 
             <EditText
                 android:id="@+id/quantity_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="114dp"
+                android:layout_height="49dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:hint="@string/enter_qunatity"
-                android:text="@{viewModel.quantity}"
-                android:layout_marginHorizontal="128dp"
+                android:textAlignment="center"
                 android:inputType="numberDecimal"
-                />
+                android:text="@{viewModel.quantity}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/buttonPlus"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/buttonMinus"
+                app:layout_constraintTop_toBottomOf="@+id/component_edit" />
 
+            <Button
+                android:id="@+id/buttonMinus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_minus"
+                android:onClick="@{() -> viewModel.quantityMinus()}"
+                android:enabled="@{viewModel.minusEnabled}"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@+id/quantity_edit"
+                app:layout_constraintEnd_toStartOf="@+id/quantity_edit"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        </LinearLayout>
+            <Button
+                android:id="@+id/buttonPlus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_plus"
+                android:textSize="20sp"
+                android:onClick="@{() -> viewModel.quantityPlus()}"
+                app:layout_constraintBottom_toBottomOf="@+id/quantity_edit"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/quantity_edit" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/save_component_fab"

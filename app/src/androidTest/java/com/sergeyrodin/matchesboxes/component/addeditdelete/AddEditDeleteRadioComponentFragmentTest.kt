@@ -23,6 +23,7 @@ import com.sergeyrodin.matchesboxes.matchesbox.addeditdelete.AddEditDeleteMatche
 import com.sergeyrodin.matchesboxes.matchesboxset.addeditdelete.AddEditDeleteMatchesBoxSetFragment
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.not
 import org.junit.*
 import org.junit.Assert.*
 import org.junit.runner.RunWith
@@ -126,6 +127,51 @@ class AddEditDeleteRadioComponentFragmentTest {
             AddEditDeleteRadioComponentFragmentDirections
                 .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(boxId)
         )
+    }
+
+    @Test
+    fun plusButtonClick_quantityEquals() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        dataSource.addRadioComponents(component)
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(boxId, component.id).build().toBundle()
+        launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
+
+        onView(withId(R.id.quantity_edit)).check(matches(withText("3")))
+
+        onView(withId(R.id.buttonPlus)).perform(click())
+
+        onView(withId(R.id.quantity_edit)).check(matches(withText("4")))
+    }
+
+    @Test
+    fun minusButtonClick_quantityEquals() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        dataSource.addRadioComponents(component)
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(boxId, component.id).build().toBundle()
+        launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
+
+        onView(withId(R.id.quantity_edit)).check(matches(withText("3")))
+
+        onView(withId(R.id.buttonMinus)).perform(click())
+
+        onView(withId(R.id.quantity_edit)).check(matches(withText("2")))
+    }
+
+    @Test
+    fun quantityZero_minusDisabled() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 1, boxId)
+        dataSource.addRadioComponents(component)
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(boxId, component.id).build().toBundle()
+        launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
+
+        onView(withId(R.id.buttonMinus)).check(matches(isEnabled()))
+
+        onView(withId(R.id.buttonMinus)).perform(click())
+
+        onView(withId(R.id.buttonMinus)).check(matches(not(isEnabled())))
     }
 
     private fun clickDeleteAction(

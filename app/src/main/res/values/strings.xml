@@ -29,4 +29,6 @@
     <string name="component_deleted">Component deleted</string>
     <string name="box_updated">Matches box updated</string>
     <string name="box_deleted">Matches Box Deleted</string>
+    <string name="button_plus">+</string>
+    <string name="button_minus">-</string>
 </resources>

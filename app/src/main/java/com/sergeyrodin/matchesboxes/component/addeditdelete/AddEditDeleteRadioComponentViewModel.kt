@@ -1,9 +1,6 @@
 package com.sergeyrodin.matchesboxes.component.addeditdelete
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
@@ -29,6 +26,10 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     private val _deleteItemEvent = MutableLiveData<Event<Unit>>()
     val deleteItemEvent: LiveData<Event<Unit>>
         get() = _deleteItemEvent
+
+    val minusEnabled = Transformations.map(quantity) {
+        it.toInt() != 0
+    }
 
     private var matchesBoxId = 0
 
@@ -59,6 +60,16 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             dataSource.deleteRadioComponent(radioComponent!!)
             _deleteItemEvent.value = Event(Unit)
         }
+    }
+
+    fun quantityPlus() {
+        val nQuantity = quantity.value?.toInt()
+        _quantity.value = nQuantity?.plus(1).toString()
+    }
+
+    fun quantityMinus() {
+        val nQuantity = quantity.value?.toInt()
+        _quantity.value = nQuantity?.minus(1).toString()
     }
 
     private fun addItem(name: String, quantity: String) {
