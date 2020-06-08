@@ -22,9 +22,11 @@
             <EditText
                 android:id="@+id/box_edit"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="@{viewModel.name}"
-                android:hint="@string/enter_box_name" />
+                android:hint="@string/enter_box_name"
+                android:layout_margin="16dp"/>
 
         </FrameLayout>
 

@@ -14,15 +14,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".bag.list.BagsListFragment">
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/bags_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="8dp"
                 app:bagsListData="@{viewModel.bagsList}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
@@ -32,10 +28,9 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:textAlignment="center"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:text="@string/no_bags_added"
                 app:noDataTextVisible="@{viewModel.isNoItemsTextVisible}"/>
-        </FrameLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_bag_fab"

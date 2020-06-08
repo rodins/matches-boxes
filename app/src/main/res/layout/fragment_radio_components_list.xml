@@ -13,15 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".component.list.RadioComponentsListFragment">
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/items"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="8dp"
                 app:radioComponentsListData="@{viewModel.items}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
@@ -30,11 +26,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:text="@string/no_components_added"
                 app:noDataTextVisible="@{viewModel.noItemsTextVisible}" />
-
-        </FrameLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_component_fab"
