@@ -187,6 +187,20 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun bagClick_titleEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        dataSource.insertBag(bag)
+
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(bag.name)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
     // MatchesBoxSet tests
 
     @Test

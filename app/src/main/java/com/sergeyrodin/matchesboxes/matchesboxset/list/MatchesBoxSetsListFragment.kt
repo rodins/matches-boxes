@@ -2,16 +2,13 @@ package com.sergeyrodin.matchesboxes.matchesboxset.list
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.ActionBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.NavArgs
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
-import com.sergeyrodin.matchesboxes.EventObserver
-import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
-
-import com.sergeyrodin.matchesboxes.R
+import com.sergeyrodin.matchesboxes.*
 import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxSetsListBinding
 
 /**
@@ -31,6 +28,10 @@ class MatchesBoxSetsListFragment : Fragment() {
                 (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
             )
         }
+
+        viewModel.bagTitle.observe(viewLifecycleOwner, Observer{
+            getActionBar()?.title = it
+        })
 
         viewModel.start(args.bagId)
 
@@ -75,6 +76,10 @@ class MatchesBoxSetsListFragment : Fragment() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun getActionBar(): ActionBar? {
+        return (activity as MainActivity?)?.getSupportActionBar()
     }
 
 }

@@ -23,9 +23,15 @@ class MatchesBoxSetsListViewModel(private val radioComponentsDataSource: RadioCo
     val selectItemEvent: LiveData<Event<Int>>
         get() = _selectItemEvent
 
+    private val _bagTitle = MutableLiveData<String>()
+    val bagTitle: LiveData<String>
+        get() = _bagTitle
+
     fun start(bagId: Int) {
         viewModelScope.launch{
             _matchesBoxSets.value = radioComponentsDataSource.getMatchesBoxSetsByBagId(bagId)
+            val bag = radioComponentsDataSource.getBagById(bagId)
+            _bagTitle.value = bag?.name
         }
     }
 

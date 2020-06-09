@@ -95,4 +95,15 @@ class MatchesBoxSetsListViewModelTest {
 
         assertThat(id, `is`(2))
     }
+
+    @Test
+    fun bagName_titleEquals(){
+        val bag = Bag(1, "Bag Title")
+        dataSource.addBags(bag)
+        subject.start(bag.id)
+
+        val title = subject.bagTitle.getOrAwaitValue()
+
+        assertThat(title, `is`(bag.name))
+    }
 }
