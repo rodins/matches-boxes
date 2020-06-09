@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.*
@@ -25,6 +26,10 @@ class MatchesBoxListFragment : Fragment() {
                 (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
             )
         }
+
+        viewModel.setTitle.observe(viewLifecycleOwner, Observer {
+            (activity as MainActivity).supportActionBar?.title = it
+        })
 
         viewModel.start(args.setId)
 

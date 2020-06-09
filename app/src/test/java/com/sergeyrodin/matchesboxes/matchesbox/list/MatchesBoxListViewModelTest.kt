@@ -3,6 +3,7 @@ package com.sergeyrodin.matchesboxes.matchesbox.list
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.MatchesBox
+import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
@@ -98,5 +99,16 @@ class MatchesBoxListViewModelTest{
 
         val selectedId = subject.selectMatchesBoxEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(selectedId, `is`(matchesBoxId))
+    }
+
+    @Test
+    fun setId_titleEquals() {
+        val bagId = 1
+        val set = MatchesBoxSet(1, "Set title", bagId)
+        dataSource.addMatchesBoxSets(set)
+        subject.start(set.id)
+
+        val title = subject.setTitle.getOrAwaitValue()
+        assertThat(title, `is`(set.name))
     }
 }
