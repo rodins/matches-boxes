@@ -74,11 +74,11 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
 
     private fun addItem(name: String, quantity: String) {
         viewModelScope.launch {
-            radioComponent = RadioComponent(
+            val component = RadioComponent(
                 name = name,
                 quantity = quantity.toInt(),
                 matchesBoxId = matchesBoxId)
-            dataSource.insertRadioComponent(radioComponent!!)
+            dataSource.insertRadioComponent(component)
             _addItemEvent.value = Event(Unit)
         }
     }

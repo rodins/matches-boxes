@@ -58,8 +58,8 @@ class AddEditDeleteMatchesBoxViewModel(private val dataSource: RadioComponentsDa
 
     private fun addMatchesBox(boxName: String) {
         viewModelScope.launch {
-            matchesBox = MatchesBox(name = boxName, matchesBoxSetId = _setId)
-            dataSource.insertMatchesBox(matchesBox!!)
+            val box = MatchesBox(name = boxName, matchesBoxSetId = _setId)
+            dataSource.insertMatchesBox(box)
         }
     }
 

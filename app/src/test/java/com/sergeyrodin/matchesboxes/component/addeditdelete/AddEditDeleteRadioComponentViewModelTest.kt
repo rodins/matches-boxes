@@ -86,6 +86,23 @@ class AddEditDeleteRadioComponentViewModelTest{
     }
 
     @Test
+    fun addTwoItems_namesEqual() = runBlocking{
+        val boxId = 1
+        dataSource.addRadioComponents()
+        subject.start(boxId, ADD_NEW_ITEM_ID)
+
+        subject.saveItem("Component1", "3")
+
+        val item = dataSource.getRadioComponentsByMatchesBoxId(boxId)[0]
+        assertThat(item.name, `is`("Component1"))
+
+        subject.saveItem("Component2", "3")
+
+        val item2 = dataSource.getRadioComponentsByMatchesBoxId(boxId)[1]
+        assertThat(item2.name, `is`("Component2"))
+    }
+
+    @Test
     fun addItem_addEventNotNull() {
         val boxId = 1
         dataSource.addRadioComponents()

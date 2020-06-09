@@ -208,6 +208,31 @@ class MainActivityTest {
     }
 
     @Test
+    fun addTwoSets_namesEqual() = runBlocking {
+        dataSource.insertBag(Bag(1, "Bag"))
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText("Bag")).perform(click())
+
+        onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.add_set_fab)).perform(click())
+        onView(withId(R.id.set_edit)).perform(typeText("Set"))
+        onView(withId(R.id.save_set_fab)).perform(click())
+
+        onView(withText("Set")).check(matches(isDisplayed()))
+
+        onView(withId(R.id.add_set_fab)).perform(click())
+        onView(withId(R.id.set_edit)).perform(typeText("Set2"))
+        onView(withId(R.id.save_set_fab)).perform(click())
+
+        onView(withText("Set2")).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
     fun addSet_showToast() = runBlocking{
         dataSource.insertBag(Bag(1, "Bag"))
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
@@ -332,6 +357,32 @@ class MainActivityTest {
         onView(withId(R.id.save_box_fab)).perform(click())
 
         onView(withText("Box")).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun addTwoBoxes_namesEqual() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.add_box_fab)).perform(click())
+        onView(withId(R.id.box_edit)).perform(typeText("Box"))
+        onView(withId(R.id.save_box_fab)).perform(click())
+
+        onView(withText("Box")).check(matches(isDisplayed()))
+
+        onView(withId(R.id.add_box_fab)).perform(click())
+        onView(withId(R.id.box_edit)).perform(typeText("Box2"))
+        onView(withId(R.id.save_box_fab)).perform(click())
+
+        onView(withText("Box2")).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -493,6 +544,36 @@ class MainActivityTest {
 
         onView(withId(R.id.items)).check(matches(isDisplayed()))
         onView(withText("Component")).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun addTwoComponents_namesEqual() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withText(box.name)).perform(click())
+
+        onView(withId(R.id.add_component_fab)).perform(click())
+        onView(withId(R.id.component_edit)).perform(typeText("Component"))
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        onView(withId(R.id.add_component_fab)).perform(click())
+        onView(withId(R.id.component_edit)).perform(typeText("Component2"))
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        onView(withText("Component")).check(matches(isDisplayed()))
+        onView(withText("Component2")).check(matches(isDisplayed()))
 
         activityScenario.close()
     }

@@ -18,7 +18,7 @@ import androidx.room.PrimaryKey
 )
 data class MatchesBox(
     @PrimaryKey(autoGenerate = true)
-    var id: Int = 1,
+    var id: Int = 0,
     var name: String,
     @ColumnInfo(name = "matches_box_set_id", index = true)
     var matchesBoxSetId: Int

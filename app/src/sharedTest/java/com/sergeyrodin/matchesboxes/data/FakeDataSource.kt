@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 class FakeDataSource : RadioComponentsDataSource{
     private val bagsList = mutableListOf<Bag>()
     private val bagsLiveData = MutableLiveData<List<Bag>>()
-
     private val matchesBoxSetList = mutableListOf<MatchesBoxSet>()
     private val matchesBoxList = mutableListOf<MatchesBox>()
     private val radioComponentsList = mutableListOf<RadioComponent>()
@@ -20,8 +19,10 @@ class FakeDataSource : RadioComponentsDataSource{
     }
 
     override suspend fun insertBag(bag: Bag) {
-        bagsList.add(bag)
-        bagsLiveData.value = bagsList
+        if(bag.id == 0) {
+            bagsList.add(bag)
+            bagsLiveData.value = bagsList
+        }
     }
 
     override suspend fun updateBag(bag: Bag) {
@@ -55,7 +56,9 @@ class FakeDataSource : RadioComponentsDataSource{
     }
 
     override suspend fun insertMatchesBoxSet(matchesBoxSet: MatchesBoxSet) {
-        matchesBoxSetList.add(matchesBoxSet)
+        if(matchesBoxSet.id == 0) {
+            matchesBoxSetList.add(matchesBoxSet)
+        }
     }
 
     override suspend fun updateMatchesBoxSet(matchesBoxSet: MatchesBoxSet) {
@@ -89,7 +92,9 @@ class FakeDataSource : RadioComponentsDataSource{
     }
 
     override suspend fun insertMatchesBox(matchesBox: MatchesBox) {
-        matchesBoxList.add(matchesBox)
+        if(matchesBox.id == 0) {
+            matchesBoxList.add(matchesBox)
+        }
     }
 
     override suspend fun updateMatchesBox(matchesBox: MatchesBox) {
@@ -123,7 +128,9 @@ class FakeDataSource : RadioComponentsDataSource{
     }
 
     override suspend fun insertRadioComponent(radioComponent: RadioComponent) {
-        radioComponentsList.add(radioComponent)
+        if(radioComponent.id == 0) {
+            radioComponentsList.add(radioComponent)
+        }
     }
 
     override suspend fun updateRadioComponent(radioComponent: RadioComponent) {

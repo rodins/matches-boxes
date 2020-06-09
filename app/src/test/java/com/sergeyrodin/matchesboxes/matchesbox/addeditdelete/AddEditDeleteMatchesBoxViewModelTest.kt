@@ -64,6 +64,23 @@ class AddEditDeleteMatchesBoxViewModelTest {
     }
 
     @Test
+    fun addTwoItems_namesEqual() = runBlocking {
+        val setId = 1
+        dataSource.addMatchesBoxes()
+        subject.start(setId, ADD_NEW_ITEM_ID)
+
+        subject.saveMatchesBox("Box")
+
+        val item = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)[0]
+        assertThat(item.name, `is`("Box"))
+
+        subject.saveMatchesBox("Box2")
+
+        val item2 = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)[1]
+        assertThat(item2.name, `is`("Box2"))
+    }
+
+    @Test
     fun updateItem_nameEquals() = runBlocking{
         val setId = 2
         val box = MatchesBox(1, "Box", setId)

@@ -18,7 +18,7 @@ import androidx.room.PrimaryKey
 )
 data class RadioComponent(
     @PrimaryKey(autoGenerate = true)
-    var id: Int = 1,
+    var id: Int = 0,
     var name: String,
     var quantity: Int = 0,
     @ColumnInfo(name = "matches_box_id", index = true)
