@@ -19,9 +19,15 @@ class RadioComponentsListViewModel(private val dataSource: RadioComponentsDataSo
         it.isEmpty()
     }
 
+    private val _boxTitle = MutableLiveData<String>()
+    val boxTitle: LiveData<String>
+        get() = _boxTitle
+
     fun start(boxId: Int) {
         viewModelScope.launch {
             _items.value = dataSource.getRadioComponentsByMatchesBoxId(boxId)
+            val box = dataSource.getMatchesBoxById(boxId)
+            _boxTitle.value = box?.name
         }
     }
 

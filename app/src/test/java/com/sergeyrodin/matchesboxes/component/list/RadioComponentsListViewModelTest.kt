@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.component.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
+import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import org.hamcrest.CoreMatchers.*
@@ -85,5 +86,16 @@ class RadioComponentsListViewModelTest {
 
         val value = subject.addItemEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(value, `is`(not(nullValue())))
+    }
+
+    @Test
+    fun boxId_titleEquals() {
+        val setId = 1
+        val box = MatchesBox(1, "Box", setId)
+        dataSource.addMatchesBoxes(box)
+        subject.start(box.id)
+
+        val title = subject.boxTitle.getOrAwaitValue()
+        assertThat(title, `is`(box.name))
     }
 }
