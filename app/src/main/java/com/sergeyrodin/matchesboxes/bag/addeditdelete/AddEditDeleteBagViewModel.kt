@@ -49,23 +49,23 @@ class AddEditDeleteBagViewModel(private val dataSource: RadioComponentsDataSourc
     fun deleteBag(){
         viewModelScope.launch {
             dataSource.deleteBag(bag!!)
+            _eventDeleted.value = Event(Unit)
         }
-        _eventDeleted.value = Event(Unit)
     }
 
     private fun addNewBag(newName: String) {
         viewModelScope.launch {
             val newBag = Bag(name = newName)
             dataSource.insertBag(newBag)
+            _eventAdded.value = Event(Unit)
         }
-        _eventAdded.value = Event(Unit)
     }
 
     private fun updateBag(newName: String) {
         viewModelScope.launch {
             bag?.name = newName
             dataSource.updateBag(bag!!)
+            _eventEdited.value = Event(Unit)
         }
-        _eventEdited.value = Event(Unit)
     }
 }
