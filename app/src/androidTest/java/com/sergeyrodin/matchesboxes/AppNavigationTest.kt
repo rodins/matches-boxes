@@ -12,6 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.sergeyrodin.matchesboxes.data.Bag
+import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
@@ -85,7 +86,7 @@ class AppNavigationTest {
     }
 
     @Test
-    fun savedBag_navigationBack() {
+    fun AddBagSaved_navigationBack() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
@@ -153,7 +154,7 @@ class AppNavigationTest {
     }
 
     @Test
-    fun savedSet_navigateBack() = runBlocking{
+    fun addSetSaved_navigateBack() = runBlocking{
         dataSource.insertBag(Bag(1, "Bag"))
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
@@ -171,7 +172,7 @@ class AppNavigationTest {
     }
 
     @Test
-    fun savedSet_navigateUp() = runBlocking{
+    fun addSetSaved_navigateUp() = runBlocking{
         dataSource.insertBag(Bag(1, "Bag"))
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
@@ -189,6 +190,49 @@ class AppNavigationTest {
     }
 
     // Box
+    @Test
+    fun addBoxSaved_navigateBack() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.add_box_fab)).perform(click())
+        onView(withId(R.id.box_edit)).perform(typeText("New box"))
+        onView(withId(R.id.save_box_fab)).perform(click())
+
+        pressBack()
+
+        onView(withId(R.id.add_set_fab)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun addBoxSaved_navigateUp() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.add_box_fab)).perform(click())
+        onView(withId(R.id.box_edit)).perform(typeText("New box"))
+        onView(withId(R.id.save_box_fab)).perform(click())
+
+        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
+
+        onView(withId(R.id.add_set_fab)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
 
     // Component
 
