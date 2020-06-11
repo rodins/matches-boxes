@@ -5,6 +5,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.NoActivityResumedException
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -87,13 +88,72 @@ class AppNavigationTest {
     }
 
     @Test
-    fun AddBagSaved_navigationBack() {
+    fun addBagSaved_navigationBack() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         onView(withId(R.id.add_bag_fab)).perform(click())
         onView(withId(R.id.bag_edit)).perform(typeText("New bag"))
         onView(withId(R.id.save_bag_fab)).perform(click())
+
+        try {
+            pressBack()
+            fail()
+        } catch (exc: Exception) {
+            // test successful
+        }
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun editBagSaved_navigationBack() = runBlocking{
+        val bag = Bag(1, "Bag")
+        dataSource.insertBag(bag)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.bag_edit)).perform(ViewActions.replaceText("Bag updated"))
+        onView(withId(R.id.save_bag_fab)).perform(click())
+
+        pressBack()
+
+        onView(withId(R.id.add_bag_fab)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun editBagSaved_navigationUp() = runBlocking{
+        val bag = Bag(1, "Bag")
+        dataSource.insertBag(bag)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.bag_edit)).perform(ViewActions.replaceText("Bag updated"))
+        onView(withId(R.id.save_bag_fab)).perform(click())
+
+        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
+
+        onView(withId(R.id.add_bag_fab)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun deleteBag_navigationBack() = runBlocking{
+        val bag = Bag(1, "Bag")
+        dataSource.insertBag(bag)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.action_delete)).perform((click()))
 
         try {
             pressBack()

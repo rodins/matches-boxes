@@ -30,7 +30,8 @@
             app:argType="integer" />
         <action
             android:id="@+id/action_addEditDeleteBagFragment_to_matchesBoxSetsListFragment"
-            app:destination="@id/matchesBoxSetsListFragment" />
+            app:destination="@id/matchesBoxSetsListFragment"
+            app:popUpTo="@id/bagsListFragment" />
     </fragment>
     <fragment
         android:id="@+id/matchesBoxSetsListFragment"

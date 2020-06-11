@@ -32,8 +32,8 @@ class AddEditDeleteBagViewModel(private val dataSource: RadioComponentsDataSourc
     fun start(id: Int) {
         viewModelScope.launch{
             bag = dataSource.getBagById(id)
+            _name.value = bag?.name?:""
         }
-        _name.value = bag?.name?:""
     }
 
     fun saveBag(newName: String) {

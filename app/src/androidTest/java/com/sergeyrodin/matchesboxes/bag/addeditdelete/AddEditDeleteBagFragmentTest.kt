@@ -60,7 +60,7 @@ class AddEditDeleteBagFragmentTest {
         val bundle = AddEditDeleteBagFragmentArgs.Builder(bag.id).build().toBundle()
         launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
 
-        onView(withText(bag.name)).check(matches(isDisplayed()))
+        onView(withId(R.id.bag_edit)).check(matches(withText(bag.name)))
     }
 
     @Test
