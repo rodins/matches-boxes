@@ -133,6 +133,7 @@
             app:argType="integer" />
         <action
             android:id="@+id/action_addEditDeleteRadioComponentFragment_to_radioComponentsListFragment"
-            app:destination="@id/radioComponentsListFragment" />
+            app:destination="@id/radioComponentsListFragment"
+            app:popUpTo="@id/matchesBoxListFragment" />
     </fragment>
 </navigation>

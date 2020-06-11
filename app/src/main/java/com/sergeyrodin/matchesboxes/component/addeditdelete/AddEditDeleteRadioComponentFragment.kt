@@ -12,6 +12,7 @@ import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentAddEditDeleteRadioComponentBinding
+import com.sergeyrodin.matchesboxes.util.hideKeyboard
 
 class AddEditDeleteRadioComponentFragment : Fragment() {
     private val viewModel by viewModels<AddEditDeleteRadioComponentViewModel> {
@@ -37,6 +38,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
             viewModel.saveItem(
                 binding.componentEdit.text.toString(),
                 binding.quantityEdit.text.toString())
+            hideKeyboard(activity)
         }
 
         viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
