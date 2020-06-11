@@ -2,10 +2,11 @@ package com.sergeyrodin.matchesboxes
 
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.NoActivityResumedException
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -16,10 +17,13 @@ import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
 import com.sergeyrodin.matchesboxes.util.monitorActivity
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.CoreMatchers.`is`
 import org.junit.After
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -49,6 +53,8 @@ class AppNavigationTest {
         ServiceLocator.resetDataSource()
     }
 
+    // Bag
+
     @Test
     fun addBag_navigateBack() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
@@ -76,6 +82,42 @@ class AppNavigationTest {
 
         activityScenario.close()
     }
+
+    @Test
+    fun savedBag_navigationBack() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.add_bag_fab)).perform(click())
+        onView(withId(R.id.bag_edit)).perform(typeText("New bag"))
+        onView(withId(R.id.save_bag_fab)).perform(click())
+
+        try {
+            pressBack()
+            fail()
+        } catch (exc: Exception) {
+            // test successful
+        }
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun mainScreen_navigateBack() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        try {
+            pressBack()
+            fail()
+        } catch (exc: Exception) {
+            // test successful
+        }
+
+        activityScenario.close()
+    }
+
+    // Set
 
     @Test
     fun addSet_navigateBack() = runBlocking{
@@ -108,4 +150,9 @@ class AppNavigationTest {
 
         activityScenario.close()
     }
+
+    // Box
+
+    // Component
+
 }
