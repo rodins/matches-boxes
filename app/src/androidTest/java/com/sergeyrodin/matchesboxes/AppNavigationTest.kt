@@ -18,6 +18,7 @@ import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
 import com.sergeyrodin.matchesboxes.util.monitorActivity
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Assert.fail
 import org.junit.Before
@@ -147,6 +148,42 @@ class AppNavigationTest {
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
         onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun savedSet_navigateBack() = runBlocking{
+        dataSource.insertBag(Bag(1, "Bag"))
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText("Bag")).perform(click())
+        onView(withId(R.id.add_set_fab)).perform(click())
+        onView(withId(R.id.set_edit)).perform(typeText("New set"))
+        onView(withId(R.id.save_set_fab)).perform(click())
+
+        pressBack()
+
+        onView(withId(R.id.add_bag_fab)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun savedSet_navigateUp() = runBlocking{
+        dataSource.insertBag(Bag(1, "Bag"))
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText("Bag")).perform(click())
+        onView(withId(R.id.add_set_fab)).perform(click())
+        onView(withId(R.id.set_edit)).perform(typeText("New set"))
+        onView(withId(R.id.save_set_fab)).perform(click())
+
+        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
+
+        onView(withId(R.id.add_bag_fab)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }

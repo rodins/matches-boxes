@@ -12,6 +12,7 @@ import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentAddEditDeleteMatchesBoxSetBinding
+import com.sergeyrodin.matchesboxes.util.hideKeyboard
 import java.util.*
 
 class AddEditDeleteMatchesBoxSetFragment : Fragment() {
@@ -37,6 +38,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
 
         binding.saveSetFab.setOnClickListener {
             viewModel.saveMatchesBoxSet(binding.setEdit.text.toString())
+            hideKeyboard(activity)
         }
 
         viewModel.addedEvent.observe(viewLifecycleOwner, EventObserver{
