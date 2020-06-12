@@ -7,10 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
-import com.sergeyrodin.matchesboxes.EventObserver
-import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
-import com.sergeyrodin.matchesboxes.R
+import com.sergeyrodin.matchesboxes.*
 import com.sergeyrodin.matchesboxes.databinding.FragmentAddEditDeleteMatchesBoxBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
 
@@ -31,6 +28,11 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
 
         val args by navArgs<AddEditDeleteMatchesBoxFragmentArgs>()
         hideDelete = args.boxId != ADD_NEW_ITEM_ID
+        if(hideDelete) {
+            (activity as MainActivity).supportActionBar?.title = getString(R.string.update_box)
+        }else {
+            (activity as MainActivity).supportActionBar?.title = getString(R.string.add_box)
+        }
 
         viewModel.start(args.setId, args.boxId)
 
