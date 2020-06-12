@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.EventObserver
+import com.sergeyrodin.matchesboxes.MainActivity
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 
 import com.sergeyrodin.matchesboxes.R
@@ -34,6 +35,13 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
 
         val args by navArgs<AddEditDeleteMatchesBoxSetFragmentArgs>()
         isDeleteVisible = args.matchesBoxSetId != -1
+
+        if(isDeleteVisible) {
+            (activity as MainActivity).supportActionBar?.title = getString(R.string.update_set)
+        }else {
+            (activity as MainActivity).supportActionBar?.title = getString(R.string.add_set)
+        }
+
         viewModel.start(args.bagId, args.matchesBoxSetId)
 
         binding.saveSetFab.setOnClickListener {

@@ -408,6 +408,37 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun addSet_titleEquals() = runBlocking {
+        val bag = Bag(1, "Bag")
+        dataSource.insertBag(bag)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withId(R.id.add_set_fab)).perform(click())
+        onView(withText(R.string.add_set)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun editSet_titleEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withText(R.string.update_set)).perform(click())
+
+        activityScenario.close()
+    }
+
     // MatchesBox tests
 
     @Test

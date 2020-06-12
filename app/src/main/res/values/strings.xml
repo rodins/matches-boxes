@@ -33,4 +33,6 @@
     <string name="button_minus">-</string>
     <string name="add_bag">Add Bag</string>
     <string name="update_bag">Update Bag</string>
+    <string name="add_set">Add Set</string>
+    <string name="update_set">Update Set</string>
 </resources>
