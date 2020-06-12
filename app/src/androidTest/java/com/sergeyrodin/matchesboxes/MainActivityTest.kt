@@ -613,6 +613,26 @@ class MainActivityTest {
     }
 
     @Test
+    fun boxClicked_titleEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withText(box.name)).perform(click())
+        onView(withText(box.name)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
     fun addBox_titleEquals() = runBlocking{
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
@@ -855,13 +875,35 @@ class MainActivityTest {
     }
 
     @Test
-    fun boxClicked_titleEquals() = runBlocking{
+    fun addComponent_titleEquals() = runBlocking{
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withText(box.name)).perform(click())
+        onView(withId(R.id.add_component_fab)).perform(click())
+        onView(withText(R.string.add_component)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun editComponent_titleEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 3, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
@@ -869,9 +911,12 @@ class MainActivityTest {
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
-        onView(withText(box.name)).check(matches(isDisplayed()))
+        onView(withText(component.name)).perform(click())
+        onView(withText(R.string.update_component)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
+
+
 
 }

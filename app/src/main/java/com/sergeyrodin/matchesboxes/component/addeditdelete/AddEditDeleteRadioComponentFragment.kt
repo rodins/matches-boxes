@@ -7,10 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
-import com.sergeyrodin.matchesboxes.EventObserver
-import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
-import com.sergeyrodin.matchesboxes.R
+import com.sergeyrodin.matchesboxes.*
 import com.sergeyrodin.matchesboxes.databinding.FragmentAddEditDeleteRadioComponentBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
 
@@ -30,6 +27,13 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
 
         val args by navArgs<AddEditDeleteRadioComponentFragmentArgs>()
         isDeleteVisible = args.componentId != ADD_NEW_ITEM_ID
+
+        if(isDeleteVisible) {
+            (activity as MainActivity).supportActionBar?.title = getString(R.string.update_component)
+        }else {
+            (activity as MainActivity).supportActionBar?.title = getString(R.string.add_component)
+        }
+
         viewModel.start(args.boxId, args.componentId)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel

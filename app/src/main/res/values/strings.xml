@@ -37,4 +37,6 @@
     <string name="update_set">Update Set</string>
     <string name="add_box">Add Box</string>
     <string name="update_box">Update Box</string>
+    <string name="add_component">Add Component</string>
+    <string name="update_component">Update Component</string>
 </resources>
