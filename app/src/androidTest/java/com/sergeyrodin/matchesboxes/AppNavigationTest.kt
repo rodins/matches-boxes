@@ -250,6 +250,92 @@ class AppNavigationTest {
         activityScenario.close()
     }
 
+    @Test
+    fun editSetSaved_navigationBack() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.set_edit)).perform(ViewActions.replaceText("Set updated"))
+        onView(withId(R.id.save_set_fab)).perform(click())
+
+        pressBack()
+
+        onView(withId(R.id.add_set_fab)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun editSetSaved_navigationUp() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.set_edit)).perform(ViewActions.replaceText("Set updated"))
+        onView(withId(R.id.save_set_fab)).perform(click())
+
+        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
+
+        onView(withId(R.id.add_set_fab)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun setDeleted_navigationBack() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.action_delete)).perform(click())
+
+        pressBack()
+
+        onView(withId(R.id.add_bag_fab)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun setDeleted_navigationUp() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.action_delete)).perform(click())
+
+        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
+
+        onView(withId(R.id.add_bag_fab)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
     // Box
     @Test
     fun addBoxSaved_navigateBack() = runBlocking{

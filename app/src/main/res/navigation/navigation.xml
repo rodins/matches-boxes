@@ -68,7 +68,8 @@
             app:popUpTo="@id/bagsListFragment" />
         <action
             android:id="@+id/action_addEditDeleteMatchesBoxSetFragment_to_matchesBoxListFragment"
-            app:destination="@id/matchesBoxListFragment" />
+            app:destination="@id/matchesBoxListFragment"
+            app:popUpTo="@id/matchesBoxSetsListFragment" />
     </fragment>
     <fragment
         android:id="@+id/matchesBoxListFragment"
