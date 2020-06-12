@@ -105,7 +105,8 @@
             app:popUpTo="@id/matchesBoxSetsListFragment" />
         <action
             android:id="@+id/action_addEditDeleteMatchesBoxFragment_to_radioComponentsListFragment"
-            app:destination="@id/radioComponentsListFragment" />
+            app:destination="@id/radioComponentsListFragment"
+            app:popUpTo="@id/matchesBoxListFragment" />
     </fragment>
     <fragment
         android:id="@+id/radioComponentsListFragment"
