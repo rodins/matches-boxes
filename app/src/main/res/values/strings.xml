@@ -31,4 +31,6 @@
     <string name="box_deleted">Matches Box Deleted</string>
     <string name="button_plus">+</string>
     <string name="button_minus">-</string>
+    <string name="add_bag">Add Bag</string>
+    <string name="update_bag">Update Bag</string>
 </resources>

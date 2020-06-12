@@ -215,6 +215,31 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun addBag_titleEquals() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.add_bag_fab)).perform(click())
+        onView(withText(R.string.add_bag)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun editBag_titleEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        dataSource.insertBag(bag)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withText(R.string.update_bag)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
     // MatchesBoxSet tests
 
     @Test
