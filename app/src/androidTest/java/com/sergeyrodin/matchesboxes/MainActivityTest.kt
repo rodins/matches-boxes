@@ -240,6 +240,20 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun editBag_nameEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        dataSource.insertBag(bag)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.bag_edit)).check(matches(withText(bag.name)))
+
+        activityScenario.close()
+    }
+
     // MatchesBoxSet tests
 
     @Test
@@ -435,6 +449,23 @@ class MainActivityTest {
         onView(withText(set.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
         onView(withText(R.string.update_set)).perform(click())
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun editSet_nameEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.set_edit)).check(matches(withText(set.name)))
 
         activityScenario.close()
     }
@@ -665,6 +696,26 @@ class MainActivityTest {
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
         onView(withText(R.string.update_box)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun editBox_nameEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withText(box.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.box_edit)).check(matches(withText(box.name)))
 
         activityScenario.close()
     }
@@ -917,6 +968,27 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun editComponent_nameEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 3, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
 
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withText(box.name)).perform(click())
+        onView(withText(component.name)).perform(click())
+        onView(withId(R.id.component_edit)).check(matches(withText(component.name)))
+
+        activityScenario.close()
+    }
 
 }
