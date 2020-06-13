@@ -1,6 +1,7 @@
 package com.sergeyrodin.matchesboxes
 
 import android.view.View
+import android.widget.AutoCompleteTextView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
@@ -17,12 +18,12 @@ import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
 import com.sergeyrodin.matchesboxes.util.monitorActivity
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -987,6 +988,29 @@ class MainActivityTest {
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
         onView(withId(R.id.component_edit)).check(matches(withText(component.name)))
+
+        activityScenario.close()
+    }
+
+    // Search
+    @Test
+    fun searchQuery_nameMatches() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 3, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_search)).perform(click())
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(typeText("comp\n"))//.perform(pressKey(KeyEvent.KEYCODE_ENTER))
+        onView(withText(component.name)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
