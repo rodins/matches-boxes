@@ -1,10 +1,12 @@
 package com.sergeyrodin.matchesboxes.component.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.sergeyrodin.matchesboxes.MainCoroutineRule
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
 import org.junit.Before
@@ -14,6 +16,10 @@ import org.junit.Test
 class RadioComponentsListViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @ExperimentalCoroutinesApi
+    @get:Rule
+    val mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var dataSource: FakeDataSource
     private lateinit var subject: RadioComponentsListViewModel

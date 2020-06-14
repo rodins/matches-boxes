@@ -48,4 +48,6 @@ interface RadioComponentsDataSource {
 
     suspend fun getRadioComponentsByMatchesBoxId(matchesBoxId: Int): List<RadioComponent>
 
+    suspend fun getRadioComponentsByQuery(query: String): List<RadioComponent>
+
 }

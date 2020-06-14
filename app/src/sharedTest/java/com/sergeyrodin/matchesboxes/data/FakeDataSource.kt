@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.delay
 
 class FakeDataSource : RadioComponentsDataSource{
     private val bagsList = mutableListOf<Bag>()
@@ -153,6 +154,12 @@ class FakeDataSource : RadioComponentsDataSource{
     override suspend fun getRadioComponentsByMatchesBoxId(matchesBoxId: Int): List<RadioComponent> {
         return radioComponentsList.filter {
             it.matchesBoxId == matchesBoxId
+        }
+    }
+
+    override suspend fun getRadioComponentsByQuery(query: String): List<RadioComponent> {
+        return radioComponentsList.filter{
+            it.name.contains(query, true)
         }
     }
 }

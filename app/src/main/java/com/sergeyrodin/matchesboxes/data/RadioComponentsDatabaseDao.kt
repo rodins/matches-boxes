@@ -68,4 +68,7 @@ interface RadioComponentsDatabaseDao {
 
     @Query("SELECT * FROM radio_components WHERE matches_box_id = :matchesBoxId")
     suspend fun getRadioComponentsByMatchesBoxId(matchesBoxId: Int): List<RadioComponent>
+
+    @Query("SELECT * FROM radio_components WHERE name LIKE '%' || :query || '%'")
+    suspend fun getRadioComponentsByQuery(query: String): List<RadioComponent>
 }

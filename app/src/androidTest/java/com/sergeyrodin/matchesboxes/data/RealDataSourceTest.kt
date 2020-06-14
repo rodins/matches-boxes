@@ -303,4 +303,15 @@ class RealDataSourceTest{
         assertThat(loaded1.size, `is`(2))
         assertThat(loaded2.size, `is`(3))
     }
+
+    @Test
+    fun searchQuery_nameEquals() = runBlockingTest {
+        subject.insertBag(BAG)
+        subject.insertMatchesBoxSet(MATCHES_BOX_SET)
+        subject.insertMatchesBox(MATCHES_BOX)
+        subject.insertRadioComponent(RADIO_COMPONENT)
+
+        val items = subject.getRadioComponentsByQuery("compo")
+        assertThat(items[0].name, `is`(RADIO_COMPONENT.name))
+    }
 }
