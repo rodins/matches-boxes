@@ -41,4 +41,6 @@
     <string name="update_component">Update Component</string>
     <string name="search">Search</string>
     <string name="no_components_found">No components found</string>
+    <string name="search_components">Search components</string>
+    <string name="buy_components">Buy components</string>
 </resources>

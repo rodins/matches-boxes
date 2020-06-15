@@ -1019,4 +1019,26 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun searchMode_titleEquals() = runBlocking {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component1)
+
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_search)).perform(click())
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(typeText("BUH\n"))
+        onView(withText(R.string.search_components)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
 }
