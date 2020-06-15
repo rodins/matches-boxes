@@ -153,5 +153,8 @@
         <argument
             android:name="isSearch"
             app:argType="boolean" />
+        <action
+            android:id="@+id/action_searchBuyFragment_to_addEditDeleteRadioComponentFragment"
+            app:destination="@id/addEditDeleteRadioComponentFragment" />
     </fragment>
 </navigation>

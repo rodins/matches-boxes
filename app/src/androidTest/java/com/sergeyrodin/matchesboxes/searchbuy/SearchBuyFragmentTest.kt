@@ -2,11 +2,15 @@ package com.sergeyrodin.matchesboxes.searchbuy
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.sergeyrodin.matchesboxes.DO_NOT_NEED_THIS_VARIABLE
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
@@ -18,6 +22,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
 
 @RunWith(AndroidJUnit4::class)
 class SearchBuyFragmentTest{
@@ -76,6 +82,30 @@ class SearchBuyFragmentTest{
         onView(withText(component1.name)).check(matches(isDisplayed()))
         onView(withText(component2.name)).check(matches(isDisplayed()))
         onView(withText(component3.name)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun selectCompoenent_navigationCalled() {
+        val bagId = 1
+        val component1 = RadioComponent(1, "Component1", 2, bagId)
+        val component2 = RadioComponent(2, "Component2", 3, bagId)
+        val component3 = RadioComponent(3, "Component3", 3, bagId)
+        dataSource.addRadioComponents(component1, component2, component3)
+
+        val query = "compo"
+        val isSearch = true
+        val bundle = SearchBuyFragmentArgs.Builder(query, isSearch).build().toBundle()
+        val scenario = launchFragmentInContainer<SearchBuyFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        onView(withText(component2.name)).perform(click())
+        verify(navController).navigate(
+            SearchBuyFragmentDirections.actionSearchBuyFragmentToAddEditDeleteRadioComponentFragment(
+                DO_NOT_NEED_THIS_VARIABLE, component2.id)
+        )
     }
 
 }
