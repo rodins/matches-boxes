@@ -65,7 +65,10 @@ class BagsListFragment : Fragment() {
         val searchView = item.actionView as SearchView
         searchView.setOnQueryTextListener(object: OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
-                //TODO: navigate to SearchBuyFragment
+                findNavController().navigate(
+                    BagsListFragmentDirections
+                        .actionBagsListFragmentToSearchBuyFragment(query!!, true)
+                )
 
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599

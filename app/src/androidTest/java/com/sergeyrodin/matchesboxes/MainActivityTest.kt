@@ -998,19 +998,23 @@ class MainActivityTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        val component = RadioComponent(1, "Component", 3, box.id)
+        val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
+        val component2 = RadioComponent(2, "D2499", 3, box.id)
+        val component3 = RadioComponent(3, "LA78041", 3, box.id)
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
+        dataSource.insertRadioComponent(component1)
+        dataSource.insertRadioComponent(component2)
+        dataSource.insertRadioComponent(component3)
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("comp\n"))//.perform(pressKey(KeyEvent.KEYCODE_ENTER))
-        onView(withText(component.name)).check(matches(isDisplayed()))
+            .perform(typeText("78041\n"))//.perform(pressKey(KeyEvent.KEYCODE_ENTER))
+        onView(withText(component3.name)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
