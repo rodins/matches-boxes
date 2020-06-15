@@ -15,6 +15,9 @@
         <action
             android:id="@+id/action_bagsListFragment_to_matchesBoxSetsListFragment"
             app:destination="@id/matchesBoxSetsListFragment" />
+        <action
+            android:id="@+id/action_bagsListFragment_to_searchBuyFragment"
+            app:destination="@id/searchBuyFragment" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteBagFragment"
@@ -138,5 +141,17 @@
             android:id="@+id/action_addEditDeleteRadioComponentFragment_to_radioComponentsListFragment"
             app:destination="@id/radioComponentsListFragment"
             app:popUpTo="@id/matchesBoxListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchBuyFragment"
+        android:name="com.sergeyrodin.matchesboxes.searchbuy.SearchBuyFragment"
+        android:label="fragment_search_buy"
+        tools:layout="@layout/fragment_search_buy" >
+        <argument
+            android:name="query"
+            app:argType="string" />
+        <argument
+            android:name="isSearch"
+            app:argType="boolean" />
     </fragment>
 </navigation>
