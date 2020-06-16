@@ -6,13 +6,13 @@
     <data>
         <variable
             name="viewModel"
-            type="com.sergeyrodin.matchesboxes.searchbuy.SearchBuyViewModel" />
+            type="com.sergeyrodin.matchesboxes.searchbuy.list.SearchBuyListViewModel" />
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".searchbuy.SearchBuyFragment">
+        tools:context=".searchbuy.list.SearchBuyListFragment">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/items"

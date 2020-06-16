@@ -1,11 +1,11 @@
-package com.sergeyrodin.matchesboxes.searchbuy
+package com.sergeyrodin.matchesboxes.searchbuy.list
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
 
-class SearchBuyViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
+class SearchBuyListViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
     private val _items = MutableLiveData<List<RadioComponent>>()
     val items: LiveData<List<RadioComponent>>
         get() = _items

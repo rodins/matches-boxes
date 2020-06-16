@@ -15,9 +15,9 @@ import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.RadioComponent
+import com.sergeyrodin.matchesboxes.searchbuy.list.SearchBuyListFragment
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,7 +26,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.verify
 
 @RunWith(AndroidJUnit4::class)
-class SearchBuyFragmentTest{
+class SearchBuyListFragmentTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
     private lateinit var dataSource: FakeDataSource
@@ -48,7 +48,7 @@ class SearchBuyFragmentTest{
         val query = "compo"
         val isSearch = true
         val bundle = SearchBuyFragmentArgs.Builder(query, isSearch).build().toBundle()
-        launchFragmentInContainer<SearchBuyFragment>(bundle, R.style.AppTheme)
+        launchFragmentInContainer<SearchBuyListFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_components_found)).check(matches(isDisplayed()))
     }
@@ -61,7 +61,7 @@ class SearchBuyFragmentTest{
         val query = "compo"
         val isSearch = true
         val bundle = SearchBuyFragmentArgs.Builder(query, isSearch).build().toBundle()
-        launchFragmentInContainer<SearchBuyFragment>(bundle, R.style.AppTheme)
+        launchFragmentInContainer<SearchBuyListFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_components_found)).check(matches(not(isDisplayed())))
     }
@@ -77,7 +77,7 @@ class SearchBuyFragmentTest{
         val query = "compo"
         val isSearch = true
         val bundle = SearchBuyFragmentArgs.Builder(query, isSearch).build().toBundle()
-        launchFragmentInContainer<SearchBuyFragment>(bundle, R.style.AppTheme)
+        launchFragmentInContainer<SearchBuyListFragment>(bundle, R.style.AppTheme)
 
         onView(withText(component1.name)).check(matches(isDisplayed()))
         onView(withText(component2.name)).check(matches(isDisplayed()))
@@ -95,7 +95,7 @@ class SearchBuyFragmentTest{
         val query = "compo"
         val isSearch = true
         val bundle = SearchBuyFragmentArgs.Builder(query, isSearch).build().toBundle()
-        val scenario = launchFragmentInContainer<SearchBuyFragment>(bundle, R.style.AppTheme)
+        val scenario = launchFragmentInContainer<SearchBuyListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)

@@ -144,7 +144,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchBuyFragment"
-        android:name="com.sergeyrodin.matchesboxes.searchbuy.SearchBuyFragment"
+        android:name="com.sergeyrodin.matchesboxes.searchbuy.list.SearchBuyListFragment"
         android:label="fragment_search_buy"
         tools:layout="@layout/fragment_search_buy" >
         <argument
