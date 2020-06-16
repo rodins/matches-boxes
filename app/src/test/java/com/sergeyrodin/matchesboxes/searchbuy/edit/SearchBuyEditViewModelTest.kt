@@ -30,8 +30,13 @@ class SearchBuyEditViewModelTest {
 
     @Test
     fun componentId_componentNameEquals() {
-        val boxId = 1
-        val component = RadioComponent(1, "Component", 2, boxId)
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
         subject.start(component.id)
 
@@ -41,9 +46,12 @@ class SearchBuyEditViewModelTest {
 
     @Test
     fun componentId_boxNameEquals() {
-        val setId = 1
-        val box = MatchesBox(1, "Box", setId)
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 2,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
         subject.start(component.id)
@@ -54,10 +62,11 @@ class SearchBuyEditViewModelTest {
 
     @Test
     fun componentId_setNameEquals() {
-        val bagId = 1
-        val set = MatchesBoxSet(1, "Set", bagId)
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 2,  box.id)
+        dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
@@ -81,5 +90,57 @@ class SearchBuyEditViewModelTest {
 
         val name = subject.bagName.getOrAwaitValue()
         assertThat(name, `is`(bag.name))
+    }
+
+    @Test
+    fun componentId_quantityEquals() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(component.id)
+
+        val quantity = subject.quantity.getOrAwaitValue()
+        assertThat(quantity, `is`(component.quantity.toString()))
+    }
+
+    @Test
+    fun quantityPlus_quantityEquals() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(component.id)
+
+        subject.quantityPlus()
+
+        val quantity = subject.quantity.getOrAwaitValue()
+        assertThat(quantity, `is`((component.quantity + 1).toString()))
+    }
+
+    @Test
+    fun quantityMinus_quantityEquals() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(component.id)
+
+        subject.quantityMinus()
+
+        val quantity = subject.quantity.getOrAwaitValue()
+        assertThat(quantity, `is`((component.quantity - 1).toString()))
     }
 }

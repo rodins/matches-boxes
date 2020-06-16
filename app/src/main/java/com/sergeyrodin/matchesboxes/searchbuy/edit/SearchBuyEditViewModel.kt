@@ -25,12 +25,17 @@ class SearchBuyEditViewModel(private val dataSource: RadioComponentsDataSource):
     val bagName: LiveData<String>
         get() = _bagName
 
+    private val _quantity = MutableLiveData<String>()
+    val quantity: LiveData<String>
+        get() = _quantity
+
     private var component: RadioComponent? = null
 
     fun start(componentId: Int) {
         viewModelScope.launch {
             component = dataSource.getRadioComponentById(componentId)
             _componentName.value = component?.name?:""
+            _quantity.value = component?.quantity.toString()
 
             val box = dataSource.getMatchesBoxById(component?.matchesBoxId!!)
             _boxName.value = box?.name?:""
@@ -41,5 +46,15 @@ class SearchBuyEditViewModel(private val dataSource: RadioComponentsDataSource):
             val bag = dataSource.getBagById(set?.bagId!!)
             _bagName.value = bag?.name?:""
         }
+    }
+
+    fun quantityPlus() {
+        val nQuantity = quantity.value?.toInt()?.plus(1)?:0
+        _quantity.value = nQuantity.toString()
+    }
+
+    fun quantityMinus() {
+        val nQuantity = quantity.value?.toInt()?.minus(1)?:0
+        _quantity.value = nQuantity.toString()
     }
 }
