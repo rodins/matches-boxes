@@ -54,4 +54,20 @@ class SearchBuyEditFragmentTest {
         onView(withText(box.name)).check(matches(isDisplayed()))
         onView(withText(component.name)).check(matches(isDisplayed()))
     }
+
+    @Test
+    fun componentId_quantityEquals() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 3,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        val bundle = SearchBuyEditFragmentArgs.Builder(component.id, "", true).build().toBundle()
+        launchFragmentInContainer<SearchBuyEditFragment>(bundle, R.style.AppTheme)
+
+        onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
+    }
 }
