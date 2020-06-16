@@ -154,7 +154,25 @@
             android:name="isSearch"
             app:argType="boolean" />
         <action
-            android:id="@+id/action_searchBuyFragment_to_addEditDeleteRadioComponentFragment"
-            app:destination="@id/addEditDeleteRadioComponentFragment" />
+            android:id="@+id/action_searchBuyFragment_to_searchBuyEditFragment"
+            app:destination="@id/searchBuyEditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchBuyEditFragment"
+        android:name="com.sergeyrodin.matchesboxes.searchbuy.edit.SearchBuyEditFragment"
+        android:label="fragment_search_buy_edit"
+        tools:layout="@layout/fragment_search_buy_edit" >
+        <action
+            android:id="@+id/action_searchBuyEditFragment_to_searchBuyFragment"
+            app:destination="@id/searchBuyFragment" />
+        <argument
+            android:name="componentId"
+            app:argType="integer" />
+        <argument
+            android:name="query"
+            app:argType="string" />
+        <argument
+            android:name="isSearch"
+            app:argType="boolean" />
     </fragment>
 </navigation>

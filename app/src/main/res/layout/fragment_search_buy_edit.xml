@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.sergeyrodin.matchesboxes.searchbuy.edit.SearchBuyEditViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/set_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.matchesBoxSetName}"
+            app:layout_constraintBottom_toTopOf="@+id/box_name"
+            app:layout_constraintStart_toStartOf="@+id/box_name"
+            app:layout_constraintTop_toBottomOf="@+id/bag_name"
+            tools:text="Set" />
+
+        <TextView
+            android:id="@+id/bag_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.bagName}"
+            app:layout_constraintBottom_toTopOf="@+id/set_name"
+            app:layout_constraintStart_toStartOf="@+id/set_name"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Bag" />
+
+        <TextView
+            android:id="@+id/box_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.boxName}"
+            app:layout_constraintBottom_toTopOf="@+id/component_name"
+            app:layout_constraintStart_toStartOf="@+id/component_name"
+            app:layout_constraintTop_toBottomOf="@+id/set_name"
+            tools:text="Box" />
+
+        <TextView
+            android:id="@+id/component_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.componentName}"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/box_name"
+            tools:text="Component" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

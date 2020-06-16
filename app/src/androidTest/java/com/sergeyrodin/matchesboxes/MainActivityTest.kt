@@ -1063,13 +1063,13 @@ class MainActivityTest {
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
         onView(withText(component3.name)).perform(click())
-        onView(withId(R.id.component_edit)).check(matches(withText(component3.name)))
+        onView(withId(R.id.component_name)).check(matches(withText(component3.name)))
 
         activityScenario.close()
     }
 
     @Test
-    fun searchQuery_selectComponentEdited_nameEquals() = runBlocking{
+    fun searchQuery_quantityPlus_quantityEquals() = runBlocking{
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)

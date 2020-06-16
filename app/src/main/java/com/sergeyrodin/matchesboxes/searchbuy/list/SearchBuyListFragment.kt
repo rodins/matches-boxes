@@ -45,9 +45,7 @@ class SearchBuyListFragment : Fragment() {
         binding.viewModel = viewModel
         binding.items.adapter = RadioComponentAdapter(RadioComponentListener {
             findNavController().navigate(
-                SearchBuyListFragmentDirections.actionSearchBuyFragmentToAddEditDeleteRadioComponentFragment(
-                    DO_NOT_NEED_THIS_VARIABLE, it
-                )
+                SearchBuyListFragmentDirections.actionSearchBuyFragmentToSearchBuyEditFragment(it, args.query, args.isSearch)
             )
         })
 
