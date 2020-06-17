@@ -1090,9 +1090,71 @@ class MainActivityTest {
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
         onView(withText(component3.name)).perform(click())
-        onView(withId(R.id.component_edit)).perform(replaceText("Updated component"))
+        onView(withText(R.string.button_plus)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
-        onView(withText("Updated component")).check(matches(isDisplayed()))
+        onView(withText(component3.name)).perform(click())
+        onView(withText("4")).check(matches(isDisplayed()))
+        onView(withId(R.id.quantity_text)).check(matches(withText("4")))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun searchQuery_typeQuantity_quantityEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
+        val component2 = RadioComponent(2, "D2499", 3, box.id)
+        val component3 = RadioComponent(3, "LA78041", 3, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component1)
+        dataSource.insertRadioComponent(component2)
+        dataSource.insertRadioComponent(component3)
+
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_search)).perform(click())
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(typeText("78041\n"))
+        onView(withText(component3.name)).perform(click())
+        onView(withId(R.id.quantity_text)).perform(replaceText("6"))
+        onView(withId(R.id.save_component_fab)).perform(click())
+        onView(withText(component3.name)).perform(click())
+        onView(withId(R.id.quantity_text)).check(matches(withText("6")))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun searchQuery_typeSameQuantity_quantityEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
+        val component2 = RadioComponent(2, "D2499", 3, box.id)
+        val component3 = RadioComponent(3, "LA78041", 3, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component1)
+        dataSource.insertRadioComponent(component2)
+        dataSource.insertRadioComponent(component3)
+
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_search)).perform(click())
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(typeText("78041\n"))
+        onView(withText(component3.name)).perform(click())
+        onView(withId(R.id.quantity_text)).perform(replaceText("3"))
+        onView(withId(R.id.save_component_fab)).perform(click())
+        onView(withText(component3.name)).perform(click())
+        onView(withId(R.id.quantity_text)).check(matches(withText("3")))
 
         activityScenario.close()
     }
