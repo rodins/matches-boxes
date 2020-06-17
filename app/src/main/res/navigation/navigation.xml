@@ -160,8 +160,8 @@
     <fragment
         android:id="@+id/searchBuyEditFragment"
         android:name="com.sergeyrodin.matchesboxes.searchbuy.edit.SearchBuyEditFragment"
-        android:label="fragment_search_buy_edit"
-        tools:layout="@layout/fragment_search_buy_edit" >
+        android:label="@string/update_component"
+        tools:layout="@layout/fragment_search_buy_edit">
         <action
             android:id="@+id/action_searchBuyEditFragment_to_searchBuyFragment"
             app:destination="@id/searchBuyFragment" />
