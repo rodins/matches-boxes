@@ -164,7 +164,8 @@
         tools:layout="@layout/fragment_search_buy_edit">
         <action
             android:id="@+id/action_searchBuyEditFragment_to_searchBuyFragment"
-            app:destination="@id/searchBuyFragment" />
+            app:destination="@id/searchBuyFragment"
+            app:popUpTo="@id/bagsListFragment" />
         <argument
             android:name="componentId"
             app:argType="integer" />
