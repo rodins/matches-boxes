@@ -3,6 +3,8 @@ package com.sergeyrodin.matchesboxes.searchbuy.edit
 import android.app.Service
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -18,6 +20,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
 
 @RunWith(AndroidJUnit4::class)
 class SearchBuyEditFragmentTest {
@@ -122,6 +126,32 @@ class SearchBuyEditFragmentTest {
         launchFragmentInContainer<SearchBuyEditFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.button_minus)).check(matches(not(isEnabled())))
+    }
+
+    @Test
+    fun saveItem_navigationCalled() {
+        val query = ""
+        val isSearch = true
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        val bundle = SearchBuyEditFragmentArgs.Builder(component.id, query, isSearch).build().toBundle()
+        val scenario = launchFragmentInContainer<SearchBuyEditFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        verify(navController).navigate(
+            SearchBuyEditFragmentDirections.actionSearchBuyEditFragmentToSearchBuyFragment(query, isSearch)
+        )
     }
 
 

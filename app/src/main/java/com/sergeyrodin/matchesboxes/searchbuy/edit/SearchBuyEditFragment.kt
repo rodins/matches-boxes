@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentSearchBuyEditBinding
@@ -28,6 +30,13 @@ class SearchBuyEditFragment : Fragment() {
 
         val args by navArgs<SearchBuyEditFragmentArgs>()
         viewModel.start(args.componentId)
+
+        viewModel.saveItemEvent.observe(viewLifecycleOwner, EventObserver{
+            findNavController().navigate(
+                SearchBuyEditFragmentDirections
+                    .actionSearchBuyEditFragmentToSearchBuyFragment(args.query, args.isSearch)
+            )
+        })
 
         return binding.root
     }

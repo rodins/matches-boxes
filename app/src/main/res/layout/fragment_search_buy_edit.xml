@@ -9,92 +9,113 @@
             type="com.sergeyrodin.matchesboxes.searchbuy.edit.SearchBuyEditViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/set_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{viewModel.matchesBoxSetName}"
-            app:layout_constraintBottom_toTopOf="@+id/box_name"
-            app:layout_constraintStart_toStartOf="@+id/box_name"
-            app:layout_constraintTop_toBottomOf="@+id/bag_name"
-            tools:text="Set" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/bag_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{viewModel.bagName}"
-            app:layout_constraintBottom_toTopOf="@+id/set_name"
-            app:layout_constraintStart_toStartOf="@+id/set_name"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Bag" />
+            <TextView
+                android:id="@+id/set_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.matchesBoxSetName}"
+                app:layout_constraintBottom_toTopOf="@+id/box_name"
+                app:layout_constraintStart_toStartOf="@+id/box_name"
+                app:layout_constraintTop_toBottomOf="@+id/bag_name"
+                tools:text="Set" />
 
-        <TextView
-            android:id="@+id/box_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{viewModel.boxName}"
-            app:layout_constraintBottom_toTopOf="@+id/component_name"
-            app:layout_constraintStart_toStartOf="@+id/component_name"
-            app:layout_constraintTop_toBottomOf="@+id/set_name"
-            tools:text="Box" />
+            <TextView
+                android:id="@+id/bag_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.bagName}"
+                app:layout_constraintBottom_toTopOf="@+id/set_name"
+                app:layout_constraintStart_toStartOf="@+id/set_name"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Bag" />
 
-        <TextView
-            android:id="@+id/component_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{viewModel.componentName}"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/quantity_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/box_name"
-            tools:text="Component" />
+            <TextView
+                android:id="@+id/box_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.boxName}"
+                app:layout_constraintBottom_toTopOf="@+id/component_name"
+                app:layout_constraintStart_toStartOf="@+id/component_name"
+                app:layout_constraintTop_toBottomOf="@+id/set_name"
+                tools:text="Box" />
 
-        <TextView
-            android:id="@+id/quantity_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@{viewModel.quantity}"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/quantity_plus_button"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/quantity_minus_button"
-            app:layout_constraintTop_toBottomOf="@+id/component_name"
-            tools:text="0" />
+            <TextView
+                android:id="@+id/component_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.componentName}"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toTopOf="@+id/quantity_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/box_name"
+                tools:text="Component" />
 
-        <Button
-            android:id="@+id/quantity_minus_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_minus"
-            android:onClick="@{() -> viewModel.quantityMinus() }"
-            android:enabled="@{viewModel.minusEnabled}"
-            app:layout_constraintBottom_toBottomOf="@+id/quantity_text"
-            app:layout_constraintEnd_toStartOf="@+id/quantity_text"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/quantity_text" />
+            <EditText
+                android:id="@+id/quantity_text"
+                android:layout_width="114dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@{viewModel.quantity}"
+                android:textSize="24sp"
+                android:textAlignment="center"
+                android:inputType="numberDecimal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/quantity_plus_button"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/quantity_minus_button"
+                app:layout_constraintTop_toBottomOf="@+id/component_name"
+                tools:text="0" />
 
-        <Button
-            android:id="@+id/quantity_plus_button"
+            <Button
+                android:id="@+id/quantity_minus_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_minus"
+                android:onClick="@{() -> viewModel.quantityMinus() }"
+                android:enabled="@{viewModel.minusEnabled}"
+                app:layout_constraintBottom_toBottomOf="@+id/quantity_text"
+                app:layout_constraintEnd_toStartOf="@+id/quantity_text"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/quantity_text" />
+
+            <Button
+                android:id="@+id/quantity_plus_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/button_plus"
+                android:onClick="@{() -> viewModel.quantityPlus()}"
+                app:layout_constraintBottom_toBottomOf="@+id/quantity_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/quantity_text"
+                app:layout_constraintTop_toTopOf="@+id/quantity_text" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/save_component_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_plus"
-            android:onClick="@{() -> viewModel.quantityPlus()}"
-            app:layout_constraintBottom_toBottomOf="@+id/quantity_text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/quantity_text"
-            app:layout_constraintTop_toTopOf="@+id/quantity_text" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_margin="@dimen/fab_margin"
+            android:onClick="@{() -> viewModel.saveItem()}"
+            app:srcCompat="@drawable/ic_done"
+            app:fabSize="normal"
+            app:layout_anchor="@id/layout"
+            app:layout_anchorGravity="bottom|right|end" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
 </layout>
