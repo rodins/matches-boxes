@@ -1,6 +1,7 @@
 package com.sergeyrodin.matchesboxes.searchbuy.edit
 
 import androidx.lifecycle.*
+import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
@@ -29,6 +30,10 @@ class SearchBuyEditViewModel(private val dataSource: RadioComponentsDataSource):
     val minusEnabled = Transformations.map(quantity) {
         it.toInt() > 0
     }
+
+    private val _saveItemEvent = MutableLiveData<Event<Unit>>()
+    val saveItemEvent: LiveData<Event<Unit>>
+        get() = _saveItemEvent
 
     private var component: RadioComponent? = null
 
@@ -63,6 +68,7 @@ class SearchBuyEditViewModel(private val dataSource: RadioComponentsDataSource):
         viewModelScope.launch {
             component?.quantity = quantity.value?.toInt()!!
             dataSource.updateRadioComponent(component!!)
+            _saveItemEvent.value = Event(Unit)
         }
     }
 }

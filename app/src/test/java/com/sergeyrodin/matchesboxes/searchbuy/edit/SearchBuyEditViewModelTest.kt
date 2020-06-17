@@ -6,7 +6,7 @@ import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -178,5 +178,23 @@ class SearchBuyEditViewModelTest {
 
         val loaded = dataSource.getRadioComponentById(component.id)
         assertThat(loaded?.quantity, `is`(3))
+    }
+
+    @Test
+    fun saveComponent_eventNotNull() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(component.id)
+
+        subject.saveItem()
+
+        val saved = subject.saveItemEvent.getOrAwaitValue()
+        assertThat(saved, `is`(not(nullValue())))
     }
 }
