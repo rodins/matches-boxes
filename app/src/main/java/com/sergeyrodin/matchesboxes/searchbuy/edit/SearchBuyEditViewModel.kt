@@ -58,4 +58,11 @@ class SearchBuyEditViewModel(private val dataSource: RadioComponentsDataSource):
         val nQuantity = quantity.value?.toInt()?.minus(1)?:0
         _quantity.value = nQuantity.toString()
     }
+
+    fun saveItem() {
+        viewModelScope.launch {
+            component?.quantity = quantity.value?.toInt()!!
+            dataSource.updateRadioComponent(component!!)
+        }
+    }
 }

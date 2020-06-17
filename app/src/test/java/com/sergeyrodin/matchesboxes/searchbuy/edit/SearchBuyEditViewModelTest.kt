@@ -5,6 +5,7 @@ import com.sergeyrodin.matchesboxes.MainCoroutineRule
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.*
 import org.junit.Before
@@ -158,5 +159,24 @@ class SearchBuyEditViewModelTest {
 
         val disabled = subject.minusEnabled.getOrAwaitValue()
         assertThat(disabled, `is`(false))
+    }
+
+    @Test
+    fun quantityChanged_saveComponent_quantityEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(component.id)
+
+        subject.quantityPlus()
+        subject.saveItem()
+
+        val loaded = dataSource.getRadioComponentById(component.id)
+        assertThat(loaded?.quantity, `is`(3))
     }
 }
