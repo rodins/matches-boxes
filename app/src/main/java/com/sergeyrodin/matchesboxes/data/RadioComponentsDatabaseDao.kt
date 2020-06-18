@@ -71,4 +71,7 @@ interface RadioComponentsDatabaseDao {
 
     @Query("SELECT * FROM radio_components WHERE name LIKE '%' || :query || '%'")
     suspend fun getRadioComponentsByQuery(query: String): List<RadioComponent>
+
+    @Query("SELECT * FROM radio_components WHERE buy = 1")
+    suspend fun getRadioComponentsToBuy(): List<RadioComponent>
 }

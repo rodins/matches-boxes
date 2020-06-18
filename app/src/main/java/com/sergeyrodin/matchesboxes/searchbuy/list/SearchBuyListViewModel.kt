@@ -21,6 +21,10 @@ class SearchBuyListViewModel(private val dataSource: RadioComponentsDataSource):
                     _items.value = dataSource.getRadioComponentsByQuery(query)
                 }
             }
+        }else{
+            viewModelScope.launch{
+                _items.value = dataSource.getRadioComponentsToBuy()
+            }
         }
     }
 }

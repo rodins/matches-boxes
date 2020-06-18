@@ -76,4 +76,28 @@ class SearchBuyListViewModelTest{
         val isVisible = subject.noComponentsTextVisible.getOrAwaitValue()
         assertThat(isVisible, `is`(false))
     }
+
+    // Buy
+
+    @Test
+    fun buyMode_nameEquals() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId, true)
+        dataSource.addRadioComponents(component)
+        subject.start("", false)
+
+        val items = subject.items.getOrAwaitValue()
+        assertThat(items[0].name, `is`(component.name))
+    }
+
+    @Test
+    fun buyMode_noComponents_equalsTrue() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        dataSource.addRadioComponents(component)
+        subject.start("", false)
+
+        val isVisible = subject.noComponentsTextVisible.getOrAwaitValue()
+        assertThat(isVisible, `is`(true))
+    }
 }

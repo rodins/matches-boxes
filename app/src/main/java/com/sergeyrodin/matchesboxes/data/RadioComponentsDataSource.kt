@@ -50,4 +50,6 @@ interface RadioComponentsDataSource {
 
     suspend fun getRadioComponentsByQuery(query: String): List<RadioComponent>
 
+    suspend fun getRadioComponentsToBuy(): List<RadioComponent>
+
 }

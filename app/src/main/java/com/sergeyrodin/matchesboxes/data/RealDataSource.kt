@@ -133,4 +133,10 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
             return radioComponentsDatabaseDao.getRadioComponentsByQuery(query)
         }
     }
+
+    override suspend fun getRadioComponentsToBuy(): List<RadioComponent> {
+        wrapEspressoIdlingResource {
+            return radioComponentsDatabaseDao.getRadioComponentsToBuy()
+        }
+    }
 }

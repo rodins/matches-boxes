@@ -162,4 +162,10 @@ class FakeDataSource : RadioComponentsDataSource{
             it.name.contains(query, true)
         }
     }
+
+    override suspend fun getRadioComponentsToBuy(): List<RadioComponent> {
+        return radioComponentsList.filter{
+            it.isBuy
+        }
+    }
 }
