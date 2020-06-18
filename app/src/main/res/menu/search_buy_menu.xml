@@ -6,4 +6,11 @@
         android:icon="@android:drawable/ic_menu_search"
         app:showAsAction="always|collapseActionView"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
+
+    <item
+        android:id="@+id/action_buy"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="@string/edit"
+        app:showAsAction="ifRoom" />
+
 </menu>

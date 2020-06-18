@@ -22,5 +22,7 @@ data class RadioComponent(
     var name: String,
     var quantity: Int = 0,
     @ColumnInfo(name = "matches_box_id", index = true)
-    var matchesBoxId: Int
+    var matchesBoxId: Int,
+    @ColumnInfo(name = "buy")
+    var isBuy: Boolean = false
 )

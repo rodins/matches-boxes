@@ -83,4 +83,15 @@ class BagsListFragment : Fragment() {
         })
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.action_buy){
+            findNavController().navigate(
+                BagsListFragmentDirections
+                    .actionBagsListFragmentToSearchBuyFragment("", false)
+            )
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 }

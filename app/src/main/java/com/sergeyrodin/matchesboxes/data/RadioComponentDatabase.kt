@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [Bag::class, MatchesBoxSet::class, MatchesBox::class, RadioComponent::class],
-    version = 1,
+    version = 2,
     exportSchema = false)
 abstract class RadioComponentsDatabase : RoomDatabase(){
     abstract val radioComponentsDatabaseDao: RadioComponentsDatabaseDao
