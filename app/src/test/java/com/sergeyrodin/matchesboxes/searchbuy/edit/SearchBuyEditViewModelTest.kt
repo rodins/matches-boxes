@@ -249,4 +249,24 @@ class SearchBuyEditViewModelTest {
         val saved = dataSource.getRadioComponentById(component.id)
         assertThat(saved?.isBuy, `is`(true))
     }
+
+    @Test
+    fun quantityNegative_equalsQuantity() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(component.id)
+
+        subject.quantity.value = (-1).toString()
+
+        subject.saveItem()
+
+        val saved = dataSource.getRadioComponentById(component.id)
+        assertThat(saved?.quantity, `is`(component.quantity))
+    }
 }

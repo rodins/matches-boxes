@@ -67,7 +67,10 @@ class SearchBuyEditViewModel(private val dataSource: RadioComponentsDataSource):
 
     fun saveItem() {
         viewModelScope.launch {
-            component?.quantity = quantity.value?.toInt()!!
+            val nQuantity = quantity.value?.toInt()!!
+            if(nQuantity >= 0) {
+                component?.quantity = nQuantity
+            }
             component?.isBuy = isBuy.value!!
             dataSource.updateRadioComponent(component!!)
             _saveItemEvent.value = Event(Unit)
