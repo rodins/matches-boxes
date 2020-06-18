@@ -33,6 +33,8 @@ class SearchBuyEditViewModel(private val dataSource: RadioComponentsDataSource):
     val saveItemEvent: LiveData<Event<Unit>>
         get() = _saveItemEvent
 
+    val isBuy = MutableLiveData<Boolean>()
+
     private var component: RadioComponent? = null
 
     fun start(componentId: Int) {
@@ -40,6 +42,7 @@ class SearchBuyEditViewModel(private val dataSource: RadioComponentsDataSource):
             component = dataSource.getRadioComponentById(componentId)
             _componentName.value = component?.name?:""
             quantity.value = component?.quantity.toString()
+            isBuy.value = component?.isBuy?:false
 
             val box = dataSource.getMatchesBoxById(component?.matchesBoxId!!)
             _boxName.value = box?.name?:""
@@ -65,6 +68,7 @@ class SearchBuyEditViewModel(private val dataSource: RadioComponentsDataSource):
     fun saveItem() {
         viewModelScope.launch {
             component?.quantity = quantity.value?.toInt()!!
+            component?.isBuy = isBuy.value!!
             dataSource.updateRadioComponent(component!!)
             _saveItemEvent.value = Event(Unit)
         }

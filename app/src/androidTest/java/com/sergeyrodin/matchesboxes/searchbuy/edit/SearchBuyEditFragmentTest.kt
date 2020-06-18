@@ -154,5 +154,35 @@ class SearchBuyEditFragmentTest {
         )
     }
 
+    @Test
+    fun componentIdTrue_buyChecked() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 3,  box.id, true)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        val bundle = SearchBuyEditFragmentArgs.Builder(component.id, "", false).build().toBundle()
+        launchFragmentInContainer<SearchBuyEditFragment>(bundle, R.style.AppTheme)
 
+        onView(withId(R.id.buy_checkbox)).check(matches(isChecked()))
+    }
+
+    @Test
+    fun componentIdFalse_buyChecked() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 3,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        val bundle = SearchBuyEditFragmentArgs.Builder(component.id, "", false).build().toBundle()
+        launchFragmentInContainer<SearchBuyEditFragment>(bundle, R.style.AppTheme)
+
+        onView(withId(R.id.buy_checkbox)).check(matches(not(isChecked())))
+    }
 }

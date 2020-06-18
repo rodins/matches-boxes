@@ -197,4 +197,56 @@ class SearchBuyEditViewModelTest {
         val saved = subject.saveItemEvent.getOrAwaitValue()
         assertThat(saved, `is`(not(nullValue())))
     }
+
+    @Test
+    fun componentIdTrue_isBuyEquals() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2,  box.id, true)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(component.id)
+
+        val isBuy = subject.isBuy.getOrAwaitValue()
+        assertThat(isBuy, `is`(component.isBuy))
+    }
+
+    @Test
+    fun componentIdFalse_isBuyEquals() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(component.id)
+
+        val isBuy = subject.isBuy.getOrAwaitValue()
+        assertThat(isBuy, `is`(component.isBuy))
+    }
+
+    @Test
+    fun buyFalseSetTrue_saveItem_buyEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(component.id)
+
+        subject.isBuy.value = true
+
+        subject.saveItem()
+
+        val saved = dataSource.getRadioComponentById(component.id)
+        assertThat(saved?.isBuy, `is`(true))
+    }
 }
