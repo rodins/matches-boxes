@@ -209,4 +209,17 @@ class AddEditDeleteRadioComponentViewModelTest{
         val minusDisabled = subject.minusEnabled.getOrAwaitValue()
         assertThat(minusDisabled, `is`(false))
     }
+
+    @Test
+    fun quantityNegative_equalsQuantity() = runBlocking{
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        dataSource.addRadioComponents(component)
+        subject.start(boxId, component.id)
+
+        subject.saveItem("Component updated", "-1")
+
+        val loaded = dataSource.getRadioComponentById(component.id)
+        assertThat(loaded?.quantity, `is`(3))
+    }
 }

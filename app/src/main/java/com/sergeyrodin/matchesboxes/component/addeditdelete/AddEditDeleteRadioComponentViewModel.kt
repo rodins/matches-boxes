@@ -46,10 +46,13 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
 
     fun saveItem(name: String, quantity: String) {
         if(name.trim() != "") {
-            if(radioComponent == null) {
-                addItem(name, quantity)
-            }else {
-                updateItem(name, quantity)
+            val nQuantity = quantity.toInt()
+            if(nQuantity >= 0) {
+                if(radioComponent == null) {
+                    addItem(name, nQuantity)
+                }else {
+                    updateItem(name, nQuantity)
+                }
             }
         }
     }
@@ -71,21 +74,21 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
         _quantity.value = nQuantity?.minus(1).toString()
     }
 
-    private fun addItem(name: String, quantity: String) {
+    private fun addItem(name: String, quantity: Int) {
         viewModelScope.launch {
             val component = RadioComponent(
                 name = name,
-                quantity = quantity.toInt(),
+                quantity = quantity,
                 matchesBoxId = matchesBoxId)
             dataSource.insertRadioComponent(component)
             _addItemEvent.value = Event(Unit)
         }
     }
 
-    private fun updateItem(name: String, quantity: String) {
+    private fun updateItem(name: String, quantity: Int) {
         viewModelScope.launch {
             radioComponent?.name = name
-            radioComponent?.quantity = quantity.toInt()
+            radioComponent?.quantity = quantity
             dataSource.updateRadioComponent(radioComponent!!)
             _updateItemEvent.value = Event(Unit)
         }
