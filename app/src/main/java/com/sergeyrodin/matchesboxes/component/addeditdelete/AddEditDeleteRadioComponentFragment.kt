@@ -28,24 +28,20 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
         val args by navArgs<AddEditDeleteRadioComponentFragmentArgs>()
         isDeleteVisible = args.componentId != ADD_NEW_ITEM_ID
 
-        if(isDeleteVisible) {
-            (activity as MainActivity).supportActionBar?.title = getString(R.string.update_component)
-        }else {
-            (activity as MainActivity).supportActionBar?.title = getString(R.string.add_component)
+        if(activity is MainActivity) {
+            if(isDeleteVisible) {
+                (activity as MainActivity).supportActionBar?.title = getString(R.string.update_component)
+            }else {
+                (activity as MainActivity).supportActionBar?.title = getString(R.string.add_component)
+            }
         }
-
+        
         viewModel.start(args.boxId, args.componentId)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
-        binding.saveComponentFab.setOnClickListener {
-            viewModel.saveItem(
-                binding.componentEdit.text.toString(),
-                binding.quantityEdit.text.toString())
-            hideKeyboard(activity)
-        }
-
         viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
+            hideKeyboard(activity)
             Toast.makeText(context, R.string.component_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteRadioComponentFragmentDirections
@@ -54,6 +50,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
         })
 
         viewModel.updateItemEvent.observe(viewLifecycleOwner, EventObserver{
+            hideKeyboard(activity)
             Toast.makeText(context, R.string.component_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteRadioComponentFragmentDirections

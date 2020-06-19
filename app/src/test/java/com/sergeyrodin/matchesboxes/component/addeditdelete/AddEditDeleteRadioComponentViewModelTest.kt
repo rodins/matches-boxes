@@ -77,7 +77,10 @@ class AddEditDeleteRadioComponentViewModelTest{
         dataSource.addRadioComponents()
         subject.start(boxId, ADD_NEW_ITEM_ID)
 
-        subject.saveItem("New component", "3")
+        subject.name.value = "New component"
+        subject.quantity.value = "3"
+
+        subject.saveItem()
 
         val item = dataSource.getRadioComponentsByMatchesBoxId(boxId)[0]
         assertThat(item.name, `is`("New component"))
@@ -91,12 +94,18 @@ class AddEditDeleteRadioComponentViewModelTest{
         dataSource.addRadioComponents()
         subject.start(boxId, ADD_NEW_ITEM_ID)
 
-        subject.saveItem("Component1", "3")
+        subject.name.value = "Component1"
+        subject.quantity.value = "3"
+
+        subject.saveItem()
 
         val item = dataSource.getRadioComponentsByMatchesBoxId(boxId)[0]
         assertThat(item.name, `is`("Component1"))
 
-        subject.saveItem("Component2", "3")
+        subject.name.value = "Component2"
+        subject.quantity.value = "3"
+
+        subject.saveItem()
 
         val item2 = dataSource.getRadioComponentsByMatchesBoxId(boxId)[1]
         assertThat(item2.name, `is`("Component2"))
@@ -108,7 +117,10 @@ class AddEditDeleteRadioComponentViewModelTest{
         dataSource.addRadioComponents()
         subject.start(boxId, ADD_NEW_ITEM_ID)
 
-        subject.saveItem("New component", "3")
+        subject.name.value = "New component"
+        subject.quantity.value = "3"
+
+        subject.saveItem()
 
         val unit = subject.addItemEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(unit, `is`(not(nullValue())))
@@ -121,7 +133,10 @@ class AddEditDeleteRadioComponentViewModelTest{
         dataSource.addRadioComponents(component)
         subject.start(boxId, component.id)
 
-        subject.saveItem("Updated component", "4")
+        subject.name.value = "Updated component"
+        subject.quantity.value = "4"
+
+        subject.saveItem()
 
         val item = dataSource.getRadioComponentById(component.id)
         assertThat(item?.name, `is`("Updated component"))
@@ -136,7 +151,10 @@ class AddEditDeleteRadioComponentViewModelTest{
         dataSource.addRadioComponents(component)
         subject.start(boxId, component.id)
 
-        subject.saveItem("Updated component", "4")
+        subject.name.value = "Updated component"
+        subject.quantity.value = "4"
+
+        subject.saveItem()
 
         val event = subject.updateItemEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(event, `is`(not(nullValue())))
@@ -217,7 +235,10 @@ class AddEditDeleteRadioComponentViewModelTest{
         dataSource.addRadioComponents(component)
         subject.start(boxId, component.id)
 
-        subject.saveItem("Component updated", "-1")
+        subject.name.value = "Component updated"
+        subject.quantity.value = "-1"
+
+        subject.saveItem()
 
         val loaded = dataSource.getRadioComponentById(component.id)
         assertThat(loaded?.quantity, `is`(3))

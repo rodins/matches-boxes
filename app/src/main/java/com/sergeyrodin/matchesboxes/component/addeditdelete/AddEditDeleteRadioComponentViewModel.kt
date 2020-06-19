@@ -7,13 +7,8 @@ import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
 
 class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
-    private val _name = MutableLiveData<String>()
-    val name: LiveData<String>
-        get() = _name
-
-    private val _quantity = MutableLiveData<String>()
-    val quantity: LiveData<String>
-        get() = _quantity
+    val name = MutableLiveData<String>()
+    val quantity = MutableLiveData<String>()
     
     private val _addItemEvent = MutableLiveData<Event<Unit>>()
     val addItemEvent: LiveData<Event<Unit>>
@@ -39,19 +34,19 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
         matchesBoxId = boxId
         viewModelScope.launch {
             radioComponent = dataSource.getRadioComponentById(componentId)
-            _name.value = radioComponent?.name?:""
-            _quantity.value = (radioComponent?.quantity?:0).toString()
+            name.value = radioComponent?.name?:""
+            quantity.value = (radioComponent?.quantity?:0).toString()
         }
     }
 
-    fun saveItem(name: String, quantity: String) {
-        if(name.trim() != "") {
-            val nQuantity = quantity.toInt()
+    fun saveItem() {
+        if(name.value?.trim() != "") {
+            val nQuantity = quantity.value?.toInt()?:0
             if(nQuantity >= 0) {
                 if(radioComponent == null) {
-                    addItem(name, nQuantity)
+                    addItem(name.value!!, nQuantity)
                 }else {
-                    updateItem(name, nQuantity)
+                    updateItem(name.value!!, nQuantity)
                 }
             }
         }
@@ -66,12 +61,12 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
 
     fun quantityPlus() {
         val nQuantity = quantity.value?.toInt()
-        _quantity.value = nQuantity?.plus(1).toString()
+        quantity.value = nQuantity?.plus(1).toString()
     }
 
     fun quantityMinus() {
         val nQuantity = quantity.value?.toInt()
-        _quantity.value = nQuantity?.minus(1).toString()
+        quantity.value = nQuantity?.minus(1).toString()
     }
 
     private fun addItem(name: String, quantity: Int) {
