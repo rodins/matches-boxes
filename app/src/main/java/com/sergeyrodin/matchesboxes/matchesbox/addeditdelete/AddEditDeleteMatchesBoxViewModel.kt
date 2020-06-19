@@ -10,9 +10,7 @@ import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
 
 class AddEditDeleteMatchesBoxViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
-    private val _name = MutableLiveData<String>()
-    val name: LiveData<String>
-        get() = _name
+    val name = MutableLiveData<String>()
 
     private var matchesBox: MatchesBox? = null
     private var _setId: Int = 0
@@ -33,18 +31,16 @@ class AddEditDeleteMatchesBoxViewModel(private val dataSource: RadioComponentsDa
         _setId = setId
        viewModelScope.launch {
            matchesBox = dataSource.getMatchesBoxById(boxId)
-           _name.value = matchesBox?.name?:""
+           name.value = matchesBox?.name?:""
        }
     }
 
-    fun saveMatchesBox(boxName: String) {
-        if(boxName.trim() != "") {
+    fun saveMatchesBox() {
+        if(name.value?.trim() != "") {
             if(matchesBox == null) {
-                addMatchesBox(boxName)
-                _addEvent.value = Event(Unit)
+                addMatchesBox()
             }else {
-                updateMatchesBox(boxName)
-                _updateEvent.value = Event(Unit)
+                updateMatchesBox()
             }
         }
     }
@@ -56,17 +52,19 @@ class AddEditDeleteMatchesBoxViewModel(private val dataSource: RadioComponentsDa
         }
     }
 
-    private fun addMatchesBox(boxName: String) {
+    private fun addMatchesBox() {
         viewModelScope.launch {
-            val box = MatchesBox(name = boxName, matchesBoxSetId = _setId)
+            val box = MatchesBox(name = name.value!!, matchesBoxSetId = _setId)
             dataSource.insertMatchesBox(box)
+            _addEvent.value = Event(Unit)
         }
     }
 
-    private fun updateMatchesBox(boxName: String) {
+    private fun updateMatchesBox() {
         viewModelScope.launch {
-            matchesBox?.name = boxName
+            matchesBox?.name = name.value!!
             dataSource.updateMatchesBox(matchesBox!!)
+            _updateEvent.value = Event(Unit)
         }
     }
 }

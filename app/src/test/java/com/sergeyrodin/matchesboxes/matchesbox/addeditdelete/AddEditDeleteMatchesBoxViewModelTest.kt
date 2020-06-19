@@ -54,7 +54,9 @@ class AddEditDeleteMatchesBoxViewModelTest {
         dataSource.addMatchesBoxes()
         subject.start(setId, ADD_NEW_ITEM_ID)
 
-        subject.saveMatchesBox("New box")
+        subject.name.value = "New box"
+
+        subject.saveMatchesBox()
 
         val item = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)[0]
         assertThat(item.name, `is`("New box"))
@@ -69,12 +71,14 @@ class AddEditDeleteMatchesBoxViewModelTest {
         dataSource.addMatchesBoxes()
         subject.start(setId, ADD_NEW_ITEM_ID)
 
-        subject.saveMatchesBox("Box")
+        subject.name.value = "Box"
+        subject.saveMatchesBox()
 
         val item = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)[0]
         assertThat(item.name, `is`("Box"))
 
-        subject.saveMatchesBox("Box2")
+        subject.name.value = "Box2"
+        subject.saveMatchesBox()
 
         val item2 = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)[1]
         assertThat(item2.name, `is`("Box2"))
@@ -87,7 +91,8 @@ class AddEditDeleteMatchesBoxViewModelTest {
         dataSource.addMatchesBoxes(box)
         subject.start(setId, box.id)
 
-        subject.saveMatchesBox("Box updated")
+        subject.name.value = "Box updated"
+        subject.saveMatchesBox()
 
         val item = dataSource.getMatchesBoxById(box.id)
         assertThat(item?.name, `is`("Box updated"))

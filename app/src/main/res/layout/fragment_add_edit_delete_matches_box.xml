@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -24,17 +24,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@{viewModel.name}"
+                android:text="@={viewModel.name}"
                 android:hint="@string/enter_box_name"
                 android:layout_margin="16dp"/>
 
-        </FrameLayout>
+        </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/save_box_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
+            android:onClick="@{() -> viewModel.saveMatchesBox()}"
             app:srcCompat="@drawable/ic_done"
             app:fabSize="normal"
             app:layout_anchor="@id/layout"

@@ -70,7 +70,7 @@ class AddEditDeleteMatchesBoxFragmentTest{
     }
 
     @Test
-    fun addItem_saveName_nameEquals() = runBlocking{
+    fun addItem_saveName_navigationCalled() {
         val setId = 2
         dataSource.addMatchesBoxes()
         val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(setId, ADD_NEW_ITEM_ID).build().toBundle()
@@ -83,28 +83,10 @@ class AddEditDeleteMatchesBoxFragmentTest{
         onView(withId(R.id.box_edit)).perform(replaceText("New box"))
         onView(withId(R.id.save_box_fab)).perform(click())
 
-        val item = dataSource.getMatchesBoxById(1)
-        Assert.assertThat(item?.name, `is`("New box"))
-
         verify(navController).navigate(
             AddEditDeleteMatchesBoxFragmentDirections
                 .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(setId)
         )
-    }
-
-    @Test
-    fun updateItem_saveName_nameEquals() = runBlocking{
-        val setId = 2
-        val box = MatchesBox(1, "Box", setId)
-        dataSource.addMatchesBoxes(box)
-        val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(setId, box.id).build().toBundle()
-        launchFragmentInContainer<AddEditDeleteMatchesBoxFragment>(bundle, R.style.AppTheme)
-
-        onView(withId(R.id.box_edit)).perform(replaceText("Updated box"))
-        onView(withId(R.id.save_box_fab)).perform(click())
-
-        val item = dataSource.getMatchesBoxById(box.id)
-        Assert.assertThat(item?.name, `is`("Updated box"))
     }
 
     @Test

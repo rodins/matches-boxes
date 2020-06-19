@@ -28,10 +28,13 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
 
         val args by navArgs<AddEditDeleteMatchesBoxFragmentArgs>()
         hideDelete = args.boxId != ADD_NEW_ITEM_ID
-        if(hideDelete) {
-            (activity as MainActivity).supportActionBar?.title = getString(R.string.update_box)
-        }else {
-            (activity as MainActivity).supportActionBar?.title = getString(R.string.add_box)
+
+        if(activity is MainActivity) {
+            if(hideDelete) {
+                (activity as MainActivity).supportActionBar?.title = getString(R.string.update_box)
+            }else {
+                (activity as MainActivity).supportActionBar?.title = getString(R.string.add_box)
+            }
         }
 
         viewModel.start(args.setId, args.boxId)
@@ -39,12 +42,8 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        binding.saveBoxFab.setOnClickListener{
-            viewModel.saveMatchesBox(binding.boxEdit.text.toString())
-            hideKeyboard(activity)
-        }
-
         viewModel.addEvent.observe(viewLifecycleOwner, EventObserver{
+            hideKeyboard(activity)
             Toast.makeText(context, R.string.box_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
@@ -61,6 +60,7 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
         })
 
         viewModel.updateEvent.observe(viewLifecycleOwner, EventObserver{
+            hideKeyboard(activity)
             Toast.makeText(context, R.string.box_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
