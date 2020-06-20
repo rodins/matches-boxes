@@ -43,7 +43,9 @@ class RadioComponentsListFragment : Fragment() {
         })
 
         viewModel.boxTitle.observe(viewLifecycleOwner, Observer{
-            (activity as MainActivity).supportActionBar?.title = it
+            if(activity is MainActivity) {
+                (activity as MainActivity).supportActionBar?.title = it
+            }
         })
 
         setHasOptionsMenu(true)

@@ -28,7 +28,9 @@ class MatchesBoxListFragment : Fragment() {
         }
 
         viewModel.setTitle.observe(viewLifecycleOwner, Observer {
-            (activity as MainActivity).supportActionBar?.title = it
+            if(activity is MainActivity) {
+                (activity as MainActivity).supportActionBar?.title = it
+            }
         })
 
         viewModel.start(args.setId)

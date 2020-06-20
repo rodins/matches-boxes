@@ -30,7 +30,9 @@ class MatchesBoxSetsListFragment : Fragment() {
         }
 
         viewModel.bagTitle.observe(viewLifecycleOwner, Observer{
-            getActionBar()?.title = it
+            if(activity is MainActivity) {
+                (activity as MainActivity).supportActionBar?.title = it
+            }
         })
 
         viewModel.start(args.bagId)
@@ -76,10 +78,6 @@ class MatchesBoxSetsListFragment : Fragment() {
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun getActionBar(): ActionBar? {
-        return (activity as MainActivity?)?.getSupportActionBar()
     }
 
 }
