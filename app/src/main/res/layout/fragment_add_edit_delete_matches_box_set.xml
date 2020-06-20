@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="@{viewModel.name}"
+                android:text="@={viewModel.name}"
                 android:hint="@string/enter_matches_box_set_name"
                 android:layout_margin="16dp" />
 
@@ -35,6 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
+            android:onClick="@{() -> viewModel.saveMatchesBoxSet()}"
             app:srcCompat="@drawable/ic_done"
             app:fabSize="normal"
             app:layout_anchor="@id/layout"

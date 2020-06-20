@@ -270,6 +270,8 @@ class MainActivityTest {
         onView(withId(R.id.add_set_fab)).perform(click())
         onView(withId(R.id.set_edit)).perform(typeText("MBS1"))
         onView(withId(R.id.save_set_fab)).perform(click())
+
+        onView(withText("Bag")).check(matches(isDisplayed()))
         onView(withText("MBS1")).check(matches(isDisplayed()))
 
         activityScenario.close()
@@ -349,8 +351,8 @@ class MainActivityTest {
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.set_edit)).perform(replaceText("Set updated"))
         onView(withId(R.id.save_set_fab)).perform(click())
-        // TODO: display set name as title to matches boxes list
-        //onView(withText("Set updated")).check(matches(isDisplayed()))
+
+        onView(withText("Set updated")).check(matches(isDisplayed()))
         onView(withText(R.string.no_matches_boxes_added)).check(matches(isDisplayed()))
 
         activityScenario.close()

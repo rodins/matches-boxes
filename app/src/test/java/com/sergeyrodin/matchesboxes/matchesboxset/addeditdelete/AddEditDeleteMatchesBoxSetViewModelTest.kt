@@ -30,13 +30,23 @@ class AddEditDeleteMatchesBoxSetViewModelTest {
     fun addNewSet_nameEquals() = runBlocking{
         val bagId = 1
         subject.start(bagId, ADD_NEW_ITEM_ID)
-
-        subject.saveMatchesBoxSet("MBS1")
+        subject.name.value = "MBS1"
+        subject.saveMatchesBoxSet()
 
         val set = dataSource.getMatchesBoxSetsByBagId(bagId)[0]
-        val added = subject.addedEvent.getOrAwaitValue().getContentIfNotHandled()
 
         assertThat(set.name, `is`("MBS1"))
+    }
+
+    @Test
+    fun addNewSet_addEventNotNull() {
+        val bagId = 1
+        subject.start(bagId, ADD_NEW_ITEM_ID)
+        subject.name.value = "MBS1"
+        subject.saveMatchesBoxSet()
+
+        val added = subject.addedEvent.getOrAwaitValue().getContentIfNotHandled()
+
         assertThat(added, `is`(not(nullValue())))
     }
 
@@ -46,8 +56,8 @@ class AddEditDeleteMatchesBoxSetViewModelTest {
         val set = MatchesBoxSet(2, "MBS2", bagId)
         dataSource.addMatchesBoxSets(set)
         subject.start(bagId, set.id)
-
-        subject.saveMatchesBoxSet("MBS2 updated")
+        subject.name.value = "MBS2 updated"
+        subject.saveMatchesBoxSet()
 
         val setUpdated = dataSource.getMatchesBoxSetById(set.id)
         val updated = subject.updatedEvent.getOrAwaitValue().getContentIfNotHandled()

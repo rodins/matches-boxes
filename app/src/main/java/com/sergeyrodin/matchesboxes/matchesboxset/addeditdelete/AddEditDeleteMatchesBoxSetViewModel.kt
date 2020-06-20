@@ -26,27 +26,22 @@ class AddEditDeleteMatchesBoxSetViewModel(private val dataSource: RadioComponent
     val deletedEvent: LiveData<Event<Unit>>
         get() = _deletedEvent
 
-    private val _name = MutableLiveData<String>()
-    val name: LiveData<String>
-        get() = _name
-
+    val name = MutableLiveData<String>()
 
     fun start(bagId: Int, setId: Int) {
         _bagId = bagId
         viewModelScope.launch {
             matchesBoxSet = dataSource.getMatchesBoxSetById(setId)
-            _name.value = matchesBoxSet?.name?:""
+            name.value = matchesBoxSet?.name?:""
         }
     }
 
-    fun saveMatchesBoxSet(name: String) {
-        if(name.trim() != "") {
+    fun saveMatchesBoxSet() {
+        if(name.value?.trim() != "") {
             if(matchesBoxSet == null) {
-                addMatchesBoxSet(name)
-                _addedEvent.value = Event(Unit)
+                addMatchesBoxSet()
             }else{
-                updateMatchesBoxSet(name)
-                _updatedEvent.value = Event(Unit)
+                updateMatchesBoxSet()
             }
         }
     }
@@ -58,17 +53,19 @@ class AddEditDeleteMatchesBoxSetViewModel(private val dataSource: RadioComponent
         }
     }
 
-    private fun addMatchesBoxSet(name: String) {
+    private fun addMatchesBoxSet() {
         viewModelScope.launch {
-            val newMatchesBoxSet = MatchesBoxSet(name = name, bagId = _bagId)
+            val newMatchesBoxSet = MatchesBoxSet(name = name.value!!, bagId = _bagId)
             dataSource.insertMatchesBoxSet(newMatchesBoxSet)
+            _addedEvent.value = Event(Unit)
         }
     }
 
-    private fun updateMatchesBoxSet(name: String) {
+    private fun updateMatchesBoxSet() {
         viewModelScope.launch {
-            matchesBoxSet?.name = name
+            matchesBoxSet?.name = name.value!!
             dataSource.updateMatchesBoxSet(matchesBoxSet!!)
+            _updatedEvent.value = Event(Unit)
         }
     }
 }

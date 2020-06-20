@@ -31,9 +31,7 @@ import org.mockito.Mockito.verify
 class AddEditDeleteMatchesBoxSetFragmentTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
-
     private lateinit var dataSource: FakeDataSource
-    private lateinit var subject: AddEditDeleteMatchesBoxSetFragment
 
     @Before
     fun initDataSource() {
@@ -49,6 +47,8 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
     @Test
     fun addNewSet_hintDisplayed() {
         val bagId = 1
+        val set = MatchesBoxSet(1, "MBS1", bagId)
+        dataSource.addMatchesBoxSets(set)
         val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(ADD_NEW_ITEM_ID, bagId).build().toBundle()
         launchFragmentInContainer<AddEditDeleteMatchesBoxSetFragment>(bundle, R.style.AppTheme)
 
@@ -57,7 +57,7 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
 
     @Test
     fun idArg_nameEquals() {
-        val set = MatchesBoxSet(1, "MBS1", 1)
+        val set = MatchesBoxSet(15, "MBS1", 2)
         dataSource.addMatchesBoxSets(set)
         val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(set.id, set.bagId).build().toBundle()
         launchFragmentInContainer<AddEditDeleteMatchesBoxSetFragment>(bundle, R.style.AppTheme)
@@ -66,9 +66,10 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
     }
 
     @Test
-    fun addNewSet_nameNavigationEquals() = runBlocking{
-        val bagId = 1
-        dataSource.addMatchesBoxSets()
+    fun addNewSet_navigationCalled() = runBlocking{
+        val bagId = 2
+        val set = MatchesBoxSet(1, "Set", bagId)
+        dataSource.addMatchesBoxSets(set)
         val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(ADD_NEW_ITEM_ID, bagId).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxSetFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
@@ -76,12 +77,8 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
             Navigation.setViewNavController(it.view!!, navController)
         }
 
-        onView(withId(R.id.set_edit)).perform(typeText("MBS1"))
+        onView(withId(R.id.set_edit)).perform(replaceText("New set"))
         onView(withId(R.id.save_set_fab)).perform(click())
-
-        // Test name
-        val item = dataSource.getMatchesBoxSetsByBagId(bagId)[0]
-        Assert.assertThat(item.name, `is`("MBS1"))
 
         // Test navigation
         verify(navController).navigate(
@@ -91,7 +88,7 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
     }
 
     @Test
-    fun updateSet_nameAndNavigationEquals() = runBlocking{
+    fun updateSet_navigationCalled() = runBlocking{
         val bagId = 2
         val set = MatchesBoxSet(1, "MBS1", bagId)
         dataSource.addMatchesBoxSets(set)
@@ -102,11 +99,7 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
             Navigation.setViewNavController(it.view!!, navController)
         }
 
-        onView(withId(R.id.set_edit)).perform(replaceText("MBS1 updated"))
         onView(withId(R.id.save_set_fab)).perform(click())
-
-        val item = dataSource.getMatchesBoxSetById(set.id)
-        Assert.assertThat(item?.name, `is`("MBS1 updated"))
 
         verify(navController).navigate(
             AddEditDeleteMatchesBoxSetFragmentDirections
@@ -115,7 +108,7 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
     }
 
     @Test
-    fun deleteSet_nameNameNavigationEquals() = runBlocking{
+    fun deleteSet_sizeNavigationEquals() = runBlocking{
         val bagId = 2
         val set = MatchesBoxSet(1, "MBS", bagId)
         dataSource.addMatchesBoxSets(set)
