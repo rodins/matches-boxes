@@ -11,9 +11,7 @@ import kotlinx.coroutines.launch
 
 class AddEditDeleteBagViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel() {
 
-    private val _name = MutableLiveData<String>()
-    val name: LiveData<String>
-        get() = _name
+    val name = MutableLiveData<String>()
 
     private val _eventAdded = MutableLiveData<Event<Unit>>()
     val eventAdded: LiveData<Event<Unit>>
@@ -32,16 +30,16 @@ class AddEditDeleteBagViewModel(private val dataSource: RadioComponentsDataSourc
     fun start(id: Int) {
         viewModelScope.launch{
             bag = dataSource.getBagById(id)
-            _name.value = bag?.name?:""
+            name.value = bag?.name?:""
         }
     }
 
-    fun saveBag(newName: String) {
-        if(newName.trim() != "") {
+    fun saveBag() {
+        if(name.value?.trim() != "") {
             if(bag == null) {
-                addNewBag(newName)
+                addNewBag()
             }else{
-                updateBag(newName)
+                updateBag()
             }
         }
     }
@@ -53,17 +51,17 @@ class AddEditDeleteBagViewModel(private val dataSource: RadioComponentsDataSourc
         }
     }
 
-    private fun addNewBag(newName: String) {
+    private fun addNewBag() {
         viewModelScope.launch {
-            val newBag = Bag(name = newName)
+            val newBag = Bag(name = name.value!!)
             dataSource.insertBag(newBag)
             _eventAdded.value = Event(Unit)
         }
     }
 
-    private fun updateBag(newName: String) {
+    private fun updateBag() {
         viewModelScope.launch {
-            bag?.name = newName
+            bag?.name = name.value!!
             dataSource.updateBag(bag!!)
             _eventEdited.value = Event(Unit)
         }

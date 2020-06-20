@@ -34,8 +34,8 @@ class AddEditDeleteBagViewModelTest {
     @Test
     fun addNewBag_nameEquals() {
         subject.start(-1)
-
-        subject.saveBag("New bag")
+        subject.name.value = "New bag"
+        subject.saveBag()
 
         val bag = dataSource.getBags().getOrAwaitValue()[0]
         assertThat(bag.name, `is`("New bag"))
@@ -46,8 +46,8 @@ class AddEditDeleteBagViewModelTest {
         val bag = Bag(1, "Bag")
         dataSource.addBags(bag)
         subject.start(bag.id)
-
-        subject.saveBag("Updated bag")
+        subject.name.value = "Updated bag"
+        subject.saveBag()
 
         val bagUpdated = dataSource.getBags().getOrAwaitValue()[0]
         assertThat(bagUpdated.name, `is`("Updated bag"))
@@ -90,8 +90,8 @@ class AddEditDeleteBagViewModelTest {
     fun bagAdded_eventTrue() {
         dataSource.addBags()
         subject.start(-1)
-
-        subject.saveBag("New bag")
+        subject.name.value = "New bag"
+        subject.saveBag()
 
         val added = subject.eventAdded.getOrAwaitValue().getContentIfNotHandled()
         assertThat(added, `is`(not(nullValue())))
@@ -102,8 +102,8 @@ class AddEditDeleteBagViewModelTest {
         val bag = Bag(1, "Bag")
         dataSource.addBags(bag)
         subject.start(bag.id)
-
-        subject.saveBag("Updated bag")
+        subject.name.value = "Updated bag"
+        subject.saveBag()
 
         val edited = subject.eventEdited.getOrAwaitValue().getContentIfNotHandled()
         assertThat(edited, `is`(not(nullValue())))

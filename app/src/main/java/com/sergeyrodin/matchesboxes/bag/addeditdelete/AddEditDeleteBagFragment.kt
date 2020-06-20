@@ -35,20 +35,18 @@ class AddEditDeleteBagFragment : Fragment() {
         val args by navArgs<AddEditDeleteBagFragmentArgs>()
         isActionDeleteVisible = args.id != ADD_NEW_ITEM_ID
 
-        if(isActionDeleteVisible) {
-            (activity as MainActivity).supportActionBar?.title = getString(R.string.update_bag)
-        }else {
-            (activity as MainActivity).supportActionBar?.title = getString(R.string.add_bag)
+        if(activity is MainActivity) {
+            if(isActionDeleteVisible) {
+                (activity as MainActivity).supportActionBar?.title = getString(R.string.update_bag)
+            }else {
+                (activity as MainActivity).supportActionBar?.title = getString(R.string.add_bag)
+            }
         }
 
         viewModel.start(args.id)
 
-        binding.saveBagFab.setOnClickListener {
-            viewModel.saveBag(binding.bagEdit.text.toString())
-            hideKeyboard(activity)
-        }
-
         viewModel.eventAdded.observe(viewLifecycleOwner, EventObserver{
+            hideKeyboard(activity)
             Toast.makeText(requireContext(), R.string.bag_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteBagFragmentDirections.actionAddEditDeleteBagFragmentToBagsListFragment()
@@ -56,6 +54,7 @@ class AddEditDeleteBagFragment : Fragment() {
         })
 
         viewModel.eventEdited.observe(viewLifecycleOwner, EventObserver{
+            hideKeyboard(activity)
             Toast.makeText(requireContext(), R.string.bag_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteBagFragmentDirections.actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(args.id)
