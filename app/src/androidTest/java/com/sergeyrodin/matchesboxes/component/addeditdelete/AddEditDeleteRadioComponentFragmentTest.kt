@@ -89,6 +89,16 @@ class AddEditDeleteRadioComponentFragmentTest {
     }
 
     @Test
+    fun addItem_quantityHintZero() {
+        val boxId = 1
+        dataSource.addRadioComponents()
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(boxId, ADD_NEW_ITEM_ID).build().toBundle()
+        launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
+
+        onView(withHint(R.string.quantity_hint)).check(matches(isDisplayed()))
+    }
+
+    @Test
     fun updateItem_navigationCalled() {
         val boxId = 1
         val component = RadioComponent(1, "Component", 3, boxId)

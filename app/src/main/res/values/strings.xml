@@ -44,4 +44,5 @@
     <string name="search_components">Search components</string>
     <string name="buy_components">Buy components</string>
     <string name="buy_component">Buy</string>
+    <string name="quantity_hint">0</string>
 </resources>
