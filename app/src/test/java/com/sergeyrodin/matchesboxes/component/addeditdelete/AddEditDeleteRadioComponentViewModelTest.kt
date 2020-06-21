@@ -49,7 +49,7 @@ class AddEditDeleteRadioComponentViewModelTest{
     }
 
     @Test
-    fun noItem_quantityZero() {
+    fun noItem_quantityEmpty() {
         val boxId = 1
         dataSource.addRadioComponents()
         subject.start(boxId, ADD_NEW_ITEM_ID)

@@ -23,11 +23,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
         get() = _deleteItemEvent
 
     val minusEnabled = Transformations.map(quantity) {
-        if(it != ""){
-            it.toInt() != 0
-        }else {
-            false
-        }
+        it.toIntOrNull()?:0 != 0
     }
 
     private var matchesBoxId = 0
