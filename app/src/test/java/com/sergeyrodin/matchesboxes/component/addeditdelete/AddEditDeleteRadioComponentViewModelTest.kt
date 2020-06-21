@@ -243,4 +243,19 @@ class AddEditDeleteRadioComponentViewModelTest{
         val loaded = dataSource.getRadioComponentById(component.id)
         assertThat(loaded?.quantity, `is`(3))
     }
+
+    @Test
+    fun addItem_quantityEmpty_quantityZero() = runBlocking{
+        val boxId = 1
+        dataSource.addRadioComponents()
+        subject.start(boxId, ADD_NEW_ITEM_ID)
+
+        subject.name.value = "Component"
+        subject.quantity.value = ""
+
+        subject.saveItem()
+
+        val loaded = dataSource.getRadioComponentsByMatchesBoxId(boxId)[0]
+        assertThat(loaded?.quantity, `is`(0))
+    }
 }

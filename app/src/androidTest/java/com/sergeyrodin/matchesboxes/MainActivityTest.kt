@@ -994,6 +994,32 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun deleteQuantity_quantityZero() = runBlocking {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withText(box.name)).perform(click())
+        onView(withId(R.id.add_component_fab)).perform(click())
+        onView(withId(R.id.component_edit)).perform(typeText("Component"))
+        onView(withId(R.id.quantity_edit)).perform(replaceText(""))
+        onView(withId(R.id.save_component_fab)).perform(click())
+        onView(withText("Component")).perform(click())
+
+        onView(withText("0")).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
     // Search
     @Test
     fun searchQuery_nameMatches() = runBlocking{
