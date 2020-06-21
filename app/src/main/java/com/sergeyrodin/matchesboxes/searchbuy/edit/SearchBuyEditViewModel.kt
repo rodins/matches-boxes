@@ -26,7 +26,7 @@ class SearchBuyEditViewModel(private val dataSource: RadioComponentsDataSource):
     val quantity = MutableLiveData<String>()
 
     val minusEnabled = Transformations.map(quantity) {
-        it.toInt() > 0
+        it.toIntOrNull()?:0 > 0
     }
 
     private val _saveItemEvent = MutableLiveData<Event<Unit>>()

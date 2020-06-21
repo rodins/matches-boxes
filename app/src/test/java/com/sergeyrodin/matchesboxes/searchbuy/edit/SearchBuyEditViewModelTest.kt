@@ -269,4 +269,22 @@ class SearchBuyEditViewModelTest {
         val saved = dataSource.getRadioComponentById(component.id)
         assertThat(saved?.quantity, `is`(component.quantity))
     }
+
+    @Test
+    fun quantityEmpty_minusEnabledFalse() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(component.id)
+
+        subject.quantity.value = ""
+
+        val enabled = subject.minusEnabled.getOrAwaitValue()
+        assertThat(enabled, `is`(false))
+    }
 }

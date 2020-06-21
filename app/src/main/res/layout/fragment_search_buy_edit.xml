@@ -56,7 +56,6 @@
                 android:textSize="24sp"
                 app:layout_constraintBottom_toTopOf="@+id/quantity_text"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/box_name"
                 tools:text="Component" />
@@ -73,7 +72,6 @@
                 android:textSize="24sp"
                 app:layout_constraintBottom_toTopOf="@+id/buy_checkbox"
                 app:layout_constraintEnd_toStartOf="@+id/quantity_plus_button"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/quantity_minus_button"
                 app:layout_constraintTop_toBottomOf="@+id/component_name"
                 tools:text="0" />
