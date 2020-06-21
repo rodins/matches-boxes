@@ -35,7 +35,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
         viewModelScope.launch {
             radioComponent = dataSource.getRadioComponentById(componentId)
             name.value = radioComponent?.name?:""
-            quantity.value = (radioComponent?.quantity?:0).toString()
+            quantity.value = (radioComponent?.quantity?:"").toString()
         }
     }
 

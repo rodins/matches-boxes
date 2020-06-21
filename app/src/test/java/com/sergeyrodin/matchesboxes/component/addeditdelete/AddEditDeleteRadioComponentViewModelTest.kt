@@ -56,7 +56,7 @@ class AddEditDeleteRadioComponentViewModelTest{
 
         val quantity = subject.quantity.getOrAwaitValue()
 
-        assertThat(quantity, `is`("0"))
+        assertThat(quantity, `is`(""))
     }
 
     @Test
