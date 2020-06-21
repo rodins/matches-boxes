@@ -45,10 +45,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
 
     fun saveItem() {
         if(name.value?.trim() != "") {
-            var nQuantity = 0
-            if(quantity.value != ""){
-                nQuantity = quantity.value?.toInt()?:0
-            }
+            val nQuantity = quantity.value?.toIntOrNull()?:0
             if(nQuantity >= 0) {
                 if(radioComponent == null) {
                     addItem(name.value!!, nQuantity)
