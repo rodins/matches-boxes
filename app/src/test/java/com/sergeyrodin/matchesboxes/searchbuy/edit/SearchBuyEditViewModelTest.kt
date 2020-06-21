@@ -306,4 +306,23 @@ class SearchBuyEditViewModelTest {
         val saved = dataSource.getRadioComponentById(component.id)
         assertThat(saved?.quantity, `is`(0))
     }
+
+    @Test
+    fun emptyQuantity_quantityPlusClicked_quantityIsOne(){
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(component.id)
+
+        subject.quantity.value = ""
+        subject.quantityPlus()
+
+        val quantity = subject.quantity.getOrAwaitValue()
+        assertThat(quantity, `is`("1"))
+    }
 }

@@ -56,12 +56,12 @@ class SearchBuyEditViewModel(private val dataSource: RadioComponentsDataSource):
     }
 
     fun quantityPlus() {
-        val nQuantity = quantity.value?.toInt()?.plus(1)?:0
+        val nQuantity = (quantity.value?.toIntOrNull()?:0) + 1
         quantity.value = nQuantity.toString()
     }
 
     fun quantityMinus() {
-        val nQuantity = quantity.value?.toInt()?.minus(1)?:0
+        val nQuantity = (quantity.value?.toIntOrNull()?:0) - 1
         quantity.value = nQuantity.toString()
     }
 
