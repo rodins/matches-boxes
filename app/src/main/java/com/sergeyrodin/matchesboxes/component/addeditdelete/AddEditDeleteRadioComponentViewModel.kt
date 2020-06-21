@@ -67,12 +67,12 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     }
 
     fun quantityPlus() {
-        val nQuantity = quantity.value?.toInt()
+        val nQuantity = quantity.value?.toIntOrNull()?:0
         quantity.value = nQuantity?.plus(1).toString()
     }
 
     fun quantityMinus() {
-        val nQuantity = quantity.value?.toInt()
+        val nQuantity = quantity.value?.toIntOrNull()?:0
         quantity.value = nQuantity?.minus(1).toString()
     }
 

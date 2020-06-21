@@ -200,6 +200,18 @@ class AddEditDeleteRadioComponentViewModelTest{
     }
 
     @Test
+    fun newItem_plusButtonClick_quantityOne() {
+        val boxId = 1
+        dataSource.addRadioComponents()
+        subject.start(boxId, ADD_NEW_ITEM_ID)
+
+        subject.quantityPlus()
+
+        val quantity = subject.quantity.getOrAwaitValue()
+        assertThat(quantity, `is`("1"))
+    }
+
+    @Test
     fun minusButton_subtractQuantity_quantityEquals() {
         val boxId = 1
         val component = RadioComponent(1, "Component", 3, boxId)
