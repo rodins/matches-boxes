@@ -280,4 +280,55 @@ class AddEditDeleteRadioComponentViewModelTest{
         val loaded = dataSource.getRadioComponentsByMatchesBoxId(boxId)[0]
         assertThat(loaded?.quantity, `is`(0))
     }
+
+    @Test
+    fun componentArg_isBuyIsFalse() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        dataSource.addRadioComponents(component)
+        subject.start(boxId, component.id)
+
+        val isBuy = subject.isBuy.getOrAwaitValue()
+        assertThat(isBuy, `is`(false))
+    }
+
+    @Test
+    fun componentArg_isBuyIsTrue() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId, true)
+        dataSource.addRadioComponents(component)
+        subject.start(boxId, component.id)
+
+        val isBuy = subject.isBuy.getOrAwaitValue()
+        assertThat(isBuy, `is`(true))
+    }
+
+    @Test
+    fun addComponent_isBuyTrue_isBuySaved() = runBlocking{
+        val boxId = 1
+        dataSource.addRadioComponents()
+        subject.start(boxId, ADD_NEW_ITEM_ID)
+
+        subject.name.value = "Component"
+        subject.isBuy.value = true
+
+        subject.saveItem()
+
+        val loaded = dataSource.getRadioComponentsByMatchesBoxId(boxId)[0]
+        assertThat(loaded.isBuy, `is`(true))
+    }
+
+    @Test
+    fun updateComponent_isBuyTrue_isBuySaved() = runBlocking {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 18, boxId)
+        dataSource.addRadioComponents(component)
+        subject.start(boxId, component.id)
+
+        subject.isBuy.value = true
+        subject.saveItem()
+
+        val loaded = dataSource.getRadioComponentById(component.id)
+        assertThat(loaded?.isBuy, `is`(true))
+    }
 }

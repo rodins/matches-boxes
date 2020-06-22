@@ -30,12 +30,15 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
 
     private var radioComponent: RadioComponent? = null
 
+    val isBuy = MutableLiveData<Boolean>()
+
     fun start(boxId: Int, componentId: Int){
         matchesBoxId = boxId
         viewModelScope.launch {
             radioComponent = dataSource.getRadioComponentById(componentId)
             name.value = radioComponent?.name?:""
             quantity.value = (radioComponent?.quantity?:"").toString()
+            isBuy.value = radioComponent?.isBuy?:false
         }
     }
 
@@ -74,7 +77,9 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             val component = RadioComponent(
                 name = name,
                 quantity = quantity,
-                matchesBoxId = matchesBoxId)
+                matchesBoxId = matchesBoxId,
+                isBuy = isBuy.value!!
+            )
             dataSource.insertRadioComponent(component)
             _addItemEvent.value = Event(Unit)
         }
@@ -84,6 +89,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
         viewModelScope.launch {
             radioComponent?.name = name
             radioComponent?.quantity = quantity
+            radioComponent?.isBuy = isBuy.value!!
             dataSource.updateRadioComponent(radioComponent!!)
             _updateItemEvent.value = Event(Unit)
         }
