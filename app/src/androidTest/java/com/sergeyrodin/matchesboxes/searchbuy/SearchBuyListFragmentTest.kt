@@ -110,4 +110,18 @@ class SearchBuyListFragmentTest{
         )
     }
 
+    @Test
+    fun componentFound_quantityDisplayed() {
+        val bagId = 1
+        val component = RadioComponent(1, "Component", 12, bagId)
+        dataSource.addRadioComponents(component)
+
+        val query = "compo"
+        val isSearch = true
+        val bundle = SearchBuyListFragmentArgs.Builder(query, isSearch).build().toBundle()
+        launchFragmentInContainer<SearchBuyListFragment>(bundle, R.style.AppTheme)
+
+        onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
+    }
+
 }

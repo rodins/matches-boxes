@@ -92,6 +92,18 @@ class RadioComponentsListFragmentTest {
     }
 
     @Test
+    fun oneItem_quantityDisplayed() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 12, boxId)
+        dataSource.addRadioComponents(component)
+
+        val bundle = RadioComponentsListFragmentArgs.Builder(boxId).build().toBundle()
+        launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
+
+        onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
+    }
+
+    @Test
     fun addItem_navigationCalled() {
         val boxId = 1
         dataSource.addRadioComponents()
