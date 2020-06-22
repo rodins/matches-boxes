@@ -278,7 +278,7 @@ class AddEditDeleteRadioComponentViewModelTest{
         subject.saveItem()
 
         val loaded = dataSource.getRadioComponentsByMatchesBoxId(boxId)[0]
-        assertThat(loaded?.quantity, `is`(0))
+        assertThat(loaded.quantity, `is`(0))
     }
 
     @Test

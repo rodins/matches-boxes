@@ -58,6 +58,15 @@ class AddEditDeleteRadioComponentFragmentTest {
     }
 
     @Test
+    fun noItem_isBuyNotChecked() {
+        val boxId = 1
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(boxId, ADD_NEW_ITEM_ID).build().toBundle()
+        launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
+
+        onView(withId(R.id.buy_checkbox)).check(matches(not(isChecked())))
+    }
+
+    @Test
     fun argItem_nameEquals() {
         val boxId = 1
         val component = RadioComponent(1, "Component", 3, boxId)
@@ -66,6 +75,28 @@ class AddEditDeleteRadioComponentFragmentTest {
         launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.component_edit)).check(matches(withText(component.name)))
+    }
+
+    @Test
+    fun argItem_buyFalse_buyNotChecked() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        dataSource.addRadioComponents(component)
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(boxId, component.id).build().toBundle()
+        launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
+
+        onView(withId(R.id.buy_checkbox)).check(matches(not(isChecked())))
+    }
+
+    @Test
+    fun argItem_buyTrue_buyChecked() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId, true)
+        dataSource.addRadioComponents(component)
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(boxId, component.id).build().toBundle()
+        launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
+
+        onView(withId(R.id.buy_checkbox)).check(matches(isChecked()))
     }
 
     @Test
