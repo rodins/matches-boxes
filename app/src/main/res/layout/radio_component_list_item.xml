@@ -42,6 +42,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/textView2"
+            app:layout_constraintTop_toTopOf="parent"
             app:quantityInteger="@{radioComponent.quantity}"
             tools:text="12" />
     </androidx.constraintlayout.widget.ConstraintLayout>

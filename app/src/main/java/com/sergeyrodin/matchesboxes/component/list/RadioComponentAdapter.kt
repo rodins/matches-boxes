@@ -23,7 +23,7 @@ class RadioComponentAdapter(private val clickListener: RadioComponentListener)
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = RadioComponentListItemBinding.inflate(layoutInflater)
+                val binding = RadioComponentListItemBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }
