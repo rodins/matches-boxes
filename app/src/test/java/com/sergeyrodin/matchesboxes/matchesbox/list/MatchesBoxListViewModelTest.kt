@@ -4,7 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
+import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
 import org.junit.Before
@@ -110,5 +112,23 @@ class MatchesBoxListViewModelTest{
 
         val title = subject.setTitle.getOrAwaitValue()
         assertThat(title, `is`(set.name))
+    }
+
+    @Test
+    fun boxesInput_quantitiesEqual(){
+        val setId = 1
+        val box1 = MatchesBox(1, "Box1", setId)
+        val box2 = MatchesBox(2, "Box2", setId)
+        val component1 = RadioComponent(1, "Component1", 3, box1.id)
+        val component2 = RadioComponent(2, "Component2", 4, box1.id)
+        val component3 = RadioComponent(3, "Component3", 5, box2.id)
+        val component4 = RadioComponent(4, "Component4", 6, box2.id)
+        dataSource.addMatchesBoxes(box1, box2)
+        dataSource.addRadioComponents(component1, component2, component3, component4)
+        subject.start(setId)
+
+        val items = subject.matchesBoxes.getOrAwaitValue()
+        assertThat(items[0].componentsQuantity, `is`("7"))
+        assertThat(items[1].componentsQuantity, `is`("11"))
     }
 }

@@ -12,6 +12,7 @@ import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.matchesbox.list.MatchesBoxAdapter
 import com.sergeyrodin.matchesboxes.matchesboxset.list.MatchesBoxSetAdapter
+import com.sergeyrodin.matchesboxes.util.MatchesBoxQuantity
 
 @BindingAdapter("bagsListData")
 fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<Bag>?) {
@@ -26,7 +27,7 @@ fun bindMatchesBoxSetRecyclerView(recyclerView: RecyclerView, list: List<Matches
 }
 
 @BindingAdapter("matchesBoxListData")
-fun bindMatchesBoxRecyclerView(recyclerView: RecyclerView, list: List<MatchesBox>?) {
+fun bindMatchesBoxRecyclerView(recyclerView: RecyclerView, list: List<MatchesBoxQuantity>?) {
     val adapter = recyclerView.adapter as MatchesBoxAdapter
     adapter.submitList(list)
 }

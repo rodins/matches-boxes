@@ -4,11 +4,13 @@ import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import com.sergeyrodin.matchesboxes.util.MatchesBoxQuantity
+import com.sergeyrodin.matchesboxes.util.getMatchesBoxesQuantityList
 import kotlinx.coroutines.launch
 
 class MatchesBoxListViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
-    private val _matchesBoxes = MutableLiveData<List<MatchesBox>>()
-    val matchesBoxes: LiveData<List<MatchesBox>>
+    private val _matchesBoxes = MutableLiveData<List<MatchesBoxQuantity>>()
+    val matchesBoxes: LiveData<List<MatchesBoxQuantity>>
         get() = _matchesBoxes
 
     val isNoItemsTextVisible = Transformations.map(matchesBoxes) {
@@ -31,7 +33,8 @@ class MatchesBoxListViewModel(private val dataSource: RadioComponentsDataSource)
         viewModelScope.launch {
             val set = dataSource.getMatchesBoxSetById(setId)
             _setTitle.value = set?.name
-            _matchesBoxes.value = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)
+            val items = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)
+            _matchesBoxes.value = getMatchesBoxesQuantityList(dataSource, items)
         }
     }
 

@@ -21,6 +21,7 @@ import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.MatchesBox
+import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.matchesboxset.list.MatchesBoxSetsListFragment
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
@@ -144,6 +145,20 @@ class MatchesBoxListFragmentTest {
             MatchesBoxListFragmentDirections
                 .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxSetFragment(setId, DO_NOT_NEED_THIS_VARIABLE)
         )
+    }
+
+    @Test
+    fun boxInput_quantityDisplayed() {
+        val setId = 1
+        val box = MatchesBox(1, "Box", setId)
+        val component1 = RadioComponent(1, "Component", 3, setId)
+        val component2 = RadioComponent(2, "Component2", 7, setId)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component1, component2)
+        val bundle = MatchesBoxListFragmentArgs.Builder(setId).build().toBundle()
+        launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
+
+        onView(withText("10")).check(matches(isDisplayed())) // sum of components quantities 3+7=10
     }
 
     private fun clickEditAction(scenario: FragmentScenario<MatchesBoxListFragment>) {

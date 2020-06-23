@@ -7,14 +7,15 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.databinding.MatchesBoxListItemBinding
+import com.sergeyrodin.matchesboxes.util.MatchesBoxQuantity
 
 class MatchesBoxAdapter(private val clickListener: MatchesBoxListener):
-    ListAdapter<MatchesBox, MatchesBoxAdapter.ViewHolder>(MatchesBoxDiffCallback()) {
+    ListAdapter<MatchesBoxQuantity, MatchesBoxAdapter.ViewHolder>(MatchesBoxDiffCallback()) {
 
     class ViewHolder private constructor(private val binding: MatchesBoxListItemBinding):
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(matchesBox: MatchesBox, listener: MatchesBoxListener) {
+        fun bind(matchesBox: MatchesBoxQuantity, listener: MatchesBoxListener) {
             binding.matchesBox = matchesBox
             binding.clickListener = listener
             binding.executePendingBindings()
@@ -23,7 +24,7 @@ class MatchesBoxAdapter(private val clickListener: MatchesBoxListener):
         companion object{
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = MatchesBoxListItemBinding.inflate(layoutInflater)
+                val binding = MatchesBoxListItemBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }
@@ -38,12 +39,12 @@ class MatchesBoxAdapter(private val clickListener: MatchesBoxListener):
     }
 }
 
-class MatchesBoxDiffCallback: DiffUtil.ItemCallback<MatchesBox>() {
-    override fun areItemsTheSame(oldItem: MatchesBox, newItem: MatchesBox): Boolean {
+class MatchesBoxDiffCallback: DiffUtil.ItemCallback<MatchesBoxQuantity>() {
+    override fun areItemsTheSame(oldItem: MatchesBoxQuantity, newItem: MatchesBoxQuantity): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: MatchesBox, newItem: MatchesBox): Boolean {
+    override fun areContentsTheSame(oldItem: MatchesBoxQuantity, newItem: MatchesBoxQuantity): Boolean {
         return oldItem == newItem
     }
 }
