@@ -5,7 +5,7 @@
     <data>
         <variable
             name="matchesBoxSet"
-            type="com.sergeyrodin.matchesboxes.data.MatchesBoxSet" />
+            type="com.sergeyrodin.matchesboxes.util.MatchesBoxSetQuantity" />
 
         <variable
             name="clickListener"
@@ -16,14 +16,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
+        android:orientation="horizontal"
         android:onClick="@{() -> clickListener.onClick(matchesBoxSet.id)}">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@{matchesBoxSet.name}"
             android:textSize="20sp"
             android:layout_marginBottom="8dp"
             tools:text="Bug text is here" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{matchesBoxSet.componentsQuantity}"
+            android:textSize="24sp"
+            tools:text="12"/>
     </LinearLayout>
 </layout>

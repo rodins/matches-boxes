@@ -7,9 +7,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.databinding.MatchesBoxSetListItemBinding
+import com.sergeyrodin.matchesboxes.util.MatchesBoxSetQuantity
 
 class MatchesBoxSetAdapter(private val clickListener: MatchesBoxSetListener)
-    : ListAdapter<MatchesBoxSet, MatchesBoxSetAdapter.ViewHolder>(MatchesBoxSetDiffCallback()) {
+    : ListAdapter<MatchesBoxSetQuantity, MatchesBoxSetAdapter.ViewHolder>(MatchesBoxSetDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
@@ -22,7 +23,7 @@ class MatchesBoxSetAdapter(private val clickListener: MatchesBoxSetListener)
     class ViewHolder private constructor(private val binding: MatchesBoxSetListItemBinding)
         : RecyclerView.ViewHolder(binding.root){
 
-        fun bind(matchesBoxSet: MatchesBoxSet, matchesBoxSetListener: MatchesBoxSetListener) {
+        fun bind(matchesBoxSet: MatchesBoxSetQuantity, matchesBoxSetListener: MatchesBoxSetListener) {
             binding.matchesBoxSet = matchesBoxSet
             binding.clickListener = matchesBoxSetListener
             binding.executePendingBindings()
@@ -31,19 +32,19 @@ class MatchesBoxSetAdapter(private val clickListener: MatchesBoxSetListener)
         companion object{
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = MatchesBoxSetListItemBinding.inflate(layoutInflater)
+                val binding = MatchesBoxSetListItemBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }
     }
 }
 
-class MatchesBoxSetDiffCallback: DiffUtil.ItemCallback<MatchesBoxSet>() {
-    override fun areItemsTheSame(oldItem: MatchesBoxSet, newItem: MatchesBoxSet): Boolean {
+class MatchesBoxSetDiffCallback: DiffUtil.ItemCallback<MatchesBoxSetQuantity>() {
+    override fun areItemsTheSame(oldItem: MatchesBoxSetQuantity, newItem: MatchesBoxSetQuantity): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: MatchesBoxSet, newItem: MatchesBoxSet): Boolean {
+    override fun areContentsTheSame(oldItem: MatchesBoxSetQuantity, newItem: MatchesBoxSetQuantity): Boolean {
         return oldItem == newItem
     }
 }
