@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.data.RadioComponent
-import com.sergeyrodin.matchesboxes.matchesbox.list.MatchesBoxAdapter
 import com.sergeyrodin.matchesboxes.util.DisplayQuantity
 
 @BindingAdapter("displayQuantityListData")
