@@ -29,7 +29,7 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
         }
     }
 
-    override fun getBags(): LiveData<List<Bag>> {
+    override suspend fun getBags(): List<Bag> {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getBags()
         }

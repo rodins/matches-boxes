@@ -6,7 +6,6 @@ import kotlinx.coroutines.delay
 
 class FakeDataSource : RadioComponentsDataSource{
     private val bagsList = mutableListOf<Bag>()
-    private val bagsLiveData = MutableLiveData<List<Bag>>()
     private val matchesBoxSetList = mutableListOf<MatchesBoxSet>()
     private val matchesBoxList = mutableListOf<MatchesBox>()
     private val radioComponentsList = mutableListOf<RadioComponent>()
@@ -16,13 +15,11 @@ class FakeDataSource : RadioComponentsDataSource{
         for(bag in bags) {
             bagsList.add(bag)
         }
-        bagsLiveData.value = bagsList
     }
 
     override suspend fun insertBag(bag: Bag) {
         if(bag.id == 0) {
             bagsList.add(bag)
-            bagsLiveData.value = bagsList
         }
     }
 
@@ -31,12 +28,10 @@ class FakeDataSource : RadioComponentsDataSource{
             it.id == bag.id
         }
         bagsList[index] = bag
-        bagsLiveData.value = bagsList
     }
 
     override suspend fun deleteBag(bag: Bag) {
         bagsList.remove(bag)
-        bagsLiveData.value = bagsList
     }
 
     override suspend fun getBagById(bagId: Int): Bag? {
@@ -45,8 +40,8 @@ class FakeDataSource : RadioComponentsDataSource{
         }
     }
 
-    override fun getBags(): LiveData<List<Bag>> {
-        return bagsLiveData
+    override suspend fun getBags(): List<Bag> {
+        return bagsList
     }
 
     // MatchesBoxSet

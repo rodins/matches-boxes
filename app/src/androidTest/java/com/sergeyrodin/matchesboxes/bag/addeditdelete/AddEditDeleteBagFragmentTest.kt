@@ -20,6 +20,7 @@ import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.*
 import org.junit.runner.RunWith
@@ -64,7 +65,7 @@ class AddEditDeleteBagFragmentTest {
     }
 
     @Test
-    fun minusOneArg_addNewBag() {
+    fun minusOneArg_addNewBag() = runBlocking{
         dataSource.addBags()
         val bundle = AddEditDeleteBagFragmentArgs.Builder(ADD_NEW_ITEM_ID).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
@@ -76,7 +77,7 @@ class AddEditDeleteBagFragmentTest {
         onView(withId(R.id.bag_edit)).perform(replaceText("New bag"))
         onView(withId(R.id.save_bag_fab)).perform(click())
 
-        val bag = dataSource.getBags().getOrAwaitValue()[0]
+        val bag = dataSource.getBags()[0]
         Assert.assertThat(bag.name, `is`("New bag"))
 
         verify(navController).navigate(
@@ -85,7 +86,7 @@ class AddEditDeleteBagFragmentTest {
     }
 
     @Test
-    fun bagIdArg_updateBagName() {
+    fun bagIdArg_updateBagName() = runBlocking{
         val bag = Bag(1, "Old bag")
         dataSource.addBags(bag)
         val bundle = AddEditDeleteBagFragmentArgs.Builder(bag.id).build().toBundle()
@@ -98,7 +99,7 @@ class AddEditDeleteBagFragmentTest {
         onView(withId(R.id.bag_edit)).perform(replaceText("New bag"))
         onView(withId(R.id.save_bag_fab)).perform(click())
 
-        val updatedBag = dataSource.getBags().getOrAwaitValue()[0]
+        val updatedBag = dataSource.getBags()[0]
         Assert.assertThat(updatedBag.name, `is`("New bag"))
         verify(navController).navigate(
             AddEditDeleteBagFragmentDirections
@@ -107,7 +108,7 @@ class AddEditDeleteBagFragmentTest {
     }
 
     @Test
-    fun minusOneArg_emptyInput_sizeZero() {
+    fun minusOneArg_emptyInput_sizeZero() = runBlocking{
         dataSource.addBags()
         val bundle = AddEditDeleteBagFragmentArgs.Builder(ADD_NEW_ITEM_ID).build().toBundle()
         launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
@@ -115,12 +116,12 @@ class AddEditDeleteBagFragmentTest {
         onView(withId(R.id.bag_edit)).perform(replaceText(" "))
         onView(withId(R.id.save_bag_fab)).perform(click())
 
-        val bags = dataSource.getBags().getOrAwaitValue()
+        val bags = dataSource.getBags()
         Assert.assertThat(bags.size, `is`(0))
     }
 
     @Test
-    fun bagIdArg_emptyInput_nameNotChanged() {
+    fun bagIdArg_emptyInput_nameNotChanged() = runBlocking{
         val bag = Bag(1, "Old bag")
         dataSource.addBags(bag)
         val bundle = AddEditDeleteBagFragmentArgs.Builder(bag.id).build().toBundle()
@@ -129,12 +130,12 @@ class AddEditDeleteBagFragmentTest {
         onView(withId(R.id.bag_edit)).perform(replaceText(" "))
         onView(withId(R.id.save_bag_fab)).perform(click())
 
-        val updatedBag = dataSource.getBags().getOrAwaitValue()[0]
+        val updatedBag = dataSource.getBags()[0]
         Assert.assertThat(updatedBag.name, `is`("Old bag"))
     }
 
     @Test
-    fun deleteBagAndNavigate() {
+    fun deleteBagAndNavigate() = runBlocking{
         val bag = Bag(1, "Bag to delete")
         dataSource.addBags(bag)
         val bundle = AddEditDeleteBagFragmentArgs.Builder(bag.id).build().toBundle()
@@ -146,7 +147,7 @@ class AddEditDeleteBagFragmentTest {
 
         clickDeleteAction(scenario)
 
-        val bags = dataSource.getBags().getOrAwaitValue()
+        val bags = dataSource.getBags()
         Assert.assertThat(bags.size, `is`(0))
         verify(navController).navigate(
             AddEditDeleteBagFragmentDirections.actionAddEditDeleteBagFragmentToBagsListFragment()

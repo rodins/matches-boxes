@@ -32,6 +32,7 @@ class BagsListFragment : Fragment() {
         val adapter = BagAdapter(BagListener {
             viewModel.selectItem(it)
         })
+
         binding.bagsList.adapter = adapter
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel

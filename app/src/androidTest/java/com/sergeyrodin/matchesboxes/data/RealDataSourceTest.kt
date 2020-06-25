@@ -225,7 +225,7 @@ class RealDataSourceTest{
         subject.insertBag(bag3)
         subject.insertBag(bag4)
 
-        val loaded = subject.getBags().getOrAwaitValue()
+        val loaded = subject.getBags()
 
         assertThat(loaded.size, `is`(4))
     }

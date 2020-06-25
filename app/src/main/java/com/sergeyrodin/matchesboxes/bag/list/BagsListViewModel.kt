@@ -1,15 +1,17 @@
 package com.sergeyrodin.matchesboxes.bag.list
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import com.sergeyrodin.matchesboxes.util.DisplayQuantity
+import com.sergeyrodin.matchesboxes.util.getBagQuantityList
+import kotlinx.coroutines.launch
 
-class BagsListViewModel(dataSource: RadioComponentsDataSource) : ViewModel(){
+class BagsListViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel(){
 
-    val bagsList = dataSource.getBags()
+    val bagsList = liveData{
+            emit(getBagQuantityList(dataSource))
+    }
 
     val isNoItemsTextVisible = Transformations.map(bagsList) {
         it.isEmpty()

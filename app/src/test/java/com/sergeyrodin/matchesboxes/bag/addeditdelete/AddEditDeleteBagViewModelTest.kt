@@ -7,6 +7,7 @@ import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -32,36 +33,36 @@ class AddEditDeleteBagViewModelTest {
     }
 
     @Test
-    fun addNewBag_nameEquals() {
+    fun addNewBag_nameEquals() = runBlocking{
         subject.start(-1)
         subject.name.value = "New bag"
         subject.saveBag()
 
-        val bag = dataSource.getBags().getOrAwaitValue()[0]
+        val bag = dataSource.getBags()[0]
         assertThat(bag.name, `is`("New bag"))
     }
 
     @Test
-    fun editBag_nameEquals() {
+    fun editBag_nameEquals() = runBlocking{
         val bag = Bag(1, "Bag")
         dataSource.addBags(bag)
         subject.start(bag.id)
         subject.name.value = "Updated bag"
         subject.saveBag()
 
-        val bagUpdated = dataSource.getBags().getOrAwaitValue()[0]
+        val bagUpdated = dataSource.getBags()[0]
         assertThat(bagUpdated.name, `is`("Updated bag"))
     }
 
     @Test
-    fun deleteBag_sizeZero() {
+    fun deleteBag_sizeZero() = runBlocking{
         val bag = Bag(1, "Bag")
         dataSource.addBags(bag)
         subject.start(bag.id)
 
         subject.deleteBag()
 
-        val bagsList = dataSource.getBags().getOrAwaitValue()
+        val bagsList = dataSource.getBags()
         assertThat(bagsList.size, `is`(0))
     }
 

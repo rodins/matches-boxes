@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.databinding.BagListItemBinding
+import com.sergeyrodin.matchesboxes.util.DisplayQuantity
 
-class BagAdapter(private val bagListener: BagListener) : ListAdapter<Bag, BagAdapter.ViewHolder>(BagDiffCallback()) {
+class BagAdapter(private val bagListener: BagListener) : ListAdapter<DisplayQuantity, BagAdapter.ViewHolder>(BagDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
     }
@@ -20,8 +21,8 @@ class BagAdapter(private val bagListener: BagListener) : ListAdapter<Bag, BagAda
 
     class ViewHolder private constructor(private val binding: BagListItemBinding): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(bag: Bag, bagListener: BagListener) {
-            binding.bag = bag
+        fun bind(displayQuantity: DisplayQuantity, bagListener: BagListener) {
+            binding.displayQuantity = displayQuantity
             binding.clickListener = bagListener
             binding.executePendingBindings()
         }
@@ -29,19 +30,19 @@ class BagAdapter(private val bagListener: BagListener) : ListAdapter<Bag, BagAda
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = BagListItemBinding.inflate(layoutInflater)
+                val binding = BagListItemBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }
     }
 }
 
-class BagDiffCallback: DiffUtil.ItemCallback<Bag>() {
-    override fun areItemsTheSame(oldItem: Bag, newItem: Bag): Boolean {
+class BagDiffCallback: DiffUtil.ItemCallback<DisplayQuantity>() {
+    override fun areItemsTheSame(oldItem: DisplayQuantity, newItem: DisplayQuantity): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Bag, newItem: Bag): Boolean {
+    override fun areContentsTheSame(oldItem: DisplayQuantity, newItem: DisplayQuantity): Boolean {
         return oldItem == newItem
     }
 }

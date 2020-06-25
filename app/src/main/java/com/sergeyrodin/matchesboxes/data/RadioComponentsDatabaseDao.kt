@@ -19,7 +19,7 @@ interface RadioComponentsDatabaseDao {
     suspend fun getBagById(bagId: Int): Bag
 
     @Query("SELECT * FROM bags")
-    fun getBags(): LiveData<List<Bag>>
+    suspend fun getBags(): List<Bag>
 
     // MatchesBoxSet
     @Insert

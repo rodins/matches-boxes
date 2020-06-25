@@ -4,8 +4,8 @@
 
     <data>
         <variable
-            name="bag"
-            type="com.sergeyrodin.matchesboxes.data.Bag" />
+            name="displayQuantity"
+            type="com.sergeyrodin.matchesboxes.util.DisplayQuantity" />
 
         <variable
             name="clickListener"
@@ -15,15 +15,24 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{() -> clickListener.onClick(bag.id)}">
+        android:orientation="horizontal"
+        android:onClick="@{() -> clickListener.onClick(displayQuantity.id)}">
 
         <TextView
             android:id="@+id/bag_text"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{bag.name}"
+            android:layout_weight="1"
+            android:text="@{displayQuantity.name}"
             android:textSize="20sp"
             android:layout_marginBottom="8dp"
             tools:text="Bug text is here" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{displayQuantity.componentsQuantity}"
+            android:textSize="24sp"
+            tools:text="34" />
     </LinearLayout>
 </layout>

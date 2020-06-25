@@ -60,6 +60,7 @@ dependencies {
     implementation "androidx.test.espresso:espresso-idling-resource:3.3.0-rc01"
     implementation "com.google.android.material:material:1.1.0"
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0-alpha05'
 
     // Test
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
