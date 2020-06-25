@@ -11,7 +11,6 @@ import com.sergeyrodin.matchesboxes.matchesbox.list.MatchesBoxAdapter
 import com.sergeyrodin.matchesboxes.matchesboxset.list.MatchesBoxSetAdapter
 import com.sergeyrodin.matchesboxes.util.DisplayQuantity
 import com.sergeyrodin.matchesboxes.util.MatchesBoxQuantity
-import com.sergeyrodin.matchesboxes.util.MatchesBoxSetQuantity
 
 @BindingAdapter("bagsListData")
 fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<DisplayQuantity>?) {
@@ -20,7 +19,7 @@ fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<DisplayQuantity>?
 }
 
 @BindingAdapter("matchesBoxSetListData")
-fun bindMatchesBoxSetRecyclerView(recyclerView: RecyclerView, list: List<MatchesBoxSetQuantity>?) {
+fun bindMatchesBoxSetRecyclerView(recyclerView: RecyclerView, list: List<DisplayQuantity>?) {
     val adapter = recyclerView.adapter as MatchesBoxSetAdapter
     adapter.submitList(list)
 }

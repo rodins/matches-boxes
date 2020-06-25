@@ -1,17 +1,10 @@
 package com.sergeyrodin.matchesboxes.util
 
-import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 
 data class MatchesBoxQuantity(
-    val id: Int,
-    val name: String,
-    val componentsQuantity: String
-)
-
-data class MatchesBoxSetQuantity(
     val id: Int,
     val name: String,
     val componentsQuantity: String
@@ -37,8 +30,8 @@ suspend fun getMatchesBoxesQuantityList(dataSource: RadioComponentsDataSource, m
     return output
 }
 
-suspend fun getMatchesBoxSetQuantityList(dataSource: RadioComponentsDataSource, sets: List<MatchesBoxSet>): List<MatchesBoxSetQuantity> {
-    val output = mutableListOf<MatchesBoxSetQuantity>()
+suspend fun getMatchesBoxSetQuantityList(dataSource: RadioComponentsDataSource, sets: List<MatchesBoxSet>): List<DisplayQuantity> {
+    val output = mutableListOf<DisplayQuantity>()
     for (set in sets) {
         val boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)
         var componentsQuantity = 0
@@ -48,7 +41,8 @@ suspend fun getMatchesBoxSetQuantityList(dataSource: RadioComponentsDataSource, 
                 componentsQuantity += component.quantity
             }
         }
-        val setQuantity = MatchesBoxSetQuantity(set.id, set.name, componentsQuantity.toString())
+        val setQuantity =
+            DisplayQuantity(set.id, set.name, componentsQuantity.toString())
         output.add(setQuantity)
     }
     return output
