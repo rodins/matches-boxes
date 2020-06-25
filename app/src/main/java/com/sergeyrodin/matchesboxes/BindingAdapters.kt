@@ -16,12 +16,6 @@ fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<DisplayQuantity>?
     adapter.submitList(list)
 }
 
-@BindingAdapter("matchesBoxListData")
-fun bindMatchesBoxRecyclerView(recyclerView: RecyclerView, list: List<DisplayQuantity>?) {
-    val adapter = recyclerView.adapter as MatchesBoxAdapter
-    adapter.submitList(list)
-}
-
 @BindingAdapter("radioComponentsListData")
 fun bindRadioComponentRecyclerView(recyclerView: RecyclerView, list: List<RadioComponent>?){
     val adapter = recyclerView.adapter as RadioComponentAdapter
