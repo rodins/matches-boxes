@@ -9,6 +9,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.*
+import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityAdapter
+import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityListener
 import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxSetsListBinding
 
 /**
@@ -37,7 +39,7 @@ class MatchesBoxSetsListFragment : Fragment() {
 
         viewModel.start(args.bagId)
 
-        val adapter = MatchesBoxSetAdapter(MatchesBoxSetListener{
+        val adapter = DisplayQuantityAdapter(DisplayQuantityListener{
             viewModel.selectItem(it)
         })
         binding.lifecycleOwner = viewLifecycleOwner

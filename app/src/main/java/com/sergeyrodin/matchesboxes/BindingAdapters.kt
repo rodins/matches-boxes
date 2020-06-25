@@ -20,7 +20,7 @@ fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<DisplayQuantity>?
 
 @BindingAdapter("matchesBoxSetListData")
 fun bindMatchesBoxSetRecyclerView(recyclerView: RecyclerView, list: List<DisplayQuantity>?) {
-    val adapter = recyclerView.adapter as MatchesBoxSetAdapter
+    val adapter = recyclerView.adapter as DisplayQuantityAdapter
     adapter.submitList(list)
 }
 
