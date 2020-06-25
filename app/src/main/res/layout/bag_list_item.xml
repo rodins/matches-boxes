@@ -9,7 +9,7 @@
 
         <variable
             name="clickListener"
-            type="com.sergeyrodin.matchesboxes.bag.list.BagListener" />
+            type="com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityListener" />
     </data>
 
     <LinearLayout

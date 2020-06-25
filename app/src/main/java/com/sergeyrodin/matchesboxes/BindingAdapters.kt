@@ -4,11 +4,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.sergeyrodin.matchesboxes.bag.list.BagAdapter
+import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
-import com.sergeyrodin.matchesboxes.data.Bag
-import com.sergeyrodin.matchesboxes.data.MatchesBox
-import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.matchesbox.list.MatchesBoxAdapter
 import com.sergeyrodin.matchesboxes.matchesboxset.list.MatchesBoxSetAdapter
@@ -18,7 +15,7 @@ import com.sergeyrodin.matchesboxes.util.MatchesBoxSetQuantity
 
 @BindingAdapter("bagsListData")
 fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<DisplayQuantity>?) {
-    val adapter = recyclerView.adapter as BagAdapter
+    val adapter = recyclerView.adapter as DisplayQuantityAdapter
     adapter.submitList(list)
 }
 
