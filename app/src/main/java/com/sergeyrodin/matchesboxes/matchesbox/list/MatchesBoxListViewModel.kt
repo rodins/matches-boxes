@@ -2,15 +2,14 @@ package com.sergeyrodin.matchesboxes.matchesbox.list
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
-import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.util.MatchesBoxQuantity
+import com.sergeyrodin.matchesboxes.util.DisplayQuantity
 import com.sergeyrodin.matchesboxes.util.getMatchesBoxesQuantityList
 import kotlinx.coroutines.launch
 
 class MatchesBoxListViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
-    private val _matchesBoxes = MutableLiveData<List<MatchesBoxQuantity>>()
-    val matchesBoxes: LiveData<List<MatchesBoxQuantity>>
+    private val _matchesBoxes = MutableLiveData<List<DisplayQuantity>>()
+    val matchesBoxes: LiveData<List<DisplayQuantity>>
         get() = _matchesBoxes
 
     val isNoItemsTextVisible = Transformations.map(matchesBoxes) {

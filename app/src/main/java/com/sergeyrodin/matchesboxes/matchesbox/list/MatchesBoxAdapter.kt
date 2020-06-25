@@ -5,18 +5,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.databinding.MatchesBoxListItemBinding
-import com.sergeyrodin.matchesboxes.util.MatchesBoxQuantity
+import com.sergeyrodin.matchesboxes.util.DisplayQuantity
 
 class MatchesBoxAdapter(private val clickListener: MatchesBoxListener):
-    ListAdapter<MatchesBoxQuantity, MatchesBoxAdapter.ViewHolder>(MatchesBoxDiffCallback()) {
+    ListAdapter<DisplayQuantity, MatchesBoxAdapter.ViewHolder>(MatchesBoxDiffCallback()) {
 
     class ViewHolder private constructor(private val binding: MatchesBoxListItemBinding):
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(matchesBox: MatchesBoxQuantity, listener: MatchesBoxListener) {
-            binding.matchesBox = matchesBox
+        fun bind(display: DisplayQuantity, listener: MatchesBoxListener) {
+            binding.matchesBox = display
             binding.clickListener = listener
             binding.executePendingBindings()
         }
@@ -39,12 +38,12 @@ class MatchesBoxAdapter(private val clickListener: MatchesBoxListener):
     }
 }
 
-class MatchesBoxDiffCallback: DiffUtil.ItemCallback<MatchesBoxQuantity>() {
-    override fun areItemsTheSame(oldItem: MatchesBoxQuantity, newItem: MatchesBoxQuantity): Boolean {
+class MatchesBoxDiffCallback: DiffUtil.ItemCallback<DisplayQuantity>() {
+    override fun areItemsTheSame(oldItem: DisplayQuantity, newItem: DisplayQuantity): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: MatchesBoxQuantity, newItem: MatchesBoxQuantity): Boolean {
+    override fun areContentsTheSame(oldItem: DisplayQuantity, newItem: DisplayQuantity): Boolean {
         return oldItem == newItem
     }
 }
