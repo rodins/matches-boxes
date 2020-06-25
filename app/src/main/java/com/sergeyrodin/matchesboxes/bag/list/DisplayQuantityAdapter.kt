@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.sergeyrodin.matchesboxes.databinding.BagListItemBinding
+import com.sergeyrodin.matchesboxes.databinding.DisplayQuantityListItemBinding
 import com.sergeyrodin.matchesboxes.util.DisplayQuantity
 
 class DisplayQuantityAdapter(private val displayQuantityListener: DisplayQuantityListener) : ListAdapter<DisplayQuantity, DisplayQuantityAdapter.ViewHolder>(BagDiffCallback()) {
@@ -18,7 +18,7 @@ class DisplayQuantityAdapter(private val displayQuantityListener: DisplayQuantit
         holder.bind(getItem(position), displayQuantityListener)
     }
 
-    class ViewHolder private constructor(private val binding: BagListItemBinding): RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder private constructor(private val binding: DisplayQuantityListItemBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(displayQuantity: DisplayQuantity, displayQuantityListener: DisplayQuantityListener) {
             binding.displayQuantity = displayQuantity
@@ -29,7 +29,7 @@ class DisplayQuantityAdapter(private val displayQuantityListener: DisplayQuantit
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = BagListItemBinding.inflate(layoutInflater, parent, false)
+                val binding = DisplayQuantityListItemBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }
@@ -46,6 +46,6 @@ class BagDiffCallback: DiffUtil.ItemCallback<DisplayQuantity>() {
     }
 }
 
-class DisplayQuantityListener(val clickListener: (bagId: Int) -> Unit) {
-    fun onClick(bagId: Int) = clickListener(bagId)
+class DisplayQuantityListener(val clickListener: (id: Int) -> Unit) {
+    fun onClick(id: Int) = clickListener(id)
 }
