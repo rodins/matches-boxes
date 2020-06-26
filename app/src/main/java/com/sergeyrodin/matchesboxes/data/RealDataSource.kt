@@ -139,4 +139,10 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
             return radioComponentsDatabaseDao.getRadioComponentsToBuy()
         }
     }
+
+    override fun getRadioComponents(): LiveData<List<RadioComponent>> {
+        wrapEspressoIdlingResource {
+            return radioComponentsDatabaseDao.getRadioComponents()
+        }
+    }
 }

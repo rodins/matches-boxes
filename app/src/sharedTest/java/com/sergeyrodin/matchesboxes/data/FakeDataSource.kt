@@ -9,6 +9,7 @@ class FakeDataSource : RadioComponentsDataSource{
     private val matchesBoxSetList = mutableListOf<MatchesBoxSet>()
     private val matchesBoxList = mutableListOf<MatchesBox>()
     private val radioComponentsList = mutableListOf<RadioComponent>()
+    private val radioComponentsListLiveData = MutableLiveData<List<RadioComponent>>()
 
     // Bags
     fun addBags(vararg bags: Bag) {
@@ -121,11 +122,13 @@ class FakeDataSource : RadioComponentsDataSource{
         for(component in components) {
             radioComponentsList.add(component)
         }
+        radioComponentsListLiveData.value = radioComponentsList
     }
 
     override suspend fun insertRadioComponent(radioComponent: RadioComponent) {
         if(radioComponent.id == 0) {
             radioComponentsList.add(radioComponent)
+            radioComponentsListLiveData.value = radioComponentsList
         }
     }
 
@@ -134,10 +137,12 @@ class FakeDataSource : RadioComponentsDataSource{
             it.id == radioComponent.id
         }
         radioComponentsList[index] = radioComponent
+        radioComponentsListLiveData.value = radioComponentsList
     }
 
     override suspend fun deleteRadioComponent(radioComponent: RadioComponent) {
         radioComponentsList.remove(radioComponent)
+        radioComponentsListLiveData.value = radioComponentsList
     }
 
     override suspend fun getRadioComponentById(radioComponentId: Int): RadioComponent? {
@@ -162,5 +167,9 @@ class FakeDataSource : RadioComponentsDataSource{
         return radioComponentsList.filter{
             it.isBuy
         }
+    }
+
+    override fun getRadioComponents(): LiveData<List<RadioComponent>> {
+        return radioComponentsListLiveData
     }
 }

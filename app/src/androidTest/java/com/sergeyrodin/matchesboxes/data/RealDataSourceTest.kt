@@ -305,6 +305,27 @@ class RealDataSourceTest{
     }
 
     @Test
+    fun getRadioComponents_sizeEquals() = runBlockingTest {
+        subject.insertBag(BAG)
+        subject.insertMatchesBoxSet(MATCHES_BOX_SET)
+        val matchesBox1 = MatchesBox(1, "MB1", MATCHES_BOX_SET.id)
+        val matchesBox2 = MatchesBox(2, "MB2", MATCHES_BOX_SET.id)
+        subject.insertMatchesBox(matchesBox1)
+        subject.insertMatchesBox(matchesBox2)
+        subject.insertRadioComponent(RadioComponent(1, "RC1", 4, matchesBox1.id))
+        subject.insertRadioComponent(RadioComponent(2, "RC2", 10, matchesBox1.id))
+        subject.insertRadioComponent(RadioComponent(3, "RC3", 5, matchesBox2.id))
+        subject.insertRadioComponent(RadioComponent(4, "RC4", 5, matchesBox2.id))
+        subject.insertRadioComponent(RadioComponent(5, "RC5", 5, matchesBox2.id))
+
+        val loaded = subject.getRadioComponents().getOrAwaitValue()
+
+        assertThat(loaded.size, `is`(5))
+    }
+
+    // Search
+
+    @Test
     fun searchQuery_nameEquals() = runBlockingTest {
         subject.insertBag(BAG)
         subject.insertMatchesBoxSet(MATCHES_BOX_SET)

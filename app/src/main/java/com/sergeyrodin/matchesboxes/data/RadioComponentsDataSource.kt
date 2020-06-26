@@ -52,4 +52,6 @@ interface RadioComponentsDataSource {
 
     suspend fun getRadioComponentsToBuy(): List<RadioComponent>
 
+    fun getRadioComponents(): LiveData<List<RadioComponent>>
+
 }
