@@ -31,7 +31,7 @@ class BagsListViewModelTest {
             Bag(3, "Bag3"),
             Bag(4, "Bag4")
         )
-        subject.updateQuantity()
+        dataSource.addRadioComponents()
         val bags = subject.bagsList.getOrAwaitValue()
 
         assertThat(bags.size, `is`(4))
@@ -40,7 +40,7 @@ class BagsListViewModelTest {
     @Test
     fun noItems_sizeZero() {
         dataSource.addBags()
-        subject.updateQuantity()
+        dataSource.addRadioComponents()
         val bags = subject.bagsList.getOrAwaitValue()
 
         assertThat(bags.size, `is`(0))
@@ -49,7 +49,7 @@ class BagsListViewModelTest {
     @Test
     fun noItems_noItemsTextVisible_isTrue() {
         dataSource.addBags()
-        subject.updateQuantity()
+        dataSource.addRadioComponents()
         val noItemsTextVisible = subject.isNoItemsTextVisible.getOrAwaitValue()
 
         assertThat(noItemsTextVisible, `is`(true))
@@ -63,7 +63,7 @@ class BagsListViewModelTest {
             Bag(3, "Bag3"),
             Bag(4, "Bag4")
         )
-        subject.updateQuantity()
+        dataSource.addRadioComponents()
         val noItemsTextVisible = subject.isNoItemsTextVisible.getOrAwaitValue()
 
         assertThat(noItemsTextVisible, `is`(false))
@@ -127,7 +127,7 @@ class BagsListViewModelTest {
         dataSource.addRadioComponents(component1, component2, component3, component4, component5,
             component6, component7, component8, component9, component10, component11, component12,
             component13, component14, component15, component16)
-        subject.updateQuantity()
+        //subject.updateQuantity()
 
         val items = subject.bagsList.getOrAwaitValue()
         assertThat(items[0].componentsQuantity, `is`("36"))
