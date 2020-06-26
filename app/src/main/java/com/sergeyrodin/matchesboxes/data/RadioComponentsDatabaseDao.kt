@@ -74,4 +74,7 @@ interface RadioComponentsDatabaseDao {
 
     @Query("SELECT * FROM radio_components WHERE buy = 1")
     suspend fun getRadioComponentsToBuy(): List<RadioComponent>
+
+    @Query("SELECT * FROM radio_components")
+    fun getRadioComponents(): LiveData<List<RadioComponent>>
 }

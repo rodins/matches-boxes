@@ -13,6 +13,9 @@ class BagsListViewModel(private val dataSource: RadioComponentsDataSource) : Vie
             emit(getBagQuantityList(dataSource))
     }*/
 
+    //private val components = dataSource.getRadioComponents()
+
+
     private val _bagsList = MutableLiveData<List<DisplayQuantity>>()
     val bagsList: LiveData<List<DisplayQuantity>>
         get() = _bagsList

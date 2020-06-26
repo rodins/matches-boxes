@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
@@ -160,6 +161,17 @@ class RadioComponentsDaoTest {
 
         assertThat(loaded.name, `is`(RADIO_COMPONENT.name))
         assertThat(loaded.matchesBoxId, `is`(RADIO_COMPONENT.matchesBoxId))
+    }
+
+    @Test
+    fun getRadioComponents() = runBlockingTest {
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(RADIO_COMPONENT)
+
+        val loaded = radioComponentsDatabase.radioComponentsDatabaseDao.getRadioComponents().getOrAwaitValue()
+        assertThat(loaded[0].name, `is`(RADIO_COMPONENT.name))
     }
 
     @Test

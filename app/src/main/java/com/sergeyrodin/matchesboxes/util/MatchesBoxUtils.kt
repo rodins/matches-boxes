@@ -63,3 +63,9 @@ suspend fun getBagQuantityList(dataSource: RadioComponentsDataSource): List<Disp
     }
     return output
 }
+
+suspend fun getBagQuantityListByComponentsChange(dataSource: RadioComponentsDataSource): List<DisplayQuantity> {
+    val output = mutableListOf<DisplayQuantity>()
+
+    return output
+}
