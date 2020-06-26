@@ -556,6 +556,36 @@ class AppNavigationTest {
     }
 
     @Test
+    fun editComponentSaved_navigateBackAllLevels() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withText(box.name)).perform(click())
+        onView(withText(component.name)).perform(click())
+        onView(withId(R.id.component_edit)).perform(ViewActions.replaceText("Component update"))
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        pressBack()
+        onView(withId(R.id.add_box_fab)).check(matches(isDisplayed()))
+        pressBack()
+        onView(withId(R.id.add_set_fab)).check(matches(isDisplayed()))
+        pressBack()
+        onView(withId(R.id.add_bag_fab)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
     fun editComponentSaved_navigatUp() = runBlocking{
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)

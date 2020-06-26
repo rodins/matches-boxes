@@ -9,9 +9,13 @@ import kotlinx.coroutines.launch
 
 class BagsListViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel(){
 
-    val bagsList = liveData{
+    /*val bagsList = liveData{
             emit(getBagQuantityList(dataSource))
-    }
+    }*/
+
+    private val _bagsList = MutableLiveData<List<DisplayQuantity>>()
+    val bagsList: LiveData<List<DisplayQuantity>>
+        get() = _bagsList
 
     val isNoItemsTextVisible = Transformations.map(bagsList) {
         it.isEmpty()
@@ -24,6 +28,12 @@ class BagsListViewModel(private val dataSource: RadioComponentsDataSource) : Vie
     private val _selectItemEvent = MutableLiveData<Event<Int>>()
     val selectItemEvent: LiveData<Event<Int>>
         get() = _selectItemEvent
+
+    fun updateQuantity() {
+        viewModelScope.launch {
+            _bagsList.value = getBagQuantityList(dataSource)
+        }
+    }
 
     fun addItem() {
         _addItemEvent.value = Event(Unit)

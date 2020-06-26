@@ -36,6 +36,8 @@ class BagsListFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
+        viewModel.updateQuantity()
+
         //TODO: change to binding
         binding.addBagFab.setOnClickListener {
             viewModel.addItem()
