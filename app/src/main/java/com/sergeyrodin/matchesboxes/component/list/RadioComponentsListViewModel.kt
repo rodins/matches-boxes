@@ -22,16 +22,15 @@ class RadioComponentsListViewModel(private val dataSource: RadioComponentsDataSo
         it.isEmpty()
     }
 
-    private val _boxTitle = MutableLiveData<String>()
-    val boxTitle: LiveData<String>
-        get() = _boxTitle
+    val boxTitle = boxId.switchMap {
+        liveData{
+            val box = dataSource.getMatchesBoxById(it)
+            emit(box?.name)
+        }
+    }
 
     fun start(id: Int) {
         boxId.value = id
-        viewModelScope.launch {
-            val box = dataSource.getMatchesBoxById(id)
-            _boxTitle.value = box?.name
-        }
     }
 
     fun addItem() {
