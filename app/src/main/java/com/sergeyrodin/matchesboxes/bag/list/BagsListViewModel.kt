@@ -3,7 +3,7 @@ package com.sergeyrodin.matchesboxes.bag.list
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.util.DisplayQuantity
+import com.sergeyrodin.matchesboxes.data.DisplayQuantity
 
 class BagsListViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel(){
 
@@ -23,7 +23,12 @@ class BagsListViewModel(private val dataSource: RadioComponentsDataSource) : Vie
                         }
                     }
                 }
-                val displayQuantity = DisplayQuantity(bag.id, bag.name, componentsQuantity.toString())
+                val displayQuantity =
+                    DisplayQuantity(
+                        bag.id,
+                        bag.name,
+                        componentsQuantity.toString()
+                    )
                 output.add(displayQuantity)
             }
             emit(output)

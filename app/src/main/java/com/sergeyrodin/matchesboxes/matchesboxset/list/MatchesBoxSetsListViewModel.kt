@@ -3,7 +3,7 @@ package com.sergeyrodin.matchesboxes.matchesboxset.list
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.util.DisplayQuantity
+import com.sergeyrodin.matchesboxes.data.DisplayQuantity
 
 class MatchesBoxSetsListViewModel(private val radioComponentsDataSource: RadioComponentsDataSource): ViewModel() {
     private val bagId = MutableLiveData<Int>()
@@ -56,7 +56,11 @@ class MatchesBoxSetsListViewModel(private val radioComponentsDataSource: RadioCo
                 }
             }
             val setQuantity =
-                DisplayQuantity(set.id, set.name, componentsQuantity.toString())
+                DisplayQuantity(
+                    set.id,
+                    set.name,
+                    componentsQuantity.toString()
+                )
             output.add(setQuantity)
         }
         return output

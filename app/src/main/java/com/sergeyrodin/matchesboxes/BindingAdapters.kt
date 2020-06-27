@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.data.RadioComponent
-import com.sergeyrodin.matchesboxes.util.DisplayQuantity
+import com.sergeyrodin.matchesboxes.data.DisplayQuantity
 
 @BindingAdapter("displayQuantityListData")
 fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<DisplayQuantity>?) {

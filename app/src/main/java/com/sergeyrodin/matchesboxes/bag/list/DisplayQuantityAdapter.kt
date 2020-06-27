@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.databinding.DisplayQuantityListItemBinding
-import com.sergeyrodin.matchesboxes.util.DisplayQuantity
+import com.sergeyrodin.matchesboxes.data.DisplayQuantity
 
 class DisplayQuantityAdapter(private val displayQuantityListener: DisplayQuantityListener) : ListAdapter<DisplayQuantity, DisplayQuantityAdapter.ViewHolder>(BagDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
