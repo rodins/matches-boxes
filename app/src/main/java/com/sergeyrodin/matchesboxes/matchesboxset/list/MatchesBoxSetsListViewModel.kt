@@ -4,15 +4,12 @@ import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.util.DisplayQuantity
-import com.sergeyrodin.matchesboxes.util.getMatchesBoxSetQuantityList
-import kotlinx.coroutines.launch
 
 class MatchesBoxSetsListViewModel(private val radioComponentsDataSource: RadioComponentsDataSource): ViewModel() {
     private val bagId = MutableLiveData<Int>()
     val matchesBoxSets = bagId.switchMap{
         liveData{
-            val items = radioComponentsDataSource.getMatchesBoxSetsByBagId(it)
-            emit(getMatchesBoxSetQuantityList(radioComponentsDataSource, items))
+            emit(getMatchesBoxSetQuantityList(it))
         }
     }
 
@@ -47,5 +44,21 @@ class MatchesBoxSetsListViewModel(private val radioComponentsDataSource: RadioCo
 
     fun selectItem(id: Int) {
         _selectItemEvent.value = Event(id)
+    }
+
+    private suspend fun getMatchesBoxSetQuantityList(bagId: Int): List<DisplayQuantity> {
+        val output = mutableListOf<DisplayQuantity>()
+        for (set in radioComponentsDataSource.getMatchesBoxSetsByBagId(bagId)) {
+            var componentsQuantity = 0
+            for(box in radioComponentsDataSource.getMatchesBoxesByMatchesBoxSetId(set.id)) {
+                for(component in radioComponentsDataSource.getRadioComponentsByMatchesBoxId(box.id)){
+                    componentsQuantity += component.quantity
+                }
+            }
+            val setQuantity =
+                DisplayQuantity(set.id, set.name, componentsQuantity.toString())
+            output.add(setQuantity)
+        }
+        return output
     }
 }

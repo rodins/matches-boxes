@@ -25,24 +25,6 @@ suspend fun getMatchesBoxesQuantityList(dataSource: RadioComponentsDataSource, m
     return output
 }
 
-suspend fun getMatchesBoxSetQuantityList(dataSource: RadioComponentsDataSource, sets: List<MatchesBoxSet>): List<DisplayQuantity> {
-    val output = mutableListOf<DisplayQuantity>()
-    for (set in sets) {
-        val boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)
-        var componentsQuantity = 0
-        for(box in boxes) {
-            val components = dataSource.getRadioComponentsByMatchesBoxId(box.id)
-            for(component in components) {
-                componentsQuantity += component.quantity
-            }
-        }
-        val setQuantity =
-            DisplayQuantity(set.id, set.name, componentsQuantity.toString())
-        output.add(setQuantity)
-    }
-    return output
-}
-
 suspend fun getBagQuantityList(dataSource: RadioComponentsDataSource): List<DisplayQuantity> {
     val output = mutableListOf<DisplayQuantity>()
     val bags = dataSource.getBags()
@@ -61,11 +43,5 @@ suspend fun getBagQuantityList(dataSource: RadioComponentsDataSource): List<Disp
         val displayQuantity = DisplayQuantity(bag.id, bag.name, componentsQuantity.toString())
         output.add(displayQuantity)
     }
-    return output
-}
-
-suspend fun getBagQuantityListByComponentsChange(dataSource: RadioComponentsDataSource): List<DisplayQuantity> {
-    val output = mutableListOf<DisplayQuantity>()
-
     return output
 }
