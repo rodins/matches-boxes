@@ -8,9 +8,13 @@ import com.sergeyrodin.matchesboxes.util.getMatchesBoxSetQuantityList
 import kotlinx.coroutines.launch
 
 class MatchesBoxSetsListViewModel(private val radioComponentsDataSource: RadioComponentsDataSource): ViewModel() {
-    private val _matchesBoxSets = MutableLiveData<List<DisplayQuantity>>()
-    val matchesBoxSets: LiveData<List<DisplayQuantity>>
-        get() = _matchesBoxSets
+    private val bagId = MutableLiveData<Int>()
+    val matchesBoxSets = bagId.switchMap{
+        liveData{
+            val items = radioComponentsDataSource.getMatchesBoxSetsByBagId(it)
+            emit(getMatchesBoxSetQuantityList(radioComponentsDataSource, items))
+        }
+    }
 
     val isNoMatchesBoxSetsTextVisible = Transformations.map(matchesBoxSets) {
         it.isEmpty()
@@ -28,11 +32,10 @@ class MatchesBoxSetsListViewModel(private val radioComponentsDataSource: RadioCo
     val bagTitle: LiveData<String>
         get() = _bagTitle
 
-    fun start(bagId: Int) {
+    fun start(id: Int) {
+        bagId.value = id
         viewModelScope.launch{
-            val items = radioComponentsDataSource.getMatchesBoxSetsByBagId(bagId)
-            _matchesBoxSets.value = getMatchesBoxSetQuantityList(radioComponentsDataSource, items)
-            val bag = radioComponentsDataSource.getBagById(bagId)
+            val bag = radioComponentsDataSource.getBagById(id)
             _bagTitle.value = bag?.name
         }
     }
