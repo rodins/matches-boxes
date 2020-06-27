@@ -7,9 +7,12 @@ import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
 
 class RadioComponentsListViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
-    private val _items = MutableLiveData<List<RadioComponent>>()
-    val items: LiveData<List<RadioComponent>>
-        get() = _items
+    private val boxId = MutableLiveData<Int>()
+    val items = boxId.switchMap{
+        liveData{
+            emit(dataSource.getRadioComponentsByMatchesBoxId(it))
+        }
+    }
 
     private val _addItemEvent = MutableLiveData<Event<Unit>>()
     val addItemEvent: LiveData<Event<Unit>>
@@ -23,10 +26,10 @@ class RadioComponentsListViewModel(private val dataSource: RadioComponentsDataSo
     val boxTitle: LiveData<String>
         get() = _boxTitle
 
-    fun start(boxId: Int) {
+    fun start(id: Int) {
+        boxId.value = id
         viewModelScope.launch {
-            _items.value = dataSource.getRadioComponentsByMatchesBoxId(boxId)
-            val box = dataSource.getMatchesBoxById(boxId)
+            val box = dataSource.getMatchesBoxById(id)
             _boxTitle.value = box?.name
         }
     }
