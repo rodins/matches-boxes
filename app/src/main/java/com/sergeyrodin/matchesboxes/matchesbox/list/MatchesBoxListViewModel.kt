@@ -28,16 +28,15 @@ class MatchesBoxListViewModel(private val dataSource: RadioComponentsDataSource)
     val selectMatchesBoxEvent: LiveData<Event<Int>>
         get() = _selectMatchesBoxEvent
 
-    private val _setTitle = MutableLiveData<String>()
-    val setTitle: MutableLiveData<String>
-        get() = _setTitle
+    val setTitle = matchesBoxSetId.switchMap {
+        liveData{
+            val set = dataSource.getMatchesBoxSetById(it)
+            emit(set?.name)
+        }
+    }
 
     fun start(setId: Int) {
         matchesBoxSetId.value = setId
-        viewModelScope.launch {
-            val set = dataSource.getMatchesBoxSetById(setId)
-            _setTitle.value = set?.name
-        }
     }
 
     fun addMatchesBox() {
