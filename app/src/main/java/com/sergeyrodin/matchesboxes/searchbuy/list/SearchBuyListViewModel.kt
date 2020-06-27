@@ -6,25 +6,28 @@ import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
 
 class SearchBuyListViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
-    private val _items = MutableLiveData<List<RadioComponent>>()
-    val items: LiveData<List<RadioComponent>>
-        get() = _items
+    private lateinit var searchQuery: String
+    private val isSearch = MutableLiveData<Boolean>()
+    val items = isSearch.switchMap {
+        liveData{
+            if(it) {
+                if(searchQuery.trim() != ""){
+                    emit(dataSource.getRadioComponentsByQuery(searchQuery))
+                }else {
+                    emit(listOf())
+                }
+            }else {
+                emit(dataSource.getRadioComponentsToBuy())
+            }
+        }
+    }
 
     val noComponentsTextVisible = Transformations.map(items) {
         it.isEmpty()
     }
 
-    fun start(query: String, isSearch: Boolean) {
-        if(isSearch) {
-            if(query.trim() != "") {
-                viewModelScope.launch{
-                    _items.value = dataSource.getRadioComponentsByQuery(query)
-                }
-            }
-        }else{
-            viewModelScope.launch{
-                _items.value = dataSource.getRadioComponentsToBuy()
-            }
-        }
+    fun start(query: String, searchMode: Boolean) {
+        searchQuery = query
+        isSearch.value = searchMode
     }
 }
