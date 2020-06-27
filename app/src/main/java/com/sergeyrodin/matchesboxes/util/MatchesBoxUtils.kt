@@ -24,24 +24,3 @@ suspend fun getMatchesBoxesQuantityList(dataSource: RadioComponentsDataSource, m
     }
     return output
 }
-
-suspend fun getBagQuantityList(dataSource: RadioComponentsDataSource): List<DisplayQuantity> {
-    val output = mutableListOf<DisplayQuantity>()
-    val bags = dataSource.getBags()
-    for(bag in bags) {
-        var componentsQuantity = 0
-        val sets = dataSource.getMatchesBoxSetsByBagId(bag.id)
-        for(set in sets) {
-            val boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)
-            for(box in boxes) {
-                val components = dataSource.getRadioComponentsByMatchesBoxId(box.id)
-                for(component in components) {
-                    componentsQuantity += component.quantity
-                }
-            }
-        }
-        val displayQuantity = DisplayQuantity(bag.id, bag.name, componentsQuantity.toString())
-        output.add(displayQuantity)
-    }
-    return output
-}

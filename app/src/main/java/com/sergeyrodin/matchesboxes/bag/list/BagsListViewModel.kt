@@ -4,8 +4,6 @@ import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.util.DisplayQuantity
-import com.sergeyrodin.matchesboxes.util.getBagQuantityList
-import kotlinx.coroutines.launch
 
 class BagsListViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel(){
 
