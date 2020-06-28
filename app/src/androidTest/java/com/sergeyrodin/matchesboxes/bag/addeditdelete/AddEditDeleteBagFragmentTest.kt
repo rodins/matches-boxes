@@ -48,8 +48,8 @@ class AddEditDeleteBagFragmentTest {
 
     @Test
     fun minusOneArg_enterNameTextEquals() {
-        val bundle = AddEditDeleteBagFragmentArgs.Builder(ADD_NEW_ITEM_ID).build().toBundle()
-        launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
+        val bundle = AddEditDeleteBagFragmentArgs.Builder(null as Bag).build().toBundle()
+        launchFragmentInContainer<AddEditDeleteBagFragment>(null, R.style.AppTheme)
 
         onView(withHint(R.string.enter_bag_name)).check(matches(isDisplayed()))
     }
@@ -58,7 +58,7 @@ class AddEditDeleteBagFragmentTest {
     fun bagId_textEquals() {
         val bag = Bag(1, "New bag")
         dataSource.addBags(bag)
-        val bundle = AddEditDeleteBagFragmentArgs.Builder(bag.id).build().toBundle()
+        val bundle = AddEditDeleteBagFragmentArgs.Builder(bag).build().toBundle()
         launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.bag_edit)).check(matches(withText(bag.name)))
@@ -67,7 +67,7 @@ class AddEditDeleteBagFragmentTest {
     @Test
     fun minusOneArg_addNewBag() = runBlocking{
         dataSource.addBags()
-        val bundle = AddEditDeleteBagFragmentArgs.Builder(ADD_NEW_ITEM_ID).build().toBundle()
+        val bundle = AddEditDeleteBagFragmentArgs.Builder(null as Bag).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment{
@@ -89,7 +89,7 @@ class AddEditDeleteBagFragmentTest {
     fun bagIdArg_updateBagName() = runBlocking{
         val bag = Bag(1, "Old bag")
         dataSource.addBags(bag)
-        val bundle = AddEditDeleteBagFragmentArgs.Builder(bag.id).build().toBundle()
+        val bundle = AddEditDeleteBagFragmentArgs.Builder(bag).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment{
@@ -103,14 +103,14 @@ class AddEditDeleteBagFragmentTest {
         Assert.assertThat(updatedBag.name, `is`("New bag"))
         verify(navController).navigate(
             AddEditDeleteBagFragmentDirections
-                .actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(bag.id)
+                .actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(bag)
         )
     }
 
     @Test
     fun minusOneArg_emptyInput_sizeZero() = runBlocking{
         dataSource.addBags()
-        val bundle = AddEditDeleteBagFragmentArgs.Builder(ADD_NEW_ITEM_ID).build().toBundle()
+        val bundle = AddEditDeleteBagFragmentArgs.Builder(null as Bag).build().toBundle()
         launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.bag_edit)).perform(replaceText(" "))
@@ -124,7 +124,7 @@ class AddEditDeleteBagFragmentTest {
     fun bagIdArg_emptyInput_nameNotChanged() = runBlocking{
         val bag = Bag(1, "Old bag")
         dataSource.addBags(bag)
-        val bundle = AddEditDeleteBagFragmentArgs.Builder(bag.id).build().toBundle()
+        val bundle = AddEditDeleteBagFragmentArgs.Builder(bag).build().toBundle()
         launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.bag_edit)).perform(replaceText(" "))
@@ -138,7 +138,7 @@ class AddEditDeleteBagFragmentTest {
     fun deleteBagAndNavigate() = runBlocking{
         val bag = Bag(1, "Bag to delete")
         dataSource.addBags(bag)
-        val bundle = AddEditDeleteBagFragmentArgs.Builder(bag.id).build().toBundle()
+        val bundle = AddEditDeleteBagFragmentArgs.Builder(bag).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment{

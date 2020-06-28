@@ -71,16 +71,15 @@ class BagsListFragmentTest {
         }
         onView(withId(R.id.add_bag_fab)).perform(click())
         verify(navController).navigate(
-            BagsListFragmentDirections.actionBagsListFragmentToAddEditDeleteBagFragment(ADD_NEW_ITEM_ID)
+            BagsListFragmentDirections.actionBagsListFragmentToAddEditDeleteBagFragment(null)
         )
     }
 
     @Test
     fun fewBags_itemClicked() {
-        dataSource.addBags(
-            Bag(1, "Bag1"),
-            Bag(2, "Bag2")
-        )
+        val bag1 = Bag(1, "Bag1")
+        val bag2 = Bag(2, "Bag2")
+        dataSource.addBags(bag1, bag2)
 
         val scenario = launchFragmentInContainer<BagsListFragment>(null, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
@@ -89,7 +88,7 @@ class BagsListFragmentTest {
         }
         onView(withText("Bag2")).perform(click())
         verify(navController).navigate(
-            BagsListFragmentDirections.actionBagsListFragmentToMatchesBoxSetsListFragment(2)
+            BagsListFragmentDirections.actionBagsListFragmentToMatchesBoxSetsListFragment(bag2)
         )
     }
 

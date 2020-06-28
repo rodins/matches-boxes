@@ -37,7 +37,7 @@ class MatchesBoxSetsListFragment : Fragment() {
             }
         })
 
-        viewModel.start(args.bagId)
+        viewModel.start(args.bag.id)
 
         val adapter = DisplayQuantityAdapter(DisplayQuantityListener{
             viewModel.selectItem(it)
@@ -50,14 +50,14 @@ class MatchesBoxSetsListFragment : Fragment() {
             findNavController().navigate(
                 MatchesBoxSetsListFragmentDirections
                     .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(
-                        ADD_NEW_ITEM_ID, args.bagId)
+                        args.bag, ADD_NEW_ITEM_ID)
             )
         })
 
         viewModel.selectItemEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 MatchesBoxSetsListFragmentDirections
-                    .actionMatchesBoxSetsListFragmentToMatchesBoxListFragment(it)
+                    .actionMatchesBoxSetsListFragmentToMatchesBoxListFragment(it, args.bag)
             )
         })
 
@@ -75,7 +75,7 @@ class MatchesBoxSetsListFragment : Fragment() {
         if(item.itemId == R.id.action_edit) {
             findNavController().navigate(
                 MatchesBoxSetsListFragmentDirections
-                    .actionMatchesBoxSetsListFragmentToAddEditDeleteBagFragment(args.bagId)
+                    .actionMatchesBoxSetsListFragmentToAddEditDeleteBagFragment(args.bag)
             )
             return true
         }

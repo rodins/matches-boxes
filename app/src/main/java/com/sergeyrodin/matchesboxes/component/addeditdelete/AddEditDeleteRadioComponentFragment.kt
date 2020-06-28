@@ -45,7 +45,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
             Toast.makeText(context, R.string.component_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteRadioComponentFragmentDirections
-                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId)
+                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId, args.setId, args.bag)
             )
         })
 
@@ -54,7 +54,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
             Toast.makeText(context, R.string.component_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteRadioComponentFragmentDirections
-                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId)
+                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId, args.setId, args.bag)
             )
         })
 
@@ -62,7 +62,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
             Toast.makeText(context, R.string.component_deleted, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteRadioComponentFragmentDirections
-                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId)
+                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId, args.setId, args.bag)
             )
         })
 

@@ -43,7 +43,7 @@ class BagsListFragment : Fragment() {
 
         viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
-                BagsListFragmentDirections.actionBagsListFragmentToAddEditDeleteBagFragment(ADD_NEW_ITEM_ID)
+                BagsListFragmentDirections.actionBagsListFragmentToAddEditDeleteBagFragment(null)
             )
         })
 

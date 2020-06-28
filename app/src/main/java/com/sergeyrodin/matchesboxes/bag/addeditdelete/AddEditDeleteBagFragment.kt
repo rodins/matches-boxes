@@ -33,7 +33,7 @@ class AddEditDeleteBagFragment : Fragment() {
         binding.viewModel = viewModel
 
         val args by navArgs<AddEditDeleteBagFragmentArgs>()
-        isActionDeleteVisible = args.id != ADD_NEW_ITEM_ID
+        isActionDeleteVisible = args.bag != null
 
         if(activity is MainActivity) {
             if(isActionDeleteVisible) {
@@ -43,7 +43,7 @@ class AddEditDeleteBagFragment : Fragment() {
             }
         }
 
-        viewModel.start(args.id)
+        viewModel.start(args.bag?.id?: ADD_NEW_ITEM_ID)
 
         viewModel.eventAdded.observe(viewLifecycleOwner, EventObserver{
             hideKeyboard(activity)
@@ -57,7 +57,7 @@ class AddEditDeleteBagFragment : Fragment() {
             hideKeyboard(activity)
             Toast.makeText(requireContext(), R.string.bag_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
-                AddEditDeleteBagFragmentDirections.actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(args.id)
+                AddEditDeleteBagFragmentDirections.actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(args.bag!!)
             )
         })
 

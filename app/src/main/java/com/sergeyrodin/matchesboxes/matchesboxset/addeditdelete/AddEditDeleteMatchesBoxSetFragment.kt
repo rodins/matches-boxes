@@ -34,7 +34,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
         binding.viewModel = viewModel
 
         val args by navArgs<AddEditDeleteMatchesBoxSetFragmentArgs>()
-        isDeleteVisible = args.matchesBoxSetId != -1
+        isDeleteVisible = args.setId != -1
 
         if(activity is MainActivity) {
             if(isDeleteVisible) {
@@ -44,14 +44,14 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
             }
         }
 
-        viewModel.start(args.bagId, args.matchesBoxSetId)
+        viewModel.start(args.bag.id, args.setId)
 
         viewModel.addedEvent.observe(viewLifecycleOwner, EventObserver{
             hideKeyboard(activity)
             Toast.makeText(context, R.string.matches_box_set_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxSetFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(args.bagId)
+                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(args.bag)
             )
         })
 
@@ -60,7 +60,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
             Toast.makeText(context, R.string.matches_box_set_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxSetFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(args.matchesBoxSetId)
+                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(args.setId, args.bag)
             )
         })
 
@@ -68,7 +68,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
             Toast.makeText(context, R.string.matches_box_set_deleted, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxSetFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(args.bagId)
+                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(args.bag)
             )
         })
 

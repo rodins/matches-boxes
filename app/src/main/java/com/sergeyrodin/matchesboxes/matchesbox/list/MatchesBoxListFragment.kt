@@ -47,14 +47,14 @@ class MatchesBoxListFragment : Fragment() {
         viewModel.addMatchesBoxEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 MatchesBoxListFragmentDirections
-                    .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxFragment(args.setId, ADD_NEW_ITEM_ID)
+                    .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxFragment(args.setId, ADD_NEW_ITEM_ID, args.bag)
             )
         })
 
         viewModel.selectMatchesBoxEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 MatchesBoxListFragmentDirections
-                    .actionMatchesBoxListFragmentToRadioComponentsListFragment(it)
+                    .actionMatchesBoxListFragmentToRadioComponentsListFragment(it, args.setId, args.bag)
             )
         })
 
@@ -74,7 +74,7 @@ class MatchesBoxListFragment : Fragment() {
         if(item.itemId == R.id.action_edit) {
             findNavController().navigate(
                 MatchesBoxListFragmentDirections
-                    .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxSetFragment(args.setId, DO_NOT_NEED_THIS_VARIABLE)
+                    .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxSetFragment(args.bag, args.setId)
             )
             return true
         }

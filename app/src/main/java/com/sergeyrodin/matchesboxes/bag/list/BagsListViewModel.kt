@@ -2,16 +2,19 @@ package com.sergeyrodin.matchesboxes.bag.list
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
+import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.data.DisplayQuantity
 
 class BagsListViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel(){
-
+    private lateinit var bags: List<Bag>
     private val components = dataSource.getRadioComponents()
     val bagsList = components.switchMap {
         liveData {
+            //TODO: make it a function
+            bags = dataSource.getBags()
             val output = mutableListOf<DisplayQuantity>()
-            for(bag in dataSource.getBags()) {
+            for(bag in bags) {
                 var componentsQuantity = 0
                 for(set in dataSource.getMatchesBoxSetsByBagId(bag.id)){
                     for(box in dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)) {
@@ -43,8 +46,8 @@ class BagsListViewModel(private val dataSource: RadioComponentsDataSource) : Vie
     val addItemEvent: LiveData<Event<Unit>>
         get() = _addItemEvent
 
-    private val _selectItemEvent = MutableLiveData<Event<Int>>()
-    val selectItemEvent: LiveData<Event<Int>>
+    private val _selectItemEvent = MutableLiveData<Event<Bag>>()
+    val selectItemEvent: LiveData<Event<Bag>>
         get() = _selectItemEvent
 
     fun addItem() {
@@ -52,7 +55,11 @@ class BagsListViewModel(private val dataSource: RadioComponentsDataSource) : Vie
     }
 
     fun selectItem(id: Int) {
-        _selectItemEvent.value = Event(id)
+        bags.find {
+            it.id == id
+        }?.also {
+            _selectItemEvent.value = Event(it)
+        }
     }
 
 }
