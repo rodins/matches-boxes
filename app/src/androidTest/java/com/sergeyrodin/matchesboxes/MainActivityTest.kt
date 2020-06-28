@@ -1088,4 +1088,46 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    // Bugs
+
+    @Test
+    fun setDelete_bagTitleDisplayed() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.action_delete)).perform(click())
+
+        onView(withText(bag.name)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun deleteBox_setTitleDisplayed() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withText(box.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.action_delete)).perform(click())
+
+        onView(withText(set.name)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
 }
