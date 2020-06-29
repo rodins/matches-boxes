@@ -1116,6 +1116,7 @@ class MainActivityTest {
         val box = MatchesBox(1, "Box", set.id)
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
