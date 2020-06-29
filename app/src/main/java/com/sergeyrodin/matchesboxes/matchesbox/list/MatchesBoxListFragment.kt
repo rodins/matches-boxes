@@ -35,7 +35,7 @@ class MatchesBoxListFragment : Fragment() {
             }
         })
 
-        viewModel.start(args.set.id)
+        viewModel.start(args.set)
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel

@@ -28,14 +28,16 @@ class MatchesBoxListViewModelTest{
 
     @Test
     fun fewItems_sizeEquals() {
-        val setId = 1
+        val bagId = 1
+        val set = MatchesBoxSet(1, "Set", bagId)
+        val set2Id = 2
         dataSource.addMatchesBoxes(
-            MatchesBox(1, "Box1", setId),
-            MatchesBox(2, "Box2", setId),
-            MatchesBox(3, "Box3", setId),
-            MatchesBox(4, "Box4", 2)
+            MatchesBox(1, "Box1", set.id),
+            MatchesBox(2, "Box2", set.id),
+            MatchesBox(3, "Box3", set.id),
+            MatchesBox(4, "Box4", set2Id)
         )
-        subject.start(setId)
+        subject.start(set)
 
         val items = subject.matchesBoxes.getOrAwaitValue()
         assertThat(items.size, `is`(3))
@@ -43,9 +45,10 @@ class MatchesBoxListViewModelTest{
 
     @Test
     fun noItems_sizeZero() {
-        val setId = 1
+        val bagId = 1
+        val set = MatchesBoxSet(1, "Set", bagId)
         dataSource.addMatchesBoxes()
-        subject.start(setId)
+        subject.start(set)
 
         val items = subject.matchesBoxes.getOrAwaitValue()
 
@@ -54,9 +57,10 @@ class MatchesBoxListViewModelTest{
 
     @Test
     fun noItems_noItemsTextVisibleIsTrue() {
-        val setId = 1
+        val bagId = 1
+        val set = MatchesBoxSet(1, "Set", bagId)
         dataSource.addMatchesBoxes()
-        subject.start(setId)
+        subject.start(set)
 
         val visible = subject.isNoItemsTextVisible.getOrAwaitValue()
 
@@ -65,13 +69,14 @@ class MatchesBoxListViewModelTest{
 
     @Test
     fun fewItems_noItemsTextVisibleIsFalse() {
-        val setId = 1
+        val bagId = 1
+        val set = MatchesBoxSet(1, "Set", bagId)
         dataSource.addMatchesBoxes(
-            MatchesBox(1, "Box1", setId),
-            MatchesBox(2, "Box2", setId),
-            MatchesBox(3, "Box3", setId)
+            MatchesBox(1, "Box1", set.id),
+            MatchesBox(2, "Box2", set.id),
+            MatchesBox(3, "Box3", set.id)
         )
-        subject.start(setId)
+        subject.start(set)
 
         val visible = subject.isNoItemsTextVisible.getOrAwaitValue()
 
@@ -80,9 +85,10 @@ class MatchesBoxListViewModelTest{
 
     @Test
     fun addItem_eventNotNull() {
-        val setId = 1
+        val bagId = 1
+        val set = MatchesBoxSet(1, "Set", bagId)
         dataSource.addMatchesBoxes()
-        subject.start(setId)
+        subject.start(set)
 
         subject.addMatchesBox()
 
@@ -92,10 +98,11 @@ class MatchesBoxListViewModelTest{
 
     @Test
     fun selectItem_idEquals() {
-        val setId = 1
+        val bagId = 1
+        val set = MatchesBoxSet(1, "Set", bagId)
         val matchesBoxId = 2
         dataSource.addMatchesBoxes()
-        subject.start(setId)
+        subject.start(set)
 
         subject.selectMatchesBox(matchesBoxId)
 
@@ -108,7 +115,7 @@ class MatchesBoxListViewModelTest{
         val bagId = 1
         val set = MatchesBoxSet(1, "Set title", bagId)
         dataSource.addMatchesBoxSets(set)
-        subject.start(set.id)
+        subject.start(set)
 
         val title = subject.setTitle.getOrAwaitValue()
         assertThat(title, `is`(set.name))
@@ -116,16 +123,17 @@ class MatchesBoxListViewModelTest{
 
     @Test
     fun boxesInput_quantitiesEqual(){
-        val setId = 1
-        val box1 = MatchesBox(1, "Box1", setId)
-        val box2 = MatchesBox(2, "Box2", setId)
+        val bagId = 1
+        val set = MatchesBoxSet(1, "Set", bagId)
+        val box1 = MatchesBox(1, "Box1", set.id)
+        val box2 = MatchesBox(2, "Box2", set.id)
         val component1 = RadioComponent(1, "Component1", 3, box1.id)
         val component2 = RadioComponent(2, "Component2", 4, box1.id)
         val component3 = RadioComponent(3, "Component3", 5, box2.id)
         val component4 = RadioComponent(4, "Component4", 6, box2.id)
         dataSource.addMatchesBoxes(box1, box2)
         dataSource.addRadioComponents(component1, component2, component3, component4)
-        subject.start(setId)
+        subject.start(set)
 
         val items = subject.matchesBoxes.getOrAwaitValue()
         assertThat(items[0].componentsQuantity, `is`("7"))

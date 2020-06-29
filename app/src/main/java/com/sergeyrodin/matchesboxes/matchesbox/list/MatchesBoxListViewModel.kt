@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.data.DisplayQuantity
+import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 
 class MatchesBoxListViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
     private val matchesBoxSetId = MutableLiveData<Int>()
@@ -25,15 +26,14 @@ class MatchesBoxListViewModel(private val dataSource: RadioComponentsDataSource)
     val selectMatchesBoxEvent: LiveData<Event<Int>>
         get() = _selectMatchesBoxEvent
 
-    val setTitle = matchesBoxSetId.switchMap {
-        liveData{
-            val set = dataSource.getMatchesBoxSetById(it)
-            emit(set?.name)
-        }
-    }
+    private val _setTitle = MutableLiveData<String>()
+    val setTitle: LiveData<String>
+        get() = _setTitle
 
-    fun start(setId: Int) {
-        matchesBoxSetId.value = setId
+
+    fun start(set: MatchesBoxSet) {
+        matchesBoxSetId.value = set.id
+        _setTitle.value = set.name
     }
 
     fun addMatchesBox() {
