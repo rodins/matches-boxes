@@ -7,11 +7,8 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.sergeyrodin.matchesboxes.EventObserver
-import com.sergeyrodin.matchesboxes.MainActivity
-import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
+import com.sergeyrodin.matchesboxes.*
 
-import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentAddEditDeleteMatchesBoxSetBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
 import java.util.*
@@ -34,7 +31,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
         binding.viewModel = viewModel
 
         val args by navArgs<AddEditDeleteMatchesBoxSetFragmentArgs>()
-        isDeleteVisible = args.setId != -1
+        isDeleteVisible = args.set != null
 
         if(activity is MainActivity) {
             if(isDeleteVisible) {
@@ -44,7 +41,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
             }
         }
 
-        viewModel.start(args.bag.id, args.setId)
+        viewModel.start(args.bag.id, args.set?.id?: ADD_NEW_ITEM_ID)
 
         viewModel.addedEvent.observe(viewLifecycleOwner, EventObserver{
             hideKeyboard(activity)
@@ -60,7 +57,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
             Toast.makeText(context, R.string.matches_box_set_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxSetFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(args.setId, args.bag)
+                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(args.bag, args.set!!)
             )
         })
 
@@ -81,7 +78,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.delete_menu, menu)
         val item = menu.findItem(R.id.action_delete)
-        item.setVisible(isDeleteVisible)
+        item.isVisible = isDeleteVisible
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

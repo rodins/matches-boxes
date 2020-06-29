@@ -5,8 +5,11 @@ import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.data.DisplayQuantity
+import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 
 class MatchesBoxSetsListViewModel(private val radioComponentsDataSource: RadioComponentsDataSource): ViewModel() {
+    private lateinit var sets: List<MatchesBoxSet>
+
     private val bagId = MutableLiveData<Int>()
     val matchesBoxSets = bagId.switchMap{
         liveData{
@@ -22,8 +25,8 @@ class MatchesBoxSetsListViewModel(private val radioComponentsDataSource: RadioCo
     val addItemEvent: LiveData<Event<Unit>>
         get() = _addItemEvent
 
-    private val _selectItemEvent = MutableLiveData<Event<Int>>()
-    val selectItemEvent: LiveData<Event<Int>>
+    private val _selectItemEvent = MutableLiveData<Event<MatchesBoxSet>>()
+    val selectItemEvent: LiveData<Event<MatchesBoxSet>>
         get() = _selectItemEvent
 
     private val _bagTitle = MutableLiveData<String>()
@@ -41,12 +44,17 @@ class MatchesBoxSetsListViewModel(private val radioComponentsDataSource: RadioCo
     }
 
     fun selectItem(id: Int) {
-        _selectItemEvent.value = Event(id)
+        sets.find { set ->
+            set.id == id
+        }?.also { set ->
+            _selectItemEvent.value = Event(set)
+        }
     }
 
     private suspend fun getMatchesBoxSetQuantityList(bagId: Int): List<DisplayQuantity> {
         val output = mutableListOf<DisplayQuantity>()
-        for (set in radioComponentsDataSource.getMatchesBoxSetsByBagId(bagId)) {
+        sets = radioComponentsDataSource.getMatchesBoxSetsByBagId(bagId)
+        for (set in sets) {
             var componentsQuantity = 0
             for(box in radioComponentsDataSource.getMatchesBoxesByMatchesBoxSetId(set.id)) {
                 for(component in radioComponentsDataSource.getRadioComponentsByMatchesBoxId(box.id)){

@@ -37,7 +37,7 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
             }
         }
 
-        viewModel.start(args.setId, args.boxId)
+        viewModel.start(args.set.id, args.boxId)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -47,7 +47,7 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
             Toast.makeText(context, R.string.box_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
-                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.setId, args.bag)
+                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.bag, args.set)
             )
         })
 
@@ -55,7 +55,7 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
             Toast.makeText(context, R.string.box_deleted, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
-                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.setId, args.bag)
+                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.bag, args.set)
             )
         })
 
@@ -64,7 +64,7 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
             Toast.makeText(context, R.string.box_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
-                    .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(args.boxId, args.setId, args.bag)
+                    .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(args.boxId, args.bag, args.set)
             )
         })
 

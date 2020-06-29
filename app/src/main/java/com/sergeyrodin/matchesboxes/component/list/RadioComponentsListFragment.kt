@@ -31,14 +31,14 @@ class RadioComponentsListFragment : Fragment() {
         binding.items.adapter = RadioComponentAdapter(RadioComponentListener {
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
-                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(args.boxId, it, args.setId, args.bag)
+                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(args.boxId, it, args.bag, args.set)
             )
         })
 
         viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
-                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(args.boxId, ADD_NEW_ITEM_ID, args.setId, args.bag)
+                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(args.boxId, ADD_NEW_ITEM_ID, args.bag, args.set)
             )
         })
 
@@ -61,8 +61,8 @@ class RadioComponentsListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.action_edit) {
             findNavController().navigate(
-                RadioComponentsListFragmentDirections.actionRadioComponentsListFragmentToAddEditDeleteMatchesBoxFragment(
-                    args.setId, args.boxId, args.bag)
+                RadioComponentsListFragmentDirections
+                    .actionRadioComponentsListFragmentToAddEditDeleteMatchesBoxFragment(args.boxId, args.bag, args.set)
             )
             return true
         }
