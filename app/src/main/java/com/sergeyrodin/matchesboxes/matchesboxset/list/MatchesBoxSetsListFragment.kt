@@ -37,7 +37,7 @@ class MatchesBoxSetsListFragment : Fragment() {
             }
         })
 
-        viewModel.start(args.bag.id)
+        viewModel.start(args.bag)
 
         val adapter = DisplayQuantityAdapter(DisplayQuantityListener{
             viewModel.selectItem(it)

@@ -26,7 +26,7 @@ class MatchesBoxSetsListViewModelTest {
     fun bagAndNoMatchesBoxSets_sizeZero() {
         val bag = Bag(1, "Bag")
         dataSource.addBags(bag)
-        subject.start(bag.id)
+        subject.start(bag)
 
         val list = subject.matchesBoxSets.getOrAwaitValue()
 
@@ -37,7 +37,7 @@ class MatchesBoxSetsListViewModelTest {
     fun noMatchesBoxSetsTextVisible_equalsTrue() {
         val bag = Bag(1, "Bag")
         dataSource.addBags(bag)
-        subject.start(bag.id)
+        subject.start(bag)
 
         val visible = subject.isNoMatchesBoxSetsTextVisible.getOrAwaitValue()
 
@@ -53,7 +53,7 @@ class MatchesBoxSetsListViewModelTest {
             MatchesBoxSet(2, "MBS2", bag.id),
             MatchesBoxSet(3, "MBS3", bag.id)
         )
-        subject.start(bag.id)
+        subject.start(bag)
 
         val list = subject.matchesBoxSets.getOrAwaitValue()
 
@@ -69,7 +69,7 @@ class MatchesBoxSetsListViewModelTest {
             MatchesBoxSet(2, "MBS2", bag.id),
             MatchesBoxSet(3, "MBS3", bag.id)
         )
-        subject.start(bag.id)
+        subject.start(bag)
 
         val visible = subject.isNoMatchesBoxSetsTextVisible.getOrAwaitValue()
 
@@ -98,7 +98,7 @@ class MatchesBoxSetsListViewModelTest {
     fun bagName_titleEquals(){
         val bag = Bag(1, "Bag Title")
         dataSource.addBags(bag)
-        subject.start(bag.id)
+        subject.start(bag)
 
         val title = subject.bagTitle.getOrAwaitValue()
 
@@ -107,9 +107,9 @@ class MatchesBoxSetsListViewModelTest {
 
     @Test
     fun setsList_quantityEquals() {
-        val bagId = 1
-        val set1 = MatchesBoxSet(1, "Set1", bagId)
-        val set2 = MatchesBoxSet(2, "Set2", bagId)
+        val bag = Bag(1, "Bag")
+        val set1 = MatchesBoxSet(1, "Set1", bag.id)
+        val set2 = MatchesBoxSet(2, "Set2", bag.id)
         val box1 = MatchesBox(1, "Box1", set1.id)
         val box2 = MatchesBox(2, "Box2", set1.id)
         val box3 = MatchesBox(3, "Box3", set2.id)
@@ -126,7 +126,7 @@ class MatchesBoxSetsListViewModelTest {
         dataSource.addMatchesBoxes(box1, box2, box3, box4)
         dataSource.addRadioComponents(component1, component2, component3, component4,
             component5, component6, component7, component8)
-        subject.start(bagId)
+        subject.start(bag)
 
         val items = subject.matchesBoxSets.getOrAwaitValue()
         assertThat(items[0].componentsQuantity, `is`("10"))

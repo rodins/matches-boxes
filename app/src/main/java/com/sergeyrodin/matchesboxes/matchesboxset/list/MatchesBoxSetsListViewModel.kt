@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.matchesboxset.list
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
+import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.data.DisplayQuantity
 
@@ -25,17 +26,14 @@ class MatchesBoxSetsListViewModel(private val radioComponentsDataSource: RadioCo
     val selectItemEvent: LiveData<Event<Int>>
         get() = _selectItemEvent
 
-
-    val bagTitle = bagId.switchMap {
-        liveData{
-            val bag = radioComponentsDataSource.getBagById(it)
-            emit(bag?.name)
-        }
-    }
+    private val _bagTitle = MutableLiveData<String>()
+    val bagTitle: LiveData<String>
+        get() = _bagTitle
 
 
-    fun start(id: Int) {
-        bagId.value = id
+    fun start(bag: Bag) {
+        bagId.value = bag.id
+        _bagTitle.value = bag.name
     }
 
     fun addItem() {
