@@ -64,11 +64,4 @@ class BagsListViewModel(private val dataSource: RadioComponentsDataSource) : Vie
         }
     }
 
-    @VisibleForTesting
-    fun initBagsForTesting() {
-        viewModelScope.launch{
-            bags = dataSource.getBags()
-        }
-    }
-
 }

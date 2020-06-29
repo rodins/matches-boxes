@@ -83,7 +83,8 @@ class BagsListViewModelTest {
     fun selectItem_eventNumberMatches() {
         val bag = Bag(1, "Bag")
         dataSource.addBags(bag)
-        subject.initBagsForTesting()
+        dataSource.addRadioComponents()
+        subject.bagsList.getOrAwaitValue()
 
         subject.selectItem(bag.id)
 
