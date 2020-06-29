@@ -41,10 +41,11 @@ class BagsListFragmentTest {
     }
 
     @Test
-    fun addBag_BagDisplayed() {
+    fun addBag_bagDisplayed() {
         dataSource.addBags(
             Bag(1, "New bag")
         )
+        dataSource.addRadioComponents()
 
         launchFragmentInContainer<BagsListFragment>(null, R.style.AppTheme)
 
@@ -54,6 +55,7 @@ class BagsListFragmentTest {
     @Test
     fun noBags_noBagsTextDisplayed() {
         dataSource.addBags()
+        dataSource.addRadioComponents()
 
         launchFragmentInContainer<BagsListFragment>(null, R.style.AppTheme)
 
@@ -80,6 +82,7 @@ class BagsListFragmentTest {
         val bag1 = Bag(1, "Bag1")
         val bag2 = Bag(2, "Bag2")
         dataSource.addBags(bag1, bag2)
+        dataSource.addRadioComponents()
 
         val scenario = launchFragmentInContainer<BagsListFragment>(null, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
