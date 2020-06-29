@@ -87,7 +87,7 @@ class MatchesBoxSetsListFragmentTest {
 
         verify(navController).navigate(
             MatchesBoxSetsListFragmentDirections
-                .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(bag, ADD_NEW_ITEM_ID)
+                .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(bag, null)
         )
     }
 
@@ -107,7 +107,7 @@ class MatchesBoxSetsListFragmentTest {
 
         verify(navController).navigate(
             MatchesBoxSetsListFragmentDirections
-                .actionMatchesBoxSetsListFragmentToMatchesBoxListFragment(set.id, bag)
+                .actionMatchesBoxSetsListFragmentToMatchesBoxListFragment(bag, set)
         )
     }
 
