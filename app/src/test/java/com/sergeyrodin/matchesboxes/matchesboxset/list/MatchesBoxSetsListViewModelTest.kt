@@ -3,6 +3,7 @@ package com.sergeyrodin.matchesboxes.matchesboxset.list
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
 import org.junit.Before
@@ -86,12 +87,21 @@ class MatchesBoxSetsListViewModelTest {
     }
 
     @Test
-    fun selectItem_evenNumberSelected() {
-        subject.selectItem(2)
+    fun selectItem_evenNumberSelected() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set1 = MatchesBoxSet(1, "Set1", bag.id)
+        val set2 = MatchesBoxSet(2, "Set2", bag.id)
+        val set3 = MatchesBoxSet(3, "Set3", bag.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set1, set2, set3)
+        dataSource.addRadioComponents()
+        subject.start(bag)
+        subject.initSets(bag.id)
 
-        val id = subject.selectItemEvent.getOrAwaitValue().getContentIfNotHandled()
+        subject.selectItem(set2.id)
 
-        assertThat(id, `is`(2))
+        val selectedSet = subject.selectItemEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(selectedSet?.id, `is`(set2.id))
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.sergeyrodin.matchesboxes.matchesboxset.list
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.Bag
@@ -70,5 +71,10 @@ class MatchesBoxSetsListViewModel(private val radioComponentsDataSource: RadioCo
             output.add(setQuantity)
         }
         return output
+    }
+
+    @VisibleForTesting
+    suspend fun initSets(bagId: Int) {
+        sets = radioComponentsDataSource.getMatchesBoxSetsByBagId(bagId)
     }
 }
