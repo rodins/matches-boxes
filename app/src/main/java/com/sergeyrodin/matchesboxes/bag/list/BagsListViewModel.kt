@@ -1,10 +1,12 @@
 package com.sergeyrodin.matchesboxes.bag.list
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.data.DisplayQuantity
+import kotlinx.coroutines.launch
 
 class BagsListViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel(){
     private lateinit var bags: List<Bag>
@@ -59,6 +61,13 @@ class BagsListViewModel(private val dataSource: RadioComponentsDataSource) : Vie
             it.id == id
         }?.also {
             _selectItemEvent.value = Event(it)
+        }
+    }
+
+    @VisibleForTesting
+    fun initBagsForTesting() {
+        viewModelScope.launch{
+            bags = dataSource.getBags()
         }
     }
 

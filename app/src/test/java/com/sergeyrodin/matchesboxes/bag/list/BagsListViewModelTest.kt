@@ -81,12 +81,14 @@ class BagsListViewModelTest {
 
     @Test
     fun selectItem_eventNumberMatches() {
-        dataSource.addBags()
+        val bag = Bag(1, "Bag")
+        dataSource.addBags(bag)
+        subject.initBagsForTesting()
 
-        subject.selectItem(1)
+        subject.selectItem(bag.id)
 
         val value = subject.selectItemEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(value, `is`(1))
+        assertThat(value?.id, `is`(bag.id))
     }
 
     @Test
