@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.component.list
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
+import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
@@ -22,15 +23,14 @@ class RadioComponentsListViewModel(private val dataSource: RadioComponentsDataSo
         it.isEmpty()
     }
 
-    val boxTitle = boxId.switchMap {
-        liveData{
-            val box = dataSource.getMatchesBoxById(it)
-            emit(box?.name)
-        }
-    }
+    private val _boxTitle = MutableLiveData<String>()
+    val boxTitle: LiveData<String>
+        get() = _boxTitle
 
-    fun start(id: Int) {
-        boxId.value = id
+
+    fun start(box: MatchesBox) {
+        boxId.value = box.id
+        _boxTitle.value = box.name
     }
 
     fun addItem() {

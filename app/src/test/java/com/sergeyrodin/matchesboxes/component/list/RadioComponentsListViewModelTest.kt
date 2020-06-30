@@ -32,9 +32,10 @@ class RadioComponentsListViewModelTest {
 
     @Test
     fun noItems_sizeZero() {
-        val boxId = 1
+        val setId = 1
+        val box = MatchesBox(1, "Box", setId)
         dataSource.addRadioComponents()
-        subject.start(boxId)
+        subject.start(box)
 
         val items = subject.items.getOrAwaitValue()
 
@@ -43,13 +44,14 @@ class RadioComponentsListViewModelTest {
 
     @Test
     fun fewItems_sizeEquals() {
-        val boxId = 1
+        val setId = 1
+        val box = MatchesBox(1, "Box", setId)
         dataSource.addRadioComponents(
-            RadioComponent(1, "Component1", 2, boxId),
-            RadioComponent(2, "Component2", 2, boxId),
-            RadioComponent(3, "Component3", 3, boxId)
+            RadioComponent(1, "Component1", 2, box.id),
+            RadioComponent(2, "Component2", 2, box.id),
+            RadioComponent(3, "Component3", 3, box.id)
         )
-        subject.start(boxId)
+        subject.start(box)
 
         val items = subject.items.getOrAwaitValue()
 
@@ -58,9 +60,10 @@ class RadioComponentsListViewModelTest {
 
     @Test
     fun noItems_noItemsTextVisibleTrue() {
-        val boxId = 1
+        val setId = 1
+        val box = MatchesBox(1, "Box", setId)
         dataSource.addRadioComponents()
-        subject.start(boxId)
+        subject.start(box)
 
         val visible = subject.noItemsTextVisible.getOrAwaitValue()
 
@@ -69,13 +72,14 @@ class RadioComponentsListViewModelTest {
 
     @Test
     fun fewItems_noItemsTextVisibleFalse() {
-        val boxId = 1
+        val setId = 1
+        val box = MatchesBox(1, "Box", setId)
         dataSource.addRadioComponents(
-            RadioComponent(1, "Component1", 2, boxId),
-            RadioComponent(2, "Component2", 2, boxId),
-            RadioComponent(3, "Component3", 3, boxId)
+            RadioComponent(1, "Component1", 2, box.id),
+            RadioComponent(2, "Component2", 2, box.id),
+            RadioComponent(3, "Component3", 3, box.id)
         )
-        subject.start(boxId)
+        subject.start(box)
 
         val visible = subject.noItemsTextVisible.getOrAwaitValue()
 
@@ -84,9 +88,10 @@ class RadioComponentsListViewModelTest {
 
     @Test
     fun addItem_eventNotNull() {
-        val boxId = 1
+        val setId = 1
+        val box = MatchesBox(1, "Box", setId)
         dataSource.addRadioComponents()
-        subject.start(boxId)
+        subject.start(box)
 
         subject.addItem()
 
@@ -99,7 +104,7 @@ class RadioComponentsListViewModelTest {
         val setId = 1
         val box = MatchesBox(1, "Box", setId)
         dataSource.addMatchesBoxes(box)
-        subject.start(box.id)
+        subject.start(box)
 
         val title = subject.boxTitle.getOrAwaitValue()
         assertThat(title, `is`(box.name))

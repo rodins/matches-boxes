@@ -24,7 +24,7 @@ class RadioComponentsListFragment : Fragment() {
             )
         }
 
-        viewModel.start(args.box.id)
+        viewModel.start(args.box)
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
