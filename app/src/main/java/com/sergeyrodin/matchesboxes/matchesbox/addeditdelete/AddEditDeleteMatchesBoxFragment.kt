@@ -27,7 +27,7 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
         val binding = FragmentAddEditDeleteMatchesBoxBinding.inflate(inflater)
 
         val args by navArgs<AddEditDeleteMatchesBoxFragmentArgs>()
-        hideDelete = args.boxId != ADD_NEW_ITEM_ID
+        hideDelete = args.box != null
 
         if(activity is MainActivity) {
             if(hideDelete) {
@@ -37,7 +37,7 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
             }
         }
 
-        viewModel.start(args.set.id, args.boxId)
+        viewModel.start(args.set.id, args.box?.id?: ADD_NEW_ITEM_ID)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -64,7 +64,7 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
             Toast.makeText(context, R.string.box_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
-                    .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(args.boxId, args.bag, args.set)
+                    .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(args.bag, args.set, args.box!!)
             )
         })
 

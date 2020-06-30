@@ -1,12 +1,15 @@
 package com.sergeyrodin.matchesboxes.matchesbox.list
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.data.DisplayQuantity
+import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 
 class MatchesBoxListViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
+    private lateinit var boxes: List<MatchesBox>
     private val matchesBoxSetId = MutableLiveData<Int>()
     val matchesBoxes = matchesBoxSetId.switchMap{ setId ->
         liveData{
@@ -22,8 +25,8 @@ class MatchesBoxListViewModel(private val dataSource: RadioComponentsDataSource)
     val addMatchesBoxEvent: LiveData<Event<Unit>>
         get() = _addMatchesBoxEvent
 
-    private val _selectMatchesBoxEvent = MutableLiveData<Event<Int>>()
-    val selectMatchesBoxEvent: LiveData<Event<Int>>
+    private val _selectMatchesBoxEvent = MutableLiveData<Event<MatchesBox>>()
+    val selectMatchesBoxEvent: LiveData<Event<MatchesBox>>
         get() = _selectMatchesBoxEvent
 
     private val _setTitle = MutableLiveData<String>()
@@ -41,12 +44,17 @@ class MatchesBoxListViewModel(private val dataSource: RadioComponentsDataSource)
     }
 
     fun selectMatchesBox(id: Int) {
-        _selectMatchesBoxEvent.value = Event(id)
+        boxes.find { box ->
+            box.id == id
+        }?.also { box ->
+            _selectMatchesBoxEvent.value = Event(box)
+        }
     }
 
     private suspend fun getMatchesBoxesQuantityList(setId: Int): List<DisplayQuantity> {
         val output = mutableListOf<DisplayQuantity>()
-        for (box in dataSource.getMatchesBoxesByMatchesBoxSetId(setId)) {
+        boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)
+        for (box in boxes) {
             var componentsQuantity = 0
             for(component in dataSource.getRadioComponentsByMatchesBoxId(box.id)) {
                 componentsQuantity += component.quantity
@@ -62,4 +70,8 @@ class MatchesBoxListViewModel(private val dataSource: RadioComponentsDataSource)
         return output
     }
 
+    @VisibleForTesting
+    suspend fun initBoxes(setId: Int) {
+        boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)
+    }
 }

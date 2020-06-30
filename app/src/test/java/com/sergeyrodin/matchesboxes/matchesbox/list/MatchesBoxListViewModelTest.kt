@@ -97,17 +97,18 @@ class MatchesBoxListViewModelTest{
     }
 
     @Test
-    fun selectItem_idEquals() {
+    fun selectItem_idEquals() = runBlocking{
         val bagId = 1
         val set = MatchesBoxSet(1, "Set", bagId)
-        val matchesBoxId = 2
-        dataSource.addMatchesBoxes()
+        val box = MatchesBox(2, "Box", set.id)
+        dataSource.addMatchesBoxes(box)
+        subject.initBoxes(set.id)
         subject.start(set)
 
-        subject.selectMatchesBox(matchesBoxId)
+        subject.selectMatchesBox(box.id)
 
-        val selectedId = subject.selectMatchesBoxEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(selectedId, `is`(matchesBoxId))
+        val selectedBox = subject.selectMatchesBoxEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(selectedBox?.id, `is`(box.id))
     }
 
     @Test

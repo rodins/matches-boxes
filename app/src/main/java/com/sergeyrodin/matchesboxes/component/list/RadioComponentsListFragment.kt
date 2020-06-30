@@ -24,21 +24,21 @@ class RadioComponentsListFragment : Fragment() {
             )
         }
 
-        viewModel.start(args.boxId)
+        viewModel.start(args.box.id)
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.items.adapter = RadioComponentAdapter(RadioComponentListener {
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
-                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(args.boxId, it, args.bag, args.set)
+                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(it, args.bag, args.set, args.box)
             )
         })
 
         viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
-                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(args.boxId, ADD_NEW_ITEM_ID, args.bag, args.set)
+                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(ADD_NEW_ITEM_ID, args.bag, args.set, args.box)
             )
         })
 
@@ -62,7 +62,7 @@ class RadioComponentsListFragment : Fragment() {
         if(item.itemId == R.id.action_edit) {
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
-                    .actionRadioComponentsListFragmentToAddEditDeleteMatchesBoxFragment(args.boxId, args.bag, args.set)
+                    .actionRadioComponentsListFragmentToAddEditDeleteMatchesBoxFragment(args.bag, args.set, args.box)
             )
             return true
         }

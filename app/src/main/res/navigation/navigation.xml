@@ -101,9 +101,6 @@
         android:name="com.sergeyrodin.matchesboxes.matchesbox.addeditdelete.AddEditDeleteMatchesBoxFragment"
         android:label="fragment_add_edit_delete_matches_box"
         tools:layout="@layout/fragment_add_edit_delete_matches_box" >
-        <argument
-            android:name="boxId"
-            app:argType="integer" />
         <action
             android:id="@+id/action_addEditDeleteMatchesBoxFragment_to_matchesBoxListFragment"
             app:destination="@id/matchesBoxListFragment"
@@ -118,15 +115,16 @@
         <argument
             android:name="set"
             app:argType="com.sergeyrodin.matchesboxes.data.MatchesBoxSet" />
+        <argument
+            android:name="box"
+            app:argType="com.sergeyrodin.matchesboxes.data.MatchesBox"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/radioComponentsListFragment"
         android:name="com.sergeyrodin.matchesboxes.component.list.RadioComponentsListFragment"
         android:label="fragment_radio_components_list"
         tools:layout="@layout/fragment_radio_components_list" >
-        <argument
-            android:name="boxId"
-            app:argType="integer" />
         <action
             android:id="@+id/action_radioComponentsListFragment_to_addEditDeleteRadioComponentFragment"
             app:destination="@id/addEditDeleteRadioComponentFragment" />
@@ -139,15 +137,15 @@
         <argument
             android:name="set"
             app:argType="com.sergeyrodin.matchesboxes.data.MatchesBoxSet" />
+        <argument
+            android:name="box"
+            app:argType="com.sergeyrodin.matchesboxes.data.MatchesBox" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteRadioComponentFragment"
         android:name="com.sergeyrodin.matchesboxes.component.addeditdelete.AddEditDeleteRadioComponentFragment"
         android:label="fragment_add_edit_delete_radio_component"
         tools:layout="@layout/fragment_add_edit_delete_radio_component" >
-        <argument
-            android:name="boxId"
-            app:argType="integer" />
         <argument
             android:name="componentId"
             app:argType="integer" />
@@ -161,6 +159,9 @@
         <argument
             android:name="set"
             app:argType="com.sergeyrodin.matchesboxes.data.MatchesBoxSet" />
+        <argument
+            android:name="box"
+            app:argType="com.sergeyrodin.matchesboxes.data.MatchesBox" />
     </fragment>
     <fragment
         android:id="@+id/searchBuyFragment"
