@@ -96,8 +96,10 @@ class AddEditDeleteMatchesBoxFragmentTest{
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
-        val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(bag, set, null).build().toBundle()
+        val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(bag, set, box).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment{
