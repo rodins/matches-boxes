@@ -35,8 +35,8 @@ class MatchesBoxListViewModel(private val dataSource: RadioComponentsDataSource)
 
 
     fun start(set: MatchesBoxSet) {
-        matchesBoxSetId.value = set.id
         _setTitle.value = set.name
+        matchesBoxSetId.value = set.id
     }
 
     fun addMatchesBox() {

@@ -29,8 +29,8 @@ class RadioComponentsListViewModel(private val dataSource: RadioComponentsDataSo
 
 
     fun start(box: MatchesBox) {
-        boxId.value = box.id
         _boxTitle.value = box.name
+        boxId.value = box.id
     }
 
     fun addItem() {

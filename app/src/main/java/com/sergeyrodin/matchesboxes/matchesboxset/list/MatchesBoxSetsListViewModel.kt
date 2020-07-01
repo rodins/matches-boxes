@@ -36,8 +36,8 @@ class MatchesBoxSetsListViewModel(private val radioComponentsDataSource: RadioCo
 
 
     fun start(bag: Bag) {
-        bagId.value = bag.id
         _bagTitle.value = bag.name
+        bagId.value = bag.id
     }
 
     fun addItem() {
