@@ -96,9 +96,10 @@ class AddEditDeleteMatchesBoxFragmentTest{
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
+        val updatedBox = MatchesBox(1, "Updated box", set.id)
         dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set)
-        dataSource.addMatchesBoxes(box)
+        dataSource.addMatchesBoxes(box.copy())
         val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(bag, set, box).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
@@ -106,12 +107,12 @@ class AddEditDeleteMatchesBoxFragmentTest{
             Navigation.setViewNavController(it.view!!, navController)
         }
 
-        onView(withId(R.id.box_edit)).perform(replaceText("Updated box"))
+        onView(withId(R.id.box_edit)).perform(replaceText(updatedBox.name))
         onView(withId(R.id.save_box_fab)).perform(click())
 
         verify(navController).navigate(
             AddEditDeleteMatchesBoxFragmentDirections
-                .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(bag, set, box)
+                .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(bag, set, updatedBox)
         )
     }
 

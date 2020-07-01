@@ -19,8 +19,8 @@ class AddEditDeleteMatchesBoxViewModel(private val dataSource: RadioComponentsDa
     val addEvent: LiveData<Event<Unit>>
         get() = _addEvent
 
-    private val _updateEvent = MutableLiveData<Event<Unit>>()
-    val updateEvent: LiveData<Event<Unit>>
+    private val _updateEvent = MutableLiveData<Event<MatchesBox>>()
+    val updateEvent: LiveData<Event<MatchesBox>>
         get() = _updateEvent
 
     private val _deleteEvent = MutableLiveData<Event<Unit>>()
@@ -64,7 +64,7 @@ class AddEditDeleteMatchesBoxViewModel(private val dataSource: RadioComponentsDa
         viewModelScope.launch {
             matchesBox?.name = name.value!!
             dataSource.updateMatchesBox(matchesBox!!)
-            _updateEvent.value = Event(Unit)
+            _updateEvent.value = Event(matchesBox!!)
         }
     }
 }

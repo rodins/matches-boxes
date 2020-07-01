@@ -59,12 +59,12 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
             )
         })
 
-        viewModel.updateEvent.observe(viewLifecycleOwner, EventObserver{
+        viewModel.updateEvent.observe(viewLifecycleOwner, EventObserver{ box ->
             hideKeyboard(activity)
             Toast.makeText(context, R.string.box_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
-                    .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(args.bag, args.set, args.box!!)
+                    .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(args.bag, args.set, box)
             )
         })
 
