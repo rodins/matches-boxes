@@ -68,14 +68,15 @@ class AddEditDeleteMatchesBoxSetViewModelTest {
 
     @Test
     fun deleteSet_sizeZero() = runBlocking{
-        val bagId = 1
-        val set = MatchesBoxSet(2, "MBS2", bagId)
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(2, "MBS2", bag.id)
+        dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set)
-        subject.start(bagId, set.id)
+        subject.start(bag.id, set.id)
 
         subject.deleteMatchesBoxSet()
 
-        val sets = dataSource.getMatchesBoxSetsByBagId(bagId)
+        val sets = dataSource.getMatchesBoxSetsByBagId(bag.id)
         val deleted = subject.deletedEvent.getOrAwaitValue().getContentIfNotHandled()
 
         assertThat(sets.size, `is`(0))

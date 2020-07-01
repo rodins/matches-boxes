@@ -70,7 +70,8 @@
             app:popUpTo="@id/matchesBoxSetsListFragment" />
         <argument
             android:name="bag"
-            app:argType="com.sergeyrodin.matchesboxes.data.Bag" />
+            app:argType="com.sergeyrodin.matchesboxes.data.Bag"
+            app:nullable="true" />
         <argument
             android:name="set"
             app:argType="com.sergeyrodin.matchesboxes.data.MatchesBoxSet"

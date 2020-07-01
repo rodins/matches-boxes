@@ -41,14 +41,14 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
             }
         }
 
-        viewModel.start(args.bag.id, args.set?.id?: ADD_NEW_ITEM_ID)
+        viewModel.start(args.bag?.id?: DO_NOT_NEED_THIS_VARIABLE, args.set?.id?: ADD_NEW_ITEM_ID)
 
         viewModel.addedEvent.observe(viewLifecycleOwner, EventObserver{
             hideKeyboard(activity)
             Toast.makeText(context, R.string.matches_box_set_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxSetFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(args.bag)
+                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(args.bag!!)
             )
         })
 
@@ -57,15 +57,15 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
             Toast.makeText(context, R.string.matches_box_set_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxSetFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(args.bag, set)
+                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(args.bag!!, set)
             )
         })
 
-        viewModel.deletedEvent.observe(viewLifecycleOwner, EventObserver{
+        viewModel.deletedEvent.observe(viewLifecycleOwner, EventObserver{ bag ->
             Toast.makeText(context, R.string.matches_box_set_deleted, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxSetFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(args.bag)
+                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(bag) // bag only really needed here
             )
         })
 

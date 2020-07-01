@@ -112,20 +112,18 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
     }
 
     @Test
-    fun deleteSet_sizeNavigationEquals() = runBlocking{
+    fun deleteSet_sizeNavigationEquals() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "MBS", bag.id)
+        dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set)
-        val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(bag, set).build().toBundle()
+        val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(null, set).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxSetFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment{
             Navigation.setViewNavController(it.view!!, navController)
         }
         clickDeleteAction(scenario)
-
-        val items = dataSource.getMatchesBoxSetsByBagId(bag.id)
-        Assert.assertThat(items.size, `is`(0))
 
         verify(navController).navigate(
             AddEditDeleteMatchesBoxSetFragmentDirections
