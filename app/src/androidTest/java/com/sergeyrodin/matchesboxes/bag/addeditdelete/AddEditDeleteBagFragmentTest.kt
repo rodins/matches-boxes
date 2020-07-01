@@ -47,7 +47,7 @@ class AddEditDeleteBagFragmentTest {
     }
 
     @Test
-    fun minusOneArg_enterNameTextEquals() {
+    fun nulArg_enterNameTextEquals() {
         val bundle = AddEditDeleteBagFragmentArgs.Builder(null as Bag).build().toBundle()
         launchFragmentInContainer<AddEditDeleteBagFragment>(null, R.style.AppTheme)
 
@@ -65,7 +65,7 @@ class AddEditDeleteBagFragmentTest {
     }
 
     @Test
-    fun minusOneArg_addNewBag() = runBlocking{
+    fun nullArg_addNewBag() = runBlocking{
         dataSource.addBags()
         val bundle = AddEditDeleteBagFragmentArgs.Builder(null as Bag).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
@@ -86,9 +86,10 @@ class AddEditDeleteBagFragmentTest {
     }
 
     @Test
-    fun bagIdArg_updateBagName() = runBlocking{
+    fun bagIdArg_updateBagName() {
         val bag = Bag(1, "Old bag")
-        dataSource.addBags(bag)
+        val bagUpdated = Bag(1, "Bag updated")
+        dataSource.addBags(bag.copy())
         val bundle = AddEditDeleteBagFragmentArgs.Builder(bag).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
@@ -96,19 +97,17 @@ class AddEditDeleteBagFragmentTest {
             Navigation.setViewNavController(it.view!!, navController)
         }
 
-        onView(withId(R.id.bag_edit)).perform(replaceText("New bag"))
+        onView(withId(R.id.bag_edit)).perform(replaceText(bagUpdated.name))
         onView(withId(R.id.save_bag_fab)).perform(click())
 
-        val updatedBag = dataSource.getBags()[0]
-        Assert.assertThat(updatedBag.name, `is`("New bag"))
         verify(navController).navigate(
             AddEditDeleteBagFragmentDirections
-                .actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(bag)
+                .actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(bagUpdated)
         )
     }
 
     @Test
-    fun minusOneArg_emptyInput_sizeZero() = runBlocking{
+    fun nullArg_emptyInput_sizeZero() = runBlocking{
         dataSource.addBags()
         val bundle = AddEditDeleteBagFragmentArgs.Builder(null as Bag).build().toBundle()
         launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
