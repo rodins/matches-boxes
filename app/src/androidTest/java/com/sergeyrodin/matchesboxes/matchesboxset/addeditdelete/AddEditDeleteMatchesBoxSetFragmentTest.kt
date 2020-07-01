@@ -92,8 +92,9 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
     @Test
     fun updateSet_navigationCalled() = runBlocking{
         val bag = Bag(2, "Bag")
-        val set = MatchesBoxSet(1, "MBS1", bag.id)
-        dataSource.addMatchesBoxSets(set)
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val setUpdated = MatchesBoxSet(1, "Set updated", bag.id)
+        dataSource.addMatchesBoxSets(set.copy())
         val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(bag, set).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxSetFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
@@ -101,11 +102,12 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
             Navigation.setViewNavController(it.view!!, navController)
         }
 
+        onView(withId(R.id.set_edit)).perform(replaceText(setUpdated.name))
         onView(withId(R.id.save_set_fab)).perform(click())
 
         verify(navController).navigate(
             AddEditDeleteMatchesBoxSetFragmentDirections
-                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(bag, set)
+                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(bag, setUpdated)
         )
     }
 
