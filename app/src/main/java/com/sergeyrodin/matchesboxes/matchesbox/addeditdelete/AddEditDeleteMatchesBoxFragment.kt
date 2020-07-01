@@ -47,7 +47,7 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
             Toast.makeText(context, R.string.box_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
-                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.bag, args.set)
+                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.set)
             )
         })
 
@@ -55,7 +55,7 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
             Toast.makeText(context, R.string.box_deleted, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
-                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.bag, args.set)
+                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.set)
             )
         })
 
@@ -64,7 +64,7 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
             Toast.makeText(context, R.string.box_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
-                    .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(args.bag, args.set, box)
+                    .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(args.set, box)
             )
         })
 

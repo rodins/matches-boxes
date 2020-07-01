@@ -57,7 +57,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
             Toast.makeText(context, R.string.matches_box_set_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxSetFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(args.bag!!, set)
+                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(set)
             )
         })
 
