@@ -37,7 +37,7 @@ class MatchesBoxListViewModelTest{
             MatchesBox(3, "Box3", set.id),
             MatchesBox(4, "Box4", set2Id)
         )
-        subject.start(set)
+        subject.start(set.id)
 
         val items = subject.matchesBoxes.getOrAwaitValue()
         assertThat(items.size, `is`(3))
@@ -48,7 +48,7 @@ class MatchesBoxListViewModelTest{
         val bagId = 1
         val set = MatchesBoxSet(1, "Set", bagId)
         dataSource.addMatchesBoxes()
-        subject.start(set)
+        subject.start(set.id)
 
         val items = subject.matchesBoxes.getOrAwaitValue()
 
@@ -60,7 +60,7 @@ class MatchesBoxListViewModelTest{
         val bagId = 1
         val set = MatchesBoxSet(1, "Set", bagId)
         dataSource.addMatchesBoxes()
-        subject.start(set)
+        subject.start(set.id)
 
         val visible = subject.isNoItemsTextVisible.getOrAwaitValue()
 
@@ -76,7 +76,7 @@ class MatchesBoxListViewModelTest{
             MatchesBox(2, "Box2", set.id),
             MatchesBox(3, "Box3", set.id)
         )
-        subject.start(set)
+        subject.start(set.id)
 
         val visible = subject.isNoItemsTextVisible.getOrAwaitValue()
 
@@ -88,7 +88,7 @@ class MatchesBoxListViewModelTest{
         val bagId = 1
         val set = MatchesBoxSet(1, "Set", bagId)
         dataSource.addMatchesBoxes()
-        subject.start(set)
+        subject.start(set.id)
 
         subject.addMatchesBox()
 
@@ -103,23 +103,12 @@ class MatchesBoxListViewModelTest{
         val box = MatchesBox(2, "Box", set.id)
         dataSource.addMatchesBoxes(box)
         subject.initBoxes(set.id)
-        subject.start(set)
+        subject.start(set.id)
 
         subject.selectMatchesBox(box.id)
 
         val selectedBox = subject.selectMatchesBoxEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(selectedBox?.id, `is`(box.id))
-    }
-
-    @Test
-    fun setId_titleEquals() {
-        val bagId = 1
-        val set = MatchesBoxSet(1, "Set title", bagId)
-        dataSource.addMatchesBoxSets(set)
-        subject.start(set)
-
-        val title = subject.setTitle.getOrAwaitValue()
-        assertThat(title, `is`(set.name))
     }
 
     @Test
@@ -134,7 +123,7 @@ class MatchesBoxListViewModelTest{
         val component4 = RadioComponent(4, "Component4", 6, box2.id)
         dataSource.addMatchesBoxes(box1, box2)
         dataSource.addRadioComponents(component1, component2, component3, component4)
-        subject.start(set)
+        subject.start(set.id)
 
         val items = subject.matchesBoxes.getOrAwaitValue()
         assertThat(items[0].componentsQuantity, `is`("7"))

@@ -29,14 +29,8 @@ class MatchesBoxListViewModel(private val dataSource: RadioComponentsDataSource)
     val selectMatchesBoxEvent: LiveData<Event<MatchesBox>>
         get() = _selectMatchesBoxEvent
 
-    private val _setTitle = MutableLiveData<String>()
-    val setTitle: LiveData<String>
-        get() = _setTitle
-
-
-    fun start(set: MatchesBoxSet) {
-        _setTitle.value = set.name
-        matchesBoxSetId.value = set.id
+    fun start(id: Int) {
+        matchesBoxSetId.value = id
     }
 
     fun addMatchesBox() {
