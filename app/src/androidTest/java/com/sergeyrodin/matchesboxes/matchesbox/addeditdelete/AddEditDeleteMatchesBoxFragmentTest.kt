@@ -52,7 +52,7 @@ class AddEditDeleteMatchesBoxFragmentTest{
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.addMatchesBoxes(MatchesBox(1, "Box", set.id))
-        val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(bag, set, null).build().toBundle()
+        val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(set, null).build().toBundle()
         launchFragmentInContainer<AddEditDeleteMatchesBoxFragment>(bundle, R.style.AppTheme)
 
         onView(withHint(R.string.enter_box_name)).check(matches(isDisplayed()))
@@ -64,7 +64,7 @@ class AddEditDeleteMatchesBoxFragmentTest{
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         dataSource.addMatchesBoxes(box)
-        val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(bag, set, box).build().toBundle()
+        val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(set, box).build().toBundle()
         launchFragmentInContainer<AddEditDeleteMatchesBoxFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.box_edit)).check(matches(withText(box.name)))
@@ -75,7 +75,7 @@ class AddEditDeleteMatchesBoxFragmentTest{
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.addMatchesBoxes()
-        val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(bag, set, null).build().toBundle()
+        val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(set, null).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment{
@@ -87,7 +87,7 @@ class AddEditDeleteMatchesBoxFragmentTest{
 
         verify(navController).navigate(
             AddEditDeleteMatchesBoxFragmentDirections
-                .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(bag, set)
+                .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(set)
         )
     }
 
@@ -100,7 +100,7 @@ class AddEditDeleteMatchesBoxFragmentTest{
         dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box.copy())
-        val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(bag, set, box).build().toBundle()
+        val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(set, box).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment{
@@ -112,7 +112,7 @@ class AddEditDeleteMatchesBoxFragmentTest{
 
         verify(navController).navigate(
             AddEditDeleteMatchesBoxFragmentDirections
-                .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(bag, set, updatedBox)
+                .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(set, updatedBox)
         )
     }
 
@@ -122,7 +122,7 @@ class AddEditDeleteMatchesBoxFragmentTest{
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         dataSource.addMatchesBoxes(box)
-        val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(bag, set, box).build().toBundle()
+        val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(set, box).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment{
@@ -136,7 +136,7 @@ class AddEditDeleteMatchesBoxFragmentTest{
 
         verify(navController).navigate(
             AddEditDeleteMatchesBoxFragmentDirections
-                .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(bag, set)
+                .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(set)
         )
     }
 

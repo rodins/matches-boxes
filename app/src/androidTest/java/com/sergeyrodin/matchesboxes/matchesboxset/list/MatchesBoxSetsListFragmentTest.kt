@@ -107,7 +107,7 @@ class MatchesBoxSetsListFragmentTest {
 
         verify(navController).navigate(
             MatchesBoxSetsListFragmentDirections
-                .actionMatchesBoxSetsListFragmentToMatchesBoxListFragment(bag, set)
+                .actionMatchesBoxSetsListFragmentToMatchesBoxListFragment(set)
         )
     }
 

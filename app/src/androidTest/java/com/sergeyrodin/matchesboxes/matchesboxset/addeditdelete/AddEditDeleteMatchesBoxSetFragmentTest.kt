@@ -9,20 +9,22 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers.`is`
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
@@ -107,7 +109,7 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
 
         verify(navController).navigate(
             AddEditDeleteMatchesBoxSetFragmentDirections
-                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(bag, setUpdated)
+                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(setUpdated)
         )
     }
 
