@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.MatchesBox
+import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
@@ -103,10 +104,12 @@ class AddEditDeleteMatchesBoxViewModelTest {
 
     @Test
     fun deleteItem_itemIsNull() = runBlocking{
-        val setId = 2
-        val box = MatchesBox(1, "Box", setId)
+        val bagId = 1
+        val set = MatchesBoxSet(1, "Set", bagId)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
-        subject.start(setId, box.id)
+        subject.start(set.id, box.id)
 
         subject.deleteMatchesBox()
 

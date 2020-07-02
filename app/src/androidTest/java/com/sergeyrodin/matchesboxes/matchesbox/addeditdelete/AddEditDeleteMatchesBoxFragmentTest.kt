@@ -121,6 +121,7 @@ class AddEditDeleteMatchesBoxFragmentTest{
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
+        dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
         val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(set, box).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxFragment>(bundle, R.style.AppTheme)

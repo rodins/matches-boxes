@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.MatchesBox
+import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
 
@@ -23,8 +24,8 @@ class AddEditDeleteMatchesBoxViewModel(private val dataSource: RadioComponentsDa
     val updateEvent: LiveData<Event<MatchesBox>>
         get() = _updateEvent
 
-    private val _deleteEvent = MutableLiveData<Event<Unit>>()
-    val deleteEvent: LiveData<Event<Unit>>
+    private val _deleteEvent = MutableLiveData<Event<MatchesBoxSet>>()
+    val deleteEvent: LiveData<Event<MatchesBoxSet>>
         get() = _deleteEvent
 
     fun start(setId: Int, boxId: Int) {
@@ -47,8 +48,9 @@ class AddEditDeleteMatchesBoxViewModel(private val dataSource: RadioComponentsDa
 
     fun deleteMatchesBox() {
         viewModelScope.launch {
+            val set = dataSource.getMatchesBoxSetById(matchesBox?.matchesBoxSetId!!)
             dataSource.deleteMatchesBox(matchesBox!!)
-            _deleteEvent.value = Event(Unit)
+            _deleteEvent.value = Event(set!!)
         }
     }
 
