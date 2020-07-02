@@ -50,7 +50,7 @@ class AddEditDeleteRadioComponentFragmentTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(ADD_NEW_ITEM_ID, set, box).build().toBundle()
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(ADD_NEW_ITEM_ID, box).build().toBundle()
         launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.component_edit)).check(matches(withHint(R.string.enter_component_name)))
@@ -61,7 +61,7 @@ class AddEditDeleteRadioComponentFragmentTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(ADD_NEW_ITEM_ID, set, box).build().toBundle()
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(ADD_NEW_ITEM_ID, box).build().toBundle()
         launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.buy_checkbox)).check(matches(not(isChecked())))
@@ -74,7 +74,7 @@ class AddEditDeleteRadioComponentFragmentTest {
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 3, box.id)
         dataSource.addRadioComponents(component)
-        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, set, box).build().toBundle()
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, box).build().toBundle()
         launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.component_edit)).check(matches(withText(component.name)))
@@ -87,7 +87,7 @@ class AddEditDeleteRadioComponentFragmentTest {
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 3, box.id)
         dataSource.addRadioComponents(component)
-        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, set, box).build().toBundle()
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, box).build().toBundle()
         launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.buy_checkbox)).check(matches(not(isChecked())))
@@ -100,7 +100,7 @@ class AddEditDeleteRadioComponentFragmentTest {
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 3, box.id, true)
         dataSource.addRadioComponents(component)
-        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, set, box).build().toBundle()
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, box).build().toBundle()
         launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.buy_checkbox)).check(matches(isChecked()))
@@ -112,7 +112,7 @@ class AddEditDeleteRadioComponentFragmentTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         dataSource.addRadioComponents()
-        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(ADD_NEW_ITEM_ID, set, box).build().toBundle()
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(ADD_NEW_ITEM_ID, box).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment {
@@ -124,7 +124,7 @@ class AddEditDeleteRadioComponentFragmentTest {
 
         verify(navController).navigate(
             AddEditDeleteRadioComponentFragmentDirections
-                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(set, box)
+                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(box)
         )
     }
 
@@ -134,7 +134,7 @@ class AddEditDeleteRadioComponentFragmentTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         dataSource.addRadioComponents()
-        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(ADD_NEW_ITEM_ID, set, box).build().toBundle()
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(ADD_NEW_ITEM_ID, box).build().toBundle()
         launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
 
         onView(withHint(R.string.quantity_hint)).check(matches(isDisplayed()))
@@ -147,7 +147,7 @@ class AddEditDeleteRadioComponentFragmentTest {
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 3, box.id)
         dataSource.addRadioComponents(component)
-        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, set, box).build().toBundle()
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, box).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment {
@@ -159,7 +159,7 @@ class AddEditDeleteRadioComponentFragmentTest {
 
         verify(navController).navigate(
             AddEditDeleteRadioComponentFragmentDirections
-                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(set, box)
+                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(box)
         )
     }
 
@@ -170,7 +170,7 @@ class AddEditDeleteRadioComponentFragmentTest {
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 3, box.id)
         dataSource.addRadioComponents(component)
-        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, set, box).build().toBundle()
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, box).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment {
@@ -181,7 +181,7 @@ class AddEditDeleteRadioComponentFragmentTest {
 
         verify(navController).navigate(
             AddEditDeleteRadioComponentFragmentDirections
-                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(set, box)
+                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(box)
         )
     }
 
@@ -192,7 +192,7 @@ class AddEditDeleteRadioComponentFragmentTest {
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 3, box.id)
         dataSource.addRadioComponents(component)
-        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, set, box).build().toBundle()
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, box).build().toBundle()
         launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.quantity_edit)).check(matches(withText("3")))
@@ -209,7 +209,7 @@ class AddEditDeleteRadioComponentFragmentTest {
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 3, box.id)
         dataSource.addRadioComponents(component)
-        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, set, box).build().toBundle()
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, box).build().toBundle()
         launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.quantity_edit)).check(matches(withText("3")))
@@ -226,7 +226,7 @@ class AddEditDeleteRadioComponentFragmentTest {
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 1, box.id)
         dataSource.addRadioComponents(component)
-        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, set, box).build().toBundle()
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, box).build().toBundle()
         launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.buttonMinus)).check(matches(isEnabled()))

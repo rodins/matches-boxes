@@ -49,7 +49,7 @@ class AddEditDeleteBagFragmentTest {
     @Test
     fun nulArg_enterNameTextEquals() {
         val bundle = AddEditDeleteBagFragmentArgs.Builder(null as Bag).build().toBundle()
-        launchFragmentInContainer<AddEditDeleteBagFragment>(null, R.style.AppTheme)
+        launchFragmentInContainer<AddEditDeleteBagFragment>(bundle, R.style.AppTheme)
 
         onView(withHint(R.string.enter_bag_name)).check(matches(isDisplayed()))
     }
