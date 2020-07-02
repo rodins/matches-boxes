@@ -128,9 +128,6 @@
             android:id="@+id/action_radioComponentsListFragment_to_addEditDeleteMatchesBoxFragment"
             app:destination="@id/addEditDeleteMatchesBoxFragment" />
         <argument
-            android:name="set"
-            app:argType="com.sergeyrodin.matchesboxes.data.MatchesBoxSet" />
-        <argument
             android:name="box"
             app:argType="com.sergeyrodin.matchesboxes.data.MatchesBox" />
     </fragment>
@@ -146,9 +143,6 @@
             android:id="@+id/action_addEditDeleteRadioComponentFragment_to_radioComponentsListFragment"
             app:destination="@id/radioComponentsListFragment"
             app:popUpTo="@id/matchesBoxListFragment" />
-        <argument
-            android:name="set"
-            app:argType="com.sergeyrodin.matchesboxes.data.MatchesBoxSet" />
         <argument
             android:name="box"
             app:argType="com.sergeyrodin.matchesboxes.data.MatchesBox" />

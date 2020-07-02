@@ -64,7 +64,7 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
             Toast.makeText(context, R.string.box_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
-                    .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(args.set!!, box)
+                    .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(box)
             )
         })
 
