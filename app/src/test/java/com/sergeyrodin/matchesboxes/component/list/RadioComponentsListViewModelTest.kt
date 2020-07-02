@@ -35,7 +35,7 @@ class RadioComponentsListViewModelTest {
         val setId = 1
         val box = MatchesBox(1, "Box", setId)
         dataSource.addRadioComponents()
-        subject.start(box)
+        subject.start(box.id)
 
         val items = subject.items.getOrAwaitValue()
 
@@ -51,7 +51,7 @@ class RadioComponentsListViewModelTest {
             RadioComponent(2, "Component2", 2, box.id),
             RadioComponent(3, "Component3", 3, box.id)
         )
-        subject.start(box)
+        subject.start(box.id)
 
         val items = subject.items.getOrAwaitValue()
 
@@ -63,7 +63,7 @@ class RadioComponentsListViewModelTest {
         val setId = 1
         val box = MatchesBox(1, "Box", setId)
         dataSource.addRadioComponents()
-        subject.start(box)
+        subject.start(box.id)
 
         val visible = subject.noItemsTextVisible.getOrAwaitValue()
 
@@ -79,7 +79,7 @@ class RadioComponentsListViewModelTest {
             RadioComponent(2, "Component2", 2, box.id),
             RadioComponent(3, "Component3", 3, box.id)
         )
-        subject.start(box)
+        subject.start(box.id)
 
         val visible = subject.noItemsTextVisible.getOrAwaitValue()
 
@@ -91,22 +91,11 @@ class RadioComponentsListViewModelTest {
         val setId = 1
         val box = MatchesBox(1, "Box", setId)
         dataSource.addRadioComponents()
-        subject.start(box)
+        subject.start(box.id)
 
         subject.addItem()
 
         val value = subject.addItemEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(value, `is`(not(nullValue())))
-    }
-
-    @Test
-    fun boxId_titleEquals() {
-        val setId = 1
-        val box = MatchesBox(1, "Box", setId)
-        dataSource.addMatchesBoxes(box)
-        subject.start(box)
-
-        val title = subject.boxTitle.getOrAwaitValue()
-        assertThat(title, `is`(box.name))
     }
 }

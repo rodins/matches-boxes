@@ -17,6 +17,10 @@ class RadioComponentsListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        if(activity is MainActivity) {
+            (activity as MainActivity).supportActionBar?.title = args.box.name
+        }
+
         val binding = FragmentRadioComponentsListBinding.inflate(inflater)
         val viewModel by viewModels<RadioComponentsListViewModel>{
             RadioComponentsListViewModelFactory(
@@ -24,7 +28,7 @@ class RadioComponentsListFragment : Fragment() {
             )
         }
 
-        viewModel.start(args.box)
+        viewModel.start(args.box.id)
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
@@ -40,12 +44,6 @@ class RadioComponentsListFragment : Fragment() {
                 RadioComponentsListFragmentDirections
                     .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(ADD_NEW_ITEM_ID, args.box)
             )
-        })
-
-        viewModel.boxTitle.observe(viewLifecycleOwner, Observer{
-            if(activity is MainActivity) {
-                (activity as MainActivity).supportActionBar?.title = it
-            }
         })
 
         setHasOptionsMenu(true)

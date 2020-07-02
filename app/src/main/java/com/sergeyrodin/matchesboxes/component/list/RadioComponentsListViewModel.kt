@@ -23,14 +23,8 @@ class RadioComponentsListViewModel(private val dataSource: RadioComponentsDataSo
         it.isEmpty()
     }
 
-    private val _boxTitle = MutableLiveData<String>()
-    val boxTitle: LiveData<String>
-        get() = _boxTitle
-
-
-    fun start(box: MatchesBox) {
-        _boxTitle.value = box.name
-        boxId.value = box.id
+    fun start(id: Int) {
+        boxId.value = id
     }
 
     fun addItem() {
