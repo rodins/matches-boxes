@@ -27,7 +27,7 @@ class MatchesBoxSetsListViewModelTest {
     fun bagAndNoMatchesBoxSets_sizeZero() {
         val bag = Bag(1, "Bag")
         dataSource.addBags(bag)
-        subject.start(bag)
+        subject.start(bag.id)
 
         val list = subject.matchesBoxSets.getOrAwaitValue()
 
@@ -38,7 +38,7 @@ class MatchesBoxSetsListViewModelTest {
     fun noMatchesBoxSetsTextVisible_equalsTrue() {
         val bag = Bag(1, "Bag")
         dataSource.addBags(bag)
-        subject.start(bag)
+        subject.start(bag.id)
 
         val visible = subject.isNoMatchesBoxSetsTextVisible.getOrAwaitValue()
 
@@ -54,7 +54,7 @@ class MatchesBoxSetsListViewModelTest {
             MatchesBoxSet(2, "MBS2", bag.id),
             MatchesBoxSet(3, "MBS3", bag.id)
         )
-        subject.start(bag)
+        subject.start(bag.id)
 
         val list = subject.matchesBoxSets.getOrAwaitValue()
 
@@ -70,7 +70,7 @@ class MatchesBoxSetsListViewModelTest {
             MatchesBoxSet(2, "MBS2", bag.id),
             MatchesBoxSet(3, "MBS3", bag.id)
         )
-        subject.start(bag)
+        subject.start(bag.id)
 
         val visible = subject.isNoMatchesBoxSetsTextVisible.getOrAwaitValue()
 
@@ -95,24 +95,13 @@ class MatchesBoxSetsListViewModelTest {
         dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set1, set2, set3)
         dataSource.addRadioComponents()
-        subject.start(bag)
+        subject.start(bag.id)
         subject.initSets(bag.id)
 
         subject.selectItem(set2.id)
 
         val selectedSet = subject.selectItemEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(selectedSet?.id, `is`(set2.id))
-    }
-
-    @Test
-    fun bagName_titleEquals(){
-        val bag = Bag(1, "Bag Title")
-        dataSource.addBags(bag)
-        subject.start(bag)
-
-        val title = subject.bagTitle.getOrAwaitValue()
-
-        assertThat(title, `is`(bag.name))
     }
 
     @Test
@@ -136,7 +125,7 @@ class MatchesBoxSetsListViewModelTest {
         dataSource.addMatchesBoxes(box1, box2, box3, box4)
         dataSource.addRadioComponents(component1, component2, component3, component4,
             component5, component6, component7, component8)
-        subject.start(bag)
+        subject.start(bag.id)
 
         val items = subject.matchesBoxSets.getOrAwaitValue()
         assertThat(items[0].componentsQuantity, `is`("10"))

@@ -31,13 +31,11 @@ class MatchesBoxSetsListFragment : Fragment() {
             )
         }
 
-        viewModel.bagTitle.observe(viewLifecycleOwner, Observer{
-            if(activity is MainActivity) {
-                (activity as MainActivity).supportActionBar?.title = it
-            }
-        })
+        if(activity is MainActivity) {
+            (activity as MainActivity).supportActionBar?.title = args.bag.name
+        }
 
-        viewModel.start(args.bag)
+        viewModel.start(args.bag.id)
 
         val adapter = DisplayQuantityAdapter(DisplayQuantityListener{
             viewModel.selectItem(it)

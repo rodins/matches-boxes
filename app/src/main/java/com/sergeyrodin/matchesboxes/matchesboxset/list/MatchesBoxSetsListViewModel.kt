@@ -30,14 +30,9 @@ class MatchesBoxSetsListViewModel(private val radioComponentsDataSource: RadioCo
     val selectItemEvent: LiveData<Event<MatchesBoxSet>>
         get() = _selectItemEvent
 
-    private val _bagTitle = MutableLiveData<String>()
-    val bagTitle: LiveData<String>
-        get() = _bagTitle
 
-
-    fun start(bag: Bag) {
-        _bagTitle.value = bag.name
-        bagId.value = bag.id
+    fun start(id: Int) {
+        bagId.value = id
     }
 
     fun addItem() {
