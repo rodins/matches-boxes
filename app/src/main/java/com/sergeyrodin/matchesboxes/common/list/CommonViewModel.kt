@@ -39,8 +39,8 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
         }
     }
 
-    val isNoSetsTextVisible = Transformations.map(setsList) {
-        it.isEmpty()
+    val isNoSetsTextVisible = Transformations.map(setsList) { list ->
+        list.isEmpty()
     }
 
     private val _addSetEvent = MutableLiveData<Event<Unit>>()
@@ -50,6 +50,29 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     private val _selectSetEvent = MutableLiveData<Event<MatchesBoxSet>>()
     val selectSetEvent: LiveData<Event<MatchesBoxSet>>
         get() = _selectSetEvent
+
+    // Boxes
+
+    private lateinit var boxes: List<MatchesBox>
+
+    private val matchesBoxSetId = MutableLiveData<Int>()
+    val boxesList = matchesBoxSetId.switchMap{ setId ->
+        liveData{
+            emit(getMatchesBoxesQuantityList(setId))
+        }
+    }
+
+    val isNoBoxesTextVisible = Transformations.map(boxesList) {
+        it.isEmpty()
+    }
+
+    private val _addBoxEvent = MutableLiveData<Event<Unit>>()
+    val addBoxEvent: LiveData<Event<Unit>>
+        get() = _addBoxEvent
+
+    private val _selectBoxEvent = MutableLiveData<Event<MatchesBox>>()
+    val selectBoxEvent: LiveData<Event<MatchesBox>>
+        get() = _selectBoxEvent
 
 
     // Bags
@@ -80,6 +103,24 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
             set.id == id
         }?.also { set ->
             _selectSetEvent.value = Event(set)
+        }
+    }
+
+    // Boxes
+
+    fun startBox(id: Int) {
+        matchesBoxSetId.value = id
+    }
+
+    fun addBox() {
+        _addBoxEvent.value = Event(Unit)
+    }
+
+    fun selectBox(id: Int) {
+        boxes.find { box ->
+            box.id == id
+        }?.also { box ->
+            _selectBoxEvent.value = Event(box)
         }
     }
 
@@ -132,11 +173,36 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
         return output
     }
 
+    // Boxes
+
+    private suspend fun getMatchesBoxesQuantityList(setId: Int): List<DisplayQuantity> {
+        val output = mutableListOf<DisplayQuantity>()
+        boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)
+        for (box in boxes) {
+            var componentsQuantity = 0
+            for(component in dataSource.getRadioComponentsByMatchesBoxId(box.id)) {
+                componentsQuantity += component.quantity
+            }
+            val boxQuantity =
+                DisplayQuantity(
+                    box.id,
+                    box.name,
+                    componentsQuantity.toString()
+                )
+            output.add(boxQuantity)
+        }
+        return output
+    }
+
+    // Testing
+
     @VisibleForTesting
     suspend fun initSets(bagId: Int) {
         sets = dataSource.getMatchesBoxSetsByBagId(bagId)
     }
 
-    // Boxes
-
+    @VisibleForTesting
+    suspend fun initBoxes(setId: Int) {
+        boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)
+    }
 }
