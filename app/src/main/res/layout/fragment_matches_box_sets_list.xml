@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.sergeyrodin.matchesboxes.matchesboxset.list.MatchesBoxSetsListViewModel" />
+            type="com.sergeyrodin.matchesboxes.common.list.CommonViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -19,7 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="8dp"
-                app:displayQuantityListData="@{viewModel.matchesBoxSets}"
+                app:displayQuantityListData="@{viewModel.setsList}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
             <TextView
@@ -28,14 +28,14 @@
                 android:gravity="center"
                 android:textSize="20sp"
                 android:text="@string/no_matches_box_sets_added"
-                app:noDataTextVisible="@{viewModel.isNoMatchesBoxSetsTextVisible}"/>
+                app:noDataTextVisible="@{viewModel.isNoSetsTextVisible}"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_set_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
-            android:onClick="@{() -> viewModel.addItem()}"
+            android:onClick="@{() -> viewModel.addSet()}"
             app:srcCompat="@drawable/ic_add"
             app:fabSize="normal"
             app:layout_anchor="@id/items"

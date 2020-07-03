@@ -11,6 +11,8 @@ import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.*
 import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityAdapter
 import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityListener
+import com.sergeyrodin.matchesboxes.common.list.CommonViewModel
+import com.sergeyrodin.matchesboxes.common.list.CommonViewModelFactory
 import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxSetsListBinding
 
 /**
@@ -25,8 +27,8 @@ class MatchesBoxSetsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentMatchesBoxSetsListBinding.inflate(inflater)
-        val viewModel by viewModels<MatchesBoxSetsListViewModel> {
-            MatchesBoxSetsListViewModelFactory(
+        val viewModel by viewModels<CommonViewModel> {
+            CommonViewModelFactory(
                 (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
             )
         }
@@ -35,16 +37,16 @@ class MatchesBoxSetsListFragment : Fragment() {
             (activity as MainActivity).supportActionBar?.title = args.bag.name
         }
 
-        viewModel.start(args.bag.id)
+        viewModel.startSet(args.bag.id)
 
         val adapter = DisplayQuantityAdapter(DisplayQuantityListener{
-            viewModel.selectItem(it)
+            viewModel.selectSet(it)
         })
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.items.adapter = adapter
 
-        viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
+        viewModel.addSetEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 MatchesBoxSetsListFragmentDirections
                     .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(
@@ -52,7 +54,7 @@ class MatchesBoxSetsListFragment : Fragment() {
             )
         })
 
-        viewModel.selectItemEvent.observe(viewLifecycleOwner, EventObserver{ set ->
+        viewModel.selectSetEvent.observe(viewLifecycleOwner, EventObserver{ set ->
             findNavController().navigate(
                 MatchesBoxSetsListFragmentDirections
                     .actionMatchesBoxSetsListFragmentToMatchesBoxListFragment(set)
