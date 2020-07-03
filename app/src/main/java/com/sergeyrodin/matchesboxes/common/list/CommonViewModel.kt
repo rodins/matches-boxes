@@ -74,6 +74,22 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     val selectBoxEvent: LiveData<Event<MatchesBox>>
         get() = _selectBoxEvent
 
+    // Components
+
+    private val boxId = MutableLiveData<Int>()
+    val componentsList = boxId.switchMap{
+        liveData{
+            emit(dataSource.getRadioComponentsByMatchesBoxId(it))
+        }
+    }
+
+    private val _addComponentEvent = MutableLiveData<Event<Unit>>()
+    val addComponentEvent: LiveData<Event<Unit>>
+        get() = _addComponentEvent
+
+    val noComponentsTextVisible = Transformations.map(componentsList) { list ->
+        list.isEmpty()
+    }
 
     // Bags
     fun addBag() {
@@ -122,6 +138,16 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
         }?.also { box ->
             _selectBoxEvent.value = Event(box)
         }
+    }
+
+    // Components
+
+    fun startComponent(id: Int) {
+        boxId.value = id
+    }
+
+    fun addComponent() {
+        _addComponentEvent.value = Event(Unit)
     }
 
     // Bags
