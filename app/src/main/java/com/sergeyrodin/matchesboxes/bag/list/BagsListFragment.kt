@@ -11,6 +11,8 @@ import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
+import com.sergeyrodin.matchesboxes.common.list.CommonViewModel
+import com.sergeyrodin.matchesboxes.common.list.CommonViewModelFactory
 
 import com.sergeyrodin.matchesboxes.databinding.FragmentBagsListBinding
 
@@ -24,30 +26,25 @@ class BagsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentBagsListBinding.inflate(inflater)
-        val viewModel by viewModels<BagsListViewModel> {
-            BagsListViewModelFactory(
+        val viewModel by viewModels<CommonViewModel> {
+            CommonViewModelFactory(
                 (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource)
         }
         val adapter = DisplayQuantityAdapter(DisplayQuantityListener {
-            viewModel.selectItem(it)
+            viewModel.selectBag(it)
         })
 
         binding.bagsList.adapter = adapter
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
-        //TODO: change to binding
-        binding.addBagFab.setOnClickListener {
-            viewModel.addItem()
-        }
-
-        viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
+        viewModel.addBagEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 BagsListFragmentDirections.actionBagsListFragmentToAddEditDeleteBagFragment(null)
             )
         })
 
-        viewModel.selectItemEvent.observe(viewLifecycleOwner, EventObserver{
+        viewModel.selectBagEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 BagsListFragmentDirections.actionBagsListFragmentToMatchesBoxSetsListFragment(it)
             )

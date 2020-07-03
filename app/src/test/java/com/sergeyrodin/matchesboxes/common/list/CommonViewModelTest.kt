@@ -1,11 +1,10 @@
 package com.sergeyrodin.matchesboxes.common.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.sergeyrodin.matchesboxes.bag.list.BagsListViewModel
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import org.hamcrest.CoreMatchers
-import org.junit.Assert.*
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -14,13 +13,13 @@ class CommonViewModelTest {
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var subject: BagsListViewModel
+    private lateinit var subject: CommonViewModel
     private lateinit var dataSource: FakeDataSource
 
     @Before
     fun init() {
         dataSource = FakeDataSource()
-        subject = BagsListViewModel(dataSource)
+        subject = CommonViewModel(dataSource)
     }
 
     @Test
@@ -50,7 +49,7 @@ class CommonViewModelTest {
     fun noItems_noItemsTextVisible_isTrue() {
         dataSource.addBags()
         dataSource.addRadioComponents()
-        val noItemsTextVisible = subject.isNoItemsTextVisible.getOrAwaitValue()
+        val noItemsTextVisible = subject.isNoBagsTextVisible.getOrAwaitValue()
 
         assertThat(noItemsTextVisible, CoreMatchers.`is`(true))
     }
@@ -64,7 +63,7 @@ class CommonViewModelTest {
             Bag(4, "Bag4")
         )
         dataSource.addRadioComponents()
-        val noItemsTextVisible = subject.isNoItemsTextVisible.getOrAwaitValue()
+        val noItemsTextVisible = subject.isNoBagsTextVisible.getOrAwaitValue()
 
         assertThat(noItemsTextVisible, CoreMatchers.`is`(false))
     }
@@ -73,9 +72,9 @@ class CommonViewModelTest {
     fun addItem_eventNotNull() {
         dataSource.addBags()
 
-        subject.addItem()
+        subject.addBag()
 
-        val event = subject.addItemEvent.getOrAwaitValue().getContentIfNotHandled()
+        val event = subject.addBagEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(event, CoreMatchers.`is`(CoreMatchers.not(CoreMatchers.nullValue())))
     }
 
@@ -86,9 +85,9 @@ class CommonViewModelTest {
         dataSource.addRadioComponents()
         subject.bagsList.getOrAwaitValue()
 
-        subject.selectItem(bag.id)
+        subject.selectBag(bag.id)
 
-        val value = subject.selectItemEvent.getOrAwaitValue().getContentIfNotHandled()
+        val value = subject.selectBagEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(value?.id, CoreMatchers.`is`(bag.id))
     }
 
@@ -130,7 +129,6 @@ class CommonViewModelTest {
         dataSource.addRadioComponents(component1, component2, component3, component4, component5,
             component6, component7, component8, component9, component10, component11, component12,
             component13, component14, component15, component16)
-        //subject.updateQuantity()
 
         val items = subject.bagsList.getOrAwaitValue()
         assertThat(items[0].componentsQuantity, CoreMatchers.`is`("36"))

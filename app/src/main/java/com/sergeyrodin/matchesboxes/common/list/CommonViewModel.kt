@@ -1,8 +1,7 @@
 package com.sergeyrodin.matchesboxes.common.list
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.*
+import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.DisplayQuantity
 import com.sergeyrodin.matchesboxes.data.RadioComponent
@@ -15,6 +14,30 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     val bagsList = components.switchMap {radioComponents ->
         liveData {
              emit(getBagsDisplayQuantityList(radioComponents))
+        }
+    }
+
+    val isNoBagsTextVisible = Transformations.map(bagsList) {list ->
+        list.isEmpty()
+    }
+
+    private val _addBagEvent = MutableLiveData<Event<Unit>>()
+    val addBagEvent: LiveData<Event<Unit>>
+        get() = _addBagEvent
+
+    private val _selectBagEvent = MutableLiveData<Event<Bag>>()
+    val selectBagEvent: LiveData<Event<Bag>>
+        get() = _selectBagEvent
+
+    fun addBag() {
+        _addBagEvent.value = Event(Unit)
+    }
+
+    fun selectBag(id: Int) {
+        bags.find {
+            it.id == id
+        }?.also {
+            _selectBagEvent.value = Event(it)
         }
     }
 

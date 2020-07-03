@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.sergeyrodin.matchesboxes.bag.list.BagsListViewModel" />
+            type="com.sergeyrodin.matchesboxes.common.list.CommonViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -30,7 +30,7 @@
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:text="@string/no_bags_added"
-                app:noDataTextVisible="@{viewModel.isNoItemsTextVisible}"/>
+                app:noDataTextVisible="@{viewModel.isNoBagsTextVisible}"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_bag_fab"
@@ -38,6 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
             app:srcCompat="@drawable/ic_add"
+            android:onClick="@{()->viewModel.addBag()}"
             app:fabSize="normal"
             app:layout_anchor="@id/bags_list"
             app:layout_anchorGravity="bottom|right|end" />
