@@ -8,6 +8,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.*
+import com.sergeyrodin.matchesboxes.common.list.CommonViewModel
+import com.sergeyrodin.matchesboxes.common.list.CommonViewModelFactory
 import com.sergeyrodin.matchesboxes.databinding.FragmentRadioComponentsListBinding
 
 class RadioComponentsListFragment : Fragment() {
@@ -22,13 +24,13 @@ class RadioComponentsListFragment : Fragment() {
         }
 
         val binding = FragmentRadioComponentsListBinding.inflate(inflater)
-        val viewModel by viewModels<RadioComponentsListViewModel>{
-            RadioComponentsListViewModelFactory(
+        val viewModel by viewModels<CommonViewModel>{
+            CommonViewModelFactory(
                 (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
             )
         }
 
-        viewModel.start(args.box.id)
+        viewModel.startComponent(args.box.id)
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
@@ -39,7 +41,7 @@ class RadioComponentsListFragment : Fragment() {
             )
         })
 
-        viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
+        viewModel.addComponentEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
                     .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(ADD_NEW_ITEM_ID, args.box)
