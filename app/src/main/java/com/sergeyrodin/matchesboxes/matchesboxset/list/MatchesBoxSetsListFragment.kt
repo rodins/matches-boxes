@@ -2,7 +2,6 @@ package com.sergeyrodin.matchesboxes.matchesboxset.list
 
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.ActionBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -52,14 +51,14 @@ class MatchesBoxSetsListFragment : Fragment() {
             findNavController().navigate(
                 MatchesBoxSetsListFragmentDirections
                     .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(
-                        args.bagId, null)
+                        args.bagId, ADD_NEW_ITEM_ID)
             )
         })
 
-        viewModel.selectSetEvent.observe(viewLifecycleOwner, EventObserver{ set ->
+        viewModel.selectSetEvent.observe(viewLifecycleOwner, EventObserver{ id ->
             findNavController().navigate(
                 MatchesBoxSetsListFragmentDirections
-                    .actionMatchesBoxSetsListFragmentToMatchesBoxListFragment(set)
+                    .actionMatchesBoxSetsListFragmentToMatchesBoxListFragment(id)
             )
         })
 

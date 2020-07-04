@@ -29,7 +29,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
         binding.viewModel = viewModel
 
         val args by navArgs<AddEditDeleteMatchesBoxSetFragmentArgs>()
-        isDeleteVisible = args.set != null
+        isDeleteVisible = args.setId != ADD_NEW_ITEM_ID
 
         if(activity is MainActivity) {
             if(isDeleteVisible) {
@@ -39,7 +39,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
             }
         }
 
-        viewModel.start(args.bagId, args.set?.id?: ADD_NEW_ITEM_ID)
+        viewModel.start(args.bagId, args.setId)
 
         viewModel.addedEvent.observe(viewLifecycleOwner, EventObserver{
             hideKeyboard(activity)
@@ -50,12 +50,12 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
             )
         })
 
-        viewModel.updatedEvent.observe(viewLifecycleOwner, EventObserver{ set ->
+        viewModel.updatedEvent.observe(viewLifecycleOwner, EventObserver{
             hideKeyboard(activity)
             Toast.makeText(context, R.string.matches_box_set_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxSetFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(set)
+                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(args.setId)
             )
         })
 

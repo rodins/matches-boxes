@@ -37,8 +37,6 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     }
 
     // Sets
-    private lateinit var sets: List<MatchesBoxSet>
-
     private val bagId = MutableLiveData<Int>()
     val setsList = bagId.switchMap{ id ->
         liveData{
@@ -54,8 +52,8 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     val addSetEvent: LiveData<Event<Unit>>
         get() = _addSetEvent
 
-    private val _selectSetEvent = MutableLiveData<Event<MatchesBoxSet>>()
-    val selectSetEvent: LiveData<Event<MatchesBoxSet>>
+    private val _selectSetEvent = MutableLiveData<Event<Int>>()
+    val selectSetEvent: LiveData<Event<Int>>
         get() = _selectSetEvent
 
     val bagTitle = bagId.switchMap { id ->
@@ -74,11 +72,7 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     }
 
     fun selectSet(id: Int) {
-        sets.find { set ->
-            set.id == id
-        }?.also { set ->
-            _selectSetEvent.value = Event(set)
-        }
+        _selectSetEvent.value = Event(id)
     }
 
     // Boxes
@@ -104,26 +98,12 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     val selectBoxEvent: LiveData<Event<MatchesBox>>
         get() = _selectBoxEvent
 
-    // Components
-
-    private val boxId = MutableLiveData<Int>()
-    val componentsList = boxId.switchMap{
-        liveData{
-            emit(dataSource.getRadioComponentsByMatchesBoxId(it))
+    val matchesBoxSetTitle = matchesBoxSetId.switchMap { id ->
+        liveData<String>{
+            val set = dataSource.getMatchesBoxSetById(id)
+            emit(set?.name?:"")
         }
     }
-
-    private val _addComponentEvent = MutableLiveData<Event<Unit>>()
-    val addComponentEvent: LiveData<Event<Unit>>
-        get() = _addComponentEvent
-
-    val noComponentsTextVisible = Transformations.map(componentsList) { list ->
-        list.isEmpty()
-    }
-
-
-
-    // Boxes
 
     fun startBox(id: Int) {
         matchesBoxSetId.value = id
@@ -139,6 +119,23 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
         }?.also { box ->
             _selectBoxEvent.value = Event(box)
         }
+    }
+
+    // Components
+
+    private val boxId = MutableLiveData<Int>()
+    val componentsList = boxId.switchMap{
+        liveData{
+            emit(dataSource.getRadioComponentsByMatchesBoxId(it))
+        }
+    }
+
+    private val _addComponentEvent = MutableLiveData<Event<Unit>>()
+    val addComponentEvent: LiveData<Event<Unit>>
+        get() = _addComponentEvent
+
+    val noComponentsTextVisible = Transformations.map(componentsList) { list ->
+        list.isEmpty()
     }
 
     // Components
@@ -180,8 +177,7 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     // Sets
     private suspend fun getMatchesBoxSetQuantityList(bagId: Int): List<DisplayQuantity> {
         val output = mutableListOf<DisplayQuantity>()
-        sets = dataSource.getMatchesBoxSetsByBagId(bagId)
-        for (set in sets) {
+        for (set in dataSource.getMatchesBoxSetsByBagId(bagId)) {
             var componentsQuantity = 0
             for(box in dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)) {
                 for(component in dataSource.getRadioComponentsByMatchesBoxId(box.id)){
@@ -221,11 +217,6 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     }
 
     // Testing
-
-    @VisibleForTesting
-    suspend fun initSets(bagId: Int) {
-        sets = dataSource.getMatchesBoxSetsByBagId(bagId)
-    }
 
     @VisibleForTesting
     suspend fun initBoxes(setId: Int) {

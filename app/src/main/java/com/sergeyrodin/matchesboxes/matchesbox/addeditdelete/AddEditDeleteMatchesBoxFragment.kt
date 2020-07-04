@@ -37,7 +37,7 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
             }
         }
 
-        viewModel.start(args.set?.id?: DO_NOT_NEED_THIS_VARIABLE, args.box?.id?: ADD_NEW_ITEM_ID)
+        viewModel.start(args.setId, args.box?.id?: ADD_NEW_ITEM_ID)
 
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
@@ -47,15 +47,15 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
             Toast.makeText(context, R.string.box_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
-                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.set!!)
+                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.setId)
             )
         })
 
-        viewModel.deleteEvent.observe(viewLifecycleOwner, EventObserver{ set ->
+        viewModel.deleteEvent.observe(viewLifecycleOwner, EventObserver{ setId ->
             Toast.makeText(context, R.string.box_deleted, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
-                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(set)
+                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(setId)
             )
         })
 

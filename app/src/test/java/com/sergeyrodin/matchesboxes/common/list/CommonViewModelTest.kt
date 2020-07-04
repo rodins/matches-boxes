@@ -213,12 +213,11 @@ class CommonViewModelTest {
         dataSource.addMatchesBoxSets(set1, set2, set3)
         dataSource.addRadioComponents()
         subject.startSet(bag.id)
-        subject.initSets(bag.id)
 
         subject.selectSet(set2.id)
 
-        val selectedSet = subject.selectSetEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(selectedSet?.id, CoreMatchers.`is`(set2.id))
+        val id = subject.selectSetEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(id, CoreMatchers.`is`(set2.id))
     }
 
     @Test

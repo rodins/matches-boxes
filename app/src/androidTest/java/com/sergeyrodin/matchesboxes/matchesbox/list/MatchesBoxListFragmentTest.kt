@@ -52,7 +52,7 @@ class MatchesBoxListFragmentTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.addMatchesBoxes()
-        val bundle = MatchesBoxListFragmentArgs.Builder(set).build().toBundle()
+        val bundle = MatchesBoxListFragmentArgs.Builder(set.id).build().toBundle()
         launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_matches_boxes_added)).check(matches(isDisplayed()))
@@ -63,7 +63,7 @@ class MatchesBoxListFragmentTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.addMatchesBoxes(MatchesBox(1, "Box", set.id))
-        val bundle = MatchesBoxListFragmentArgs.Builder(set).build().toBundle()
+        val bundle = MatchesBoxListFragmentArgs.Builder(set.id).build().toBundle()
         launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_matches_boxes_added)).check(matches(not(isDisplayed())))
@@ -80,7 +80,7 @@ class MatchesBoxListFragmentTest {
             MatchesBox(3, "Box3", set.id),
             MatchesBox(4, "Box4", set2.id)
         )
-        val bundle = MatchesBoxListFragmentArgs.Builder(set).build().toBundle()
+        val bundle = MatchesBoxListFragmentArgs.Builder(set.id).build().toBundle()
         launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
 
         onView(withText("Box1")).check(matches(isDisplayed()))
@@ -94,7 +94,7 @@ class MatchesBoxListFragmentTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.addMatchesBoxes()
-        val bundle = MatchesBoxListFragmentArgs.Builder(set).build().toBundle()
+        val bundle = MatchesBoxListFragmentArgs.Builder(set.id).build().toBundle()
         val scenario = launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment {
@@ -105,7 +105,7 @@ class MatchesBoxListFragmentTest {
 
         verify(navController).navigate(
             MatchesBoxListFragmentDirections
-                .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxFragment(set, null)
+                .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxFragment(set.id, null)
         )
     }
 
@@ -115,7 +115,7 @@ class MatchesBoxListFragmentTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box1", set.id)
         dataSource.addMatchesBoxes(box)
-        val bundle = MatchesBoxListFragmentArgs.Builder(set).build().toBundle()
+        val bundle = MatchesBoxListFragmentArgs.Builder(set.id).build().toBundle()
         val scenario = launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment {
@@ -133,7 +133,7 @@ class MatchesBoxListFragmentTest {
     fun editAction_navigationCalled() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
-        val bundle = MatchesBoxListFragmentArgs.Builder(set).build().toBundle()
+        val bundle = MatchesBoxListFragmentArgs.Builder(set.id).build().toBundle()
         val scenario = launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment {
@@ -145,7 +145,7 @@ class MatchesBoxListFragmentTest {
         verify(navController).navigate(
             MatchesBoxListFragmentDirections
                 .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxSetFragment(
-                    DO_NOT_NEED_THIS_VARIABLE, set)
+                    DO_NOT_NEED_THIS_VARIABLE, set.id)
         )
     }
 
@@ -158,7 +158,7 @@ class MatchesBoxListFragmentTest {
         val component2 = RadioComponent(2, "Component2", 7, set.id)
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component1, component2)
-        val bundle = MatchesBoxListFragmentArgs.Builder(set).build().toBundle()
+        val bundle = MatchesBoxListFragmentArgs.Builder(set.id).build().toBundle()
         launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
 
         onView(withText("10")).check(matches(isDisplayed())) // sum of components quantities 3+7=10

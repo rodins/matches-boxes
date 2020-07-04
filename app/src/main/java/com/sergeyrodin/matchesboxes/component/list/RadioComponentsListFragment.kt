@@ -62,7 +62,8 @@ class RadioComponentsListFragment : Fragment() {
         if(item.itemId == R.id.action_edit) {
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
-                    .actionRadioComponentsListFragmentToAddEditDeleteMatchesBoxFragment(null, args.box)
+                    .actionRadioComponentsListFragmentToAddEditDeleteMatchesBoxFragment(
+                        DO_NOT_NEED_THIS_VARIABLE, args.box)
             )
             return true
         }

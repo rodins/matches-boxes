@@ -30,11 +30,7 @@ class MatchesBoxListFragment : Fragment() {
             )
         }
 
-        if(activity is MainActivity) {
-            (activity as MainActivity).supportActionBar?.title = args.set.name
-        }
-
-        viewModel.startBox(args.set.id)
+        viewModel.startBox(args.setId)
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
@@ -43,10 +39,16 @@ class MatchesBoxListFragment : Fragment() {
             viewModel.selectBox(it)
         })
 
+        viewModel.matchesBoxSetTitle.observe(viewLifecycleOwner, Observer{ title ->
+            if(activity is MainActivity) {
+                (activity as MainActivity).supportActionBar?.title = title
+            }
+        })
+
         viewModel.addBoxEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 MatchesBoxListFragmentDirections
-                    .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxFragment(args.set, null)
+                    .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxFragment(args.setId, null)
             )
         })
 
@@ -74,7 +76,7 @@ class MatchesBoxListFragment : Fragment() {
             findNavController().navigate(
                 MatchesBoxListFragmentDirections
                     .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxSetFragment(
-                        ADD_NEW_ITEM_ID, args.set)
+                        ADD_NEW_ITEM_ID, args.setId)
             )
             return true
         }

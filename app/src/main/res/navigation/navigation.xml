@@ -71,9 +71,8 @@
             android:name="bagId"
             app:argType="integer" />
         <argument
-            android:name="set"
-            app:argType="com.sergeyrodin.matchesboxes.data.MatchesBoxSet"
-            app:nullable="true" />
+            android:name="setId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/matchesBoxListFragment"
@@ -89,8 +88,8 @@
             android:id="@+id/action_matchesBoxListFragment_to_radioComponentsListFragment"
             app:destination="@id/radioComponentsListFragment" />
         <argument
-            android:name="set"
-            app:argType="com.sergeyrodin.matchesboxes.data.MatchesBoxSet" />
+            android:name="setId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteMatchesBoxFragment"
@@ -106,9 +105,8 @@
             app:destination="@id/radioComponentsListFragment"
             app:popUpTo="@id/matchesBoxListFragment" />
         <argument
-            android:name="set"
-            app:argType="com.sergeyrodin.matchesboxes.data.MatchesBoxSet"
-            app:nullable="true" />
+            android:name="setId"
+            app:argType="integer" />
         <argument
             android:name="box"
             app:argType="com.sergeyrodin.matchesboxes.data.MatchesBox"
