@@ -2,16 +2,14 @@ package com.sergeyrodin.matchesboxes.matchesboxset.addeditdelete
 
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.*
-
 import com.sergeyrodin.matchesboxes.databinding.FragmentAddEditDeleteMatchesBoxSetBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
-import java.util.*
 
 class AddEditDeleteMatchesBoxSetFragment : Fragment() {
 
@@ -41,14 +39,14 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
             }
         }
 
-        viewModel.start(args.bag?.id?: DO_NOT_NEED_THIS_VARIABLE, args.set?.id?: ADD_NEW_ITEM_ID)
+        viewModel.start(args.bagId, args.set?.id?: ADD_NEW_ITEM_ID)
 
         viewModel.addedEvent.observe(viewLifecycleOwner, EventObserver{
             hideKeyboard(activity)
             Toast.makeText(context, R.string.matches_box_set_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxSetFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(args.bag!!)
+                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(args.bagId)
             )
         })
 
@@ -61,11 +59,11 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
             )
         })
 
-        viewModel.deletedEvent.observe(viewLifecycleOwner, EventObserver{ bag ->
+        viewModel.deletedEvent.observe(viewLifecycleOwner, EventObserver{ bagId ->
             Toast.makeText(context, R.string.matches_box_set_deleted, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxSetFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(bag) // bag only really needed here
+                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(bagId)
             )
         })
 

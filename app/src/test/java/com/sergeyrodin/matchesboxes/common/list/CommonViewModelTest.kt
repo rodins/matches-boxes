@@ -90,8 +90,8 @@ class CommonViewModelTest {
 
         subject.selectBag(bag.id)
 
-        val value = subject.selectBagEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(value?.id, CoreMatchers.`is`(bag.id))
+        val id = subject.selectBagEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(id, CoreMatchers.`is`(bag.id))
     }
 
     @Test

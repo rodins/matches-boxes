@@ -73,7 +73,8 @@ class MatchesBoxListFragment : Fragment() {
         if(item.itemId == R.id.action_edit) {
             findNavController().navigate(
                 MatchesBoxListFragmentDirections
-                    .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxSetFragment(null, args.set)
+                    .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxSetFragment(
+                        ADD_NEW_ITEM_ID, args.set)
             )
             return true
         }

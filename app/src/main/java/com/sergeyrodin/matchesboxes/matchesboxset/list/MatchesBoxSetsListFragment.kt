@@ -33,11 +33,7 @@ class MatchesBoxSetsListFragment : Fragment() {
             )
         }
 
-        if(activity is MainActivity) {
-            (activity as MainActivity).supportActionBar?.title = args.bag.name
-        }
-
-        viewModel.startSet(args.bag.id)
+        viewModel.startSet(args.bagId)
 
         val adapter = DisplayQuantityAdapter(DisplayQuantityListener{
             viewModel.selectSet(it)
@@ -46,11 +42,17 @@ class MatchesBoxSetsListFragment : Fragment() {
         binding.viewModel = viewModel
         binding.items.adapter = adapter
 
+        viewModel.bagTitle.observe(viewLifecycleOwner, Observer{title ->
+            if(activity is MainActivity) {
+                (activity as MainActivity).supportActionBar?.title = title
+            }
+        })
+
         viewModel.addSetEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 MatchesBoxSetsListFragmentDirections
                     .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(
-                        args.bag, null)
+                        args.bagId, null)
             )
         })
 
@@ -75,7 +77,7 @@ class MatchesBoxSetsListFragment : Fragment() {
         if(item.itemId == R.id.action_edit) {
             findNavController().navigate(
                 MatchesBoxSetsListFragmentDirections
-                    .actionMatchesBoxSetsListFragmentToAddEditDeleteBagFragment(args.bag)
+                    .actionMatchesBoxSetsListFragmentToAddEditDeleteBagFragment(args.bagId)
             )
             return true
         }

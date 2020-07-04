@@ -73,7 +73,8 @@ class BagsListFragmentTest {
         }
         onView(withId(R.id.add_bag_fab)).perform(click())
         verify(navController).navigate(
-            BagsListFragmentDirections.actionBagsListFragmentToAddEditDeleteBagFragment(null)
+            BagsListFragmentDirections.actionBagsListFragmentToAddEditDeleteBagFragment(
+                ADD_NEW_ITEM_ID)
         )
     }
 
@@ -91,7 +92,7 @@ class BagsListFragmentTest {
         }
         onView(withText("Bag2")).perform(click())
         verify(navController).navigate(
-            BagsListFragmentDirections.actionBagsListFragmentToMatchesBoxSetsListFragment(bag2)
+            BagsListFragmentDirections.actionBagsListFragmentToMatchesBoxSetsListFragment(bag2.id)
         )
     }
 

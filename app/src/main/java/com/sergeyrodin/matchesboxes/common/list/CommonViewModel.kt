@@ -8,7 +8,6 @@ import com.sergeyrodin.matchesboxes.data.*
 class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
 
     // Bags
-    private lateinit var bags: List<Bag>
 
     private val components = dataSource.getRadioComponents()
     val bagsList = components.switchMap {radioComponents ->
@@ -25,9 +24,17 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     val addBagEvent: LiveData<Event<Unit>>
         get() = _addBagEvent
 
-    private val _selectBagEvent = MutableLiveData<Event<Bag>>()
-    val selectBagEvent: LiveData<Event<Bag>>
+    private val _selectBagEvent = MutableLiveData<Event<Int>>()
+    val selectBagEvent: LiveData<Event<Int>>
         get() = _selectBagEvent
+
+    fun addBag() {
+        _addBagEvent.value = Event(Unit)
+    }
+
+    fun selectBag(id: Int) {
+        _selectBagEvent.value = Event(id)
+    }
 
     // Sets
     private lateinit var sets: List<MatchesBoxSet>
@@ -50,6 +57,29 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     private val _selectSetEvent = MutableLiveData<Event<MatchesBoxSet>>()
     val selectSetEvent: LiveData<Event<MatchesBoxSet>>
         get() = _selectSetEvent
+
+    val bagTitle = bagId.switchMap { id ->
+        liveData<String>{
+            val bag = dataSource.getBagById(id)
+            emit(bag?.name?:"")
+        }
+    }
+
+    fun startSet(id: Int) {
+        bagId.value = id
+    }
+
+    fun addSet() {
+        _addSetEvent.value = Event(Unit)
+    }
+
+    fun selectSet(id: Int) {
+        sets.find { set ->
+            set.id == id
+        }?.also { set ->
+            _selectSetEvent.value = Event(set)
+        }
+    }
 
     // Boxes
 
@@ -91,36 +121,7 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
         list.isEmpty()
     }
 
-    // Bags
-    fun addBag() {
-        _addBagEvent.value = Event(Unit)
-    }
 
-    fun selectBag(id: Int) {
-        bags.find {
-            it.id == id
-        }?.also {
-            _selectBagEvent.value = Event(it)
-        }
-    }
-
-    // Sets
-
-    fun startSet(id: Int) {
-        bagId.value = id
-    }
-
-    fun addSet() {
-        _addSetEvent.value = Event(Unit)
-    }
-
-    fun selectSet(id: Int) {
-        sets.find { set ->
-            set.id == id
-        }?.also { set ->
-            _selectSetEvent.value = Event(set)
-        }
-    }
 
     // Boxes
 
@@ -152,9 +153,8 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
 
     // Bags
     private suspend fun getBagsDisplayQuantityList(radioComponents: List<RadioComponent>): List<DisplayQuantity> {
-        bags = dataSource.getBags()
         val output = mutableListOf<DisplayQuantity>()
-        for(bag in bags) {
+        for(bag in dataSource.getBags()) {
             var componentsQuantity = 0
             for(set in dataSource.getMatchesBoxSetsByBagId(bag.id)){
                 for(box in dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)) {

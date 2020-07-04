@@ -17,8 +17,8 @@ class AddEditDeleteBagViewModel(private val dataSource: RadioComponentsDataSourc
     val eventAdded: LiveData<Event<Unit>>
         get() = _eventAdded
 
-    private val _eventEdited = MutableLiveData<Event<Bag>>()
-    val eventEdited: LiveData<Event<Bag>>
+    private val _eventEdited = MutableLiveData<Event<Unit>>()
+    val eventEdited: LiveData<Event<Unit>>
         get() = _eventEdited
 
     private val _eventDeleted = MutableLiveData<Event<Unit>>()
@@ -63,7 +63,7 @@ class AddEditDeleteBagViewModel(private val dataSource: RadioComponentsDataSourc
         viewModelScope.launch {
             bag?.name = name.value!!
             dataSource.updateBag(bag!!)
-            _eventEdited.value = Event(bag!!)
+            _eventEdited.value = Event(Unit)
         }
     }
 }

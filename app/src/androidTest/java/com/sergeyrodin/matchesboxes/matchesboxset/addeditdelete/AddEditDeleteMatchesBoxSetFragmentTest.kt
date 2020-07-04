@@ -15,6 +15,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.sergeyrodin.matchesboxes.DO_NOT_NEED_THIS_VARIABLE
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.Bag
@@ -52,7 +53,7 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "MBS1", bag.id)
         dataSource.addMatchesBoxSets(set)
-        val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(bag, null).build().toBundle()
+        val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(bag.id, null).build().toBundle()
         launchFragmentInContainer<AddEditDeleteMatchesBoxSetFragment>(bundle, R.style.AppTheme)
 
         onView(withHint(R.string.enter_matches_box_set_name)).check(matches(isDisplayed()))
@@ -63,7 +64,7 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(15, "MBS1", 2)
         dataSource.addMatchesBoxSets(set)
-        val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(bag, set).build().toBundle()
+        val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(bag.id, set).build().toBundle()
         launchFragmentInContainer<AddEditDeleteMatchesBoxSetFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.set_edit)).check(matches(withText(set.name)))
@@ -74,7 +75,7 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.addMatchesBoxSets(set)
-        val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(bag, null).build().toBundle()
+        val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(bag.id, null).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxSetFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment{
@@ -87,7 +88,7 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
         // Test navigation
         verify(navController).navigate(
             AddEditDeleteMatchesBoxSetFragmentDirections
-                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(bag)
+                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(bag.id)
         )
     }
 
@@ -97,7 +98,7 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         val setUpdated = MatchesBoxSet(1, "Set updated", bag.id)
         dataSource.addMatchesBoxSets(set.copy())
-        val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(bag, set).build().toBundle()
+        val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(bag.id, set).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxSetFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment {
@@ -119,7 +120,7 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
         val set = MatchesBoxSet(1, "MBS", bag.id)
         dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set)
-        val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(null, set).build().toBundle()
+        val bundle = AddEditDeleteMatchesBoxSetFragmentArgs.Builder(DO_NOT_NEED_THIS_VARIABLE, set).build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxSetFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment{
@@ -129,7 +130,7 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
 
         verify(navController).navigate(
             AddEditDeleteMatchesBoxSetFragmentDirections
-                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(bag)
+                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(bag.id)
         )
     }
 
