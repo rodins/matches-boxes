@@ -335,4 +335,20 @@ class RealDataSourceTest{
         val items = subject.getRadioComponentsByQuery("compo")
         assertThat(items[0].name, `is`(RADIO_COMPONENT.name))
     }
+
+    // Quantity
+
+    @Test
+    fun getRadioComponentsSumQuantityByMatchesBoxId() = runBlockingTest {
+        subject.insertBag(BAG)
+        subject.insertMatchesBoxSet(MATCHES_BOX_SET)
+        subject.insertMatchesBox(MATCHES_BOX)
+        subject.insertRadioComponent(RadioComponent(1, "Component1", 1, MATCHES_BOX.id))
+        subject.insertRadioComponent(RadioComponent(2, "Component2", 2, MATCHES_BOX.id))
+        subject.insertRadioComponent(RadioComponent(3, "Component3", 3, MATCHES_BOX.id))
+        subject.insertRadioComponent(RadioComponent(4, "Component4", 4, MATCHES_BOX.id))
+
+        val sum = subject.getRadioComponentsSumQuantityByMatchesBoxId(MATCHES_BOX.id)
+        assertThat(sum, `is`(10))
+    }
 }

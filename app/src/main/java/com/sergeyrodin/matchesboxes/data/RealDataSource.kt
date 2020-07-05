@@ -128,6 +128,12 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
         }
     }
 
+    override suspend fun getRadioComponentsSumQuantityByMatchesBoxId(matchesBoxId: Int): Int {
+        wrapEspressoIdlingResource {
+            return radioComponentsDatabaseDao.getRadioComponentsSumQuantityByMatchesBoxId(matchesBoxId)
+        }
+    }
+
     override suspend fun getRadioComponentsByQuery(query: String): List<RadioComponent> {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getRadioComponentsByQuery(query)
