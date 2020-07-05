@@ -170,8 +170,8 @@ class RadioComponentsDaoTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(RADIO_COMPONENT)
 
-        val loaded = radioComponentsDatabase.radioComponentsDatabaseDao.getRadioComponents().getOrAwaitValue()
-        assertThat(loaded[0].name, `is`(RADIO_COMPONENT.name))
+        val loaded = radioComponentsDatabase.radioComponentsDatabaseDao.getRadioComponentsCount().getOrAwaitValue()
+        assertThat(loaded, `is`(1))
     }
 
     @Test

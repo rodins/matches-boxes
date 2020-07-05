@@ -9,10 +9,10 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
 
     // Bags
 
-    private val components = dataSource.getRadioComponents()
-    val bagsList = components.switchMap {radioComponents ->
+    private val componentsCount = dataSource.getRadioComponentsCount()
+    val bagsList = componentsCount.switchMap {
         liveData {
-             emit(getBagsDisplayQuantityList(radioComponents))
+             emit(getBagsDisplayQuantityList())
         }
     }
 
@@ -148,16 +148,13 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     }
 
     // Bags
-    private suspend fun getBagsDisplayQuantityList(radioComponents: List<RadioComponent>): List<DisplayQuantity> {
+    private suspend fun getBagsDisplayQuantityList(): List<DisplayQuantity> {
         val output = mutableListOf<DisplayQuantity>()
         for(bag in dataSource.getBags()) {
             var componentsQuantity = 0
             for(set in dataSource.getMatchesBoxSetsByBagId(bag.id)){
                 for(box in dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)) {
-                    val boxComponents = radioComponents.filter { component ->
-                        component.matchesBoxId == box.id
-                    }
-                    for(component in boxComponents) {
+                    for(component in dataSource.getRadioComponentsByMatchesBoxId(box.id)) {
                         componentsQuantity += component.quantity
                     }
                 }

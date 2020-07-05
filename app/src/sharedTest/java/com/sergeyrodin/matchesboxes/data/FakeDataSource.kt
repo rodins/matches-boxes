@@ -2,14 +2,13 @@ package com.sergeyrodin.matchesboxes.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.delay
 
 class FakeDataSource : RadioComponentsDataSource{
     private val bagsList = mutableListOf<Bag>()
     private val matchesBoxSetList = mutableListOf<MatchesBoxSet>()
     private val matchesBoxList = mutableListOf<MatchesBox>()
     private val radioComponentsList = mutableListOf<RadioComponent>()
-    private val radioComponentsListLiveData = MutableLiveData<List<RadioComponent>>()
+    private val radioComponentsCountLiveData = MutableLiveData<Int>()
 
     // Bags
     fun addBags(vararg bags: Bag) {
@@ -122,13 +121,13 @@ class FakeDataSource : RadioComponentsDataSource{
         for(component in components) {
             radioComponentsList.add(component)
         }
-        radioComponentsListLiveData.value = radioComponentsList
+        radioComponentsCountLiveData.value = radioComponentsList.size
     }
 
     override suspend fun insertRadioComponent(radioComponent: RadioComponent) {
         if(radioComponent.id == 0) {
             radioComponentsList.add(radioComponent)
-            radioComponentsListLiveData.value = radioComponentsList
+            radioComponentsCountLiveData.value = radioComponentsList.size
         }
     }
 
@@ -137,12 +136,12 @@ class FakeDataSource : RadioComponentsDataSource{
             it.id == radioComponent.id
         }
         radioComponentsList[index] = radioComponent
-        radioComponentsListLiveData.value = radioComponentsList
+        radioComponentsCountLiveData.value = radioComponentsList.size
     }
 
     override suspend fun deleteRadioComponent(radioComponent: RadioComponent) {
         radioComponentsList.remove(radioComponent)
-        radioComponentsListLiveData.value = radioComponentsList
+        radioComponentsCountLiveData.value = radioComponentsList.size
     }
 
     override suspend fun getRadioComponentById(radioComponentId: Int): RadioComponent? {
@@ -169,7 +168,7 @@ class FakeDataSource : RadioComponentsDataSource{
         }
     }
 
-    override fun getRadioComponents(): LiveData<List<RadioComponent>> {
-        return radioComponentsListLiveData
+    override fun getRadioComponentsCount(): LiveData<Int> {
+        return radioComponentsCountLiveData
     }
 }

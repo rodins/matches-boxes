@@ -318,9 +318,9 @@ class RealDataSourceTest{
         subject.insertRadioComponent(RadioComponent(4, "RC4", 5, matchesBox2.id))
         subject.insertRadioComponent(RadioComponent(5, "RC5", 5, matchesBox2.id))
 
-        val loaded = subject.getRadioComponents().getOrAwaitValue()
+        val count = subject.getRadioComponentsCount().getOrAwaitValue()
 
-        assertThat(loaded.size, `is`(5))
+        assertThat(count, `is`(5))
     }
 
     // Search
