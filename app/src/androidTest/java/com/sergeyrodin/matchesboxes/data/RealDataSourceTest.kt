@@ -343,10 +343,13 @@ class RealDataSourceTest{
         subject.insertBag(BAG)
         subject.insertMatchesBoxSet(MATCHES_BOX_SET)
         subject.insertMatchesBox(MATCHES_BOX)
+        val box2 = MatchesBox(2, "Box2", MATCHES_BOX_SET.id)
+        subject.insertMatchesBox(box2)
         subject.insertRadioComponent(RadioComponent(1, "Component1", 1, MATCHES_BOX.id))
         subject.insertRadioComponent(RadioComponent(2, "Component2", 2, MATCHES_BOX.id))
         subject.insertRadioComponent(RadioComponent(3, "Component3", 3, MATCHES_BOX.id))
         subject.insertRadioComponent(RadioComponent(4, "Component4", 4, MATCHES_BOX.id))
+        subject.insertRadioComponent(RadioComponent(5, "Component5", 5, box2.id))
 
         val sum = subject.getRadioComponentsSumQuantityByMatchesBoxId(MATCHES_BOX.id)
         assertThat(sum, `is`(10))

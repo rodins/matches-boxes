@@ -158,7 +158,9 @@ class FakeDataSource : RadioComponentsDataSource{
 
     override suspend fun getRadioComponentsSumQuantityByMatchesBoxId(matchesBoxId: Int): Int {
         var sum = 0
-        radioComponentsList.forEach { component ->
+        radioComponentsList.filter { component ->
+            component.matchesBoxId == matchesBoxId
+        }.forEach { component ->
             sum += component.quantity
         }
         return sum

@@ -1,9 +1,9 @@
 package com.sergeyrodin.matchesboxes.common.list
 
-import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
-import com.sergeyrodin.matchesboxes.data.*
+import com.sergeyrodin.matchesboxes.data.DisplayQuantity
+import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 
 class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
 
@@ -154,9 +154,7 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
             var componentsQuantity = 0
             for(set in dataSource.getMatchesBoxSetsByBagId(bag.id)){
                 for(box in dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)) {
-                    for(component in dataSource.getRadioComponentsByMatchesBoxId(box.id)) {
-                        componentsQuantity += component.quantity
-                    }
+                    componentsQuantity += dataSource.getRadioComponentsSumQuantityByMatchesBoxId(box.id)
                 }
             }
             val displayQuantity =
@@ -176,9 +174,7 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
         for (set in dataSource.getMatchesBoxSetsByBagId(bagId)) {
             var componentsQuantity = 0
             for(box in dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)) {
-                for(component in dataSource.getRadioComponentsByMatchesBoxId(box.id)){
-                    componentsQuantity += component.quantity
-                }
+                componentsQuantity += dataSource.getRadioComponentsSumQuantityByMatchesBoxId(box.id)
             }
             val setQuantity =
                 DisplayQuantity(
@@ -196,10 +192,7 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     private suspend fun getMatchesBoxesQuantityList(setId: Int): List<DisplayQuantity> {
         val output = mutableListOf<DisplayQuantity>()
         for (box in dataSource.getMatchesBoxesByMatchesBoxSetId(setId)) {
-            var componentsQuantity = 0
-            for(component in dataSource.getRadioComponentsByMatchesBoxId(box.id)) {
-                componentsQuantity += component.quantity
-            }
+            val componentsQuantity = dataSource.getRadioComponentsSumQuantityByMatchesBoxId(box.id)
             val boxQuantity =
                 DisplayQuantity(
                     box.id,
