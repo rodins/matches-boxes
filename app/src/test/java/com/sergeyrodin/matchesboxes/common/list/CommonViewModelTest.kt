@@ -326,13 +326,12 @@ class CommonViewModelTest {
         val set = MatchesBoxSet(1, "Set", bagId)
         val box = MatchesBox(2, "Box", set.id)
         dataSource.addMatchesBoxes(box)
-        subject.initBoxes(set.id)
         subject.startBox(set.id)
 
         subject.selectBox(box.id)
 
-        val selectedBox = subject.selectBoxEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(selectedBox?.id, CoreMatchers.`is`(box.id))
+        val id = subject.selectBoxEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(id, CoreMatchers.`is`(box.id))
     }
 
     @Test

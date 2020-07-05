@@ -36,7 +36,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
             }
         }
         
-        viewModel.start(args.box.id, args.componentId)
+        viewModel.start(args.boxId, args.componentId)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
@@ -45,7 +45,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
             Toast.makeText(context, R.string.component_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteRadioComponentFragmentDirections
-                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.box)
+                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId)
             )
         })
 
@@ -54,7 +54,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
             Toast.makeText(context, R.string.component_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteRadioComponentFragmentDirections
-                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.box)
+                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId)
             )
         })
 
@@ -62,7 +62,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
             Toast.makeText(context, R.string.component_deleted, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteRadioComponentFragmentDirections
-                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.box)
+                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId)
             )
         })
 

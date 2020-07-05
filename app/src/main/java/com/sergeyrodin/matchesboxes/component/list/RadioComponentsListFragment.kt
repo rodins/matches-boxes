@@ -19,10 +19,6 @@ class RadioComponentsListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if(activity is MainActivity) {
-            (activity as MainActivity).supportActionBar?.title = args.box.name
-        }
-
         val binding = FragmentRadioComponentsListBinding.inflate(inflater)
         val viewModel by viewModels<CommonViewModel>{
             CommonViewModelFactory(
@@ -30,21 +26,27 @@ class RadioComponentsListFragment : Fragment() {
             )
         }
 
-        viewModel.startComponent(args.box.id)
+        viewModel.startComponent(args.boxId)
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
-        binding.items.adapter = RadioComponentAdapter(RadioComponentListener {
+        binding.items.adapter = RadioComponentAdapter(RadioComponentListener { id ->
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
-                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(it, args.box)
+                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(id, args.boxId)
             )
+        })
+
+        viewModel.boxTitle.observe(viewLifecycleOwner, Observer{title ->
+            if(activity is MainActivity) {
+                (activity as MainActivity).supportActionBar?.title = title
+            }
         })
 
         viewModel.addComponentEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
-                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(ADD_NEW_ITEM_ID, args.box)
+                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(ADD_NEW_ITEM_ID, args.boxId)
             )
         })
 
@@ -63,7 +65,7 @@ class RadioComponentsListFragment : Fragment() {
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
                     .actionRadioComponentsListFragmentToAddEditDeleteMatchesBoxFragment(
-                        DO_NOT_NEED_THIS_VARIABLE, args.box)
+                        DO_NOT_NEED_THIS_VARIABLE, args.boxId)
             )
             return true
         }

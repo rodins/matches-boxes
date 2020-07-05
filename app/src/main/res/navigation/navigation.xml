@@ -108,9 +108,8 @@
             android:name="setId"
             app:argType="integer" />
         <argument
-            android:name="box"
-            app:argType="com.sergeyrodin.matchesboxes.data.MatchesBox"
-            app:nullable="true" />
+            android:name="boxId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/radioComponentsListFragment"
@@ -124,8 +123,8 @@
             android:id="@+id/action_radioComponentsListFragment_to_addEditDeleteMatchesBoxFragment"
             app:destination="@id/addEditDeleteMatchesBoxFragment" />
         <argument
-            android:name="box"
-            app:argType="com.sergeyrodin.matchesboxes.data.MatchesBox" />
+            android:name="boxId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteRadioComponentFragment"
@@ -140,8 +139,8 @@
             app:destination="@id/radioComponentsListFragment"
             app:popUpTo="@id/matchesBoxListFragment" />
         <argument
-            android:name="box"
-            app:argType="com.sergeyrodin.matchesboxes.data.MatchesBox" />
+            android:name="boxId"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/searchBuyFragment"

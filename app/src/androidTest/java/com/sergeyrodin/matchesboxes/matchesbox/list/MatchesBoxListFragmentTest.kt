@@ -15,6 +15,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.DO_NOT_NEED_THIS_VARIABLE
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
@@ -105,7 +106,7 @@ class MatchesBoxListFragmentTest {
 
         verify(navController).navigate(
             MatchesBoxListFragmentDirections
-                .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxFragment(set.id, null)
+                .actionMatchesBoxListFragmentToAddEditDeleteMatchesBoxFragment(set.id, ADD_NEW_ITEM_ID)
         )
     }
 
@@ -125,7 +126,7 @@ class MatchesBoxListFragmentTest {
         onView(withText(box.name)).perform(click())
 
         verify(navController).navigate(
-            MatchesBoxListFragmentDirections.actionMatchesBoxListFragmentToRadioComponentsListFragment(box)
+            MatchesBoxListFragmentDirections.actionMatchesBoxListFragmentToRadioComponentsListFragment(box.id)
         )
     }
 
