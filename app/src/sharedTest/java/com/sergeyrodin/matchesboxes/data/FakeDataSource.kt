@@ -121,6 +121,7 @@ class FakeDataSource : RadioComponentsDataSource{
         for(component in components) {
             radioComponentsList.add(component)
         }
+        initBagsLiveData()
     }
 
     override suspend fun insertRadioComponent(radioComponent: RadioComponent) {
@@ -203,6 +204,10 @@ class FakeDataSource : RadioComponentsDataSource{
     }
 
     override fun getBagsDisplayQuantityList(): LiveData<List<DisplayQuantity>> {
+        return bagsLiveData
+    }
+
+    private fun initBagsLiveData() {
         val list = mutableListOf<DisplayQuantity>()
 
         bagsList.forEach { bag ->
@@ -224,6 +229,5 @@ class FakeDataSource : RadioComponentsDataSource{
             list.add(displayQuantity)
         }
         bagsLiveData.value = list
-        return bagsLiveData
     }
 }
