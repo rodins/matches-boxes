@@ -69,9 +69,6 @@ interface RadioComponentsDatabaseDao {
     @Query("SELECT * FROM radio_components WHERE matches_box_id = :matchesBoxId")
     suspend fun getRadioComponentsByMatchesBoxId(matchesBoxId: Int): List<RadioComponent>
 
-    @Query("SELECT SUM(quantity) FROM radio_components WHERE matches_box_id = :matchesBoxId")
-    suspend fun getRadioComponentsSumQuantityByMatchesBoxId(matchesBoxId: Int): Int
-
     @Query("SELECT * FROM radio_components WHERE name LIKE '%' || :query || '%'")
     suspend fun getRadioComponentsByQuery(query: String): List<RadioComponent>
 
@@ -80,4 +77,15 @@ interface RadioComponentsDatabaseDao {
 
     @Query("SELECT COUNT(*) FROM radio_components")
     fun getRadioComponentsCount(): LiveData<Int>
+
+    // DisplayQuantity
+
+    @Query("SELECT b.id, b.name, SUM(quantity) as componentsQuantity FROM radio_components INNER JOIN matches_boxes b ON matches_box_id = b.id GROUP BY b.name HAVING matches_box_set_id = :setId")
+    suspend fun getDisplayQuantityListBySetId(setId: Int): List<DisplayQuantity>
+
+    @Query("SELECT s.id, s.name, SUM(quantity) as componentsQuantity FROM radio_components INNER JOIN matches_boxes b ON matches_box_id = b.id INNER JOIN matches_box_sets s ON matches_box_set_id = s.id GROUP BY s.name HAVING bag_id = :bagId")
+    suspend fun getDisplayQuantityListByBagId(bagId: Int): List<DisplayQuantity>
+
+    @Query("SELECT bags.id, bags.name, SUM(quantity) as componentsQuantity FROM radio_components INNER JOIN matches_boxes b ON matches_box_id = b.id INNER JOIN matches_box_sets s ON matches_box_set_id = s.id INNER JOIN bags ON bag_id = bags.id GROUP BY bags.name")
+    suspend fun getBagsDisplayQuantityList(): List<DisplayQuantity>
 }
