@@ -156,16 +156,6 @@ class FakeDataSource : RadioComponentsDataSource{
         }
     }
 
-    override suspend fun getRadioComponentsSumQuantityByMatchesBoxId(matchesBoxId: Int): Int {
-        var sum = 0
-        radioComponentsList.filter { component ->
-            component.matchesBoxId == matchesBoxId
-        }.forEach { component ->
-            sum += component.quantity
-        }
-        return sum
-    }
-
     override suspend fun getRadioComponentsByQuery(query: String): List<RadioComponent> {
         return radioComponentsList.filter{
             it.name.contains(query, true)
@@ -180,5 +170,68 @@ class FakeDataSource : RadioComponentsDataSource{
 
     override fun getRadioComponentsCount(): LiveData<Int> {
         return radioComponentsCountLiveData
+    }
+
+    override suspend fun getDisplayQuantityListBySetId(setId: Int): List<DisplayQuantity> {
+        val output = mutableListOf<DisplayQuantity>()
+        matchesBoxList.filter { box ->
+            box.matchesBoxSetId == setId
+        }.forEach { box ->
+            var sum = 0
+            radioComponentsList.filter { component ->
+                component.matchesBoxId == box.id
+            }.forEach { component ->
+                sum += component.quantity
+            }
+            val displayQuantity = DisplayQuantity(box.id, box.name, sum.toString())
+            output.add(displayQuantity)
+        }
+        return output
+    }
+
+    override suspend fun getDisplayQuantityListByBagId(bagId: Int): List<DisplayQuantity> {
+        val output = mutableListOf<DisplayQuantity>()
+        matchesBoxSetList.filter { set ->
+            set.bagId == bagId
+        }.forEach { set ->
+            var sum = 0
+            matchesBoxList.filter { box ->
+                box.matchesBoxSetId == set.id
+            }.forEach { box ->
+                radioComponentsList.filter { component ->
+                    component.matchesBoxId == box.id
+                }.forEach { component ->
+                    sum += component.quantity
+                }
+            }
+            val displayQuantity = DisplayQuantity(set.id, set.name, sum.toString())
+            output.add(displayQuantity)
+        }
+        return output
+    }
+
+    override suspend fun getBagsDisplayQuantityList(): List<DisplayQuantity> {
+        val output = mutableListOf<DisplayQuantity>()
+
+        bagsList.forEach { bag ->
+            var sum = 0
+            matchesBoxSetList.filter { set ->
+                set.bagId == bag.id
+            }.forEach { set ->
+                matchesBoxList.filter { box ->
+                    box.matchesBoxSetId == set.id
+                }.forEach { box ->
+                    radioComponentsList.filter { component ->
+                        component.matchesBoxId == box.id
+                    }.forEach { component ->
+                        sum += component.quantity
+                    }
+                }
+            }
+            val displayQuantity = DisplayQuantity(bag.id, bag.name, sum.toString())
+            output.add(displayQuantity)
+        }
+
+        return output
     }
 }

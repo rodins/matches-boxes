@@ -2,7 +2,6 @@ package com.sergeyrodin.matchesboxes.common.list
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
-import com.sergeyrodin.matchesboxes.data.DisplayQuantity
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 
 class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
@@ -12,7 +11,7 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     private val componentsCount = dataSource.getRadioComponentsCount()
     val bagsList = componentsCount.switchMap {
         liveData {
-             emit(getBagsDisplayQuantityList())
+             emit(dataSource.getBagsDisplayQuantityList())
         }
     }
 
@@ -40,7 +39,7 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     private val bagId = MutableLiveData<Int>()
     val setsList = bagId.switchMap{ id ->
         liveData{
-            emit(getMatchesBoxSetQuantityList(id))
+            emit(dataSource.getDisplayQuantityListByBagId(id))
         }
     }
 
@@ -80,7 +79,7 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     private val matchesBoxSetId = MutableLiveData<Int>()
     val boxesList = matchesBoxSetId.switchMap{ setId ->
         liveData{
-            emit(getMatchesBoxesQuantityList(setId))
+            emit(dataSource.getDisplayQuantityListBySetId(setId))
         }
     }
 
@@ -145,62 +144,5 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
 
     fun addComponent() {
         _addComponentEvent.value = Event(Unit)
-    }
-
-    // Bags
-    private suspend fun getBagsDisplayQuantityList(): List<DisplayQuantity> {
-        val output = mutableListOf<DisplayQuantity>()
-        for(bag in dataSource.getBags()) {
-            var componentsQuantity = 0
-            for(set in dataSource.getMatchesBoxSetsByBagId(bag.id)){
-                for(box in dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)) {
-                    componentsQuantity += dataSource.getRadioComponentsSumQuantityByMatchesBoxId(box.id)
-                }
-            }
-            val displayQuantity =
-                DisplayQuantity(
-                    bag.id,
-                    bag.name,
-                    componentsQuantity.toString()
-                )
-            output.add(displayQuantity)
-        }
-        return output
-    }
-
-    // Sets
-    private suspend fun getMatchesBoxSetQuantityList(bagId: Int): List<DisplayQuantity> {
-        val output = mutableListOf<DisplayQuantity>()
-        for (set in dataSource.getMatchesBoxSetsByBagId(bagId)) {
-            var componentsQuantity = 0
-            for(box in dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)) {
-                componentsQuantity += dataSource.getRadioComponentsSumQuantityByMatchesBoxId(box.id)
-            }
-            val setQuantity =
-                DisplayQuantity(
-                    set.id,
-                    set.name,
-                    componentsQuantity.toString()
-                )
-            output.add(setQuantity)
-        }
-        return output
-    }
-
-    // Boxes
-
-    private suspend fun getMatchesBoxesQuantityList(setId: Int): List<DisplayQuantity> {
-        val output = mutableListOf<DisplayQuantity>()
-        for (box in dataSource.getMatchesBoxesByMatchesBoxSetId(setId)) {
-            val componentsQuantity = dataSource.getRadioComponentsSumQuantityByMatchesBoxId(box.id)
-            val boxQuantity =
-                DisplayQuantity(
-                    box.id,
-                    box.name,
-                    componentsQuantity.toString()
-                )
-            output.add(boxQuantity)
-        }
-        return output
     }
 }

@@ -128,12 +128,6 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
         }
     }
 
-    override suspend fun getRadioComponentsSumQuantityByMatchesBoxId(matchesBoxId: Int): Int {
-        wrapEspressoIdlingResource {
-            return radioComponentsDatabaseDao.getRadioComponentsSumQuantityByMatchesBoxId(matchesBoxId)
-        }
-    }
-
     override suspend fun getRadioComponentsByQuery(query: String): List<RadioComponent> {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getRadioComponentsByQuery(query)
@@ -149,6 +143,26 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
     override fun getRadioComponentsCount(): LiveData<Int> {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getRadioComponentsCount()
+        }
+    }
+
+    // DisplayQuantity
+
+    override suspend fun getDisplayQuantityListBySetId(setId: Int): List<DisplayQuantity> {
+        wrapEspressoIdlingResource {
+            return radioComponentsDatabaseDao.getDisplayQuantityListBySetId(setId)
+        }
+    }
+
+    override suspend fun getDisplayQuantityListByBagId(bagId: Int): List<DisplayQuantity> {
+        wrapEspressoIdlingResource {
+            return radioComponentsDatabaseDao.getDisplayQuantityListByBagId(bagId)
+        }
+    }
+
+    override suspend fun getBagsDisplayQuantityList(): List<DisplayQuantity> {
+        wrapEspressoIdlingResource {
+            return radioComponentsDatabaseDao.getBagsDisplayQuantityList()
         }
     }
 }

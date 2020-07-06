@@ -7,12 +7,11 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -334,24 +333,5 @@ class RealDataSourceTest{
 
         val items = subject.getRadioComponentsByQuery("compo")
         assertThat(items[0].name, `is`(RADIO_COMPONENT.name))
-    }
-
-    // Quantity
-
-    @Test
-    fun getRadioComponentsSumQuantityByMatchesBoxId() = runBlockingTest {
-        subject.insertBag(BAG)
-        subject.insertMatchesBoxSet(MATCHES_BOX_SET)
-        subject.insertMatchesBox(MATCHES_BOX)
-        val box2 = MatchesBox(2, "Box2", MATCHES_BOX_SET.id)
-        subject.insertMatchesBox(box2)
-        subject.insertRadioComponent(RadioComponent(1, "Component1", 1, MATCHES_BOX.id))
-        subject.insertRadioComponent(RadioComponent(2, "Component2", 2, MATCHES_BOX.id))
-        subject.insertRadioComponent(RadioComponent(3, "Component3", 3, MATCHES_BOX.id))
-        subject.insertRadioComponent(RadioComponent(4, "Component4", 4, MATCHES_BOX.id))
-        subject.insertRadioComponent(RadioComponent(5, "Component5", 5, box2.id))
-
-        val sum = subject.getRadioComponentsSumQuantityByMatchesBoxId(MATCHES_BOX.id)
-        assertThat(sum, `is`(10))
     }
 }

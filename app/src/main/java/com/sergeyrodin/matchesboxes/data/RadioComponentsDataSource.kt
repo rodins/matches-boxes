@@ -48,12 +48,17 @@ interface RadioComponentsDataSource {
 
     suspend fun getRadioComponentsByMatchesBoxId(matchesBoxId: Int): List<RadioComponent>
 
-    suspend fun getRadioComponentsSumQuantityByMatchesBoxId(matchesBoxId: Int): Int
-
     suspend fun getRadioComponentsByQuery(query: String): List<RadioComponent>
 
     suspend fun getRadioComponentsToBuy(): List<RadioComponent>
 
     fun getRadioComponentsCount(): LiveData<Int>
 
+    // DisplayQuantity
+
+    suspend fun getDisplayQuantityListBySetId(setId: Int): List<DisplayQuantity>
+
+    suspend fun getDisplayQuantityListByBagId(bagId: Int): List<DisplayQuantity>
+
+    suspend fun getBagsDisplayQuantityList(): List<DisplayQuantity>
 }

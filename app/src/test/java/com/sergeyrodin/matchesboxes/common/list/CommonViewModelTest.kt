@@ -237,6 +237,7 @@ class CommonViewModelTest {
         val component6 = RadioComponent(6, "Component6", 6, box3.id)
         val component7 = RadioComponent(7, "Component7", 7, box4.id)
         val component8 = RadioComponent(8, "Component8", 8, box4.id)
+        dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set1, set2)
         dataSource.addMatchesBoxes(box1, box2, box3, box4)
         dataSource.addRadioComponents(component1, component2, component3, component4,
