@@ -249,6 +249,16 @@ class RadioComponentsDaoTest {
     }
 
     @Test
+    fun oneBox_sizeEquals() = runBlockingTest{
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
+
+        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getDisplayQuantityListBySetId(MATCHES_BOX_SET.id)
+        assertThat(list.size, `is`(1))
+    }
+
+    @Test
     fun getDisplayQuantityListByBagId() = runBlockingTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         val set1 = MatchesBoxSet(1, "Set1", BAG.id)
@@ -285,6 +295,15 @@ class RadioComponentsDaoTest {
         assertThat(list[0].componentsQuantity, `is`("10"))
         assertThat(list[1].name, `is`(set2.name))
         assertThat(list[1].componentsQuantity, `is`("26"))
+    }
+
+    @Test
+    fun oneSet_sizeEquals() = runBlockingTest{
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
+
+        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getDisplayQuantityListByBagId(BAG.id)
+        assertThat(list.size, `is`(1))
     }
 
     @Test
@@ -355,5 +374,14 @@ class RadioComponentsDaoTest {
         assertThat(list[0].componentsQuantity, `is`("36"))
         assertThat(list[1].name, `is`(bag2.name))
         assertThat(list[1].componentsQuantity, `is`("100"))
+    }
+
+    @Test
+    fun oneBagInput_getBagQuantityList() = runBlockingTest{
+        val bag1 = Bag(1, "Bag1")
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(bag1)
+
+        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getBagsDisplayQuantityList().getOrAwaitValue()
+        assertThat(list.size, `is`(1))
     }
 }
