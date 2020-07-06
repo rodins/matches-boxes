@@ -52,13 +52,11 @@ interface RadioComponentsDataSource {
 
     suspend fun getRadioComponentsToBuy(): List<RadioComponent>
 
-    fun getRadioComponentsCount(): LiveData<Int>
-
     // DisplayQuantity
 
     suspend fun getDisplayQuantityListBySetId(setId: Int): List<DisplayQuantity>
 
     suspend fun getDisplayQuantityListByBagId(bagId: Int): List<DisplayQuantity>
 
-    suspend fun getBagsDisplayQuantityList(): List<DisplayQuantity>
+    fun getBagsDisplayQuantityList(): LiveData<List<DisplayQuantity>>
 }

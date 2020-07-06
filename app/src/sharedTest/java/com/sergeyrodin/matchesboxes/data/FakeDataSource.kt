@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 
 class FakeDataSource : RadioComponentsDataSource{
     private val bagsList = mutableListOf<Bag>()
+    private val bagsLiveData = MutableLiveData<List<DisplayQuantity>>(listOf())
     private val matchesBoxSetList = mutableListOf<MatchesBoxSet>()
     private val matchesBoxList = mutableListOf<MatchesBox>()
     private val radioComponentsList = mutableListOf<RadioComponent>()
-    private val radioComponentsCountLiveData = MutableLiveData<Int>()
 
     // Bags
     fun addBags(vararg bags: Bag) {
@@ -121,13 +121,11 @@ class FakeDataSource : RadioComponentsDataSource{
         for(component in components) {
             radioComponentsList.add(component)
         }
-        radioComponentsCountLiveData.value = radioComponentsList.size
     }
 
     override suspend fun insertRadioComponent(radioComponent: RadioComponent) {
         if(radioComponent.id == 0) {
             radioComponentsList.add(radioComponent)
-            radioComponentsCountLiveData.value = radioComponentsList.size
         }
     }
 
@@ -136,12 +134,10 @@ class FakeDataSource : RadioComponentsDataSource{
             it.id == radioComponent.id
         }
         radioComponentsList[index] = radioComponent
-        radioComponentsCountLiveData.value = radioComponentsList.size
     }
 
     override suspend fun deleteRadioComponent(radioComponent: RadioComponent) {
         radioComponentsList.remove(radioComponent)
-        radioComponentsCountLiveData.value = radioComponentsList.size
     }
 
     override suspend fun getRadioComponentById(radioComponentId: Int): RadioComponent? {
@@ -166,10 +162,6 @@ class FakeDataSource : RadioComponentsDataSource{
         return radioComponentsList.filter{
             it.isBuy
         }
-    }
-
-    override fun getRadioComponentsCount(): LiveData<Int> {
-        return radioComponentsCountLiveData
     }
 
     override suspend fun getDisplayQuantityListBySetId(setId: Int): List<DisplayQuantity> {
@@ -210,8 +202,8 @@ class FakeDataSource : RadioComponentsDataSource{
         return output
     }
 
-    override suspend fun getBagsDisplayQuantityList(): List<DisplayQuantity> {
-        val output = mutableListOf<DisplayQuantity>()
+    override fun getBagsDisplayQuantityList(): LiveData<List<DisplayQuantity>> {
+        val list = mutableListOf<DisplayQuantity>()
 
         bagsList.forEach { bag ->
             var sum = 0
@@ -229,9 +221,9 @@ class FakeDataSource : RadioComponentsDataSource{
                 }
             }
             val displayQuantity = DisplayQuantity(bag.id, bag.name, sum.toString())
-            output.add(displayQuantity)
+            list.add(displayQuantity)
         }
-
-        return output
+        bagsLiveData.value = list
+        return bagsLiveData
     }
 }

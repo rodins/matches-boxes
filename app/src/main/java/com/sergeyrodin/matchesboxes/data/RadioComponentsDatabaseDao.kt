@@ -75,9 +75,6 @@ interface RadioComponentsDatabaseDao {
     @Query("SELECT * FROM radio_components WHERE buy = 1")
     suspend fun getRadioComponentsToBuy(): List<RadioComponent>
 
-    @Query("SELECT COUNT(*) FROM radio_components")
-    fun getRadioComponentsCount(): LiveData<Int>
-
     // DisplayQuantity
 
     @Query("SELECT b.id, b.name, SUM(quantity) as componentsQuantity FROM radio_components INNER JOIN matches_boxes b ON matches_box_id = b.id GROUP BY b.name HAVING matches_box_set_id = :setId")
@@ -87,5 +84,5 @@ interface RadioComponentsDatabaseDao {
     suspend fun getDisplayQuantityListByBagId(bagId: Int): List<DisplayQuantity>
 
     @Query("SELECT bags.id, bags.name, SUM(quantity) as componentsQuantity FROM radio_components INNER JOIN matches_boxes b ON matches_box_id = b.id INNER JOIN matches_box_sets s ON matches_box_set_id = s.id INNER JOIN bags ON bag_id = bags.id GROUP BY bags.name")
-    suspend fun getBagsDisplayQuantityList(): List<DisplayQuantity>
+    fun getBagsDisplayQuantityList(): LiveData<List<DisplayQuantity>>
 }

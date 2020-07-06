@@ -164,17 +164,6 @@ class RadioComponentsDaoTest {
     }
 
     @Test
-    fun getRadioComponentsCount() = runBlockingTest {
-        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
-        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
-        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
-        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(RADIO_COMPONENT)
-
-        val loaded = radioComponentsDatabase.radioComponentsDatabaseDao.getRadioComponentsCount().getOrAwaitValue()
-        assertThat(loaded, `is`(1))
-    }
-
-    @Test
     fun updateAndGetRadioComponentById() = runBlockingTest{
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
@@ -361,7 +350,7 @@ class RadioComponentsDaoTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component15)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component16)
 
-        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getBagsDisplayQuantityList()
+        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getBagsDisplayQuantityList().getOrAwaitValue()
         assertThat(list[0].name, `is`(bag1.name))
         assertThat(list[0].componentsQuantity, `is`("36"))
         assertThat(list[1].name, `is`(bag2.name))

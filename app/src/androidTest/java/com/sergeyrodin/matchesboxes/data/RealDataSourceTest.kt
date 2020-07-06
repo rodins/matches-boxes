@@ -5,7 +5,6 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
@@ -301,25 +300,6 @@ class RealDataSourceTest{
 
         assertThat(loaded1.size, `is`(2))
         assertThat(loaded2.size, `is`(3))
-    }
-
-    @Test
-    fun getRadioComponents_sizeEquals() = runBlockingTest {
-        subject.insertBag(BAG)
-        subject.insertMatchesBoxSet(MATCHES_BOX_SET)
-        val matchesBox1 = MatchesBox(1, "MB1", MATCHES_BOX_SET.id)
-        val matchesBox2 = MatchesBox(2, "MB2", MATCHES_BOX_SET.id)
-        subject.insertMatchesBox(matchesBox1)
-        subject.insertMatchesBox(matchesBox2)
-        subject.insertRadioComponent(RadioComponent(1, "RC1", 4, matchesBox1.id))
-        subject.insertRadioComponent(RadioComponent(2, "RC2", 10, matchesBox1.id))
-        subject.insertRadioComponent(RadioComponent(3, "RC3", 5, matchesBox2.id))
-        subject.insertRadioComponent(RadioComponent(4, "RC4", 5, matchesBox2.id))
-        subject.insertRadioComponent(RadioComponent(5, "RC5", 5, matchesBox2.id))
-
-        val count = subject.getRadioComponentsCount().getOrAwaitValue()
-
-        assertThat(count, `is`(5))
     }
 
     // Search

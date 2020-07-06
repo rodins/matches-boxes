@@ -7,13 +7,7 @@ import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
 
     // Bags
-
-    private val componentsCount = dataSource.getRadioComponentsCount()
-    val bagsList = componentsCount.switchMap {
-        liveData {
-             emit(dataSource.getBagsDisplayQuantityList())
-        }
-    }
+    val bagsList = dataSource.getBagsDisplayQuantityList()
 
     val isNoBagsTextVisible = Transformations.map(bagsList) {list ->
         list.isEmpty()
