@@ -27,6 +27,10 @@ class RadioComponentsListFragment : Fragment() {
             )
         }
 
+        if(activity is MainActivity) {
+            (activity as MainActivity).supportActionBar?.title = viewModel.boxName
+        }
+
         viewModel.startComponent(args.boxId)
 
         binding.lifecycleOwner = viewLifecycleOwner
@@ -36,12 +40,6 @@ class RadioComponentsListFragment : Fragment() {
                 RadioComponentsListFragmentDirections
                     .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(id, args.boxId)
             )
-        })
-
-        viewModel.boxTitle.observe(viewLifecycleOwner, Observer{title ->
-            if(activity is MainActivity) {
-                (activity as MainActivity).supportActionBar?.title = title
-            }
         })
 
         viewModel.addComponentEvent.observe(viewLifecycleOwner, EventObserver{

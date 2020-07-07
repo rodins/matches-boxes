@@ -383,6 +383,19 @@ class CommonViewModelTest {
         assertThat(items[1].componentsQuantity, `is`("11"))
     }
 
+    @Test
+    fun selectBox_boxNameEquals() {
+        val bagId = 1
+        val set = MatchesBoxSet(1, "Set", bagId)
+        val box = MatchesBox(2, "Box", set.id)
+        dataSource.addMatchesBoxes(box)
+        subject.startBox(set.id)
+
+        subject.selectBox(box.id)
+
+        assertThat(subject.boxName, `is`(box.name))
+    }
+
     // Components
 
     @Test
