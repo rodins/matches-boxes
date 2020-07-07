@@ -139,18 +139,6 @@ class CommonViewModelTest {
         assertThat(items[1].componentsQuantity, `is`("100"))
     }
 
-    @Test
-    fun bagSelected_bagNameEquals() {
-        val bag = Bag(1, "Bag")
-        dataSource.addBags(bag)
-        dataSource.addRadioComponents()
-        subject.bagsList.getOrAwaitValue()
-
-        subject.selectBag(bag.id)
-
-        assertThat(subject.bagName, `is`(bag.name))
-    }
-
     // Sets
 
     @Test
@@ -260,6 +248,15 @@ class CommonViewModelTest {
         val items = subject.setsList.getOrAwaitValue()
         assertThat(items[0].componentsQuantity, `is`("10"))
         assertThat(items[1].componentsQuantity, `is`("26"))
+    }
+
+    @Test
+    fun bagId_bagTitleEquals() {
+        val bag = Bag(1, "Bag")
+        dataSource.addBags(bag)
+        subject.startSet(bag.id)
+
+        assertThat(subject.bagTitle.getOrAwaitValue(), `is`(bag.name))
     }
 
     // Boxes

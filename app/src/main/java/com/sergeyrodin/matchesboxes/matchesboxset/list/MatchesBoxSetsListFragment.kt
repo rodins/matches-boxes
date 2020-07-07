@@ -33,10 +33,6 @@ class MatchesBoxSetsListFragment : Fragment() {
             )
         }
 
-        if(activity is MainActivity) {
-            (activity as MainActivity).supportActionBar?.title = viewModel.bagName
-        }
-
         viewModel.startSet(args.bagId)
 
         val adapter = DisplayQuantityAdapter(DisplayQuantityListener{
@@ -45,6 +41,12 @@ class MatchesBoxSetsListFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.items.adapter = adapter
+
+        viewModel.bagTitle.observe(viewLifecycleOwner, Observer{title ->
+            if(activity is MainActivity) {
+                (activity as MainActivity).supportActionBar?.title = title
+            }
+        })
 
         viewModel.addSetEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
