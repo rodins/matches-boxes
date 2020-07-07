@@ -262,6 +262,22 @@ class CommonViewModelTest {
         assertThat(items[1].componentsQuantity, `is`("26"))
     }
 
+    @Test
+    fun selectSet_setNameEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set1 = MatchesBoxSet(1, "Set1", bag.id)
+        val set2 = MatchesBoxSet(2, "Set2", bag.id)
+        val set3 = MatchesBoxSet(3, "Set3", bag.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set1, set2, set3)
+        dataSource.addRadioComponents()
+        subject.startSet(bag.id)
+
+        subject.selectSet(set2.id)
+
+        assertThat(subject.setName, `is`(set2.name))
+    }
+
     // Boxes
 
     @Test

@@ -58,6 +58,10 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     val selectSetEvent: LiveData<Event<Int>>
         get() = _selectSetEvent
 
+    private var _setName = ""
+    val setName: String
+        get() = _setName
+
     fun startSet(id: Int) {
         bagId.value = id
     }
@@ -67,7 +71,11 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     }
 
     fun selectSet(id: Int) {
-        _selectSetEvent.value = Event(id)
+        viewModelScope.launch {
+            val set = dataSource.getMatchesBoxSetById(id)
+            _setName = set?.name?:""
+            _selectSetEvent.value = Event(id)
+        }
     }
 
     // Boxes
@@ -90,13 +98,6 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     private val _selectBoxEvent = MutableLiveData<Event<Int>>()
     val selectBoxEvent: LiveData<Event<Int>>
         get() = _selectBoxEvent
-
-    val matchesBoxSetTitle = matchesBoxSetId.switchMap { id ->
-        liveData<String>{
-            val set = dataSource.getMatchesBoxSetById(id)
-            emit(set?.name?:"")
-        }
-    }
 
     fun startBox(id: Int) {
         matchesBoxSetId.value = id
