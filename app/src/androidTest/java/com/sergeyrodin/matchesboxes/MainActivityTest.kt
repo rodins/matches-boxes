@@ -501,6 +501,29 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun updateBox_titleEquals() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withText(box.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.box_edit)).perform(replaceText("Updated box"))
+        onView(withId(R.id.save_box_fab)).perform(click())
+
+        onView(withText("Updated box")).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
     // RadioComponent tests
 
     @Test

@@ -383,19 +383,6 @@ class CommonViewModelTest {
         assertThat(items[1].componentsQuantity, `is`("11"))
     }
 
-    @Test
-    fun selectBox_boxNameEquals() {
-        val bagId = 1
-        val set = MatchesBoxSet(1, "Set", bagId)
-        val box = MatchesBox(2, "Box", set.id)
-        dataSource.addMatchesBoxes(box)
-        subject.startBox(set.id)
-
-        subject.selectBox(box.id)
-
-        assertThat(subject.boxName, `is`(box.name))
-    }
-
     // Components
 
     @Test
@@ -465,6 +452,17 @@ class CommonViewModelTest {
 
         val value = subject.addComponentEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(value, `is`(CoreMatchers.not(CoreMatchers.nullValue())))
+    }
+
+    @Test
+    fun boxId_boxTitleEquals() {
+        val setId = 1
+        val box = MatchesBox(1, "Box", setId)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents()
+        subject.startComponent(box.id)
+
+        assertThat(subject.boxTitle.getOrAwaitValue(), `is`(box.name))
     }
 
 }
