@@ -3,6 +3,7 @@ package com.sergeyrodin.matchesboxes.component.list
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -20,7 +21,7 @@ class RadioComponentsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentRadioComponentsListBinding.inflate(inflater)
-        val viewModel by viewModels<CommonViewModel>{
+        val viewModel by activityViewModels<CommonViewModel>{
             CommonViewModelFactory(
                 (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
             )

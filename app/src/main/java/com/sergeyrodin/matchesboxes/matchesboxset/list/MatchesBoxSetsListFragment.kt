@@ -3,6 +3,7 @@ package com.sergeyrodin.matchesboxes.matchesboxset.list
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -26,10 +27,14 @@ class MatchesBoxSetsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentMatchesBoxSetsListBinding.inflate(inflater)
-        val viewModel by viewModels<CommonViewModel> {
+        val viewModel by activityViewModels<CommonViewModel> {
             CommonViewModelFactory(
                 (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
             )
+        }
+
+        if(activity is MainActivity) {
+            (activity as MainActivity).supportActionBar?.title = viewModel.bagName
         }
 
         viewModel.startSet(args.bagId)
@@ -40,12 +45,6 @@ class MatchesBoxSetsListFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.items.adapter = adapter
-
-        viewModel.bagTitle.observe(viewLifecycleOwner, Observer{title ->
-            if(activity is MainActivity) {
-                (activity as MainActivity).supportActionBar?.title = title
-            }
-        })
 
         viewModel.addSetEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(

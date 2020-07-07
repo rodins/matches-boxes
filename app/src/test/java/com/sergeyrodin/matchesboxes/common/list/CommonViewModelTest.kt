@@ -5,6 +5,7 @@ import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -36,7 +37,7 @@ class CommonViewModelTest {
         dataSource.addRadioComponents()
         val bags = subject.bagsList.getOrAwaitValue()
 
-        assertThat(bags.size, CoreMatchers.`is`(4))
+        assertThat(bags.size, `is`(4))
     }
 
     @Test
@@ -45,7 +46,7 @@ class CommonViewModelTest {
         dataSource.addRadioComponents()
         val bags = subject.bagsList.getOrAwaitValue()
 
-        assertThat(bags.size, CoreMatchers.`is`(0))
+        assertThat(bags.size, `is`(0))
     }
 
     @Test
@@ -54,7 +55,7 @@ class CommonViewModelTest {
         dataSource.addRadioComponents()
         val noItemsTextVisible = subject.isNoBagsTextVisible.getOrAwaitValue()
 
-        assertThat(noItemsTextVisible, CoreMatchers.`is`(true))
+        assertThat(noItemsTextVisible, `is`(true))
     }
 
     @Test
@@ -68,7 +69,7 @@ class CommonViewModelTest {
         dataSource.addRadioComponents()
         val noItemsTextVisible = subject.isNoBagsTextVisible.getOrAwaitValue()
 
-        assertThat(noItemsTextVisible, CoreMatchers.`is`(false))
+        assertThat(noItemsTextVisible, `is`(false))
     }
 
     @Test
@@ -78,7 +79,7 @@ class CommonViewModelTest {
         subject.addBag()
 
         val event = subject.addBagEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(event, CoreMatchers.`is`(CoreMatchers.not(CoreMatchers.nullValue())))
+        assertThat(event, `is`(CoreMatchers.not(CoreMatchers.nullValue())))
     }
 
     @Test
@@ -91,7 +92,7 @@ class CommonViewModelTest {
         subject.selectBag(bag.id)
 
         val id = subject.selectBagEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(id, CoreMatchers.`is`(bag.id))
+        assertThat(id, `is`(bag.id))
     }
 
     @Test
@@ -134,8 +135,20 @@ class CommonViewModelTest {
             component13, component14, component15, component16)
 
         val items = subject.bagsList.getOrAwaitValue()
-        assertThat(items[0].componentsQuantity, CoreMatchers.`is`("36"))
-        assertThat(items[1].componentsQuantity, CoreMatchers.`is`("100"))
+        assertThat(items[0].componentsQuantity, `is`("36"))
+        assertThat(items[1].componentsQuantity, `is`("100"))
+    }
+
+    @Test
+    fun bagSelected_bagNameEquals() {
+        val bag = Bag(1, "Bag")
+        dataSource.addBags(bag)
+        dataSource.addRadioComponents()
+        subject.bagsList.getOrAwaitValue()
+
+        subject.selectBag(bag.id)
+
+        assertThat(subject.bagName, `is`(bag.name))
     }
 
     // Sets
@@ -148,7 +161,7 @@ class CommonViewModelTest {
 
         val list = subject.setsList.getOrAwaitValue()
 
-        assertThat(list.size, CoreMatchers.`is`(0))
+        assertThat(list.size, `is`(0))
     }
 
     @Test
@@ -159,7 +172,7 @@ class CommonViewModelTest {
 
         val visible = subject.isNoSetsTextVisible.getOrAwaitValue()
 
-        assertThat(visible, CoreMatchers.`is`(true))
+        assertThat(visible, `is`(true))
     }
 
     @Test
@@ -175,7 +188,7 @@ class CommonViewModelTest {
 
         val list = subject.setsList.getOrAwaitValue()
 
-        assertThat(list.size, CoreMatchers.`is`(3))
+        assertThat(list.size, `is`(3))
     }
 
     @Test
@@ -191,7 +204,7 @@ class CommonViewModelTest {
 
         val visible = subject.isNoSetsTextVisible.getOrAwaitValue()
 
-        assertThat(visible, CoreMatchers.`is`(false))
+        assertThat(visible, `is`(false))
     }
 
     @Test
@@ -200,7 +213,7 @@ class CommonViewModelTest {
 
         val event = subject.addSetEvent.getOrAwaitValue().getContentIfNotHandled()
 
-        assertThat(event, CoreMatchers.`is`(CoreMatchers.not(CoreMatchers.nullValue())))
+        assertThat(event, `is`(CoreMatchers.not(CoreMatchers.nullValue())))
     }
 
     @Test
@@ -217,7 +230,7 @@ class CommonViewModelTest {
         subject.selectSet(set2.id)
 
         val id = subject.selectSetEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(id, CoreMatchers.`is`(set2.id))
+        assertThat(id, `is`(set2.id))
     }
 
     @Test
@@ -245,8 +258,8 @@ class CommonViewModelTest {
         subject.startSet(bag.id)
 
         val items = subject.setsList.getOrAwaitValue()
-        assertThat(items[0].componentsQuantity, CoreMatchers.`is`("10"))
-        assertThat(items[1].componentsQuantity, CoreMatchers.`is`("26"))
+        assertThat(items[0].componentsQuantity, `is`("10"))
+        assertThat(items[1].componentsQuantity, `is`("26"))
     }
 
     // Boxes
@@ -265,7 +278,7 @@ class CommonViewModelTest {
         subject.startBox(set.id)
 
         val items = subject.boxesList.getOrAwaitValue()
-        assertThat(items.size, CoreMatchers.`is`(3))
+        assertThat(items.size, `is`(3))
     }
 
     @Test
@@ -277,7 +290,7 @@ class CommonViewModelTest {
 
         val items = subject.boxesList.getOrAwaitValue()
 
-        assertThat(items.size, CoreMatchers.`is`(0))
+        assertThat(items.size, `is`(0))
     }
 
     @Test
@@ -289,7 +302,7 @@ class CommonViewModelTest {
 
         val visible = subject.isNoBoxesTextVisible.getOrAwaitValue()
 
-        assertThat(visible, CoreMatchers.`is`(true))
+        assertThat(visible, `is`(true))
     }
 
     @Test
@@ -305,7 +318,7 @@ class CommonViewModelTest {
 
         val visible = subject.isNoBoxesTextVisible.getOrAwaitValue()
 
-        assertThat(visible, CoreMatchers.`is`(false))
+        assertThat(visible, `is`(false))
     }
 
     @Test
@@ -318,7 +331,7 @@ class CommonViewModelTest {
         subject.addBox()
 
         val event = subject.addBoxEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(event, CoreMatchers.`is`(CoreMatchers.not(CoreMatchers.nullValue())))
+        assertThat(event, `is`(CoreMatchers.not(CoreMatchers.nullValue())))
     }
 
     @Test
@@ -332,7 +345,7 @@ class CommonViewModelTest {
         subject.selectBox(box.id)
 
         val id = subject.selectBoxEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(id, CoreMatchers.`is`(box.id))
+        assertThat(id, `is`(box.id))
     }
 
     @Test
@@ -350,8 +363,8 @@ class CommonViewModelTest {
         subject.startBox(set.id)
 
         val items = subject.boxesList.getOrAwaitValue()
-        assertThat(items[0].componentsQuantity, CoreMatchers.`is`("7"))
-        assertThat(items[1].componentsQuantity, CoreMatchers.`is`("11"))
+        assertThat(items[0].componentsQuantity, `is`("7"))
+        assertThat(items[1].componentsQuantity, `is`("11"))
     }
 
     // Components
@@ -365,7 +378,7 @@ class CommonViewModelTest {
 
         val items = subject.componentsList.getOrAwaitValue()
 
-        assertThat(items.size, CoreMatchers.`is`(0))
+        assertThat(items.size, `is`(0))
     }
 
     @Test
@@ -381,7 +394,7 @@ class CommonViewModelTest {
 
         val items = subject.componentsList.getOrAwaitValue()
 
-        assertThat(items.size, CoreMatchers.`is`(3))
+        assertThat(items.size, `is`(3))
     }
 
     @Test
@@ -393,7 +406,7 @@ class CommonViewModelTest {
 
         val visible = subject.noComponentsTextVisible.getOrAwaitValue()
 
-        assertThat(visible, CoreMatchers.`is`(true))
+        assertThat(visible, `is`(true))
     }
 
     @Test
@@ -409,7 +422,7 @@ class CommonViewModelTest {
 
         val visible = subject.noComponentsTextVisible.getOrAwaitValue()
 
-        assertThat(visible, CoreMatchers.`is`(false))
+        assertThat(visible, `is`(false))
     }
 
     @Test
@@ -422,7 +435,7 @@ class CommonViewModelTest {
         subject.addComponent()
 
         val value = subject.addComponentEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(value, CoreMatchers.`is`(CoreMatchers.not(CoreMatchers.nullValue())))
+        assertThat(value, `is`(CoreMatchers.not(CoreMatchers.nullValue())))
     }
 
 }
