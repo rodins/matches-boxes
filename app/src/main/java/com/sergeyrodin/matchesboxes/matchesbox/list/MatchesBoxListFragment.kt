@@ -31,10 +31,6 @@ class MatchesBoxListFragment : Fragment() {
             )
         }
 
-        if(activity is MainActivity) {
-            (activity as MainActivity).supportActionBar?.title = viewModel.setName
-        }
-
         viewModel.startBox(args.setId)
 
         binding.lifecycleOwner = viewLifecycleOwner
@@ -42,6 +38,12 @@ class MatchesBoxListFragment : Fragment() {
 
         val adapter = DisplayQuantityAdapter(DisplayQuantityListener{
             viewModel.selectBox(it)
+        })
+
+        viewModel.setTitle.observe(viewLifecycleOwner, Observer{title ->
+            if(activity is MainActivity) {
+                (activity as MainActivity).supportActionBar?.title = title
+            }
         })
 
         viewModel.addBoxEvent.observe(viewLifecycleOwner, EventObserver{
