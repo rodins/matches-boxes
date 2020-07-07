@@ -3,6 +3,7 @@ package com.sergeyrodin.matchesboxes.matchesboxset.addeditdelete
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -31,11 +32,11 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
         val args by navArgs<AddEditDeleteMatchesBoxSetFragmentArgs>()
         isDeleteVisible = args.setId != ADD_NEW_ITEM_ID
 
-        if(activity is MainActivity) {
+        if(activity is AppCompatActivity) {
             if(isDeleteVisible) {
-                (activity as MainActivity).supportActionBar?.title = getString(R.string.update_set)
+                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.update_set)
             }else {
-                (activity as MainActivity).supportActionBar?.title = getString(R.string.add_set)
+                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.add_set)
             }
         }
 

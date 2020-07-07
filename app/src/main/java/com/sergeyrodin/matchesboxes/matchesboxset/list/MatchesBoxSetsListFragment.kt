@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.matchesboxset.list
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -43,8 +44,8 @@ class MatchesBoxSetsListFragment : Fragment() {
         binding.items.adapter = adapter
 
         viewModel.bagTitle.observe(viewLifecycleOwner, Observer{title ->
-            if(activity is MainActivity) {
-                (activity as MainActivity).supportActionBar?.title = title
+            if(activity is AppCompatActivity) {
+                (activity as AppCompatActivity).supportActionBar?.title = title
             }
         })
 

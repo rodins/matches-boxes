@@ -3,6 +3,7 @@ package com.sergeyrodin.matchesboxes.matchesbox.addeditdelete
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -29,11 +30,11 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
         val args by navArgs<AddEditDeleteMatchesBoxFragmentArgs>()
         hideDelete = args.boxId != ADD_NEW_ITEM_ID
 
-        if(activity is MainActivity) {
+        if(activity is AppCompatActivity) {
             if(hideDelete) {
-                (activity as MainActivity).supportActionBar?.title = getString(R.string.update_box)
+                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.update_box)
             }else {
-                (activity as MainActivity).supportActionBar?.title = getString(R.string.add_box)
+                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.add_box)
             }
         }
 

@@ -6,6 +6,7 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -28,6 +29,8 @@ class AddEditDeleteBagFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+
         val binding = FragmentAddEditDeleteBagBinding.inflate(inflater)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
@@ -35,11 +38,11 @@ class AddEditDeleteBagFragment : Fragment() {
         val args by navArgs<AddEditDeleteBagFragmentArgs>()
         isActionDeleteVisible = args.bagId != ADD_NEW_ITEM_ID
 
-        if(activity is MainActivity) {
+        if(activity is AppCompatActivity) {
             if(isActionDeleteVisible) {
-                (activity as MainActivity).supportActionBar?.title = getString(R.string.update_bag)
+                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.update_bag)
             }else {
-                (activity as MainActivity).supportActionBar?.title = getString(R.string.add_bag)
+                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.add_bag)
             }
         }
 

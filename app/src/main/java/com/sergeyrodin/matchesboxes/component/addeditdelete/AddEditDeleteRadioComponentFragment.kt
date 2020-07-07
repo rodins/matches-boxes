@@ -3,6 +3,7 @@ package com.sergeyrodin.matchesboxes.component.addeditdelete
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -28,11 +29,11 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
         val args by navArgs<AddEditDeleteRadioComponentFragmentArgs>()
         isDeleteVisible = args.componentId != ADD_NEW_ITEM_ID
 
-        if(activity is MainActivity) {
+        if(activity is AppCompatActivity) {
             if(isDeleteVisible) {
-                (activity as MainActivity).supportActionBar?.title = getString(R.string.update_component)
+                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.update_component)
             }else {
-                (activity as MainActivity).supportActionBar?.title = getString(R.string.add_component)
+                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.add_component)
             }
         }
         
