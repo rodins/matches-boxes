@@ -10,21 +10,23 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     val name = MutableLiveData<String>()
     val quantity = MutableLiveData<String>()
     
-    private val _addItemEvent = MutableLiveData<Event<Unit>>()
-    val addItemEvent: LiveData<Event<Unit>>
+    private val _addItemEvent = MutableLiveData<Event<String>>()
+    val addItemEvent: LiveData<Event<String>>
         get() = _addItemEvent
 
-    private val _updateItemEvent = MutableLiveData<Event<Unit>>()
-    val updateItemEvent: LiveData<Event<Unit>>
+    private val _updateItemEvent = MutableLiveData<Event<String>>()
+    val updateItemEvent: LiveData<Event<String>>
         get() = _updateItemEvent
 
-    private val _deleteItemEvent = MutableLiveData<Event<Unit>>()
-    val deleteItemEvent: LiveData<Event<Unit>>
+    private val _deleteItemEvent = MutableLiveData<Event<String>>()
+    val deleteItemEvent: LiveData<Event<String>>
         get() = _deleteItemEvent
 
     val minusEnabled = Transformations.map(quantity) {
         it.toIntOrNull()?:0 != 0
     }
+
+    private lateinit var boxTitle: String
 
     private var matchesBoxId = 0
 
@@ -39,6 +41,9 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             name.value = radioComponent?.name?:""
             quantity.value = (radioComponent?.quantity?:"").toString()
             isBuy.value = radioComponent?.isBuy?:false
+
+            val box = dataSource.getMatchesBoxById(boxId)
+            boxTitle = box?.name?:""
         }
     }
 
@@ -58,7 +63,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     fun deleteItem() {
         viewModelScope.launch {
             dataSource.deleteRadioComponent(radioComponent!!)
-            _deleteItemEvent.value = Event(Unit)
+            _deleteItemEvent.value = Event(boxTitle)
         }
     }
 
@@ -81,7 +86,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
                 isBuy = isBuy.value!!
             )
             dataSource.insertRadioComponent(component)
-            _addItemEvent.value = Event(Unit)
+            _addItemEvent.value = Event(boxTitle)
         }
     }
 
@@ -91,7 +96,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             radioComponent?.quantity = quantity
             radioComponent?.isBuy = isBuy.value!!
             dataSource.updateRadioComponent(radioComponent!!)
-            _updateItemEvent.value = Event(Unit)
+            _updateItemEvent.value = Event(boxTitle)
         }
     }
 

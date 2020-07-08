@@ -54,10 +54,10 @@ class MatchesBoxListFragment : Fragment() {
             )
         })
 
-        viewModel.selectBoxEvent.observe(viewLifecycleOwner, EventObserver{ id ->
+        viewModel.selectBoxEvent.observe(viewLifecycleOwner, EventObserver{ selectedBox ->
             findNavController().navigate(
                 MatchesBoxListFragmentDirections
-                    .actionMatchesBoxListFragmentToRadioComponentsListFragment(id)
+                    .actionMatchesBoxListFragmentToRadioComponentsListFragment(selectedBox.id, selectedBox.name)
             )
         })
 

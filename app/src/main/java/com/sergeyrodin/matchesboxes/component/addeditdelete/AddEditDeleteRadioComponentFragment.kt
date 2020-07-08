@@ -35,29 +35,29 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
-        viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{
+        viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{ title ->
             hideKeyboard(activity)
             Toast.makeText(context, R.string.component_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteRadioComponentFragmentDirections
-                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId)
+                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId, title)
             )
         })
 
-        viewModel.updateItemEvent.observe(viewLifecycleOwner, EventObserver{
+        viewModel.updateItemEvent.observe(viewLifecycleOwner, EventObserver{ title ->
             hideKeyboard(activity)
             Toast.makeText(context, R.string.component_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteRadioComponentFragmentDirections
-                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId)
+                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId, title)
             )
         })
 
-        viewModel.deleteItemEvent.observe(viewLifecycleOwner, EventObserver{
+        viewModel.deleteItemEvent.observe(viewLifecycleOwner, EventObserver{ title ->
             Toast.makeText(context, R.string.component_deleted, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteRadioComponentFragmentDirections
-                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId)
+                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId, title)
             )
         })
 

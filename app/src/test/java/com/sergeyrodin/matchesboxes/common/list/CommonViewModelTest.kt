@@ -341,8 +341,8 @@ class CommonViewModelTest {
 
         subject.selectBox(box.id)
 
-        val id = subject.selectBoxEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(id, `is`(box.id))
+        val loaded = subject.selectBoxEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(loaded?.id, `is`(box.id))
     }
 
     @Test
@@ -444,17 +444,6 @@ class CommonViewModelTest {
 
         val value = subject.addComponentEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(value, `is`(CoreMatchers.not(CoreMatchers.nullValue())))
-    }
-
-    @Test
-    fun boxId_boxTitleEquals() {
-        val setId = 1
-        val box = MatchesBox(1, "Box", setId)
-        dataSource.addMatchesBoxes(box)
-        dataSource.addRadioComponents()
-        subject.startComponent(box.id)
-
-        assertThat(subject.boxTitle.getOrAwaitValue(), `is`(box.name))
     }
 
 }

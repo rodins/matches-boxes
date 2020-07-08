@@ -38,12 +38,6 @@ class RadioComponentsListFragment : Fragment() {
             )
         })
 
-        viewModel.boxTitle.observe(viewLifecycleOwner, Observer{title ->
-            if(activity is AppCompatActivity) {
-                (activity as AppCompatActivity).supportActionBar?.title = title
-            }
-        })
-
         viewModel.addComponentEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
