@@ -117,15 +117,17 @@ class RadioComponentsListFragmentTest {
         val bundle = RadioComponentsListFragmentArgs.Builder(box.id).build().toBundle()
         val scenario = launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
+        var title = ""
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
+            title = it.getString(R.string.add_component)
         }
 
         onView(withId(R.id.add_component_fab)).perform(click())
 
         verify(navController).navigate(
             RadioComponentsListFragmentDirections
-                .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(ADD_NEW_ITEM_ID, box.id)
+                .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(ADD_NEW_ITEM_ID, box.id, title)
         )
     }
 
@@ -140,15 +142,17 @@ class RadioComponentsListFragmentTest {
         val bundle = RadioComponentsListFragmentArgs.Builder(box.id).build().toBundle()
         val scenario = launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
+        var title = ""
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
+            title = it.getString(R.string.update_component)
         }
 
         onView(withText(component.name)).perform(click())
 
         verify(navController).navigate(
             RadioComponentsListFragmentDirections
-                .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(component.id, box.id)
+                .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(component.id, box.id, title)
         )
     }
 

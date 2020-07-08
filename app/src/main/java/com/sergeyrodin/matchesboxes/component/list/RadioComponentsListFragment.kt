@@ -5,7 +5,6 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -35,7 +34,7 @@ class RadioComponentsListFragment : Fragment() {
         binding.items.adapter = RadioComponentAdapter(RadioComponentListener { id ->
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
-                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(id, args.boxId)
+                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(id, args.boxId, getString(R.string.update_component))
             )
         })
 
@@ -48,7 +47,7 @@ class RadioComponentsListFragment : Fragment() {
         viewModel.addComponentEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
-                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(ADD_NEW_ITEM_ID, args.boxId)
+                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(ADD_NEW_ITEM_ID, args.boxId, getString(R.string.add_component))
             )
         })
 
