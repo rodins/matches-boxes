@@ -94,7 +94,7 @@
     <fragment
         android:id="@+id/addEditDeleteMatchesBoxFragment"
         android:name="com.sergeyrodin.matchesboxes.matchesbox.addeditdelete.AddEditDeleteMatchesBoxFragment"
-        android:label="fragment_add_edit_delete_matches_box"
+        android:label="{title}"
         tools:layout="@layout/fragment_add_edit_delete_matches_box" >
         <action
             android:id="@+id/action_addEditDeleteMatchesBoxFragment_to_matchesBoxListFragment"
@@ -110,6 +110,9 @@
         <argument
             android:name="boxId"
             app:argType="integer" />
+        <argument
+            android:name="title"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/radioComponentsListFragment"

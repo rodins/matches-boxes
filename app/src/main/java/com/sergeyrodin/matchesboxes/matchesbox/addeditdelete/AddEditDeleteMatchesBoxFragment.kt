@@ -30,14 +30,6 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
         val args by navArgs<AddEditDeleteMatchesBoxFragmentArgs>()
         hideDelete = args.boxId != ADD_NEW_ITEM_ID
 
-        if(activity is AppCompatActivity) {
-            if(hideDelete) {
-                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.update_box)
-            }else {
-                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.add_box)
-            }
-        }
-
         viewModel.start(args.setId, args.boxId)
 
         binding.viewModel = viewModel

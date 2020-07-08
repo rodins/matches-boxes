@@ -165,8 +165,10 @@ class RadioComponentsListFragmentTest {
         val bundle = RadioComponentsListFragmentArgs.Builder(box.id).build().toBundle()
         val scenario = launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
+        var title = ""
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
+            title = it.getString(R.string.update_box)
         }
 
         clickEditAction(scenario)
@@ -174,7 +176,7 @@ class RadioComponentsListFragmentTest {
         verify(navController).navigate(
             RadioComponentsListFragmentDirections
                 .actionRadioComponentsListFragmentToAddEditDeleteMatchesBoxFragment(
-                    DO_NOT_NEED_THIS_VARIABLE, box.id)
+                    DO_NOT_NEED_THIS_VARIABLE, box.id, title)
         )
     }
 

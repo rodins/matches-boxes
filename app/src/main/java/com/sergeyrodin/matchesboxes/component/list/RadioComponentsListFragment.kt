@@ -66,7 +66,7 @@ class RadioComponentsListFragment : Fragment() {
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
                     .actionRadioComponentsListFragmentToAddEditDeleteMatchesBoxFragment(
-                        DO_NOT_NEED_THIS_VARIABLE, args.boxId)
+                        DO_NOT_NEED_THIS_VARIABLE, args.boxId, getString(R.string.update_box))
             )
             return true
         }
