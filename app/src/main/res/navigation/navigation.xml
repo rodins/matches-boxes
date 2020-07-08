@@ -57,7 +57,7 @@
     <fragment
         android:id="@+id/addEditDeleteMatchesBoxSetFragment"
         android:name="com.sergeyrodin.matchesboxes.matchesboxset.addeditdelete.AddEditDeleteMatchesBoxSetFragment"
-        android:label="fragment_add_edit_delete_matches_box_set"
+        android:label="{title}"
         tools:layout="@layout/fragment_add_edit_delete_matches_box_set" >
         <action
             android:id="@+id/action_addEditDeleteMatchesBoxSetFragment_to_matchesBoxSetsListFragment"
@@ -73,6 +73,9 @@
         <argument
             android:name="setId"
             app:argType="integer" />
+        <argument
+            android:name="title"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/matchesBoxListFragment"

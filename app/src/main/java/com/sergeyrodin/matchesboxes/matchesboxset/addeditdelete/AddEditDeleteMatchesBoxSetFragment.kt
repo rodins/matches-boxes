@@ -32,14 +32,6 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
         val args by navArgs<AddEditDeleteMatchesBoxSetFragmentArgs>()
         isDeleteVisible = args.setId != ADD_NEW_ITEM_ID
 
-        if(activity is AppCompatActivity) {
-            if(isDeleteVisible) {
-                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.update_set)
-            }else {
-                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.add_set)
-            }
-        }
-
         viewModel.start(args.bagId, args.setId)
 
         viewModel.addedEvent.observe(viewLifecycleOwner, EventObserver{
