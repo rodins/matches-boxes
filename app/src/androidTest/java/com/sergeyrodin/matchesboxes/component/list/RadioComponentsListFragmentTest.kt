@@ -53,7 +53,7 @@ class RadioComponentsListFragmentTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         dataSource.addRadioComponents()
-        val bundle = RadioComponentsListFragmentArgs.Builder(box.id).build().toBundle()
+        val bundle = RadioComponentsListFragmentArgs.Builder(box.id, "Title").build().toBundle()
         launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.no_components_added_text)).check(matches(isDisplayed()))
@@ -70,7 +70,7 @@ class RadioComponentsListFragmentTest {
             RadioComponent(3, "Component3", 1, box.id)
         )
 
-        val bundle = RadioComponentsListFragmentArgs.Builder(box.id).build().toBundle()
+        val bundle = RadioComponentsListFragmentArgs.Builder(box.id, "Title").build().toBundle()
         launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.no_components_added_text)).check(matches(not(isDisplayed())))
@@ -86,7 +86,7 @@ class RadioComponentsListFragmentTest {
         val component3 = RadioComponent(3, "Component3", 1, box.id)
         dataSource.addRadioComponents(component1, component2, component3)
 
-        val bundle = RadioComponentsListFragmentArgs.Builder(box.id).build().toBundle()
+        val bundle = RadioComponentsListFragmentArgs.Builder(box.id, "Title").build().toBundle()
         launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
 
         onView(withText(component1.name)).check(matches(isDisplayed()))
@@ -102,7 +102,7 @@ class RadioComponentsListFragmentTest {
         val component = RadioComponent(1, "Component", 12, box.id)
         dataSource.addRadioComponents(component)
 
-        val bundle = RadioComponentsListFragmentArgs.Builder(box.id).build().toBundle()
+        val bundle = RadioComponentsListFragmentArgs.Builder(box.id, "Title").build().toBundle()
         launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
 
         onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
@@ -114,7 +114,7 @@ class RadioComponentsListFragmentTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         dataSource.addRadioComponents()
-        val bundle = RadioComponentsListFragmentArgs.Builder(box.id).build().toBundle()
+        val bundle = RadioComponentsListFragmentArgs.Builder(box.id, "Title").build().toBundle()
         val scenario = launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
@@ -139,7 +139,7 @@ class RadioComponentsListFragmentTest {
         val component = RadioComponent(1, "Component", 3, box.id)
         dataSource.addRadioComponents(component)
 
-        val bundle = RadioComponentsListFragmentArgs.Builder(box.id).build().toBundle()
+        val bundle = RadioComponentsListFragmentArgs.Builder(box.id, "Title").build().toBundle()
         val scenario = launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
@@ -162,7 +162,7 @@ class RadioComponentsListFragmentTest {
         val box = MatchesBox(1, "Box", setId)
         dataSource.addRadioComponents()
 
-        val bundle = RadioComponentsListFragmentArgs.Builder(box.id).build().toBundle()
+        val bundle = RadioComponentsListFragmentArgs.Builder(box.id, "Title").build().toBundle()
         val scenario = launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         var title = ""

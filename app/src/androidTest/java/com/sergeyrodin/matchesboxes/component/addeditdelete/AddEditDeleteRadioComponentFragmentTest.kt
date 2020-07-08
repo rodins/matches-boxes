@@ -111,6 +111,7 @@ class AddEditDeleteRadioComponentFragmentTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
+        dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents()
         val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(ADD_NEW_ITEM_ID, box.id,"Title").build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
@@ -124,7 +125,7 @@ class AddEditDeleteRadioComponentFragmentTest {
 
         verify(navController).navigate(
             AddEditDeleteRadioComponentFragmentDirections
-                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(box.id)
+                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(box.id, box.name)
         )
     }
 
@@ -146,6 +147,7 @@ class AddEditDeleteRadioComponentFragmentTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 3, box.id)
+        dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
         val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, box.id, "Title").build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
@@ -159,7 +161,7 @@ class AddEditDeleteRadioComponentFragmentTest {
 
         verify(navController).navigate(
             AddEditDeleteRadioComponentFragmentDirections
-                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(box.id)
+                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(box.id, box.name)
         )
     }
 
@@ -169,6 +171,7 @@ class AddEditDeleteRadioComponentFragmentTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 3, box.id)
+        dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
         val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, box.id, "Title").build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
@@ -181,7 +184,7 @@ class AddEditDeleteRadioComponentFragmentTest {
 
         verify(navController).navigate(
             AddEditDeleteRadioComponentFragmentDirections
-                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(box.id)
+                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(box.id, box.name)
         )
     }
 

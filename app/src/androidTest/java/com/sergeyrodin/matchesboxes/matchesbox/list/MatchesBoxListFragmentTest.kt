@@ -128,7 +128,7 @@ class MatchesBoxListFragmentTest {
         onView(withText(box.name)).perform(click())
 
         verify(navController).navigate(
-            MatchesBoxListFragmentDirections.actionMatchesBoxListFragmentToRadioComponentsListFragment(box.id)
+            MatchesBoxListFragmentDirections.actionMatchesBoxListFragmentToRadioComponentsListFragment(box.id, box.name)
         )
     }
 

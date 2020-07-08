@@ -113,7 +113,7 @@ class AddEditDeleteMatchesBoxFragmentTest{
 
         verify(navController).navigate(
             AddEditDeleteMatchesBoxFragmentDirections
-                .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(updatedBox.id)
+                .actionAddEditDeleteMatchesBoxFragmentToRadioComponentsListFragment(updatedBox.id, updatedBox.name)
         )
     }
 
