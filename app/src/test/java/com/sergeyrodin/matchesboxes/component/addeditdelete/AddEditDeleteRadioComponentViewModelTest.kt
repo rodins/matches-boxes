@@ -3,6 +3,7 @@ package com.sergeyrodin.matchesboxes.component.addeditdelete
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
+import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.runBlocking
@@ -330,5 +331,54 @@ class AddEditDeleteRadioComponentViewModelTest{
 
         val loaded = dataSource.getRadioComponentById(component.id)
         assertThat(loaded?.isBuy, `is`(true))
+    }
+
+    @Test
+    fun addComponent_boxTitleEquals() {
+        val setId = 1
+        val box = MatchesBox(1, "Box", setId)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents()
+        subject.start(box.id, ADD_NEW_ITEM_ID)
+
+        subject.name.value = "New component"
+        subject.quantity.value = "3"
+
+        subject.saveItem()
+
+        val title = subject.addItemEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(title, `is`(box.name))
+    }
+
+    @Test
+    fun updateComponent_boxTitleEquals() {
+        val setId = 1
+        val box = MatchesBox(1, "Box", setId)
+        val component = RadioComponent(1, "Component", 4, box.id)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(box.id, component.id)
+
+        subject.name.value = "Updated component"
+
+        subject.saveItem()
+
+        val title = subject.updateItemEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(title, `is`(box.name))
+    }
+
+    @Test
+    fun deleteComponent_boxTitleEquals() {
+        val setId = 1
+        val box = MatchesBox(1, "Box", setId)
+        val component = RadioComponent(1, "Component", 4, box.id)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(box.id, component.id)
+
+        subject.deleteItem()
+
+        val title = subject.deleteItemEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(title, `is`(box.name))
     }
 }
