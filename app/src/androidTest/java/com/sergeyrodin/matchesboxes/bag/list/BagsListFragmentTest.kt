@@ -68,13 +68,15 @@ class BagsListFragmentTest {
 
         val scenario = launchFragmentInContainer<BagsListFragment>(null, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
+        var title = ""
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
+            title = it.getString(R.string.add_bag)
         }
         onView(withId(R.id.add_bag_fab)).perform(click())
         verify(navController).navigate(
             BagsListFragmentDirections.actionBagsListFragmentToAddEditDeleteBagFragment(
-                ADD_NEW_ITEM_ID)
+                ADD_NEW_ITEM_ID, title)
         )
     }
 

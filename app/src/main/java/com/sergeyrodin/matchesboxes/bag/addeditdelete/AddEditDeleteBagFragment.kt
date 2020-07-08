@@ -29,22 +29,12 @@ class AddEditDeleteBagFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
         val binding = FragmentAddEditDeleteBagBinding.inflate(inflater)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
         val args by navArgs<AddEditDeleteBagFragmentArgs>()
         isActionDeleteVisible = args.bagId != ADD_NEW_ITEM_ID
-
-        if(activity is AppCompatActivity) {
-            if(isActionDeleteVisible) {
-                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.update_bag)
-            }else {
-                (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.add_bag)
-            }
-        }
 
         viewModel.start(args.bagId)
 

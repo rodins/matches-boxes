@@ -6,7 +6,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
@@ -14,7 +13,6 @@ import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.common.list.CommonViewModel
 import com.sergeyrodin.matchesboxes.common.list.CommonViewModelFactory
-
 import com.sergeyrodin.matchesboxes.databinding.FragmentBagsListBinding
 
 /**
@@ -42,7 +40,7 @@ class BagsListFragment : Fragment() {
         viewModel.addBagEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 BagsListFragmentDirections.actionBagsListFragmentToAddEditDeleteBagFragment(
-                    ADD_NEW_ITEM_ID)
+                    ADD_NEW_ITEM_ID, getString(R.string.add_bag))
             )
         })
 

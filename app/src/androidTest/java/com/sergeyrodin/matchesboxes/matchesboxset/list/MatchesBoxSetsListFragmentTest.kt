@@ -117,15 +117,17 @@ class MatchesBoxSetsListFragmentTest {
         val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id).build().toBundle()
         val scenario = launchFragmentInContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
+        var title = ""
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
+            title = it.getString(R.string.update_bag)
         }
 
         clickEditAction(scenario)
 
         verify(navController).navigate(
             MatchesBoxSetsListFragmentDirections
-                .actionMatchesBoxSetsListFragmentToAddEditDeleteBagFragment(bag.id)
+                .actionMatchesBoxSetsListFragmentToAddEditDeleteBagFragment(bag.id, title)
         )
     }
 

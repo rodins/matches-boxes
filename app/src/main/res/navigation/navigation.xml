@@ -22,7 +22,7 @@
     <fragment
         android:id="@+id/addEditDeleteBagFragment"
         android:name="com.sergeyrodin.matchesboxes.bag.addeditdelete.AddEditDeleteBagFragment"
-        android:label="@string/edit_bag_label" >
+        android:label="{title}" >
         <action
             android:id="@+id/action_addEditDeleteBagFragment_to_bagsListFragment"
             app:destination="@id/bagsListFragment"
@@ -35,6 +35,9 @@
         <argument
             android:name="bagId"
             app:argType="integer" />
+        <argument
+            android:name="title"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/matchesBoxSetsListFragment"
