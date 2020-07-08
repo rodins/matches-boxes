@@ -119,4 +119,18 @@ class AddEditDeleteMatchesBoxViewModelTest {
         val event = subject.deleteEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(event, `is`(not(nullValue())))
     }
+
+    @Test
+    fun updateItem_boxNameEquals() {
+        val setId = 2
+        val box = MatchesBox(1, "Box", setId)
+        dataSource.addMatchesBoxes(box)
+        subject.start(setId, box.id)
+
+        subject.name.value = "Box updated"
+        subject.saveMatchesBox()
+
+        val title = subject.updateEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(title, `is`(box.name))
+    }
 }
