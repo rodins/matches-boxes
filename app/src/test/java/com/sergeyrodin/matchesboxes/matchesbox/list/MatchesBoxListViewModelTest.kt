@@ -1,7 +1,6 @@
 package com.sergeyrodin.matchesboxes.matchesbox.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.sergeyrodin.matchesboxes.common.list.CommonViewModel
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
@@ -9,7 +8,7 @@ import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers
-import org.junit.Assert.*
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -18,13 +17,13 @@ class MatchesBoxListViewModelTest{
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var subject: CommonViewModel
+    private lateinit var subject: MatchesBoxListViewModel
     private lateinit var dataSource: FakeDataSource
 
     @Before
     fun init() {
         dataSource = FakeDataSource()
-        subject = CommonViewModel(dataSource)
+        subject = MatchesBoxListViewModel(dataSource)
     }
 
     @Test
