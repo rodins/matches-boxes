@@ -121,4 +121,16 @@ class AddEditDeleteBagViewModelTest {
         val deleted = subject.eventDeleted.getOrAwaitValue().getContentIfNotHandled()
         assertThat(deleted, `is`(not(nullValue())))
     }
+
+    @Test
+    fun updateBag_bagTitleEquals() {
+        val bag = Bag(1, "Bag")
+        dataSource.addBags(bag)
+        subject.start(bag.id)
+        subject.name.value = "Updated bag"
+        subject.saveBag()
+
+        val edited = subject.eventEdited.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(edited, `is`("Updated bag"))
+    }
 }
