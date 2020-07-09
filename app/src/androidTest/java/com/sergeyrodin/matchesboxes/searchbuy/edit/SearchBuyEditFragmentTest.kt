@@ -1,6 +1,5 @@
 package com.sergeyrodin.matchesboxes.searchbuy.edit
 
-import android.app.Service
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
@@ -16,7 +15,6 @@ import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.*
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -166,7 +164,7 @@ class SearchBuyEditFragmentTest {
     }
 
     @Test
-    fun saveItem_navigationCalled() {
+    fun saveItem_isSearchTrue_navigationCalled() {
         val query = ""
         val isSearch = true
         val bag = Bag(1, "Bag")
@@ -180,14 +178,44 @@ class SearchBuyEditFragmentTest {
         val bundle = SearchBuyEditFragmentArgs.Builder(component.id, query, isSearch).build().toBundle()
         val scenario = launchFragmentInContainer<SearchBuyEditFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
+        var title = ""
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
+            title = it.getString(R.string.search_components)
         }
 
         onView(withId(R.id.save_component_fab)).perform(click())
 
         verify(navController).navigate(
-            SearchBuyEditFragmentDirections.actionSearchBuyEditFragmentToSearchBuyFragment(query, isSearch)
+            SearchBuyEditFragmentDirections.actionSearchBuyEditFragmentToSearchBuyFragment(query, isSearch, title)
+        )
+    }
+
+    @Test
+    fun saveItem_isSearchFalse_navigationCalled() {
+        val query = ""
+        val isSearch = false
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2,  box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        val bundle = SearchBuyEditFragmentArgs.Builder(component.id, query, isSearch).build().toBundle()
+        val scenario = launchFragmentInContainer<SearchBuyEditFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        var title = ""
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+            title = it.getString(R.string.buy_components)
+        }
+
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        verify(navController).navigate(
+            SearchBuyEditFragmentDirections.actionSearchBuyEditFragmentToSearchBuyFragment(query, isSearch, title)
         )
     }
 

@@ -64,7 +64,7 @@ class BagsListFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 findNavController().navigate(
                     BagsListFragmentDirections
-                        .actionBagsListFragmentToSearchBuyFragment(query!!, true)
+                        .actionBagsListFragmentToSearchBuyFragment(query!!, true, getString(R.string.search_components))
                 )
 
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
@@ -84,7 +84,7 @@ class BagsListFragment : Fragment() {
         if(item.itemId == R.id.action_buy){
             findNavController().navigate(
                 BagsListFragmentDirections
-                    .actionBagsListFragmentToSearchBuyFragment("", false)
+                    .actionBagsListFragmentToSearchBuyFragment("", false, getString(R.string.buy_components))
             )
             return true
         }

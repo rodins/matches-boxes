@@ -32,9 +32,14 @@ class SearchBuyEditFragment : Fragment() {
         viewModel.start(args.componentId)
 
         viewModel.saveItemEvent.observe(viewLifecycleOwner, EventObserver{
+            val title = if(args.isSearch) {
+                getString(R.string.search_components)
+            }else{
+                getString(R.string.buy_components)
+            }
             findNavController().navigate(
                 SearchBuyEditFragmentDirections
-                    .actionSearchBuyEditFragmentToSearchBuyFragment(args.query, args.isSearch)
+                    .actionSearchBuyEditFragmentToSearchBuyFragment(args.query, args.isSearch, title)
             )
         })
 
