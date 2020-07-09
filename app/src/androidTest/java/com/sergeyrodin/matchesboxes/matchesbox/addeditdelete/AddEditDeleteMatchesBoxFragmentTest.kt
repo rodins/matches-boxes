@@ -75,6 +75,7 @@ class AddEditDeleteMatchesBoxFragmentTest{
     fun addItem_saveName_navigationCalled() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes()
         val bundle = AddEditDeleteMatchesBoxFragmentArgs.Builder(set.id, ADD_NEW_ITEM_ID, "Title").build().toBundle()
         val scenario = launchFragmentInContainer<AddEditDeleteMatchesBoxFragment>(bundle, R.style.AppTheme)
@@ -88,7 +89,7 @@ class AddEditDeleteMatchesBoxFragmentTest{
 
         verify(navController).navigate(
             AddEditDeleteMatchesBoxFragmentDirections
-                .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(set.id)
+                .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(set.id, set.name)
         )
     }
 
@@ -138,7 +139,7 @@ class AddEditDeleteMatchesBoxFragmentTest{
 
         verify(navController).navigate(
             AddEditDeleteMatchesBoxFragmentDirections
-                .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(set.id)
+                .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(set.id, set.name)
         )
     }
 

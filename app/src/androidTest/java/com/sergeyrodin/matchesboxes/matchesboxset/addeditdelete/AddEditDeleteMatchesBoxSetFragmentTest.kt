@@ -111,7 +111,7 @@ class AddEditDeleteMatchesBoxSetFragmentTest {
 
         verify(navController).navigate(
             AddEditDeleteMatchesBoxSetFragmentDirections
-                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(setUpdated.id)
+                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(setUpdated.id, setUpdated.name)
         )
     }
 
