@@ -91,8 +91,8 @@ class CommonViewModelTest {
 
         subject.selectBag(bag.id)
 
-        val id = subject.selectBagEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(id, `is`(bag.id))
+        val loaded = subject.selectBagEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(loaded?.id, `is`(bag.id))
     }
 
     @Test
@@ -248,15 +248,6 @@ class CommonViewModelTest {
         val items = subject.setsList.getOrAwaitValue()
         assertThat(items[0].componentsQuantity, `is`("10"))
         assertThat(items[1].componentsQuantity, `is`("26"))
-    }
-
-    @Test
-    fun bagId_bagTitleEquals() {
-        val bag = Bag(1, "Bag")
-        dataSource.addBags(bag)
-        subject.startSet(bag.id)
-
-        assertThat(subject.bagTitle.getOrAwaitValue(), `is`(bag.name))
     }
 
     // Boxes

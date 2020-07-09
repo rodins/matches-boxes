@@ -46,11 +46,11 @@ class AddEditDeleteBagFragment : Fragment() {
             )
         })
 
-        viewModel.eventEdited.observe(viewLifecycleOwner, EventObserver{
+        viewModel.eventEdited.observe(viewLifecycleOwner, EventObserver{ title ->
             hideKeyboard(activity)
             Toast.makeText(requireContext(), R.string.bag_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
-                AddEditDeleteBagFragmentDirections.actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(args.bagId)
+                AddEditDeleteBagFragmentDirections.actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(args.bagId, title)
             )
         })
 

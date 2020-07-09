@@ -43,12 +43,6 @@ class MatchesBoxSetsListFragment : Fragment() {
         binding.viewModel = viewModel
         binding.items.adapter = adapter
 
-        viewModel.bagTitle.observe(viewLifecycleOwner, Observer{title ->
-            if(activity is AppCompatActivity) {
-                (activity as AppCompatActivity).supportActionBar?.title = title
-            }
-        })
-
         viewModel.addSetEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 MatchesBoxSetsListFragmentDirections

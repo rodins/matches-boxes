@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.common.list
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
+import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
@@ -20,8 +21,8 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     val addBagEvent: LiveData<Event<Unit>>
         get() = _addBagEvent
 
-    private val _selectBagEvent = MutableLiveData<Event<Int>>()
-    val selectBagEvent: LiveData<Event<Int>>
+    private val _selectBagEvent = MutableLiveData<Event<Bag>>()
+    val selectBagEvent: LiveData<Event<Bag>>
         get() = _selectBagEvent
 
     fun addBag() {
@@ -29,7 +30,12 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     }
 
     fun selectBag(id: Int) {
-        _selectBagEvent.value = Event(id)
+        viewModelScope.launch {
+            val bag = dataSource.getBagById(id)
+            bag?.let{
+                _selectBagEvent.value = Event(bag)
+            }
+        }
     }
 
     // Sets
@@ -37,13 +43,6 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     val setsList = bagId.switchMap{ id ->
         liveData{
             emit(dataSource.getDisplayQuantityListByBagId(id))
-        }
-    }
-
-    val bagTitle = bagId.switchMap { id ->
-        liveData<String> {
-            val bag = dataSource.getBagById(id)
-            emit(bag?.name?:"")
         }
     }
 

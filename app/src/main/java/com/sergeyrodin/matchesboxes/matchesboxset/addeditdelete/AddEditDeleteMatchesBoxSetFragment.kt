@@ -36,12 +36,12 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
 
         viewModel.start(args.bagId, args.setId)
 
-        viewModel.addedEvent.observe(viewLifecycleOwner, EventObserver{
+        viewModel.addedEvent.observe(viewLifecycleOwner, EventObserver{ title ->
             hideKeyboard(activity)
             Toast.makeText(context, R.string.matches_box_set_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxSetFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(args.bagId)
+                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(args.bagId, title)
             )
         })
 
@@ -54,11 +54,11 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
             )
         })
 
-        viewModel.deletedEvent.observe(viewLifecycleOwner, EventObserver{ bagId ->
+        viewModel.deletedEvent.observe(viewLifecycleOwner, EventObserver{ bag ->
             Toast.makeText(context, R.string.matches_box_set_deleted, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxSetFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(bagId)
+                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(bag.id, bag.name)
             )
         })
 

@@ -44,9 +44,9 @@ class BagsListFragment : Fragment() {
             )
         })
 
-        viewModel.selectBagEvent.observe(viewLifecycleOwner, EventObserver{ bagId ->
+        viewModel.selectBagEvent.observe(viewLifecycleOwner, EventObserver{ bag ->
             findNavController().navigate(
-                BagsListFragmentDirections.actionBagsListFragmentToMatchesBoxSetsListFragment(bagId)
+                BagsListFragmentDirections.actionBagsListFragmentToMatchesBoxSetsListFragment(bag.id, bag.name)
             )
         })
 

@@ -15,16 +15,16 @@ class AddEditDeleteMatchesBoxSetViewModel(private val dataSource: RadioComponent
     private var matchesBoxSet: MatchesBoxSet? = null
     private var _bagId: Int = 0
 
-    private val _addedEvent = MutableLiveData<Event<Unit>>()
-    val addedEvent: LiveData<Event<Unit>>
+    private val _addedEvent = MutableLiveData<Event<String>>()
+    val addedEvent: LiveData<Event<String>>
         get() = _addedEvent
 
     private val _updatedEvent = MutableLiveData<Event<MatchesBoxSet>>()
     val updatedEvent: LiveData<Event<MatchesBoxSet>>
         get() = _updatedEvent
 
-    private val _deletedEvent = MutableLiveData<Event<Int>>()
-    val deletedEvent: LiveData<Event<Int>>
+    private val _deletedEvent = MutableLiveData<Event<Bag>>()
+    val deletedEvent: LiveData<Event<Bag>>
         get() = _deletedEvent
 
     val name = MutableLiveData<String>()
@@ -51,7 +51,10 @@ class AddEditDeleteMatchesBoxSetViewModel(private val dataSource: RadioComponent
         viewModelScope.launch {
             val bagId = matchesBoxSet?.bagId
             dataSource.deleteMatchesBoxSet(matchesBoxSet!!)
-            _deletedEvent.value = Event(bagId!!)
+            val bag = dataSource.getBagById(bagId!!)
+            bag?.let {
+                _deletedEvent.value = Event(bag)
+            }
         }
     }
 
@@ -59,7 +62,8 @@ class AddEditDeleteMatchesBoxSetViewModel(private val dataSource: RadioComponent
         viewModelScope.launch {
             val newMatchesBoxSet = MatchesBoxSet(name = name.value!!, bagId = _bagId)
             dataSource.insertMatchesBoxSet(newMatchesBoxSet)
-            _addedEvent.value = Event(Unit)
+            val bag = dataSource.getBagById(_bagId)
+            _addedEvent.value = Event(bag?.name?:"")
         }
     }
 
