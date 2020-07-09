@@ -217,8 +217,8 @@ class CommonViewModelTest {
 
         subject.selectSet(set2.id)
 
-        val id = subject.selectSetEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(id, `is`(set2.id))
+        val set = subject.selectSetEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(set?.id, `is`(set2.id))
     }
 
     @Test
