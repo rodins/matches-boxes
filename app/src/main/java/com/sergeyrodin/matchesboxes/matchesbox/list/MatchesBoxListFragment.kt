@@ -26,8 +26,8 @@ class MatchesBoxListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentMatchesBoxListBinding.inflate(inflater)
-        val viewModel by activityViewModels<CommonViewModel> {
-            CommonViewModelFactory(
+        val viewModel by viewModels<MatchesBoxListViewModel> {
+            MatchesBoxListViewModelFactory(
                 (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
             )
         }

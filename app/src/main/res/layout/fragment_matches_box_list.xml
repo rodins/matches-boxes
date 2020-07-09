@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.sergeyrodin.matchesboxes.common.list.CommonViewModel" />
+            type="com.sergeyrodin.matchesboxes.matchesbox.list.MatchesBoxListViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
