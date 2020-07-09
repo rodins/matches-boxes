@@ -364,17 +364,6 @@ class CommonViewModelTest {
         assertThat(items[1].componentsQuantity, `is`("11"))
     }
 
-    @Test
-    fun setId_setTitleEquals() {
-        val bagId = 1
-        val set = MatchesBoxSet(1, "Set", bagId)
-        dataSource.addMatchesBoxSets(set)
-        dataSource.addMatchesBoxes()
-        subject.startBox(set.id)
-
-        assertThat(subject.setTitle.getOrAwaitValue(), `is`(set.name))
-    }
-
     // Components
 
     @Test

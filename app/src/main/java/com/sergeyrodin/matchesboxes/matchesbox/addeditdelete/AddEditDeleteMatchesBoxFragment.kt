@@ -35,20 +35,20 @@ class AddEditDeleteMatchesBoxFragment : Fragment() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = viewLifecycleOwner
 
-        viewModel.addEvent.observe(viewLifecycleOwner, EventObserver{
+        viewModel.addEvent.observe(viewLifecycleOwner, EventObserver{ title ->
             hideKeyboard(activity)
             Toast.makeText(context, R.string.box_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
-                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.setId)
+                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(args.setId, title)
             )
         })
 
-        viewModel.deleteEvent.observe(viewLifecycleOwner, EventObserver{ setId ->
+        viewModel.deleteEvent.observe(viewLifecycleOwner, EventObserver{ set ->
             Toast.makeText(context, R.string.box_deleted, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteMatchesBoxFragmentDirections
-                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(setId)
+                    .actionAddEditDeleteMatchesBoxFragmentToMatchesBoxListFragment(set.id, set.name)
             )
         })
 

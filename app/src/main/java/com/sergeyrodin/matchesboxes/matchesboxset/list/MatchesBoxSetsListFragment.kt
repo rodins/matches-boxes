@@ -57,10 +57,10 @@ class MatchesBoxSetsListFragment : Fragment() {
             )
         })
 
-        viewModel.selectSetEvent.observe(viewLifecycleOwner, EventObserver{ id ->
+        viewModel.selectSetEvent.observe(viewLifecycleOwner, EventObserver{ set ->
             findNavController().navigate(
                 MatchesBoxSetsListFragmentDirections
-                    .actionMatchesBoxSetsListFragmentToMatchesBoxListFragment(id)
+                    .actionMatchesBoxSetsListFragmentToMatchesBoxListFragment(set.id, set.name)
             )
         })
 

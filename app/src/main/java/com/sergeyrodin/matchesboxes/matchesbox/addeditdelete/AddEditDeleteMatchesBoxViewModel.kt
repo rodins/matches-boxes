@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.MatchesBox
+import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
 
@@ -15,16 +16,16 @@ class AddEditDeleteMatchesBoxViewModel(private val dataSource: RadioComponentsDa
     private var matchesBox: MatchesBox? = null
     private var _setId: Int = 0
 
-    private val _addEvent = MutableLiveData<Event<Unit>>()
-    val addEvent: LiveData<Event<Unit>>
+    private val _addEvent = MutableLiveData<Event<String>>()
+    val addEvent: LiveData<Event<String>>
         get() = _addEvent
 
     private val _updateEvent = MutableLiveData<Event<String>>()
     val updateEvent: LiveData<Event<String>>
         get() = _updateEvent
 
-    private val _deleteEvent = MutableLiveData<Event<Int>>()
-    val deleteEvent: LiveData<Event<Int>>
+    private val _deleteEvent = MutableLiveData<Event<MatchesBoxSet>>()
+    val deleteEvent: LiveData<Event<MatchesBoxSet>>
         get() = _deleteEvent
 
     fun start(setId: Int, boxId: Int) {
@@ -49,7 +50,8 @@ class AddEditDeleteMatchesBoxViewModel(private val dataSource: RadioComponentsDa
         viewModelScope.launch {
             val id = matchesBox?.matchesBoxSetId
             dataSource.deleteMatchesBox(matchesBox!!)
-            _deleteEvent.value = Event(id!!)
+            val set = dataSource.getMatchesBoxSetById(id!!)
+            _deleteEvent.value = Event(set!!)
         }
     }
 
@@ -57,7 +59,8 @@ class AddEditDeleteMatchesBoxViewModel(private val dataSource: RadioComponentsDa
         viewModelScope.launch {
             val box = MatchesBox(name = name.value!!, matchesBoxSetId = _setId)
             dataSource.insertMatchesBox(box)
-            _addEvent.value = Event(Unit)
+            val set = dataSource.getMatchesBoxSetById(_setId)
+            _addEvent.value = Event(set?.name?:"")
         }
     }
 

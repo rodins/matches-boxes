@@ -41,12 +41,6 @@ class MatchesBoxListFragment : Fragment() {
             viewModel.selectBox(it)
         })
 
-        viewModel.setTitle.observe(viewLifecycleOwner, Observer{title ->
-            if(activity is AppCompatActivity) {
-                (activity as AppCompatActivity).supportActionBar?.title = title
-            }
-        })
-
         viewModel.addBoxEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
                 MatchesBoxListFragmentDirections

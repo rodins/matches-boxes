@@ -3,6 +3,7 @@ package com.sergeyrodin.matchesboxes.common.list
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.MatchesBox
+import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
 
@@ -54,8 +55,8 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     val addSetEvent: LiveData<Event<Unit>>
         get() = _addSetEvent
 
-    private val _selectSetEvent = MutableLiveData<Event<Int>>()
-    val selectSetEvent: LiveData<Event<Int>>
+    private val _selectSetEvent = MutableLiveData<Event<MatchesBoxSet>>()
+    val selectSetEvent: LiveData<Event<MatchesBoxSet>>
         get() = _selectSetEvent
 
     fun startSet(id: Int) {
@@ -67,7 +68,12 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     }
 
     fun selectSet(id: Int) {
-        _selectSetEvent.value = Event(id)
+        viewModelScope.launch {
+            val set = dataSource.getMatchesBoxSetById(id)
+            set?.let{
+                _selectSetEvent.value = Event(it)
+            }
+        }
     }
 
     // Boxes
@@ -76,13 +82,6 @@ class CommonViewModel(private val dataSource: RadioComponentsDataSource): ViewMo
     val boxesList = matchesBoxSetId.switchMap{ setId ->
         liveData{
             emit(dataSource.getDisplayQuantityListBySetId(setId))
-        }
-    }
-
-    val setTitle = matchesBoxSetId.switchMap { setId ->
-        liveData<String>{
-            val set = dataSource.getMatchesBoxSetById(setId)
-            emit(set?.name?:"")
         }
     }
 

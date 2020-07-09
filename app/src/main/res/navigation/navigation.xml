@@ -83,7 +83,7 @@
     <fragment
         android:id="@+id/matchesBoxListFragment"
         android:name="com.sergeyrodin.matchesboxes.matchesbox.list.MatchesBoxListFragment"
-        android:label="MatchesBoxListFragment" >
+        android:label="{title}" >
         <action
             android:id="@+id/action_matchesBoxListFragment_to_addEditDeleteMatchesBoxFragment"
             app:destination="@id/addEditDeleteMatchesBoxFragment" />
@@ -96,6 +96,9 @@
         <argument
             android:name="setId"
             app:argType="integer" />
+        <argument
+            android:name="title"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteMatchesBoxFragment"
