@@ -94,7 +94,7 @@ class BagsListFragmentTest {
         }
         onView(withText("Bag2")).perform(click())
         verify(navController).navigate(
-            BagsListFragmentDirections.actionBagsListFragmentToMatchesBoxSetsListFragment(bag2.id)
+            BagsListFragmentDirections.actionBagsListFragmentToMatchesBoxSetsListFragment(bag2.id, bag2.name)
         )
     }
 

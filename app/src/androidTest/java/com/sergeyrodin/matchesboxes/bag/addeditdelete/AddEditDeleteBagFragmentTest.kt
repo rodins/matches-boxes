@@ -102,7 +102,7 @@ class AddEditDeleteBagFragmentTest {
 
         verify(navController).navigate(
             AddEditDeleteBagFragmentDirections
-                .actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(bagUpdated.id)
+                .actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(bagUpdated.id, bagUpdated.name)
         )
     }
 

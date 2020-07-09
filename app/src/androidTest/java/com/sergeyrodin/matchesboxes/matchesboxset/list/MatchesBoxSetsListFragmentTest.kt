@@ -54,7 +54,7 @@ class MatchesBoxSetsListFragmentTest {
             MatchesBoxSet(3, "MBS3", bag.id)
         )
 
-        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id).build().toBundle()
+        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id, "Title").build().toBundle()
         launchFragmentInContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme)
 
         onView(withText("MBS1")).check(matches(isDisplayed()))
@@ -66,7 +66,7 @@ class MatchesBoxSetsListFragmentTest {
     fun noSets_textDisplayed() {
         val bag = Bag(1, "Bag")
         dataSource.addMatchesBoxSets()
-        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id).build().toBundle()
+        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id, "Title").build().toBundle()
         launchFragmentInContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
@@ -75,7 +75,7 @@ class MatchesBoxSetsListFragmentTest {
     @Test
     fun noSets_addSetFabClicked_navigationCalled() {
         val bag = Bag(1, "Bag")
-        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id).build().toBundle()
+        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id, "Title").build().toBundle()
         val scenario = launchFragmentInContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
@@ -96,7 +96,7 @@ class MatchesBoxSetsListFragmentTest {
         val bag = Bag(2, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.addMatchesBoxSets(set)
-        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id).build().toBundle()
+        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id, "Title").build().toBundle()
         val scenario = launchFragmentInContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment {
@@ -114,7 +114,7 @@ class MatchesBoxSetsListFragmentTest {
     @Test
     fun clickEditAction_navigationMatches() {
         val bag = Bag(1, "Bag")
-        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id).build().toBundle()
+        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id, "Title").build().toBundle()
         val scenario = launchFragmentInContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
@@ -152,7 +152,7 @@ class MatchesBoxSetsListFragmentTest {
         dataSource.addMatchesBoxes(box1, box2, box3, box4)
         dataSource.addRadioComponents(component1, component2, component3, component4,
             component5, component6, component7, component8)
-        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id).build().toBundle()
+        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id, "Title").build().toBundle()
         launchFragmentInContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme)
 
         onView(withText("10")).check(matches(isDisplayed()))
