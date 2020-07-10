@@ -384,4 +384,58 @@ class RadioComponentsDaoTest {
         val list = radioComponentsDatabase.radioComponentsDatabaseDao.getBagsDisplayQuantityList().getOrAwaitValue()
         assertThat(list.size, `is`(1))
     }
+
+    @Test
+    fun boxesSort_sortById() = runBlockingTest{
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
+
+        val box1 = MatchesBox(1, "CBox", MATCHES_BOX_SET.id)
+        val box2 = MatchesBox(2, "BBox", MATCHES_BOX_SET.id)
+        val box3 = MatchesBox(3, "ABox", MATCHES_BOX_SET.id)
+
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(box1)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(box2)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(box3)
+
+        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getDisplayQuantityListBySetId(MATCHES_BOX_SET.id)
+        assertThat(list[0].name, `is`(box1.name))
+        assertThat(list[1].name, `is`(box2.name))
+        assertThat(list[2].name, `is`(box3.name))
+    }
+
+    @Test
+    fun setsSort_sortById() = runBlockingTest{
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
+
+        val set1 = MatchesBoxSet(1, "CSet", BAG.id)
+        val set2 = MatchesBoxSet(2, "BSet", BAG.id)
+        val set3 = MatchesBoxSet(3, "ASet", BAG.id)
+
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(set1)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(set2)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(set3)
+
+        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getDisplayQuantityListByBagId(BAG.id)
+
+        assertThat(list[0].name, `is`(set1.name))
+        assertThat(list[1].name, `is`(set2.name))
+        assertThat(list[2].name, `is`(set3.name))
+    }
+
+    @Test
+    fun bagsSort_sortById() = runBlockingTest{
+        val bag1 = Bag(1, "CBag")
+        val bag2 = Bag(2, "BBag")
+        val bag3 = Bag(3, "ABag")
+
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(bag1)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(bag2)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(bag3)
+
+        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getBagsDisplayQuantityList().getOrAwaitValue()
+        assertThat(list[0].name, `is`(bag1.name))
+        assertThat(list[1].name, `is`(bag2.name))
+        assertThat(list[2].name, `is`(bag3.name))
+    }
 }

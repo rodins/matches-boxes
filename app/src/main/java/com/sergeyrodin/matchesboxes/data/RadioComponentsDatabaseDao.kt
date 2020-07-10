@@ -77,12 +77,12 @@ interface RadioComponentsDatabaseDao {
 
     // DisplayQuantity
 
-    @Query("SELECT b.id, b.name, TOTAL(quantity) as componentsQuantity FROM matches_boxes b LEFT JOIN radio_components ON matches_box_id = b.id GROUP BY b.name HAVING matches_box_set_id = :setId")
+    @Query("SELECT b.id, b.name, TOTAL(quantity) as componentsQuantity FROM matches_boxes b LEFT JOIN radio_components ON matches_box_id = b.id GROUP BY b.id HAVING matches_box_set_id = :setId")
     suspend fun getDisplayQuantityListBySetId(setId: Int): List<DisplayQuantity>
 
-    @Query("SELECT s.id, s.name, TOTAL(quantity) as componentsQuantity FROM matches_box_sets s LEFT JOIN matches_boxes b ON matches_box_set_id = s.id LEFT JOIN radio_components c ON matches_box_id = b.id GROUP BY s.name HAVING bag_id = :bagId")
+    @Query("SELECT s.id, s.name, TOTAL(quantity) as componentsQuantity FROM matches_box_sets s LEFT JOIN matches_boxes b ON matches_box_set_id = s.id LEFT JOIN radio_components c ON matches_box_id = b.id GROUP BY s.id HAVING bag_id = :bagId")
     suspend fun getDisplayQuantityListByBagId(bagId: Int): List<DisplayQuantity>
 
-    @Query("SELECT bags.id, bags.name, TOTAL(quantity) as componentsQuantity FROM bags LEFT JOIN matches_box_sets s ON  bag_id = bags.id LEFT JOIN matches_boxes b ON matches_box_set_id = s.id LEFT JOIN radio_components r ON matches_box_id = b.id GROUP BY bags.name")
+    @Query("SELECT bags.id, bags.name, TOTAL(quantity) as componentsQuantity FROM bags LEFT JOIN matches_box_sets s ON  bag_id = bags.id LEFT JOIN matches_boxes b ON matches_box_set_id = s.id LEFT JOIN radio_components r ON matches_box_id = b.id GROUP BY bags.id")
     fun getBagsDisplayQuantityList(): LiveData<List<DisplayQuantity>>
 }
