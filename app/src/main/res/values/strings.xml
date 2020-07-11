@@ -45,4 +45,6 @@
     <string name="buy_components">Buy components</string>
     <string name="buy_component">Buy</string>
     <string name="quantity_hint">0</string>
+    <string name="direcotry_icon">Directory Icon</string>
+    <string name="component_icon">Component icon</string>
 </resources>
