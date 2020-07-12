@@ -47,4 +47,5 @@
     <string name="quantity_hint">0</string>
     <string name="direcotry_icon">Directory Icon</string>
     <string name="component_icon">Component icon</string>
+    <string name="details">Details</string>
 </resources>

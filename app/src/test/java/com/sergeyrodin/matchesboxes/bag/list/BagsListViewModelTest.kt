@@ -31,6 +31,8 @@ class BagsListViewModelTest {
             Bag(4, "Bag4")
         )
         dataSource.addRadioComponents()
+        dataSource.initBagsLiveData()
+
         val bags = subject.bagsList.getOrAwaitValue()
 
         assertThat(bags.size, CoreMatchers.`is`(4))
@@ -63,6 +65,8 @@ class BagsListViewModelTest {
             Bag(4, "Bag4")
         )
         dataSource.addRadioComponents()
+        dataSource.initBagsLiveData()
+
         val noItemsTextVisible = subject.isNoBagsTextVisible.getOrAwaitValue()
 
         assertThat(noItemsTextVisible, CoreMatchers.`is`(false))
@@ -129,6 +133,7 @@ class BagsListViewModelTest {
         dataSource.addRadioComponents(component1, component2, component3, component4, component5,
             component6, component7, component8, component9, component10, component11, component12,
             component13, component14, component15, component16)
+        dataSource.initBagsLiveData()
 
         val items = subject.bagsList.getOrAwaitValue()
         assertThat(items[0].componentsQuantity, CoreMatchers.`is`("36"))

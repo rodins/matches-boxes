@@ -143,6 +143,9 @@
         <argument
             android:name="title"
             app:argType="string" />
+        <action
+            android:id="@+id/action_radioComponentsListFragment_to_radioComponentDetailsFragment"
+            app:destination="@id/radioComponentDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteRadioComponentFragment"
@@ -199,5 +202,14 @@
         <argument
             android:name="isSearch"
             app:argType="boolean" />
+    </fragment>
+    <fragment
+        android:id="@+id/radioComponentDetailsFragment"
+        android:name="com.sergeyrodin.matchesboxes.component.details.RadioComponentDetailsFragment"
+        android:label="@string/details"
+        tools:layout="@layout/fragment_radio_component_details">
+        <argument
+            android:name="componentId"
+            app:argType="integer" />
     </fragment>
 </navigation>
