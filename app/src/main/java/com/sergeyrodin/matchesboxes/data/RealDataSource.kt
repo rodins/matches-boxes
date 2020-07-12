@@ -159,4 +159,12 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
             return radioComponentsDatabaseDao.getBagsDisplayQuantityList()
         }
     }
+
+    // RadioComponentDetails
+
+    override suspend fun getRadioComponentDetailsById(componentId: Int): RadioComponentDetails {
+        wrapEspressoIdlingResource {
+            return radioComponentsDatabaseDao.getRadioComponentDetailsById(componentId)
+        }
+    }
 }

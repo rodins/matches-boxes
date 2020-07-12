@@ -59,4 +59,8 @@ interface RadioComponentsDataSource {
     suspend fun getDisplayQuantityListByBagId(bagId: Int): List<DisplayQuantity>
 
     fun getBagsDisplayQuantityList(): LiveData<List<DisplayQuantity>>
+
+    // RadioComponentsDetails
+
+    suspend fun getRadioComponentDetailsById(componentId: Int): RadioComponentDetails
 }

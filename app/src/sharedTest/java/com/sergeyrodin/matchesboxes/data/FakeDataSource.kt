@@ -207,6 +207,14 @@ class FakeDataSource : RadioComponentsDataSource{
         return bagsLiveData
     }
 
+    override suspend fun getRadioComponentDetailsById(componentId: Int): RadioComponentDetails {
+        val component = getRadioComponentById(componentId)
+        val box = getMatchesBoxById(component?.matchesBoxId!!)
+        val set = getMatchesBoxSetById(box?.matchesBoxSetId!!)
+        val bag = getBagById(set?.bagId!!)
+        return RadioComponentDetails(bag?.name!!, set.name, box.name, component.name, component.quantity.toString())
+    }
+
     private fun initBagsLiveData() {
         val list = mutableListOf<DisplayQuantity>()
 
