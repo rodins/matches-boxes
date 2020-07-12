@@ -85,4 +85,9 @@ interface RadioComponentsDatabaseDao {
 
     @Query("SELECT bags.id, bags.name, TOTAL(quantity) as componentsQuantity FROM bags LEFT JOIN matches_box_sets s ON  bag_id = bags.id LEFT JOIN matches_boxes b ON matches_box_set_id = s.id LEFT JOIN radio_components r ON matches_box_id = b.id GROUP BY bags.id")
     fun getBagsDisplayQuantityList(): LiveData<List<DisplayQuantity>>
+
+    // RadioComponentDetails
+
+    @Query("SELECT b.name as bagName, s.name as setName, box.name as boxName, c.name as componentName, c.quantity as componentQuantity FROM bags b INNER JOIN matches_box_sets s ON bag_id = b.id INNER JOIN matches_boxes box ON matches_box_set_id = s.id INNER JOIN radio_components c ON matches_box_id = box.id GROUP BY c.id HAVING c.id = :componentId")
+    fun getRadioComponentDetailsById(componentId: Int): RadioComponentDetails
 }
