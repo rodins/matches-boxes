@@ -443,17 +443,19 @@ class RadioComponentsDaoTest {
 
     @Test
     fun getRadioComponentDetailsById() = runBlockingTest {
+        val component = RadioComponent(1, "Component", 3, MATCHES_BOX.id, true)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
-        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(RADIO_COMPONENT)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component)
 
-        val details = radioComponentsDatabase.radioComponentsDatabaseDao.getRadioComponentDetailsById(RADIO_COMPONENT.id)
+        val details = radioComponentsDatabase.radioComponentsDatabaseDao.getRadioComponentDetailsById(component.id)
 
         assertThat(details.bagName, `is`(BAG.name))
         assertThat(details.setName, `is`(MATCHES_BOX_SET.name))
         assertThat(details.boxName, `is`(MATCHES_BOX.name))
-        assertThat(details.componentName, `is`(RADIO_COMPONENT.name))
-        assertThat(details.componentQuantity, `is`(RADIO_COMPONENT.quantity.toString()))
+        assertThat(details.componentName, `is`(component.name))
+        assertThat(details.componentQuantity, `is`(component.quantity.toString()))
+        assertThat(details.isBuy, `is`(component.isBuy))
     }
 }

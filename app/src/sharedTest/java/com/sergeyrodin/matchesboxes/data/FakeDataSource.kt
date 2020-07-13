@@ -121,7 +121,6 @@ class FakeDataSource : RadioComponentsDataSource{
         for(component in components) {
             radioComponentsList.add(component)
         }
-        //initBagsLiveData()
     }
 
     override suspend fun insertRadioComponent(radioComponent: RadioComponent) {
@@ -212,7 +211,7 @@ class FakeDataSource : RadioComponentsDataSource{
         val box = getMatchesBoxById(component?.matchesBoxId!!)
         val set = getMatchesBoxSetById(box?.matchesBoxSetId!!)
         val bag = getBagById(set?.bagId!!)
-        return RadioComponentDetails(bag?.name!!, set.name, box.name, component.name, component.quantity.toString())
+        return RadioComponentDetails(bag?.name!!, set.name, box.name, component.name, component.quantity.toString(), component.isBuy)
     }
 
     fun initBagsLiveData() {

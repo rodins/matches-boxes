@@ -3,8 +3,7 @@ package com.sergeyrodin.matchesboxes.component.details
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.R
@@ -37,7 +36,7 @@ class RadioComponentDetailsFragmentTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        val component = RadioComponent(1, "Component", 3, box.id)
+        val component = RadioComponent(1, "Component", 3, box.id, true)
         dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
@@ -51,5 +50,6 @@ class RadioComponentDetailsFragmentTest {
         onView(withText(box.name)).check(matches(isDisplayed()))
         onView(withText(component.name)).check(matches(isDisplayed()))
         onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
+        onView(withText(R.string.buy_component)).check(matches(isChecked()))
     }
 }

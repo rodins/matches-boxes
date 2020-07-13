@@ -5,6 +5,7 @@ data class RadioComponentDetails(
     val setName: String,
     val boxName: String,
     val componentName: String,
-    val componentQuantity: String
+    val componentQuantity: String,
+    val isBuy: Boolean = false
 )
 

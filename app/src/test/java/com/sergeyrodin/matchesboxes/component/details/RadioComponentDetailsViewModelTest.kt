@@ -27,7 +27,7 @@ class RadioComponentDetailsViewModelTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        val component = RadioComponent(1, "Component", 2, box.id)
+        val component = RadioComponent(1, "Component", 2, box.id, true)
         dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
@@ -41,6 +41,8 @@ class RadioComponentDetailsViewModelTest {
         assertThat(details.boxName, `is`(box.name))
         assertThat(details.componentName, `is`(component.name))
         assertThat(details.componentQuantity, `is`(component.quantity.toString()))
+        assertThat(details.isBuy, `is`(component.isBuy))
+
     }
 
 }
