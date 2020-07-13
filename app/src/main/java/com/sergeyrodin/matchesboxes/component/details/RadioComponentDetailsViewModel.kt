@@ -1,10 +1,13 @@
 package com.sergeyrodin.matchesboxes.component.details
 
 import androidx.lifecycle.*
+import com.sergeyrodin.matchesboxes.Event
+import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.data.RadioComponentDetails
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import kotlinx.coroutines.launch
 
-class RadioComponentDetailsViewModel(dataSource: RadioComponentsDataSource): ViewModel() {
+class RadioComponentDetailsViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
     private val componentId = MutableLiveData<Int>()
     val details = componentId.switchMap{ id ->
         liveData{
@@ -12,8 +15,21 @@ class RadioComponentDetailsViewModel(dataSource: RadioComponentsDataSource): Vie
         }
     }
 
+    private val _editEvent = MutableLiveData<Event<RadioComponent>>()
+    val editEvent: LiveData<Event<RadioComponent>>
+        get() = _editEvent
+
     fun start(id: Int) {
         componentId.value = id
+    }
+
+    fun editComponent() {
+        viewModelScope.launch {
+            componentId.value?.let{
+                val component = dataSource.getRadioComponentById(it)
+                _editEvent.value = Event(component!!)
+            }
+        }
     }
 
 }

@@ -42,7 +42,25 @@ class RadioComponentDetailsViewModelTest {
         assertThat(details.componentName, `is`(component.name))
         assertThat(details.componentQuantity, `is`(component.quantity.toString()))
         assertThat(details.isBuy, `is`(component.isBuy))
+    }
 
+    @Test
+    fun editClick_componentEquals() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 2, box.id, true)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+
+        subject.start(component.id)
+
+        subject.editComponent()
+
+        val loaded = subject.editEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(loaded, `is`(component))
     }
 
 }
