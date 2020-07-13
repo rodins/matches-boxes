@@ -30,7 +30,7 @@ class RadioComponentsListFragment : Fragment() {
         binding.items.adapter = RadioComponentAdapter(RadioComponentListener { id ->
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
-                    .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(id, args.boxId, getString(R.string.update_component))
+                    .actionRadioComponentsListFragmentToRadioComponentDetailsFragment(id)
             )
         })
 

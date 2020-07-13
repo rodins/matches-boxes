@@ -152,7 +152,7 @@ class RadioComponentsListFragmentTest {
 
         verify(navController).navigate(
             RadioComponentsListFragmentDirections
-                .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(component.id, box.id, title)
+                .actionRadioComponentsListFragmentToRadioComponentDetailsFragment(component.id)
         )
     }
 
