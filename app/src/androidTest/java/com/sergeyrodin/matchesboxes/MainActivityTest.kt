@@ -16,9 +16,7 @@ import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
 import com.sergeyrodin.matchesboxes.util.monitorActivity
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -533,7 +531,7 @@ class MainActivityTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        val component = RadioComponent(1, "Component", 4, box.id)
+        val component = RadioComponent(1, "Component", 4, box.id, true)
 
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
@@ -554,6 +552,39 @@ class MainActivityTest {
         onView(withText(box.name)).check(matches(isDisplayed()))
         onView(withText(component.name)).check(matches(isDisplayed()))
         onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
+        onView(withText(R.string.buy_component)).check(matches(isChecked()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun detailsFragment_editFabClick_namesDisplayed() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 4, box.id)
+
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withText(box.name)).perform(click())
+        onView(withText(component.name)).perform(click())
+        //onView(withId(R.id.edit_component_fab)).perform(click())
+
+        onView(withText(bag.name)).check(matches(isDisplayed()))
+        onView(withText(set.name)).check(matches(isDisplayed()))
+        onView(withText(box.name)).check(matches(isDisplayed()))
+        onView(withText(component.name)).check(matches(isDisplayed()))
+        onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
+        onView(withText(R.string.buy_component)).check(matches(isChecked()))
 
         activityScenario.close()
     }
