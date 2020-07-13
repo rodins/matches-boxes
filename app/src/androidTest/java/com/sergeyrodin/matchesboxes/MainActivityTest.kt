@@ -562,7 +562,7 @@ class MainActivityTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        val component = RadioComponent(1, "Component", 4, box.id)
+        val component = RadioComponent(1, "Component", 4, box.id, true)
 
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
@@ -577,7 +577,8 @@ class MainActivityTest {
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
-        //onView(withId(R.id.edit_component_fab)).perform(click())
+
+        onView(withId(R.id.edit_component_fab)).perform(click())
 
         onView(withText(bag.name)).check(matches(isDisplayed()))
         onView(withText(set.name)).check(matches(isDisplayed()))

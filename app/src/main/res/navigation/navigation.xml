@@ -211,5 +211,8 @@
         <argument
             android:name="componentId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_radioComponentDetailsFragment_to_addEditDeleteRadioComponentFragment"
+            app:destination="@id/addEditDeleteRadioComponentFragment" />
     </fragment>
 </navigation>
