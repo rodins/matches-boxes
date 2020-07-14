@@ -42,6 +42,10 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     val setNames: LiveData<List<String>>
         get() = _setNames
 
+    private val _setSelectedIndex = MutableLiveData<Int>()
+    val setSelectedIndex: LiveData<Int>
+        get() = _setSelectedIndex
+
     private val _boxNames = MutableLiveData<List<String>>()
     val boxNames: LiveData<List<String>>
         get() = _boxNames
@@ -75,6 +79,10 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
                     val sets = dataSource.getMatchesBoxSetsByBagId(set.bagId)
                     _setNames.value = sets.map {
                         it.name
+                    }
+
+                    _setSelectedIndex.value = sets.indexOfFirst {
+                        it.id == set.id
                     }
                 }
             }
