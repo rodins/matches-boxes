@@ -34,6 +34,18 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
 
     val isBuy = MutableLiveData<Boolean>()
 
+    private val _bagNames = MutableLiveData<List<String>>()
+    val bagNames: LiveData<List<String>>
+        get() = _bagNames
+
+    private val _setNames = MutableLiveData<List<String>>()
+    val setNames: LiveData<List<String>>
+        get() = _setNames
+
+    private val _boxNames = MutableLiveData<List<String>>()
+    val boxNames: LiveData<List<String>>
+        get() = _boxNames
+
     fun start(boxId: Int, componentId: Int){
         matchesBoxId = boxId
         viewModelScope.launch {
@@ -44,6 +56,26 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
 
             val box = dataSource.getMatchesBoxById(boxId)
             boxTitle = box?.name?:""
+
+            box?.let{
+                val boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(box.matchesBoxSetId)
+                _boxNames.value = boxes.map {
+                    it.name
+                }
+
+                val set = dataSource.getMatchesBoxSetById(box.matchesBoxSetId)
+                set?.let {
+                    val sets = dataSource.getMatchesBoxSetsByBagId(set.bagId)
+                    _setNames.value = sets.map {
+                        it.name
+                    }
+                }
+            }
+
+            val bags = dataSource.getBags()
+            _bagNames.value = bags.map {
+                it.name
+            }
         }
     }
 

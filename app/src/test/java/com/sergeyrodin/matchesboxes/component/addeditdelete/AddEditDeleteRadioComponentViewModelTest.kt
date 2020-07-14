@@ -2,9 +2,7 @@ package com.sergeyrodin.matchesboxes.component.addeditdelete
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
-import com.sergeyrodin.matchesboxes.data.FakeDataSource
-import com.sergeyrodin.matchesboxes.data.MatchesBox
-import com.sergeyrodin.matchesboxes.data.RadioComponent
+import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
@@ -380,5 +378,64 @@ class AddEditDeleteRadioComponentViewModelTest{
 
         val title = subject.deleteItemEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(title, `is`(box.name))
+    }
+
+    // Spinners
+
+    @Test
+    fun boxId_boxNamesEquals() {
+        val bag = Bag(3, "Bag")
+        val set = MatchesBoxSet(5, "Set", bag.id)
+        val box1 = MatchesBox(6, "Box1", set.id)
+        val box2 = MatchesBox(7, "Box2", set.id)
+        val component = RadioComponent(1, "Component", 3, box1.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box1, box2)
+        dataSource.addRadioComponents(component)
+
+        subject.start(box1.id, component.id)
+
+        val boxNames = subject.boxNames.getOrAwaitValue()
+        assertThat(boxNames[0], `is`(box1.name))
+        assertThat(boxNames[1], `is`(box2.name))
+    }
+
+    @Test
+    fun boxId_setNamesEquals() {
+        val bag = Bag(3, "Bag")
+        val set1 = MatchesBoxSet(5, "Set1", bag.id)
+        val set2 = MatchesBoxSet(6, "Set2", bag.id)
+        val box = MatchesBox(6, "Box1", set1.id)
+        val component = RadioComponent(1, "Component", 3, box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set1, set2)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+
+        subject.start(box.id, component.id)
+
+        val setNames = subject.setNames.getOrAwaitValue()
+        assertThat(setNames[0], `is`(set1.name))
+        assertThat(setNames[1], `is`(set2.name))
+    }
+
+    @Test
+    fun getBags_bagNamesEquals() {
+        val bag1 = Bag(3, "Bag1")
+        val bag2 = Bag(4, "Bag2")
+        val set = MatchesBoxSet(5, "Set1", bag1.id)
+        val box = MatchesBox(6, "Box1", set.id)
+        val component = RadioComponent(1, "Component", 3, box.id)
+        dataSource.addBags(bag1, bag2)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+
+        subject.start(box.id, component.id)
+
+        val bagNames = subject.bagNames.getOrAwaitValue()
+        assertThat(bagNames[0], `is`(bag1.name))
+        assertThat(bagNames[1], `is`(bag2.name))
     }
 }

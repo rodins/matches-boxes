@@ -580,9 +580,9 @@ class MainActivityTest {
 
         onView(withId(R.id.edit_component_fab)).perform(click())
 
-        onView(withText(bag.name)).check(matches(isDisplayed()))
+        /*onView(withText(bag.name)).check(matches(isDisplayed()))
         onView(withText(set.name)).check(matches(isDisplayed()))
-        onView(withText(box.name)).check(matches(isDisplayed()))
+        onView(withText(box.name)).check(matches(isDisplayed()))*/
         onView(withText(component.name)).check(matches(isDisplayed()))
         onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
         onView(withText(R.string.buy_component)).check(matches(isChecked()))
