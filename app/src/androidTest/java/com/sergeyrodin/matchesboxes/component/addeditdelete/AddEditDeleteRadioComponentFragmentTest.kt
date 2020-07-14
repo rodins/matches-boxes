@@ -261,6 +261,25 @@ class AddEditDeleteRadioComponentFragmentTest {
         onView(withText(box3.name)).check(matches(isDisplayed()))
     }
 
+    @Test
+    fun boxId_setNameDisplayed() {
+        val bag = Bag(1, "Bag")
+        val set1 = MatchesBoxSet(1, "Set1", bag.id)
+        val set2 = MatchesBoxSet(2, "Set2", bag.id)
+        val set3 = MatchesBoxSet(3, "Set3", bag.id)
+        val set4 = MatchesBoxSet(4, "Set4", bag.id)
+        val box = MatchesBox(1, "Box", set3.id)
+        val component = RadioComponent(1, "Component", 3, box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set1, set2, set3, set4)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(component.id, box.id, "Title").build().toBundle()
+        launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
+
+        onView(withText(set3.name)).check(matches(isDisplayed()))
+    }
+
     private fun clickDeleteAction(
         scenario: FragmentScenario<AddEditDeleteRadioComponentFragment>
     ) {
