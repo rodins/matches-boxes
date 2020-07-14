@@ -38,6 +38,10 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     val bagNames: LiveData<List<String>>
         get() = _bagNames
 
+    private val _bagSelectedIndex = MutableLiveData<Int>()
+    val bagSelectedIndex: LiveData<Int>
+        get() = _bagSelectedIndex
+
     private val _setNames = MutableLiveData<List<String>>()
     val setNames: LiveData<List<String>>
         get() = _setNames
@@ -84,12 +88,16 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
                     _setSelectedIndex.value = sets.indexOfFirst {
                         it.id == set.id
                     }
-                }
-            }
 
-            val bags = dataSource.getBags()
-            _bagNames.value = bags.map {
-                it.name
+                    val bags = dataSource.getBags()
+                    _bagNames.value = bags.map {
+                        it.name
+                    }
+
+                    _bagSelectedIndex.value = bags.indexOfFirst {
+                        it.id == set.bagId
+                    }
+                }
             }
         }
     }

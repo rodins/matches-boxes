@@ -476,4 +476,23 @@ class AddEditDeleteRadioComponentViewModelTest{
         val selectedIndex = subject.setSelectedIndex.getOrAwaitValue()
         assertThat(selectedIndex, `is`(2))
     }
+
+    @Test
+    fun getBags_selectedIndexEquals() {
+        val bag1 = Bag(1, "Bag1")
+        val bag2 = Bag(2, "Bag2")
+        val bag3 = Bag(3, "Bag3") // selected index 2
+        val bag4 = Bag(4, "Bag4")
+        val set = MatchesBoxSet(1, "Set", bag3.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 3, box.id)
+        dataSource.addBags(bag1, bag2, bag3, bag4)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(box.id, component.id)
+
+        val selectedIndex = subject.bagSelectedIndex.getOrAwaitValue()
+        assertThat(selectedIndex, `is`(2))
+    }
 }
