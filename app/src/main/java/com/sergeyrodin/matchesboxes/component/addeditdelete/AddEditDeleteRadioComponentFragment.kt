@@ -2,9 +2,12 @@ package com.sergeyrodin.matchesboxes.component.addeditdelete
 
 import android.os.Bundle
 import android.view.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
@@ -14,7 +17,7 @@ import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentAddEditDeleteRadioComponentBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
 
-class AddEditDeleteRadioComponentFragment : Fragment() {
+class AddEditDeleteRadioComponentFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private val viewModel by viewModels<AddEditDeleteRadioComponentViewModel> {
         AddEditDeleteRadioComponentViewModelFactory(
             (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
@@ -34,6 +37,26 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
         viewModel.start(args.boxId, args.componentId)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+
+        viewModel.boxNames.observe(viewLifecycleOwner, Observer{ boxNames ->
+            context?.let{
+                ArrayAdapter(
+                    it,
+                    android.R.layout.simple_spinner_item,
+                    boxNames
+                ).also{ adapter ->
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    binding.boxesSpinner.adapter = adapter
+                    binding.boxesSpinner.onItemSelectedListener = this
+                }
+            }
+        })
+
+        viewModel.boxSelectedIndex.observe(viewLifecycleOwner, Observer { index ->
+            index?.let{
+                binding.boxesSpinner.setSelection(index)
+            }
+        })
 
         viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{ title ->
             hideKeyboard(activity)
@@ -79,6 +102,14 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        //TODO("Not yet implemented")
     }
 
 }
