@@ -438,4 +438,23 @@ class AddEditDeleteRadioComponentViewModelTest{
         assertThat(bagNames[0], `is`(bag1.name))
         assertThat(bagNames[1], `is`(bag2.name))
     }
+
+    @Test
+    fun boxId_boxSelectedIndexEquals() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box1 = MatchesBox(1, "Box1", set.id) // index 0
+        val box2 = MatchesBox(2, "Box2", set.id) // index 1
+        val box3 = MatchesBox(3, "Box3", set.id) // index 2 selected
+        val box4 = MatchesBox(4, "Box4", set.id) // index 3
+        val component = RadioComponent(1, "Component", 3, box1.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box1, box2, box3, box4)
+        dataSource.addRadioComponents(component)
+        subject.start(box3.id, component.id)
+
+        val selectedIndex = subject.boxSelectedIndex.getOrAwaitValue()
+        assertThat(selectedIndex, `is`(2))
+    }
 }
