@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.component.addeditdelete
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
+import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
@@ -34,6 +35,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
 
     val isBuy = MutableLiveData<Boolean>()
 
+    // Bags spinner
     private val _bagNames = MutableLiveData<List<String>>()
     val bagNames: LiveData<List<String>>
         get() = _bagNames
@@ -42,6 +44,8 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     val bagSelectedIndex: LiveData<Int>
         get() = _bagSelectedIndex
 
+    // Sets spinner
+    private lateinit var sets: List<MatchesBoxSet>
     private val _setNames = MutableLiveData<List<String>>()
     val setNames: LiveData<List<String>>
         get() = _setNames
@@ -50,6 +54,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     val setSelectedIndex: LiveData<Int>
         get() = _setSelectedIndex
 
+    // Boxes spinner
     private val _boxNames = MutableLiveData<List<String>>()
     val boxNames: LiveData<List<String>>
         get() = _boxNames
@@ -80,7 +85,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
 
                 val set = dataSource.getMatchesBoxSetById(box.matchesBoxSetId)
                 set?.let {
-                    val sets = dataSource.getMatchesBoxSetsByBagId(set.bagId)
+                    sets = dataSource.getMatchesBoxSetsByBagId(set.bagId)
                     _setNames.value = sets.map {
                         it.name
                     }
@@ -130,6 +135,20 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     fun quantityMinus() {
         val nQuantity = quantity.value?.toIntOrNull()?:0
         quantity.value = nQuantity.minus(1).toString()
+    }
+
+    fun setSelected(index: Int) {
+        if(index != setSelectedIndex.value) {
+            viewModelScope.launch {
+                val set = sets[index]
+                val boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)
+                _boxNames.value = boxes.map {
+                    it.name
+                }
+                _boxSelectedIndex.value = 0
+            }
+        }
+
     }
 
     private fun addItem(name: String, quantity: Int) {
