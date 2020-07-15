@@ -67,7 +67,20 @@ class AddEditDeleteRadioComponentFragment : Fragment(), AdapterView.OnItemSelect
                 ).also{ adapter ->
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     binding.setsSpinner.adapter = adapter
-                    binding.setsSpinner.onItemSelectedListener = this
+                    binding.setsSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+                        override fun onNothingSelected(p0: AdapterView<*>?) {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            viewModel.setSelected(position)
+                        }
+                    }
                 }
             }
         })
