@@ -148,7 +148,25 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
                 _boxSelectedIndex.value = 0
             }
         }
+    }
 
+    fun bagSelected(index: Int) {
+        if(index != bagSelectedIndex.value) {
+            viewModelScope.launch {
+                val bag = dataSource.getBags()[index]
+                sets = dataSource.getMatchesBoxSetsByBagId(bag.id)
+                _setNames.value = sets.map{
+                    it.name
+                }
+                _setSelectedIndex.value = 0
+                val set = sets[0]
+                val boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)
+                _boxNames.value = boxes.map {
+                    it.name
+                }
+                _boxSelectedIndex.value = 0
+            }
+        }
     }
 
     private fun addItem(name: String, quantity: Int) {
