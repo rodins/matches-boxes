@@ -108,6 +108,15 @@
                 app:layout_constraintBottom_toTopOf="@+id/boxes_spinner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bags_spinner" />
+
+            <Spinner
+                android:id="@+id/bags_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/sets_spinner"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -121,6 +130,7 @@
             app:fabSize="normal"
             app:layout_anchor="@id/layout"
             app:layout_anchorGravity="bottom|right|end" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

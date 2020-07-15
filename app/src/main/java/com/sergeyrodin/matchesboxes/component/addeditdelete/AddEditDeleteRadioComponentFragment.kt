@@ -78,6 +78,26 @@ class AddEditDeleteRadioComponentFragment : Fragment(), AdapterView.OnItemSelect
             }
         })
 
+        viewModel.bagNames.observe(viewLifecycleOwner, Observer{ bagNames ->
+            context?.let{
+                ArrayAdapter(
+                    it,
+                    android.R.layout.simple_spinner_item,
+                    bagNames
+                ).also{ adapter ->
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    binding.bagsSpinner.adapter = adapter
+                    binding.bagsSpinner.onItemSelectedListener = this
+                }
+            }
+        })
+
+        viewModel.bagSelectedIndex.observe(viewLifecycleOwner, Observer{ index ->
+            index?.let{
+                binding.bagsSpinner.setSelection(index)
+            }
+        })
+
         viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{ title ->
             hideKeyboard(activity)
             Toast.makeText(context, R.string.component_added, Toast.LENGTH_SHORT).show()
