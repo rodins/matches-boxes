@@ -113,7 +113,6 @@ class AddEditDeleteRadioComponentFragment : Fragment(), AdapterView.OnItemSelect
                         ) {
                            viewModel.bagSelected(position)
                         }
-
                     }
                 }
             }

@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.component.addeditdelete
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
+import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
@@ -10,6 +11,7 @@ import kotlinx.coroutines.launch
 class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
     val name = MutableLiveData<String>()
     val quantity = MutableLiveData<String>()
+    val isBuy = MutableLiveData<Boolean>()
     
     private val _addItemEvent = MutableLiveData<Event<String>>()
     val addItemEvent: LiveData<Event<String>>
@@ -33,8 +35,6 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
 
     private var radioComponent: RadioComponent? = null
 
-    val isBuy = MutableLiveData<Boolean>()
-
     // Bags spinner
     private val _bagNames = MutableLiveData<List<String>>()
     val bagNames: LiveData<List<String>>
@@ -55,6 +55,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
         get() = _setSelectedIndex
 
     // Boxes spinner
+    private lateinit var boxes: List<MatchesBox>
     private val _boxNames = MutableLiveData<List<String>>()
     val boxNames: LiveData<List<String>>
         get() = _boxNames
@@ -75,7 +76,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             boxTitle = box?.name?:""
 
             box?.let{
-                val boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(box.matchesBoxSetId)
+                boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(box.matchesBoxSetId)
                 _boxNames.value = boxes.map {
                     it.name
                 }
@@ -137,15 +138,20 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
         quantity.value = nQuantity.minus(1).toString()
     }
 
+    fun boxSelected(index: Int) {
+        matchesBoxId = boxes[index].id
+    }
+
     fun setSelected(index: Int) {
         if(index != setSelectedIndex.value) {
             viewModelScope.launch {
                 val set = sets[index]
-                val boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)
+                boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)
                 _boxNames.value = boxes.map {
                     it.name
                 }
                 _boxSelectedIndex.value = 0
+                matchesBoxId = boxes[0].id
             }
         }
     }
@@ -160,11 +166,12 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
                 }
                 _setSelectedIndex.value = 0
                 val set = sets[0]
-                val boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)
+                boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)
                 _boxNames.value = boxes.map {
                     it.name
                 }
                 _boxSelectedIndex.value = 0
+                matchesBoxId = boxes[0].id
             }
         }
     }
@@ -186,6 +193,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
         viewModelScope.launch {
             radioComponent?.name = name
             radioComponent?.quantity = quantity
+            radioComponent?.matchesBoxId = matchesBoxId
             radioComponent?.isBuy = isBuy.value!!
             dataSource.updateRadioComponent(radioComponent!!)
             _updateItemEvent.value = Event(boxTitle)

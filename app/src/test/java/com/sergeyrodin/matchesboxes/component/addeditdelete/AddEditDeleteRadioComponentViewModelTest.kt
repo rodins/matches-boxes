@@ -4,13 +4,16 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class AddEditDeleteRadioComponentViewModelTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -460,21 +463,29 @@ class AddEditDeleteRadioComponentViewModelTest{
 
     @Test
     fun boxId_setSelectedIndexEquals() {
-        val bag = Bag(1, "Bag")
-        val set1 = MatchesBoxSet(1, "Set1", bag.id)
-        val set2 = MatchesBoxSet(2, "Set2", bag.id)
-        val set3 = MatchesBoxSet(3, "Set3", bag.id) // selected index 2
-        val set4 = MatchesBoxSet(4, "Set4", bag.id)
-        val box = MatchesBox(1, "Box", set3.id)
-        val component = RadioComponent(1, "Component", 3, box.id)
-        dataSource.addBags(bag)
+        val bag1 = Bag(1, "Bag1")
+        val bag2 = Bag(2, "Bag2")
+        val set1 = MatchesBoxSet(1, "Set1", bag1.id)
+        val set2 = MatchesBoxSet(2, "Set2", bag1.id)
+        val set3 = MatchesBoxSet(3, "Set3", bag2.id)
+        val set4 = MatchesBoxSet(4, "Set4", bag2.id) // selected index 1
+        val box1 = MatchesBox(1, "Box1", set1.id)
+        val box2 = MatchesBox(2, "Box2", set1.id)
+        val box3 = MatchesBox(3, "Box3", set2.id)
+        val box4 = MatchesBox(4, "Box4", set2.id)
+        val box5 = MatchesBox(5, "Box5", set3.id)
+        val box6 = MatchesBox(6, "Box6", set3.id)
+        val box7 = MatchesBox(7, "Box7", set4.id)
+        val box8 = MatchesBox(8, "Box8", set4.id)
+        val component = RadioComponent(1, "Component", 4, box7.id)
+        dataSource.addBags(bag1, bag2)
         dataSource.addMatchesBoxSets(set1, set2, set3, set4)
-        dataSource.addMatchesBoxes(box)
+        dataSource.addMatchesBoxes(box1, box2, box3, box4, box5, box6, box7, box8)
         dataSource.addRadioComponents(component)
-        subject.start(box.id, component.id)
+        subject.start(box7.id, component.id)
 
         val selectedIndex = subject.setSelectedIndex.getOrAwaitValue()
-        assertThat(selectedIndex, `is`(2))
+        assertThat(selectedIndex, `is`(1))
     }
 
     @Test
@@ -547,5 +558,95 @@ class AddEditDeleteRadioComponentViewModelTest{
         val boxNames = subject.boxNames.getOrAwaitValue()
         assertThat(setNames[0], `is`(set1.name))
         assertThat(boxNames[0], `is`(box1.name))
+    }
+
+    @Test
+    fun componentUpdated_bagSpinnerChanged_boxIdEquals() = runBlockingTest{
+        val bag1 = Bag(1, "Bag1") // selected, index 0
+        val bag2 = Bag(2, "Bag2")
+        val set1 = MatchesBoxSet(1, "Set1", bag1.id)
+        val set2 = MatchesBoxSet(2, "Set2", bag1.id)
+        val set3 = MatchesBoxSet(3, "Set3", bag2.id)
+        val set4 = MatchesBoxSet(4, "Set4", bag2.id)
+        val box1 = MatchesBox(1, "Box1", set1.id)
+        val box2 = MatchesBox(2, "Box2", set1.id)
+        val box3 = MatchesBox(3, "Box3", set2.id)
+        val box4 = MatchesBox(4, "Box4", set2.id)
+        val box5 = MatchesBox(5, "Box5", set3.id)
+        val box6 = MatchesBox(6, "Box6", set3.id)
+        val box7 = MatchesBox(7, "Box7", set4.id)
+        val box8 = MatchesBox(8, "Box8", set4.id)
+        val component = RadioComponent(1, "Component", 4, box5.id)
+        dataSource.addBags(bag1, bag2)
+        dataSource.addMatchesBoxSets(set1, set2, set3, set4)
+        dataSource.addMatchesBoxes(box1, box2, box3, box4, box5, box6, box7, box8)
+        dataSource.addRadioComponents(component)
+        subject.start(box5.id, component.id)
+
+        subject.bagSelected(0)
+        subject.saveItem()
+
+        val componentUpdated = dataSource.getRadioComponentById(component.id)
+        assertThat(componentUpdated?.matchesBoxId, `is`(box1.id))
+    }
+
+    @Test
+    fun componentUpdated_setSpinnerChanged_boxIdEquals() = runBlockingTest{
+        val bag1 = Bag(1, "Bag1")
+        val bag2 = Bag(2, "Bag2")
+        val set1 = MatchesBoxSet(1, "Set1", bag1.id)
+        val set2 = MatchesBoxSet(2, "Set2", bag1.id)
+        val set3 = MatchesBoxSet(3, "Set3", bag2.id)  // initial
+        val set4 = MatchesBoxSet(4, "Set4", bag2.id)  // selected
+        val box1 = MatchesBox(1, "Box1", set1.id)
+        val box2 = MatchesBox(2, "Box2", set1.id)
+        val box3 = MatchesBox(3, "Box3", set2.id)
+        val box4 = MatchesBox(4, "Box4", set2.id)
+        val box5 = MatchesBox(5, "Box5", set3.id)
+        val box6 = MatchesBox(6, "Box6", set3.id)
+        val box7 = MatchesBox(7, "Box7", set4.id)
+        val box8 = MatchesBox(8, "Box8", set4.id)
+        val component = RadioComponent(1, "Component", 4, box5.id)
+        dataSource.addBags(bag1, bag2)
+        dataSource.addMatchesBoxSets(set1, set2, set3, set4)
+        dataSource.addMatchesBoxes(box1, box2, box3, box4, box5, box6, box7, box8)
+        dataSource.addRadioComponents(component)
+        subject.start(box5.id, component.id)
+
+        subject.setSelected(1)
+        subject.saveItem()
+
+        val componentUpdated = dataSource.getRadioComponentById(component.id)
+        assertThat(componentUpdated?.matchesBoxId, `is`(box7.id))
+    }
+
+    @Test
+    fun componentUpdated_boxSpinnerChanged_boxIdEquals() = runBlockingTest{
+        val bag1 = Bag(1, "Bag1")
+        val bag2 = Bag(2, "Bag2")
+        val set1 = MatchesBoxSet(1, "Set1", bag1.id)
+        val set2 = MatchesBoxSet(2, "Set2", bag1.id)
+        val set3 = MatchesBoxSet(3, "Set3", bag2.id)
+        val set4 = MatchesBoxSet(4, "Set4", bag2.id)
+        val box1 = MatchesBox(1, "Box1", set1.id)
+        val box2 = MatchesBox(2, "Box2", set1.id)
+        val box3 = MatchesBox(3, "Box3", set2.id)
+        val box4 = MatchesBox(4, "Box4", set2.id)
+        val box5 = MatchesBox(5, "Box5", set3.id) // initial
+        val box6 = MatchesBox(6, "Box6", set3.id) // selected
+        val box7 = MatchesBox(7, "Box7", set4.id)
+        val box8 = MatchesBox(8, "Box8", set4.id)
+        val component = RadioComponent(1, "Component", 4, box5.id)
+        dataSource.addBags(bag1, bag2)
+        dataSource.addMatchesBoxSets(set1, set2, set3, set4)
+        dataSource.addMatchesBoxes(box1, box2, box3, box4, box5, box6, box7, box8)
+        dataSource.addRadioComponents(component)
+        subject.start(box5.id, component.id)
+
+        subject.boxSelected(1)
+        subject.saveItem()
+
+        val componentUpdated = dataSource.getRadioComponentById(component.id)
+        assertThat(componentUpdated?.matchesBoxId, `is`(box6.id))
     }
 }
