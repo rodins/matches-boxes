@@ -138,12 +138,12 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
             }
         })
 
-        viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{ title ->
+        viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{ box ->
             hideKeyboard(activity)
             Toast.makeText(context, R.string.component_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteRadioComponentFragmentDirections
-                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId, title)
+                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(box.id, box.name)
             )
         })
 
