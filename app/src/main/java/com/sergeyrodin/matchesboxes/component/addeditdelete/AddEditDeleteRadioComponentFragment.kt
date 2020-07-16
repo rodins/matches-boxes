@@ -17,7 +17,7 @@ import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentAddEditDeleteRadioComponentBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
 
-class AddEditDeleteRadioComponentFragment : Fragment(), AdapterView.OnItemSelectedListener {
+class AddEditDeleteRadioComponentFragment : Fragment() {
     private val viewModel by viewModels<AddEditDeleteRadioComponentViewModel> {
         AddEditDeleteRadioComponentViewModelFactory(
             (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
@@ -47,7 +47,21 @@ class AddEditDeleteRadioComponentFragment : Fragment(), AdapterView.OnItemSelect
                 ).also{ adapter ->
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                     binding.boxesSpinner.adapter = adapter
-                    binding.boxesSpinner.onItemSelectedListener = this
+                    binding.boxesSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+                        override fun onNothingSelected(p0: AdapterView<*>?) {
+                            TODO("Not yet implemented")
+                        }
+
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            viewModel.boxSelected(position)
+                        }
+
+                    }
                 }
             }
         })
@@ -133,12 +147,12 @@ class AddEditDeleteRadioComponentFragment : Fragment(), AdapterView.OnItemSelect
             )
         })
 
-        viewModel.updateItemEvent.observe(viewLifecycleOwner, EventObserver{ title ->
+        viewModel.updateItemEvent.observe(viewLifecycleOwner, EventObserver{ box ->
             hideKeyboard(activity)
             Toast.makeText(context, R.string.component_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
                 AddEditDeleteRadioComponentFragmentDirections
-                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId, title)
+                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(box.id, box.name)
             )
         })
 
@@ -168,14 +182,6 @@ class AddEditDeleteRadioComponentFragment : Fragment(), AdapterView.OnItemSelect
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onNothingSelected(p0: AdapterView<*>?) {
-        //TODO("Not yet implemented")
-    }
-
-    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-        //TODO("Not yet implemented")
     }
 
 }
