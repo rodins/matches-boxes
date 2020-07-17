@@ -26,6 +26,11 @@ fun bindNoDataViewVisibility(view: View, visible: Boolean) {
     view.visibility = if(visible) View.VISIBLE else View.GONE
 }
 
+@BindingAdapter("noDataViewHidden")
+fun bindNoDataViewHidden(view: View, hidden: Boolean) {
+    view.visibility = if(hidden) View.INVISIBLE else View.VISIBLE
+}
+
 @BindingAdapter("quantityInteger")
 fun bindQuantityTextView(textView: TextView, quantity: Int) {
     textView.text = quantity.toString()

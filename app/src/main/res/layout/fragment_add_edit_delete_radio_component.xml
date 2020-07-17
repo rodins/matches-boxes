@@ -105,6 +105,7 @@
                 android:id="@+id/sets_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:noDataViewHidden="@{viewModel.noSetsTextVisible}"
                 app:layout_constraintBottom_toTopOf="@+id/boxes_spinner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -118,6 +119,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/no_sets_visible_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_sets"
+                android:textSize="18sp"
+                app:noDataTextVisible="@{viewModel.noSetsTextVisible}"
+                app:layout_constraintBottom_toBottomOf="@+id/sets_spinner"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/sets_spinner" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
