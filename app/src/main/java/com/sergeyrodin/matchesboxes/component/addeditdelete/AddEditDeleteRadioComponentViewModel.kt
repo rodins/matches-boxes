@@ -147,11 +147,15 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             viewModelScope.launch {
                 val set = sets[index]
                 boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)
-                _boxNames.value = boxes.map {
-                    it.name
+                if(boxes.isNotEmpty()) {
+                    _boxNames.value = boxes.map {
+                        it.name
+                    }
+                    _boxSelectedIndex.value = 0
+                    matchesBoxId = boxes[0].id
+                }else {
+                    _boxNames.value = listOf()
                 }
-                _boxSelectedIndex.value = 0
-                matchesBoxId = boxes[0].id
             }
         }
     }
