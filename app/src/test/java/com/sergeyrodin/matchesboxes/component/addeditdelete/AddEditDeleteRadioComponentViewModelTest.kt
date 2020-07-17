@@ -816,4 +816,24 @@ class AddEditDeleteRadioComponentViewModelTest{
         val noBoxes = subject.noBoxesTextVisible.getOrAwaitValue()
         assertThat(noBoxes, `is`(true))
     }
+
+    @Test
+    fun setWithNoBoxesSelected_noBoxesTextVisibleIsTrue() {
+        val bag1 = Bag(1, "Bag1")
+        val bag2 = Bag(2, "Bag2")
+        val set1 = MatchesBoxSet(1, "Set1", bag1.id)
+        val set2 = MatchesBoxSet(2, "Set2", bag1.id)
+        val box1 = MatchesBox(1, "Box1", set1.id)
+        val box2 = MatchesBox(2, "Box2", set1.id)
+        val component = RadioComponent(1, "Component", 3, box1.id)
+        dataSource.addBags(bag1, bag2)
+        dataSource.addMatchesBoxSets(set1, set2)
+        dataSource.addMatchesBoxes(box1, box2)
+        dataSource.addRadioComponents(component)
+        subject.start(box1.id, component.id)
+        subject.setSelected(1)
+
+        val noBoxesTextVisible = subject.noBoxesTextVisible.getOrAwaitValue()
+        assertThat(noBoxesTextVisible, `is`(true))
+    }
 }
