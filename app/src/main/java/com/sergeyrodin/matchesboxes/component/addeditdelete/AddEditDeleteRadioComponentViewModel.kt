@@ -49,6 +49,9 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     private val _setNames = MutableLiveData<List<String>>()
     val setNames: LiveData<List<String>>
         get() = _setNames
+    val noSetsTextVisible = setNames.map {
+        it.isEmpty()
+    }
 
     private val _setSelectedIndex = MutableLiveData<Int>()
     val setSelectedIndex: LiveData<Int>
