@@ -86,7 +86,7 @@ class SearchBuyListFragmentTest{
     }
 
     @Test
-    fun selectCompoenent_navigationCalled() {
+    fun selectComponent_navigationCalled() {
         val bagId = 1
         val component1 = RadioComponent(1, "Component1", 2, bagId)
         val component2 = RadioComponent(2, "Component2", 3, bagId)
@@ -104,8 +104,7 @@ class SearchBuyListFragmentTest{
 
         onView(withText(component2.name)).perform(click())
         verify(navController).navigate(
-            SearchBuyListFragmentDirections
-                .actionSearchBuyFragmentToSearchBuyEditFragment(component2.id, query, isSearch)
+            SearchBuyListFragmentDirections.actionSearchBuyFragmentToRadioComponentDetailsFragment(component2.id)
         )
     }
 
