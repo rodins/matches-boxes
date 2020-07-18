@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -687,7 +688,7 @@ class MainActivityTest {
         onView(withText(set4.name)).perform(click())
         onView(withText(box7.name)).perform(click())
         onView(withText(box8.name)).perform(click())
-        onView(withId(R.id.component_edit)).perform(typeText("Component"))
+        onView(withId(R.id.component_edit)).perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
         onView(withText("Component")).perform(click())
 
@@ -721,7 +722,7 @@ class MainActivityTest {
         // Add component
         onView(withText("Box")).perform(click())
         onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withId(R.id.component_edit)).perform(typeText("Component"))
+        onView(withId(R.id.component_edit)).perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
         onView(withId(R.id.items)).check(matches(isDisplayed()))
@@ -747,11 +748,11 @@ class MainActivityTest {
         onView(withText(box.name)).perform(click())
 
         onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withId(R.id.component_edit)).perform(typeText("Component"))
+        onView(withId(R.id.component_edit)).perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
         onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withId(R.id.component_edit)).perform(typeText("Component2"))
+        onView(withId(R.id.component_edit)).perform(typeText("Component2"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
         onView(withText("Component")).check(matches(isDisplayed()))
@@ -799,6 +800,7 @@ class MainActivityTest {
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.action_delete)).check(matches(isDisplayed()))
 
         activityScenario.close()
@@ -839,7 +841,7 @@ class MainActivityTest {
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withId(R.id.component_edit)).perform(typeText("Component"))
+        onView(withId(R.id.component_edit)).perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.buy_checkbox)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
         onView(withText("Component")).perform(click())
@@ -867,6 +869,7 @@ class MainActivityTest {
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(R.string.update_component)).check(matches(isDisplayed()))
 
         activityScenario.close()
@@ -890,7 +893,7 @@ class MainActivityTest {
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
-        onView(withId(R.id.component_edit)).check(matches(withText(component.name)))
+        onView(withText(component.name)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -911,7 +914,7 @@ class MainActivityTest {
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withId(R.id.component_edit)).perform(typeText("Component"))
+        onView(withId(R.id.component_edit)).perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.quantity_edit)).perform(replaceText(""))
         onView(withId(R.id.save_component_fab)).perform(click())
         onView(withText("Component")).perform(click())
@@ -1257,6 +1260,7 @@ class MainActivityTest {
         onView(withText(set1.name)).perform(click())
         onView(withText(box1.name)).perform(click())
         onView(withText(component1.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(R.string.button_plus)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
 
@@ -1268,6 +1272,7 @@ class MainActivityTest {
         onView(withText(set3.name)).perform(click())
         onView(withText(box5.name)).perform(click())
         onView(withText(component9.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(R.string.button_plus)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
 
