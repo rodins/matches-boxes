@@ -104,7 +104,7 @@ class SearchBuyListFragmentTest{
 
         onView(withText(component2.name)).perform(click())
         verify(navController).navigate(
-            SearchBuyListFragmentDirections.actionSearchBuyFragmentToRadioComponentDetailsFragment(component2.id)
+            SearchBuyListFragmentDirections.actionSearchBuyFragmentToRadioComponentDetailsFragment(component2.id, query, !isSearch)
         )
     }
 

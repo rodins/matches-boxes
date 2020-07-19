@@ -167,12 +167,10 @@
             app:argType="string" />
         <argument
             android:name="query"
-            app:argType="string"
-            android:defaultValue='""' />
+            app:argType="string" />
         <argument
             android:name="isBuy"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            app:argType="boolean" />
         <action
             android:id="@+id/action_addEditDeleteRadioComponentFragment_to_searchBuyFragment"
             app:destination="@id/searchBuyFragment" />
@@ -230,11 +228,9 @@
             app:destination="@id/addEditDeleteRadioComponentFragment" />
         <argument
             android:name="query"
-            app:argType="string"
-            android:defaultValue='""' />
+            app:argType="string" />
         <argument
             android:name="isBuy"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            app:argType="boolean" />
     </fragment>
 </navigation>

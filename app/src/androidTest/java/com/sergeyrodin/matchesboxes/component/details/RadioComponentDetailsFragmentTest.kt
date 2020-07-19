@@ -47,7 +47,7 @@ class RadioComponentDetailsFragmentTest {
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
 
-        val bundle = RadioComponentDetailsFragmentArgs.Builder(component.id).build().toBundle()
+        val bundle = RadioComponentDetailsFragmentArgs.Builder(component.id, "", false).build().toBundle()
         launchFragmentInContainer<RadioComponentDetailsFragment>(bundle, R.style.AppTheme)
 
         onView(withText(bag.name)).check(matches(isDisplayed()))
@@ -69,7 +69,7 @@ class RadioComponentDetailsFragmentTest {
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
 
-        val bundle = RadioComponentDetailsFragmentArgs.Builder(component.id).build().toBundle()
+        val bundle = RadioComponentDetailsFragmentArgs.Builder(component.id, "", false).build().toBundle()
         val scenario = launchFragmentInContainer<RadioComponentDetailsFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
@@ -82,6 +82,6 @@ class RadioComponentDetailsFragmentTest {
 
         verify(navController).navigate(RadioComponentDetailsFragmentDirections
             .actionRadioComponentDetailsFragmentToAddEditDeleteRadioComponentFragment(
-                component.id, component.matchesBoxId, title))
+                component.id, component.matchesBoxId, title, "", false))
     }
 }

@@ -37,7 +37,7 @@ class RadioComponentDetailsFragment : Fragment() {
         viewModel.editEvent.observe(viewLifecycleOwner, EventObserver{ component ->
             findNavController().navigate(RadioComponentDetailsFragmentDirections
                 .actionRadioComponentDetailsFragmentToAddEditDeleteRadioComponentFragment(
-                    component.id, component.matchesBoxId, getString(R.string.update_component)))
+                    component.id, component.matchesBoxId, getString(R.string.update_component), args.query, args.isBuy))
         })
 
         if(null != getWebSearchIntent(viewModel.details.value?.componentName?:"").resolveActivity(requireActivity().packageManager)){
