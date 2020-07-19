@@ -1214,6 +1214,30 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun buyComponent_changeQuantity_quantityEquals() = runBlocking {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id, true)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_buy)).perform(click())
+        onView(withText(component.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withText(R.string.button_plus)).perform(click())
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        onView(withText(R.string.buy_components)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
     // Quantity
 
     @Test
