@@ -1118,6 +1118,32 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun searchComponent_changeQuantity_quantityEquals() = runBlocking {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_search)).perform(click())
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(typeText("78041\n"))
+        onView(withText(component.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withText(R.string.button_plus)).perform(click())
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        onView(withText(R.string.search_components)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
     // Buy
 
     @Test

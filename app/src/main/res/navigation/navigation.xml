@@ -165,6 +165,17 @@
         <argument
             android:name="title"
             app:argType="string" />
+        <argument
+            android:name="query"
+            app:argType="string"
+            android:defaultValue='""' />
+        <argument
+            android:name="isBuy"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <action
+            android:id="@+id/action_addEditDeleteRadioComponentFragment_to_searchBuyFragment"
+            app:destination="@id/searchBuyFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchBuyFragment"
@@ -217,5 +228,13 @@
         <action
             android:id="@+id/action_radioComponentDetailsFragment_to_addEditDeleteRadioComponentFragment"
             app:destination="@id/addEditDeleteRadioComponentFragment" />
+        <argument
+            android:name="query"
+            app:argType="string"
+            android:defaultValue='""' />
+        <argument
+            android:name="isBuy"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
 </navigation>
