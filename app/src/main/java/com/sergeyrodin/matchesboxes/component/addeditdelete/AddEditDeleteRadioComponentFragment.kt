@@ -170,10 +170,22 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
 
         viewModel.deleteItemEvent.observe(viewLifecycleOwner, EventObserver{ title ->
             Toast.makeText(context, R.string.component_deleted, Toast.LENGTH_SHORT).show()
-            findNavController().navigate(
-                AddEditDeleteRadioComponentFragmentDirections
-                    .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId, title)
-            )
+            if(args.isBuy || args.query.isNotEmpty()) {
+                findNavController().navigate(
+                    AddEditDeleteRadioComponentFragmentDirections
+                        .actionAddEditDeleteRadioComponentFragmentToSearchBuyFragment(args.query, !args.isBuy,
+                            if(args.isBuy)
+                                getString(R.string.buy_components)
+                            else
+                                getString(R.string.search_components)
+                        )
+                )
+            }else {
+                findNavController().navigate(
+                    AddEditDeleteRadioComponentFragmentDirections
+                        .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId, title)
+                )
+            }
         })
 
         setHasOptionsMenu(true)
