@@ -1022,6 +1022,7 @@ class MainActivityTest {
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
         onView(withText(component3.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(R.string.button_plus)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
         onView(withText(component3.name)).perform(click())
@@ -1053,10 +1054,11 @@ class MainActivityTest {
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
         onView(withText(component3.name)).perform(click())
-        onView(withId(R.id.quantity_text)).perform(replaceText("6"))
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withId(R.id.quantity_edit)).perform(replaceText("6"))
         onView(withId(R.id.save_component_fab)).perform(click())
         onView(withText(component3.name)).perform(click())
-        onView(withId(R.id.quantity_text)).check(matches(withText("6")))
+        onView(withText("6")).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -1083,10 +1085,12 @@ class MainActivityTest {
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
         onView(withText(component3.name)).perform(click())
-        onView(withId(R.id.quantity_text)).perform(replaceText("3"))
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withId(R.id.quantity_edit)).perform(replaceText("3"))
         onView(withId(R.id.save_component_fab)).perform(click())
         onView(withText(component3.name)).perform(click())
-        onView(withId(R.id.quantity_text)).check(matches(withText("3")))
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withId(R.id.quantity_edit)).check(matches(withText("3")))
 
         activityScenario.close()
     }
@@ -1113,6 +1117,7 @@ class MainActivityTest {
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
         onView(withText(component3.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(R.string.update_component)).check(matches(isDisplayed()))
 
         activityScenario.close()
@@ -1231,6 +1236,7 @@ class MainActivityTest {
 
         onView(withId(R.id.action_buy)).perform(click())
         onView(withText(component1.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.buy_checkbox)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
 
