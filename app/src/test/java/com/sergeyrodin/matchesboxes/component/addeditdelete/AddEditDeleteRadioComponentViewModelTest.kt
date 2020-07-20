@@ -75,33 +75,43 @@ class AddEditDeleteRadioComponentViewModelTest{
 
     @Test
     fun addItem_saveItem_nameEquals() = runBlocking{
-        val boxId = 1
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents()
-        subject.start(boxId, ADD_NEW_ITEM_ID)
+        subject.start(box.id, ADD_NEW_ITEM_ID)
 
         subject.name.value = "New component"
         subject.quantity.value = "3"
 
         subject.saveItem()
 
-        val item = dataSource.getRadioComponentsByMatchesBoxId(boxId)[0]
+        val item = dataSource.getRadioComponentsByMatchesBoxId(box.id)[0]
         assertThat(item.name, `is`("New component"))
         assertThat(item.quantity, `is`(3))
-        assertThat(item.matchesBoxId, `is`(boxId))
+        assertThat(item.matchesBoxId, `is`(box.id))
     }
 
     @Test
     fun addTwoItems_namesEqual() = runBlocking{
-        val boxId = 1
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents()
-        subject.start(boxId, ADD_NEW_ITEM_ID)
+        subject.start(box.id, ADD_NEW_ITEM_ID)
 
         subject.name.value = "Component1"
         subject.quantity.value = "3"
 
         subject.saveItem()
 
-        val item = dataSource.getRadioComponentsByMatchesBoxId(boxId)[0]
+        val item = dataSource.getRadioComponentsByMatchesBoxId(box.id)[0]
         assertThat(item.name, `is`("Component1"))
 
         subject.name.value = "Component2"
@@ -109,15 +119,20 @@ class AddEditDeleteRadioComponentViewModelTest{
 
         subject.saveItem()
 
-        val item2 = dataSource.getRadioComponentsByMatchesBoxId(boxId)[1]
+        val item2 = dataSource.getRadioComponentsByMatchesBoxId(box.id)[1]
         assertThat(item2.name, `is`("Component2"))
     }
 
     @Test
     fun addItem_addEventNotNull() {
-        val boxId = 1
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents()
-        subject.start(boxId, ADD_NEW_ITEM_ID)
+        subject.start(box.id, ADD_NEW_ITEM_ID)
 
         subject.name.value = "New component"
         subject.quantity.value = "3"
@@ -130,10 +145,15 @@ class AddEditDeleteRadioComponentViewModelTest{
 
     @Test
     fun updateItem_saveItem_nameEquals() = runBlocking{
-        val boxId = 1
-        val component = RadioComponent(1, "Component", 3, boxId)
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 3, box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
-        subject.start(boxId, component.id)
+        subject.start(box.id, component.id)
 
         subject.name.value = "Updated component"
         subject.quantity.value = "4"
@@ -143,15 +163,20 @@ class AddEditDeleteRadioComponentViewModelTest{
         val item = dataSource.getRadioComponentById(component.id)
         assertThat(item?.name, `is`("Updated component"))
         assertThat(item?.quantity, `is`(4))
-        assertThat(item?.matchesBoxId, `is`(boxId))
+        assertThat(item?.matchesBoxId, `is`(box.id))
     }
 
     @Test
     fun updateItem_saveItem_updateItemEventNotNull() {
-        val boxId = 1
-        val component = RadioComponent(1, "Component", 3, boxId)
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 3, box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
-        subject.start(boxId, component.id)
+        subject.start(box.id, component.id)
 
         subject.name.value = "Updated component"
         subject.quantity.value = "4"
@@ -270,16 +295,21 @@ class AddEditDeleteRadioComponentViewModelTest{
 
     @Test
     fun addItem_quantityEmpty_quantityZero() = runBlocking{
-        val boxId = 1
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents()
-        subject.start(boxId, ADD_NEW_ITEM_ID)
+        subject.start(box.id, ADD_NEW_ITEM_ID)
 
         subject.name.value = "Component"
         subject.quantity.value = ""
 
         subject.saveItem()
 
-        val loaded = dataSource.getRadioComponentsByMatchesBoxId(boxId)[0]
+        val loaded = dataSource.getRadioComponentsByMatchesBoxId(box.id)[0]
         assertThat(loaded.quantity, `is`(0))
     }
 
@@ -307,25 +337,35 @@ class AddEditDeleteRadioComponentViewModelTest{
 
     @Test
     fun addComponent_isBuyTrue_isBuySaved() = runBlocking{
-        val boxId = 1
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents()
-        subject.start(boxId, ADD_NEW_ITEM_ID)
+        subject.start(box.id, ADD_NEW_ITEM_ID)
 
         subject.name.value = "Component"
         subject.isBuy.value = true
 
         subject.saveItem()
 
-        val loaded = dataSource.getRadioComponentsByMatchesBoxId(boxId)[0]
+        val loaded = dataSource.getRadioComponentsByMatchesBoxId(box.id)[0]
         assertThat(loaded.isBuy, `is`(true))
     }
 
     @Test
     fun updateComponent_isBuyTrue_isBuySaved() = runBlocking {
-        val boxId = 1
-        val component = RadioComponent(1, "Component", 18, boxId)
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 18, box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
-        subject.start(boxId, component.id)
+        subject.start(box.id, component.id)
 
         subject.isBuy.value = true
         subject.saveItem()
@@ -835,5 +875,163 @@ class AddEditDeleteRadioComponentViewModelTest{
 
         val noBoxesTextVisible = subject.noBoxesTextVisible.getOrAwaitValue()
         assertThat(noBoxesTextVisible, `is`(true))
+    }
+
+    @Test
+    fun searchMode_addComponent_bagsSizeEquals() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        subject.start(ADD_NEW_ITEM_ID, ADD_NEW_ITEM_ID)
+
+        val bagNames = subject.bagNames.getOrAwaitValue()
+        val bagSelectedIndex = subject.bagSelectedIndex.getOrAwaitValue()
+        assertThat(bagNames.size, `is`(1))
+        assertThat(bagSelectedIndex, `is`(0))
+    }
+
+    @Test
+    fun searchMode_addComponent_noBags_noBagsTextIsTrue() {
+        dataSource.addBags()
+        dataSource.addMatchesBoxSets()
+        dataSource.addMatchesBoxes()
+        subject.start(ADD_NEW_ITEM_ID, ADD_NEW_ITEM_ID)
+
+        val noBagsTextVisible = subject.noBagsTextVisible.getOrAwaitValue()
+        assertThat(noBagsTextVisible, `is`(true))
+    }
+
+    @Test
+    fun searchMode_addComponent_oneBag_noBagsTextIsFalse() {
+        val bag = Bag(1, "Bag")
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets()
+        dataSource.addMatchesBoxes()
+        subject.start(ADD_NEW_ITEM_ID, ADD_NEW_ITEM_ID)
+
+        val noBagsTextVisible = subject.noBagsTextVisible.getOrAwaitValue()
+        assertThat(noBagsTextVisible, `is`(false))
+    }
+
+    @Test
+    fun searchMode_addComponent_setsSizeEquals() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        subject.start(ADD_NEW_ITEM_ID, ADD_NEW_ITEM_ID)
+
+        val setNames = subject.setNames.getOrAwaitValue()
+        val setSelectedIndex = subject.setSelectedIndex.getOrAwaitValue()
+        assertThat(setNames.size, `is`(1))
+        assertThat(setSelectedIndex, `is`(0))
+    }
+
+    @Test
+    fun searchMode_addComponent_noBags_noSets_noSetsTextVisibleTrue() {
+        dataSource.addBags()
+        dataSource.addMatchesBoxSets()
+        dataSource.addMatchesBoxes()
+        subject.start(ADD_NEW_ITEM_ID, ADD_NEW_ITEM_ID)
+
+        val noSetsTextVisible = subject.noSetsTextVisible.getOrAwaitValue()
+        assertThat(noSetsTextVisible, `is`(true))
+    }
+
+    @Test
+    fun searchMode_addComponent_oneBag_noSets_noSetsTextVisibleTrue() {
+        val bag = Bag(1, "Bag")
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets()
+        dataSource.addMatchesBoxes()
+        subject.start(ADD_NEW_ITEM_ID, ADD_NEW_ITEM_ID)
+
+        val noSetsTextVisible = subject.noSetsTextVisible.getOrAwaitValue()
+        assertThat(noSetsTextVisible, `is`(true))
+    }
+
+    @Test
+    fun searchMode_addComponent_oneSet_noSetsTextVisibleFalse() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes()
+        subject.start(ADD_NEW_ITEM_ID, ADD_NEW_ITEM_ID)
+
+        val noSetsTextVisible = subject.noSetsTextVisible.getOrAwaitValue()
+        assertThat(noSetsTextVisible, `is`(false))
+    }
+
+    @Test
+    fun searchMode_addComponent_boxesSizeEquals() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        subject.start(ADD_NEW_ITEM_ID, ADD_NEW_ITEM_ID)
+
+        val boxNames = subject.boxNames.getOrAwaitValue()
+        val boxSelectedIndex = subject.boxSelectedIndex.getOrAwaitValue()
+        assertThat(boxNames.size, `is`(1))
+        assertThat(boxSelectedIndex, `is`(0))
+    }
+
+    @Test
+    fun searchMode_addComponent_noBags_noSets_noBoxes_noBoxesTextVisibleTrue() {
+        dataSource.addBags()
+        dataSource.addMatchesBoxSets()
+        dataSource.addMatchesBoxes()
+        subject.start(ADD_NEW_ITEM_ID, ADD_NEW_ITEM_ID)
+
+        val noBoxesTextVisible = subject.noBoxesTextVisible.getOrAwaitValue()
+        assertThat(noBoxesTextVisible, `is`(true))
+    }
+
+    @Test
+    fun searchMode_addComponent_oneBag_noSets_noBoxes_noBoxesTextVisibleTrue() {
+        val bag = Bag(1, "Bag")
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets()
+        dataSource.addMatchesBoxes()
+        subject.start(ADD_NEW_ITEM_ID, ADD_NEW_ITEM_ID)
+
+        val noBoxesTextVisible = subject.noBoxesTextVisible.getOrAwaitValue()
+        assertThat(noBoxesTextVisible, `is`(true))
+    }
+
+    @Test
+    fun searchMode_addComponent_oneBag_oneSet_noBoxes_noBoxesTextVisibleTrue() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes()
+        subject.start(ADD_NEW_ITEM_ID, ADD_NEW_ITEM_ID)
+
+        val noBoxesTextVisible = subject.noBoxesTextVisible.getOrAwaitValue()
+        assertThat(noBoxesTextVisible, `is`(true))
+    }
+
+
+    @Test
+    fun searchMode_addComponent_oneBag_oneSet_oneBox_noBoxesTextVisibleFalse() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        subject.start(ADD_NEW_ITEM_ID, ADD_NEW_ITEM_ID)
+
+        val noBoxesTextVisible = subject.noBoxesTextVisible.getOrAwaitValue()
+        assertThat(noBoxesTextVisible, `is`(false))
     }
 }
