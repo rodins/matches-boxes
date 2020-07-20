@@ -1,6 +1,7 @@
 package com.sergeyrodin.matchesboxes.component.addeditdelete
 
 import androidx.lifecycle.*
+import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
@@ -43,6 +44,9 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     private val _bagSelectedIndex = MutableLiveData<Int>()
     val bagSelectedIndex: LiveData<Int>
         get() = _bagSelectedIndex
+    val noBagsTextVisible = bagNames.map {
+        it.isEmpty()
+    }
 
     // Sets spinner
     private lateinit var sets: List<MatchesBoxSet>
@@ -78,36 +82,70 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             quantity.value = (radioComponent?.quantity?:"").toString()
             isBuy.value = radioComponent?.isBuy?:false
 
-            val box = dataSource.getMatchesBoxById(boxId)
-            boxTitle = box?.name?:""
+            val bags = dataSource.getBags()
+            _bagNames.value = bags.map {
+                it.name
+            }
 
-            box?.let{
-                boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(box.matchesBoxSetId)
-                _boxNames.value = boxes.map {
-                    it.name
-                }
-                _boxSelectedIndex.value = boxes.indexOfFirst {
-                    it.id == boxId
-                }
-
-                val set = dataSource.getMatchesBoxSetById(box.matchesBoxSetId)
-                set?.let {
-                    sets = dataSource.getMatchesBoxSetsByBagId(set.bagId)
+            if(boxId == ADD_NEW_ITEM_ID) {
+                if(bags.isNotEmpty()) {
+                    _bagSelectedIndex.value = 0
+                    sets = dataSource.getMatchesBoxSetsByBagId(bags[0].id)
                     _setNames.value = sets.map {
                         it.name
                     }
-
-                    _setSelectedIndex.value = sets.indexOfFirst {
-                        it.id == set.id
+                    if(sets.isNotEmpty()) {
+                        _setSelectedIndex.value = 0
+                        boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(sets[0].id)
+                        _boxNames.value = boxes.map {
+                            it.name
+                        }
+                        if(boxes.isNotEmpty()){
+                            _boxSelectedIndex.value = 0
+                        }
+                    }else {
+                        boxes = listOf()
+                        _boxNames.value = boxes.map {
+                            it.name
+                        }
                     }
-
-                    val bags = dataSource.getBags()
-                    _bagNames.value = bags.map {
+                }else {
+                    sets = listOf()
+                    _setNames.value = sets.map {
                         it.name
                     }
+                    boxes = listOf()
+                    _boxNames.value = boxes.map {
+                        it.name
+                    }
+                }
+            }else {
+                val box = dataSource.getMatchesBoxById(boxId)
+                boxTitle = box?.name?:""
 
-                    _bagSelectedIndex.value = bags.indexOfFirst {
-                        it.id == set.bagId
+                box?.let{
+                    boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(box.matchesBoxSetId)
+                    _boxNames.value = boxes.map {
+                        it.name
+                    }
+                    _boxSelectedIndex.value = boxes.indexOfFirst {
+                        it.id == boxId
+                    }
+
+                    val set = dataSource.getMatchesBoxSetById(box.matchesBoxSetId)
+                    set?.let {
+                        sets = dataSource.getMatchesBoxSetsByBagId(set.bagId)
+                        _setNames.value = sets.map {
+                            it.name
+                        }
+
+                        _setSelectedIndex.value = sets.indexOfFirst {
+                            it.id == set.id
+                        }
+
+                        _bagSelectedIndex.value = bags.indexOfFirst {
+                            it.id == set.bagId
+                        }
                     }
                 }
             }
