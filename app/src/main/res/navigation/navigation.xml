@@ -190,30 +190,8 @@
             android:name="title"
             app:argType="string" />
         <action
-            android:id="@+id/action_searchBuyFragment_to_searchBuyEditFragment"
-            app:destination="@id/searchBuyEditFragment" />
-        <action
             android:id="@+id/action_searchBuyFragment_to_radioComponentDetailsFragment"
             app:destination="@id/radioComponentDetailsFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/searchBuyEditFragment"
-        android:name="com.sergeyrodin.matchesboxes.searchbuy.edit.SearchBuyEditFragment"
-        android:label="@string/update_component"
-        tools:layout="@layout/fragment_search_buy_edit">
-        <action
-            android:id="@+id/action_searchBuyEditFragment_to_searchBuyFragment"
-            app:destination="@id/searchBuyFragment"
-            app:popUpTo="@id/bagsListFragment" />
-        <argument
-            android:name="componentId"
-            app:argType="integer" />
-        <argument
-            android:name="query"
-            app:argType="string" />
-        <argument
-            android:name="isSearch"
-            app:argType="boolean" />
     </fragment>
     <fragment
         android:id="@+id/radioComponentDetailsFragment"
