@@ -35,11 +35,9 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
 
     // Bags spinner
     private val bags = MutableLiveData<List<Bag>>()
-    val bagNames = bags.switchMap{
-        liveData{
-            emit(it.map{ bag ->
-                bag.name
-            })
+    val bagNames = bags.map{
+        it.map{ bag ->
+            bag.name
         }
     }
     private val _bagSelectedIndex = MutableLiveData<Int>()
@@ -51,11 +49,9 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
 
     // Sets spinner
     private val sets = MutableLiveData<List<MatchesBoxSet>>()
-    val setNames = sets.switchMap {
-        liveData{
-            emit(it.map { set ->
-                set.name
-            })
+    val setNames = sets.map {
+        it.map { set ->
+            set.name
         }
     }
     val noSetsTextVisible = setNames.map {
