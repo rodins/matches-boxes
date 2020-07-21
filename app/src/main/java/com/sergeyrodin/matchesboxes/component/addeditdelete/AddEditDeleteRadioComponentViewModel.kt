@@ -50,10 +50,14 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     }
 
     // Sets spinner
-    private lateinit var sets: List<MatchesBoxSet>
-    private val _setNames = MutableLiveData<List<String>>()
-    val setNames: LiveData<List<String>>
-        get() = _setNames
+    private val sets = MutableLiveData<List<MatchesBoxSet>>()
+    val setNames = sets.switchMap {
+        liveData{
+            emit(it.map { set ->
+                set.name
+            })
+        }
+    }
     val noSetsTextVisible = setNames.map {
         it.isEmpty()
     }
@@ -86,13 +90,10 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             if(boxId == ADD_NEW_ITEM_ID) {
                 if(bags.value!!.isNotEmpty()) {
                     _bagSelectedIndex.value = 0
-                    sets = dataSource.getMatchesBoxSetsByBagId(bags.value!![0].id)
-                    _setNames.value = sets.map {
-                        it.name
-                    }
-                    if(sets.isNotEmpty()) {
+                    sets.value = dataSource.getMatchesBoxSetsByBagId(bags.value!![0].id)
+                    if(sets.value!!.isNotEmpty()) {
                         _setSelectedIndex.value = 0
-                        boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(sets[0].id)
+                        boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(sets.value!![0].id)
                         _boxNames.value = boxes.map {
                             it.name
                         }
@@ -106,10 +107,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
                         }
                     }
                 }else {
-                    sets = listOf()
-                    _setNames.value = sets.map {
-                        it.name
-                    }
+                    sets.value = listOf()
                     boxes = listOf()
                     _boxNames.value = boxes.map {
                         it.name
@@ -130,12 +128,9 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
 
                     val set = dataSource.getMatchesBoxSetById(box.matchesBoxSetId)
                     set?.let {
-                        sets = dataSource.getMatchesBoxSetsByBagId(set.bagId)
-                        _setNames.value = sets.map {
-                            it.name
-                        }
+                        sets.value = dataSource.getMatchesBoxSetsByBagId(set.bagId)
 
-                        _setSelectedIndex.value = sets.indexOfFirst {
+                        _setSelectedIndex.value = sets.value!!.indexOfFirst {
                             it.id == set.id
                         }
 
@@ -185,7 +180,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     fun setSelected(index: Int) {
         if(index != setSelectedIndex.value) {
             viewModelScope.launch {
-                val set = sets[index]
+                val set = sets.value!![index]
                 boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)
                 if(boxes.isNotEmpty()) {
                     _boxNames.value = boxes.map {
@@ -204,13 +199,10 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
         if(index != bagSelectedIndex.value) {
             viewModelScope.launch {
                 val bag = dataSource.getBags()[index]
-                sets = dataSource.getMatchesBoxSetsByBagId(bag.id)
-                if(sets.isNotEmpty()) {
-                    _setNames.value = sets.map{
-                        it.name
-                    }
+                sets.value = dataSource.getMatchesBoxSetsByBagId(bag.id)
+                if(sets.value!!.isNotEmpty()) {
                     _setSelectedIndex.value = 0
-                    val set = sets[0]
+                    val set = sets.value!![0]
                     boxes = dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)
                     _boxNames.value = boxes.map {
                         it.name
@@ -218,7 +210,6 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
                     _boxSelectedIndex.value = 0
                     matchesBoxId.value = boxes[0].id
                 }else {
-                    _setNames.value = listOf()
                     _boxNames.value = listOf()
                 }
             }
