@@ -1,10 +1,11 @@
 package com.sergeyrodin.matchesboxes.component.addeditdelete
 
 import androidx.lifecycle.*
-import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.*
 import kotlinx.coroutines.launch
+
+private const val NO_ID_SET = -1
 
 class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
     val name = MutableLiveData<String>()
@@ -29,9 +30,11 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
 
     private lateinit var boxTitle: String
 
-    private val matchesBoxId = MutableLiveData<Int>()
+    private var matchesBoxId = 0
 
     private var radioComponent: RadioComponent? = null
+
+    private val selectedIndexIds = MutableLiveData<ThreeIds>()
 
     // Bags spinner
     private val bags = MutableLiveData<List<Bag>>()
@@ -40,11 +43,15 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             bag.name
         }
     }
-    private val _bagSelectedIndex = MutableLiveData<Int>()
-    val bagSelectedIndex: LiveData<Int>
-        get() = _bagSelectedIndex
     val noBagsTextVisible = bagNames.map {
         it.isEmpty()
+    }
+    val bagSelectedIndex = selectedIndexIds.switchMap {
+        bags.map { bagsList ->
+            bagsList.indexOfFirst { bag ->
+                bag.id == it.bagId
+            }
+        }
     }
 
     // Sets spinner
@@ -57,9 +64,13 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     val noSetsTextVisible = setNames.map {
         it.isEmpty()
     }
-    private val _setSelectedIndex = MutableLiveData<Int>()
-    val setSelectedIndex: LiveData<Int>
-        get() = _setSelectedIndex
+    val setSelectedIndex = selectedIndexIds.switchMap{
+        sets.map { setsList ->
+            setsList.indexOfFirst { set ->
+                set.id == it.setId
+            }
+        }
+    }
 
     // Boxes spinner
     private val boxes = MutableLiveData<List<MatchesBox>>()
@@ -71,12 +82,17 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     val noBoxesTextVisible = boxNames.map {
         it.isEmpty()
     }
-    private val _boxSelectedIndex = MutableLiveData<Int>()
-    val boxSelectedIndex: LiveData<Int>
-        get() = _boxSelectedIndex
+    val boxSelectedIndex = selectedIndexIds.switchMap {
+        boxes.map { boxesList ->
+            boxesList.indexOfFirst { box ->
+                box.id == it.boxId
+            }
+        }
+    }
 
     fun start(boxId: Int, componentId: Int){
-        matchesBoxId.value = boxId
+        matchesBoxId = boxId
+
         viewModelScope.launch {
             radioComponent = dataSource.getRadioComponentById(componentId)
             name.value = radioComponent?.name?:""
@@ -84,48 +100,8 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             isBuy.value = radioComponent?.isBuy?:false
 
             bags.value = dataSource.getBags()
-
-            if(boxId == ADD_NEW_ITEM_ID) {
-                if(bags.value!!.isNotEmpty()) {
-                    _bagSelectedIndex.value = 0
-                    sets.value = dataSource.getMatchesBoxSetsByBagId(bags.value!![0].id)
-                    if(sets.value!!.isNotEmpty()) {
-                        _setSelectedIndex.value = 0
-                        boxes.value = dataSource.getMatchesBoxesByMatchesBoxSetId(sets.value!![0].id)
-                        if(boxes.value!!.isNotEmpty()){
-                            _boxSelectedIndex.value = 0
-                        }
-                    }else {
-                        boxes.value = listOf()
-                    }
-                }else {
-                    sets.value = listOf()
-                    boxes.value = listOf()
-                }
-            }else {
-                val box = dataSource.getMatchesBoxById(boxId)
-                boxTitle = box?.name?:""
-
-                box?.let{
-                    boxes.value = dataSource.getMatchesBoxesByMatchesBoxSetId(box.matchesBoxSetId)
-                    _boxSelectedIndex.value = boxes.value!!.indexOfFirst {
-                        it.id == boxId
-                    }
-
-                    val set = dataSource.getMatchesBoxSetById(box.matchesBoxSetId)
-                    set?.let {
-                        sets.value = dataSource.getMatchesBoxSetsByBagId(set.bagId)
-
-                        _setSelectedIndex.value = sets.value!!.indexOfFirst {
-                            it.id == set.id
-                        }
-
-                        _bagSelectedIndex.value = bags.value?.indexOfFirst {
-                            it.id == set.bagId
-                        }
-                    }
-                }
-            }
+            val firstBagId = if(bags.value?.isNotEmpty() == true) bags.value?.get(0)?.id?: NO_ID_SET else NO_ID_SET
+            updateSpinners(inputBagId = firstBagId, inputBoxId = boxId)
         }
     }
 
@@ -160,18 +136,14 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     }
 
     fun boxSelected(index: Int) {
-        matchesBoxId.value = boxes.value!![index].id
+        matchesBoxId = boxes.value?.get(index)?.id?: NO_ID_SET
     }
 
     fun setSelected(index: Int) {
         if(index != setSelectedIndex.value) {
             viewModelScope.launch {
-                val set = sets.value!![index]
-                boxes.value = dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)
-                if(boxes.value!!.isNotEmpty()) {
-                    _boxSelectedIndex.value = 0
-                    matchesBoxId.value = boxes.value!![0].id
-                }
+                val setId = sets.value?.get(index)?.id?: NO_ID_SET
+                updateSpinners(inputSetId = setId)
             }
         }
     }
@@ -179,17 +151,8 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     fun bagSelected(index: Int) {
         if(index != bagSelectedIndex.value) {
             viewModelScope.launch {
-                val bag = bags.value!![index]
-                sets.value = dataSource.getMatchesBoxSetsByBagId(bag.id)
-                if(sets.value!!.isNotEmpty()) {
-                    _setSelectedIndex.value = 0
-                    val set = sets.value!![0]
-                    boxes.value = dataSource.getMatchesBoxesByMatchesBoxSetId(set.id)
-                    _boxSelectedIndex.value = 0
-                    matchesBoxId.value = boxes.value!![0].id
-                }else{
-                    boxes.value = listOf()
-                }
+                val bagId = bags.value?.get(index)?.id?: NO_ID_SET
+                updateSpinners(inputBagId = bagId)
             }
         }
     }
@@ -199,13 +162,11 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             val component = RadioComponent(
                 name = name,
                 quantity = quantity,
-                matchesBoxId = matchesBoxId.value!!,
+                matchesBoxId = matchesBoxId,
                 isBuy = isBuy.value!!
             )
             dataSource.insertRadioComponent(component)
-            val box = boxes.value!!.find{
-                it.id == matchesBoxId.value!!
-            }
+            val box = dataSource.getMatchesBoxById(matchesBoxId)
             box?.let {
                 _addItemEvent.value = Event(it)
             }
@@ -216,16 +177,46 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
         viewModelScope.launch {
             radioComponent?.name = name
             radioComponent?.quantity = quantity
-            radioComponent?.matchesBoxId = matchesBoxId.value!!
+            radioComponent?.matchesBoxId = matchesBoxId
             radioComponent?.isBuy = isBuy.value!!
             dataSource.updateRadioComponent(radioComponent!!)
-            val box = boxes.value!!.find{
-                it.id == matchesBoxId.value!!
-            }
+            val box = dataSource.getMatchesBoxById(matchesBoxId)
             box?.let {
                 _updateItemEvent.value = Event(it)
             }
         }
     }
 
+    private suspend fun updateSpinners(inputBagId: Int = NO_ID_SET, inputSetId: Int = NO_ID_SET, inputBoxId: Int = NO_ID_SET) {
+        if(inputBoxId != NO_ID_SET) { // if we have component or box get it's path
+            val box = dataSource.getMatchesBoxById(inputBoxId)
+            boxTitle = box?.name?:""
+            val set = dataSource.getMatchesBoxSetById(box?.matchesBoxSetId?: NO_ID_SET)
+            val bagId = set?.bagId?: NO_ID_SET
+            val setId = set?.id?:NO_ID_SET
+            sets.value = dataSource.getMatchesBoxSetsByBagId(bagId)
+            boxes.value = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)
+            selectedIndexIds.value = ThreeIds(bagId, setId, inputBoxId)
+        }else if(inputBagId != NO_ID_SET) { // if we have no component and no box defined or bag is changed
+            sets.value = dataSource.getMatchesBoxSetsByBagId(inputBagId)
+            val firstSetId = if(sets.value?.isNotEmpty() == true) sets.value?.get(0)?.id?: NO_ID_SET else NO_ID_SET // select first set
+            boxes.value = dataSource.getMatchesBoxesByMatchesBoxSetId(firstSetId)
+            matchesBoxId = if(boxes.value?.isNotEmpty() == true) boxes.value?.get(0)?.id?: NO_ID_SET else NO_ID_SET // select first box
+            selectedIndexIds.value = ThreeIds(inputBagId, firstSetId, matchesBoxId)
+        }else if(inputSetId != NO_ID_SET) {  // if set is changed
+            boxes.value = dataSource.getMatchesBoxesByMatchesBoxSetId(inputSetId)
+            matchesBoxId = if(boxes.value?.isNotEmpty() == true) boxes.value?.get(0)?.id?: NO_ID_SET else NO_ID_SET // select first box
+            selectedIndexIds.value = ThreeIds(inputBagId, inputSetId, matchesBoxId)
+        }else{ // Set empty lists
+            bags.value = listOf()
+            sets.value = listOf()
+            boxes.value = listOf()
+        }
+    }
 }
+
+data class ThreeIds(
+    val bagId: Int = NO_ID_SET,
+    val setId: Int = NO_ID_SET,
+    val boxId: Int = NO_ID_SET
+)

@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.component.addeditdelete
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
+import com.sergeyrodin.matchesboxes.MainCoroutineRule
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,6 +18,9 @@ import org.junit.Test
 class AddEditDeleteRadioComponentViewModelTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var dataSource: FakeDataSource
     private lateinit var subject: AddEditDeleteRadioComponentViewModel
