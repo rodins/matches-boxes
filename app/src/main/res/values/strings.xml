@@ -51,4 +51,5 @@
     <string name="no_sets">No Sets</string>
     <string name="no_boxes">No boxes</string>
     <string name="no_bags">No bags</string>
+    <string name="save_component_error">Save component error</string>
 </resources>

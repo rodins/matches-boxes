@@ -315,6 +315,35 @@ class ToastsTest {
     }
 
     @Test
+    fun addComponent_emptyName_showErrorToast() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+        var decorView: View? = null
+        activityScenario.onActivity{
+            decorView = it.window.decorView
+        }
+
+        Espresso.onView(ViewMatchers.withText(bag.name)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withText(set.name)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withText(box.name)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.add_component_fab)).perform(ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.save_component_fab)).perform(ViewActions.click())
+
+        Espresso.onView(ViewMatchers.withText(R.string.save_component_error))
+            .inRoot(RootMatchers.withDecorView(CoreMatchers.not(decorView)))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
     fun updateComponent_showToast() = runBlocking{
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
