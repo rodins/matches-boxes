@@ -1212,8 +1212,8 @@ class MainActivityTest {
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78\n"))
-        //onView(withId(R.id.add_search_buy_component_fab)).perform(click())
-        onView(withId(R.id.component_edit)).perform(typeText("KIA7805"))
+        onView(withId(R.id.add_search_buy_component_fab)).perform(click())
+        onView(withId(R.id.component_edit)).perform(typeText("KIA7805"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
         onView(withText("KIA7805")).check(matches(isDisplayed()))
 
