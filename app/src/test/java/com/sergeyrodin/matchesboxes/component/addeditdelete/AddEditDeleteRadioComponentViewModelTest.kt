@@ -1038,4 +1038,52 @@ class AddEditDeleteRadioComponentViewModelTest{
         val noBoxesTextVisible = subject.noBoxesTextVisible.getOrAwaitValue()
         assertThat(noBoxesTextVisible, `is`(false))
     }
+
+    @Test
+    fun noBags_saveComponent_errorEventNotNull() {
+        dataSource.addBags()
+        dataSource.addMatchesBoxSets()
+        dataSource.addMatchesBoxes()
+        subject.start(NO_ID_SET, ADD_NEW_ITEM_ID)
+
+        subject.saveItem()
+
+        val errorEvent = subject.errorEvent.getOrAwaitValue()
+        assertThat(errorEvent, `is`(not(nullValue())))
+    }
+
+    @Test
+    fun emptyName_newItem_saveComponent_errorEventNotNull() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        subject.start(box.id, ADD_NEW_ITEM_ID)
+
+        subject.name.value = ""
+        subject.saveItem()
+
+        val errorEvent = subject.errorEvent.getOrAwaitValue()
+        assertThat(errorEvent, `is`(not(nullValue())))
+    }
+
+    @Test
+    fun emptyName_updateItem_saveComponent_errorEventNotNull() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 4, box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        subject.start(box.id, ADD_NEW_ITEM_ID)
+
+        subject.name.value = ""
+        subject.saveItem()
+
+        val errorEvent = subject.errorEvent.getOrAwaitValue()
+        assertThat(errorEvent, `is`(not(nullValue())))
+    }
 }

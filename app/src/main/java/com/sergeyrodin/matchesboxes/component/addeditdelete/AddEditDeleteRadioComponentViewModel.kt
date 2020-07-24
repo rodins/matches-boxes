@@ -5,7 +5,7 @@ import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.*
 import kotlinx.coroutines.launch
 
-private const val NO_ID_SET = -1
+const val NO_ID_SET = -1
 
 class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
     val name = MutableLiveData<String>()
@@ -23,6 +23,10 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     private val _deleteItemEvent = MutableLiveData<Event<String>>()
     val deleteItemEvent: LiveData<Event<String>>
         get() = _deleteItemEvent
+
+    private val _errorEvent = MutableLiveData<Event<Unit>>()
+    val errorEvent: LiveData<Event<Unit>>
+        get() = _errorEvent
 
     val minusEnabled = Transformations.map(quantity) {
         it.toIntOrNull()?:0 != 0
@@ -106,7 +110,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     }
 
     fun saveItem() {
-        if(name.value?.trim() != "") {
+        if(name.value?.trim() != "" && matchesBoxId != NO_ID_SET) {
             val nQuantity = quantity.value?.toIntOrNull()?:0
             if(nQuantity >= 0) {
                 if(radioComponent == null) {
@@ -115,6 +119,8 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
                     updateItem(name.value!!, nQuantity)
                 }
             }
+        }else {
+            _errorEvent.value = Event(Unit)
         }
     }
 
@@ -181,8 +187,8 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             radioComponent?.isBuy = isBuy.value!!
             dataSource.updateRadioComponent(radioComponent!!)
             val box = dataSource.getMatchesBoxById(matchesBoxId)
-            box?.let {
-                _updateItemEvent.value = Event(it)
+            box?.let{
+                _updateItemEvent.value = Event(box)
             }
         }
     }
