@@ -8,10 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.sergeyrodin.matchesboxes.DO_NOT_NEED_THIS_VARIABLE
-import com.sergeyrodin.matchesboxes.MainActivity
-import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
-import com.sergeyrodin.matchesboxes.R
+import com.sergeyrodin.matchesboxes.*
+import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentListener
 import com.sergeyrodin.matchesboxes.databinding.FragmentSearchBuyBinding
@@ -38,6 +36,13 @@ class SearchBuyListFragment : Fragment() {
         binding.items.adapter = RadioComponentAdapter(RadioComponentListener {
             findNavController().navigate(
                 SearchBuyListFragmentDirections.actionSearchBuyFragmentToRadioComponentDetailsFragment(it, args.query, !args.isSearch)
+            )
+        })
+
+        viewModel.addComponentEvent.observe(viewLifecycleOwner, EventObserver{
+            findNavController().navigate(
+                SearchBuyListFragmentDirections.actionSearchBuyFragmentToAddEditDeleteRadioComponentFragment(
+                    ADD_NEW_ITEM_ID, NO_ID_SET, getString(R.string.add_component), args.query, !args.isSearch)
             )
         })
 

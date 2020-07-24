@@ -7,13 +7,13 @@ import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
-import com.sergeyrodin.matchesboxes.data.FakeDataSource
-import com.sergeyrodin.matchesboxes.data.RadioComponent
+import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
+import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.searchbuy.list.SearchBuyListFragment
 import com.sergeyrodin.matchesboxes.searchbuy.list.SearchBuyListFragmentArgs
 import com.sergeyrodin.matchesboxes.searchbuy.list.SearchBuyListFragmentDirections
@@ -120,6 +120,35 @@ class SearchBuyListFragmentTest{
         launchFragmentInContainer<SearchBuyListFragment>(bundle, R.style.AppTheme)
 
         onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun componentFound_addNewComponent_navigationCalled() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 3, box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        val query = "compo"
+        val isSearch = true
+        val bundle = SearchBuyListFragmentArgs.Builder(query, isSearch, "Title").build().toBundle()
+        val scenario = launchFragmentInContainer<SearchBuyListFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        var title = ""
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+            title = it.getString(R.string.add_component)
+        }
+
+        onView(withId(R.id.add_search_buy_component_fab)).perform(click())
+
+        verify(navController).navigate(
+            SearchBuyListFragmentDirections.actionSearchBuyFragmentToAddEditDeleteRadioComponentFragment(
+                ADD_NEW_ITEM_ID, NO_ID_SET, title, query, !isSearch)
+        )
     }
 
 }

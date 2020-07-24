@@ -13,22 +13,40 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".searchbuy.list.SearchBuyListFragment">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/items"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/coordinator_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="8dp"
-            app:radioComponentsListData="@{viewModel.items}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+            android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/no_components_found"
-            android:textSize="20sp"
-            app:noDataTextVisible="@{viewModel.noComponentsTextVisible}"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/items"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                app:radioComponentsListData="@{viewModel.items}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/no_components_found"
+                android:textSize="20sp"
+                app:noDataTextVisible="@{viewModel.noComponentsTextVisible}"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_search_buy_component_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fab_margin"
+                app:srcCompat="@drawable/ic_add"
+                android:onClick="@{()->viewModel.addComponent()}"
+                app:fabSize="normal"
+                app:layout_anchor="@id/items"
+                app:layout_anchorGravity="bottom|right|end" />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
 
     </FrameLayout>
 </layout>

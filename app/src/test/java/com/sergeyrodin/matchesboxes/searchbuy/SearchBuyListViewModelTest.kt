@@ -7,7 +7,7 @@ import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import com.sergeyrodin.matchesboxes.searchbuy.list.SearchBuyListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -110,5 +110,19 @@ class SearchBuyListViewModelTest{
 
         val isVisible = subject.noComponentsTextVisible.getOrAwaitValue()
         assertThat(isVisible, `is`(true))
+    }
+
+    @Test
+    fun addComponent_eventNotNull() {
+        dataSource.addBags()
+        dataSource.addMatchesBoxSets()
+        dataSource.addMatchesBoxes()
+        dataSource.addRadioComponents()
+        subject.start("", false)
+
+        subject.addComponent()
+
+        val event = subject.addComponentEvent.getOrAwaitValue()
+        assertThat(event, `is`(not(nullValue())))
     }
 }

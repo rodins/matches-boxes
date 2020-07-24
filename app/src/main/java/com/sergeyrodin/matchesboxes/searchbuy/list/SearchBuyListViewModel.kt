@@ -1,6 +1,7 @@
 package com.sergeyrodin.matchesboxes.searchbuy.list
 
 import androidx.lifecycle.*
+import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
@@ -26,8 +27,16 @@ class SearchBuyListViewModel(private val dataSource: RadioComponentsDataSource):
         it.isEmpty()
     }
 
+    private val _addComponentEvent = MutableLiveData<Event<Unit>>()
+    val addComponentEvent: LiveData<Event<Unit>>
+        get() = _addComponentEvent
+
     fun start(query: String, searchMode: Boolean) {
         searchQuery = query
         isSearch.value = searchMode
+    }
+
+    fun addComponent() {
+        _addComponentEvent.value = Event(Unit)
     }
 }

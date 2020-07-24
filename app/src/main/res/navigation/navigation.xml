@@ -192,6 +192,9 @@
         <action
             android:id="@+id/action_searchBuyFragment_to_radioComponentDetailsFragment"
             app:destination="@id/radioComponentDetailsFragment" />
+        <action
+            android:id="@+id/action_searchBuyFragment_to_addEditDeleteRadioComponentFragment"
+            app:destination="@id/addEditDeleteRadioComponentFragment" />
     </fragment>
     <fragment
         android:id="@+id/radioComponentDetailsFragment"
