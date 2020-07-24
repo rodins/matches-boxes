@@ -592,6 +592,19 @@ class AddEditDeleteRadioComponentFragmentTest {
         onView(withText(box1.name)).check(matches(isDisplayed()))
     }
 
+    @Test
+    fun searchMode_noBags_noBagsTextDisplayed() {
+        val query = "78"
+        val isBuy = false
+        dataSource.addBags()
+        dataSource.addMatchesBoxSets()
+        dataSource.addMatchesBoxes()
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(ADD_NEW_ITEM_ID, ADD_NEW_ITEM_ID, "Title", query, isBuy).build().toBundle()
+        launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
+
+        onView(withText(R.string.no_bags)).check(matches(isDisplayed()))
+    }
+
     private fun clickDeleteAction(
         scenario: FragmentScenario<AddEditDeleteRadioComponentFragment>
     ) {
