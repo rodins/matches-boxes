@@ -173,7 +173,8 @@
             app:argType="boolean" />
         <action
             android:id="@+id/action_addEditDeleteRadioComponentFragment_to_searchBuyFragment"
-            app:destination="@id/searchBuyFragment" />
+            app:destination="@id/searchBuyFragment"
+            app:popUpTo="@id/bagsListFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchBuyFragment"

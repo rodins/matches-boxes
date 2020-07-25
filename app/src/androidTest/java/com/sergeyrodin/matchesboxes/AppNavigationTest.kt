@@ -493,7 +493,7 @@ class AppNavigationTest {
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withId(R.id.component_edit)).perform(typeText("New component"))
+        onView(withId(R.id.component_edit)).perform(typeText("New component"), ViewActions.closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
         pressBack()
@@ -518,7 +518,7 @@ class AppNavigationTest {
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withId(R.id.component_edit)).perform(typeText("New component"))
+        onView(withId(R.id.component_edit)).perform(typeText("New component"), ViewActions.closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
@@ -545,6 +545,7 @@ class AppNavigationTest {
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.component_edit)).perform(ViewActions.replaceText("Component update"))
         onView(withId(R.id.save_component_fab)).perform(click())
 
@@ -572,6 +573,7 @@ class AppNavigationTest {
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.component_edit)).perform(ViewActions.replaceText("Component update"))
         onView(withId(R.id.save_component_fab)).perform(click())
 
@@ -602,6 +604,7 @@ class AppNavigationTest {
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.component_edit)).perform(ViewActions.replaceText("Component update"))
         onView(withId(R.id.save_component_fab)).perform(click())
 
@@ -629,6 +632,7 @@ class AppNavigationTest {
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.action_delete)).perform(click())
 
         pressBack()
@@ -655,6 +659,7 @@ class AppNavigationTest {
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.action_delete)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
@@ -669,12 +674,14 @@ class AppNavigationTest {
     @Test
     fun searchEdit_navigationBack() = runBlocking{
         val bag = Bag(1, "Bag")
+        val bag2 = Bag(2, "Bag2")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
         val component2 = RadioComponent(2, "D2499", 3, box.id)
         val component3 = RadioComponent(3, "LA78041", 3, box.id)
         dataSource.insertBag(bag)
+        dataSource.insertBag(bag2)
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component1)
@@ -688,12 +695,13 @@ class AppNavigationTest {
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
         onView(withText(component3.name)).perform(click())
-        onView(withId(R.id.quantity_text)).perform(ViewActions.replaceText("3"))
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withId(R.id.quantity_edit)).perform(ViewActions.replaceText("3"))
         onView(withId(R.id.save_component_fab)).perform(click())
 
         pressBack()
 
-        onView(withText(bag.name)).check(matches(isDisplayed()))
+        onView(withText(bag2.name)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -701,12 +709,14 @@ class AppNavigationTest {
     @Test
     fun searchEdit_navigationUp() = runBlocking{
         val bag = Bag(1, "Bag")
+        val bag2 = Bag(2, "Bag2")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
         val component2 = RadioComponent(2, "D2499", 3, box.id)
         val component3 = RadioComponent(3, "LA78041", 3, box.id)
         dataSource.insertBag(bag)
+        dataSource.insertBag(bag2)
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component1)
@@ -720,12 +730,13 @@ class AppNavigationTest {
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
         onView(withText(component3.name)).perform(click())
-        onView(withId(R.id.quantity_text)).perform(ViewActions.replaceText("3"))
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withId(R.id.quantity_edit)).perform(ViewActions.replaceText("3"))
         onView(withId(R.id.save_component_fab)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        onView(withText(bag.name)).check(matches(isDisplayed()))
+        onView(withText(bag2.name)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
