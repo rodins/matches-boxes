@@ -741,4 +741,72 @@ class AppNavigationTest {
         activityScenario.close()
     }
 
+    @Test
+    fun searchMode_addComponent_navigationUp() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val bag2 = Bag(2, "Bag2")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
+        val component2 = RadioComponent(2, "D2499", 3, box.id)
+        val component3 = RadioComponent(3, "LA78041", 3, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertBag(bag2)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component1)
+        dataSource.insertRadioComponent(component2)
+        dataSource.insertRadioComponent(component3)
+
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_search)).perform(click())
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(typeText("78041\n"))
+        onView(withId(R.id.add_search_buy_component_fab)).perform(click())
+        onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
+
+        onView(withText(bag2.name)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun searchMode_addComponent_navigationBack() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val bag2 = Bag(2, "Bag2")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
+        val component2 = RadioComponent(2, "D2499", 3, box.id)
+        val component3 = RadioComponent(3, "LA78041", 3, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertBag(bag2)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component1)
+        dataSource.insertRadioComponent(component2)
+        dataSource.insertRadioComponent(component3)
+
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_search)).perform(click())
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(typeText("78041\n"))
+        onView(withId(R.id.add_search_buy_component_fab)).perform(click())
+        onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        pressBack()
+
+        onView(withText(bag2.name)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
 }

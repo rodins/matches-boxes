@@ -564,6 +564,66 @@ class AddEditDeleteRadioComponentFragmentTest {
     }
 
     @Test
+    fun searchMode_addComponent_navigationCalled() {
+        val query = "78041"
+        val isBuy = false
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 2, box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(ADD_NEW_ITEM_ID, NO_ID_SET, "Title", query, isBuy).build().toBundle()
+        val scenario = launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        var title = ""
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+            title = it.getString(R.string.search_components)
+        }
+
+        onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), closeSoftKeyboard())
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        verify(navController).navigate(
+            AddEditDeleteRadioComponentFragmentDirections
+                .actionAddEditDeleteRadioComponentFragmentToSearchBuyFragment(query, !isBuy, title)
+        )
+    }
+
+    @Test
+    fun buyMode_addComponent_navigationCalled() {
+        val query = ""
+        val isBuy = true
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 2, box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        val bundle = AddEditDeleteRadioComponentFragmentArgs.Builder(ADD_NEW_ITEM_ID, NO_ID_SET, "Title", query, isBuy).build().toBundle()
+        val scenario = launchFragmentInContainer<AddEditDeleteRadioComponentFragment>(bundle, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        var title = ""
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+            title = it.getString(R.string.buy_components)
+        }
+
+        onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), closeSoftKeyboard())
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        verify(navController).navigate(
+            AddEditDeleteRadioComponentFragmentDirections
+                .actionAddEditDeleteRadioComponentFragmentToSearchBuyFragment(query, !isBuy, title)
+        )
+    }
+
+    @Test
     fun searchMode_noBoxId_spinnersNamesMatch() {
         val query = "78"
         val isBuy = false
