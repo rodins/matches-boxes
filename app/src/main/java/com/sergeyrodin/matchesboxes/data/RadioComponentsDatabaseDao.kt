@@ -66,6 +66,9 @@ interface RadioComponentsDatabaseDao {
     @Query("SELECT * FROM radio_components WHERE id = :radioComponentId")
     suspend fun getRadioComponentById(radioComponentId: Int): RadioComponent
 
+    @Query("SELECT * FROM radio_components WHERE id = :radioComponentId")
+    fun getRadioComponentByIdBlocking(radioComponentId: Int): RadioComponent
+
     @Query("SELECT * FROM radio_components WHERE matches_box_id = :matchesBoxId")
     suspend fun getRadioComponentsByMatchesBoxId(matchesBoxId: Int): List<RadioComponent>
 
