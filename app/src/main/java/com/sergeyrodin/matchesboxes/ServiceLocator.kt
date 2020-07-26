@@ -39,7 +39,7 @@ object ServiceLocator {
         val componentsDatabase = Room.databaseBuilder(
             context, RadioComponentsDatabase::class.java, "radio_components"
         )
-            .addMigrations(RadioComponentsDatabase.MIGRATION_1_2)
+            .addMigrations(RadioComponentsDatabase.MIGRATION_1_2, RadioComponentsDatabase.MIGRATION_2_3)
             .build()
         database = componentsDatabase
         return componentsDatabase

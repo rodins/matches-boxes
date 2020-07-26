@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "history",
     foreignKeys = [ForeignKey(
-        entity = MatchesBoxSet::class,
+        entity = RadioComponent::class,
         parentColumns = ["id"],
         childColumns = ["component_id"],
         onDelete = ForeignKey.CASCADE

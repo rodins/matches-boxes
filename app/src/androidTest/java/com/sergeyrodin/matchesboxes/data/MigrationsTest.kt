@@ -23,6 +23,7 @@ private val BAG = Bag(1, "Bag")
 private val SET = MatchesBoxSet(1, "Set", BAG.id)
 private val BOX = MatchesBox(1, "Box", SET.id)
 private val COMPONENT = RadioComponent(1, "Component", 3, BOX.id, true)
+private val HISTORY = History(1, COMPONENT.id, COMPONENT.quantity, 0)
 
 @RunWith(AndroidJUnit4::class)
 @SmallTest
@@ -55,6 +56,25 @@ class MigrationsTest {
         assertThat(component.isBuy, `is`(false))
     }
 
+    @Test
+    fun migrationFrom2To3_containsCorrectData(){
+        val db = migrationTestHelper.createDatabase(TEST_DB_NAME, 2)
+        insertComponent(COMPONENT, db)
+        db.close()
+
+        migrationTestHelper.runMigrationsAndValidate(
+            TEST_DB_NAME,
+            3,
+            false,
+            RadioComponentsDatabase.MIGRATION_2_3
+        )
+
+        val dao = getMigratedRoomDatabase().radioComponentsDatabaseDao
+        dao.insertHistoryBlocking(HISTORY)
+        val history = dao.getHistoryByIdBlocking(HISTORY.id)
+        assertThat(history, `is`(HISTORY))
+    }
+
     private fun getMigratedRoomDatabase(): RadioComponentsDatabase {
         val database = Room.databaseBuilder(
             ApplicationProvider.getApplicationContext(),
@@ -74,6 +94,18 @@ class MigrationsTest {
         componentContentValues.put("name", name)
         componentContentValues.put("quantity", quantity)
         componentContentValues.put("matches_box_id", boxId)
+        db.insert("radio_components", SQLiteDatabase.CONFLICT_REPLACE, componentContentValues)
+    }
+
+    private fun insertComponent(component: RadioComponent, db: SupportSQLiteDatabase) {
+        insertBagSetBox(db)
+
+        val componentContentValues = ContentValues()
+        componentContentValues.put("id", component.id)
+        componentContentValues.put("name", component.name)
+        componentContentValues.put("quantity", component.quantity)
+        componentContentValues.put("matches_box_id", component.matchesBoxId)
+        componentContentValues.put("buy", component.isBuy)
         db.insert("radio_components", SQLiteDatabase.CONFLICT_REPLACE, componentContentValues)
     }
 

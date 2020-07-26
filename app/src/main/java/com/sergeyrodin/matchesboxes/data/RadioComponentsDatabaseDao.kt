@@ -93,4 +93,12 @@ interface RadioComponentsDatabaseDao {
 
     @Query("SELECT b.name as bagName, s.name as setName, box.name as boxName, c.name as componentName, c.quantity as componentQuantity, c.buy as isBuy FROM bags b INNER JOIN matches_box_sets s ON bag_id = b.id INNER JOIN matches_boxes box ON matches_box_set_id = s.id INNER JOIN radio_components c ON matches_box_id = box.id GROUP BY c.id HAVING c.id = :componentId")
     suspend fun getRadioComponentDetailsById(componentId: Int): RadioComponentDetails
+
+    // History
+
+    @Insert
+    fun insertHistoryBlocking(history: History)
+
+    @Query("SELECT * FROM history WHERE id = :id")
+    fun getHistoryByIdBlocking(id: Int): History
 }
