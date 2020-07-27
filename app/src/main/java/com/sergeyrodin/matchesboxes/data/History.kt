@@ -20,6 +20,6 @@ data class History(
     @ColumnInfo(name = "component_id", index = true)
     var componentId: Int,
     var quantity: Int,
-    var date: Long
+    var date: Long = System.currentTimeMillis()
 )
 

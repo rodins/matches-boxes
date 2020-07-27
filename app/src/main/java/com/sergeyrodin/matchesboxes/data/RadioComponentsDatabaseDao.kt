@@ -101,4 +101,16 @@ interface RadioComponentsDatabaseDao {
 
     @Query("SELECT * FROM history WHERE id = :id")
     fun getHistoryByIdBlocking(id: Int): History
+
+    @Insert
+    suspend fun insertHistory(history: History)
+
+    @Query("SELECT * FROM history WHERE id = :id")
+    suspend fun getHistoryById(id: Int): History
+
+    @Query("SELECT * FROM history ORDER BY id DESC")
+    suspend fun getHistoryList(): List<History>
+
+    @Query("SELECT * FROM history WHERE component_id = :id ORDER BY id DESC")
+    suspend fun getHistoryListByComponentId(id: Int): List<History>
 }
