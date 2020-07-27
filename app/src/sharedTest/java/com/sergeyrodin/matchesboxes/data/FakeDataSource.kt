@@ -9,6 +9,7 @@ class FakeDataSource : RadioComponentsDataSource{
     private val matchesBoxSetList = mutableListOf<MatchesBoxSet>()
     private val matchesBoxList = mutableListOf<MatchesBox>()
     private val radioComponentsList = mutableListOf<RadioComponent>()
+    private val historyList = mutableListOf<History>()
 
     // Bags
     fun addBags(vararg bags: Bag) {
@@ -236,5 +237,21 @@ class FakeDataSource : RadioComponentsDataSource{
             list.add(displayQuantity)
         }
         bagsLiveData.value = list
+    }
+
+    // History
+
+    override suspend fun insertHistory(history: History) {
+        historyList.add(history)
+    }
+
+    override suspend fun getHistoryList(): List<History> {
+        return historyList
+    }
+
+    override suspend fun getHistoryListByComponentId(id: Int): List<History> {
+        return historyList.filter {
+            it.componentId == id
+        }
     }
 }

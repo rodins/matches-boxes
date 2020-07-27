@@ -63,4 +63,12 @@ interface RadioComponentsDataSource {
     // RadioComponentsDetails
 
     suspend fun getRadioComponentDetailsById(componentId: Int): RadioComponentDetails
+
+    // History
+
+    suspend fun insertHistory(history: History)
+
+    suspend fun getHistoryList(): List<History>
+
+    suspend fun getHistoryListByComponentId(id: Int): List<History>
 }

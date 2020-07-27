@@ -167,4 +167,24 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
             return radioComponentsDatabaseDao.getRadioComponentDetailsById(componentId)
         }
     }
+
+    // History
+
+    override suspend fun insertHistory(history: History) {
+        wrapEspressoIdlingResource {
+            return radioComponentsDatabaseDao.insertHistory(history)
+        }
+    }
+
+    override suspend fun getHistoryList(): List<History> {
+        wrapEspressoIdlingResource {
+            return radioComponentsDatabaseDao.getHistoryList()
+        }
+    }
+
+    override suspend fun getHistoryListByComponentId(id: Int): List<History> {
+        wrapEspressoIdlingResource {
+            return radioComponentsDatabaseDao.getHistoryListByComponentId(id)
+        }
+    }
 }
