@@ -68,7 +68,7 @@ interface RadioComponentsDataSource {
 
     suspend fun insertHistory(history: History)
 
-    suspend fun getHistoryList(): List<History>
+    fun getHistoryList(): LiveData<List<History>>
 
     suspend fun getHistoryListByComponentId(id: Int): List<History>
 }

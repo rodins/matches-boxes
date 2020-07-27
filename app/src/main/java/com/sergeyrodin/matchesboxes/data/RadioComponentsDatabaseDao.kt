@@ -109,7 +109,7 @@ interface RadioComponentsDatabaseDao {
     suspend fun getHistoryById(id: Int): History
 
     @Query("SELECT * FROM history ORDER BY id DESC")
-    suspend fun getHistoryList(): List<History>
+    fun getHistoryList(): LiveData<List<History>>
 
     @Query("SELECT * FROM history WHERE component_id = :id ORDER BY id DESC")
     suspend fun getHistoryListByComponentId(id: Int): List<History>

@@ -497,7 +497,7 @@ class RadioComponentsDaoTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertHistory(history3)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertHistory(history4)
 
-        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getHistoryList()
+        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getHistoryList().getOrAwaitValue()
         assertThat(list.size, `is`(4))
     }
 
@@ -523,7 +523,7 @@ class RadioComponentsDaoTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertHistory(history3)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertHistory(history4)
 
-        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getHistoryList()
+        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getHistoryList().getOrAwaitValue()
         assertThat(list[0], `is`(history4))
     }
 
