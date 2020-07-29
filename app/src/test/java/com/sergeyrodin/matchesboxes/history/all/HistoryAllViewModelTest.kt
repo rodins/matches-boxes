@@ -38,7 +38,7 @@ class HistoryAllViewModelTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history1, history2, history3, history4)
 
-        val list = subject.historyList.getOrAwaitValue()
+        val list = subject.displayHistoryList.getOrAwaitValue()
         assertThat(list.size, `is`(4))
     }
 
@@ -50,7 +50,7 @@ class HistoryAllViewModelTest {
         dataSource.addRadioComponents()
         dataSource.addHistory()
 
-        val list = subject.historyList.getOrAwaitValue()
+        val list = subject.displayHistoryList.getOrAwaitValue()
         assertThat(list.size, `is`(0))
     }
 
@@ -84,5 +84,39 @@ class HistoryAllViewModelTest {
 
         val visible = subject.noHistoryTextVisible.getOrAwaitValue()
         assertThat(visible, `is`(false))
+    }
+
+    @Test
+    fun oneItem_componentNameEquals() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 3, box.id)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+
+        val list = subject.displayHistoryList.getOrAwaitValue()
+        assertThat(list[0].name, `is`(component.name))
+    }
+
+    @Test
+    fun oneItem_historyDateEquals() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 3, box.id)
+        val history = History(1, component.id, component.quantity, 1595999582038L)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+
+        val list = subject.displayHistoryList.getOrAwaitValue()
+        assertThat(list[0].date, `is`("середа лип.-29-2020 Time: 08:13"))
     }
 }
