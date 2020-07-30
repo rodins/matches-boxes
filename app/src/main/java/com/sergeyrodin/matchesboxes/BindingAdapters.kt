@@ -24,7 +24,7 @@ fun bindRadioComponentRecyclerView(recyclerView: RecyclerView, list: List<RadioC
 }
 
 @BindingAdapter("displayHistoryListData")
-fun bindDisplayHistoryListRecyclerView(recyclerView: RecyclerView, list: List<DisplayHistory>) {
+fun bindDisplayHistoryListRecyclerView(recyclerView: RecyclerView, list: List<DisplayHistory>?) {
     val adapter = recyclerView.adapter as DisplayHistoryAdapter
     adapter.submitList(list)
 }

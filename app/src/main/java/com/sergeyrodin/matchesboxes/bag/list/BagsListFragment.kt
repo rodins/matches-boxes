@@ -86,6 +86,13 @@ class BagsListFragment : Fragment() {
             )
             return true
         }
+        if(item.itemId == R.id.action_history){
+            findNavController().navigate(
+                BagsListFragmentDirections
+                    .actionBagsListFragmentToHistoryAllFragment()
+            )
+            return true
+        }
         return super.onOptionsItemSelected(item)
     }
 

@@ -53,4 +53,6 @@
     <string name="no_bags">No bags</string>
     <string name="save_component_error">Save component error</string>
     <string name="no_history">History is empty</string>
+    <string name="history">History</string>
+    <string name="history_title">Components History</string>
 </resources>

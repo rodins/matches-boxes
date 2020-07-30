@@ -1481,6 +1481,18 @@ class MainActivityTest {
     // History
 
     @Test
+    fun noHistory_historyActionClick_noHistoryTextDisplayed() = runBlocking{
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_history)).perform(click())
+
+        onView(withText(R.string.no_history)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
     fun componentQuantityChanged_historyList_nameEquals() = runBlocking{
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
@@ -1500,8 +1512,10 @@ class MainActivityTest {
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.buttonPlus)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
-        pressBack()
-        //onView(withId(R.id.action_history)).perform(click())
+
+        Espresso.pressBack()
+
+        onView(withId(R.id.action_history)).perform(click())
 
         onView(withText(component.name)).check(matches(isDisplayed()))
 

@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_bagsListFragment_to_searchBuyFragment"
             app:destination="@id/searchBuyFragment" />
+        <action
+            android:id="@+id/action_bagsListFragment_to_historyAllFragment"
+            app:destination="@id/historyAllFragment" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteBagFragment"
@@ -215,4 +218,8 @@
             android:name="isBuy"
             app:argType="boolean" />
     </fragment>
+    <fragment
+        android:id="@+id/historyAllFragment"
+        android:name="com.sergeyrodin.matchesboxes.history.all.HistoryAllFragment"
+        android:label="@string/history_title" />
 </navigation>

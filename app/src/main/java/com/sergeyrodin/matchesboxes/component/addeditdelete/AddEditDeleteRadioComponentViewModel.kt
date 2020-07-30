@@ -186,6 +186,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             radioComponent?.matchesBoxId = matchesBoxId
             radioComponent?.isBuy = isBuy.value!!
             dataSource.updateRadioComponent(radioComponent!!)
+            insertHistory(radioComponent!!.id, radioComponent!!.quantity)
             val box = dataSource.getMatchesBoxById(matchesBoxId)
             box?.let{
                 _updateItemEvent.value = Event(box)
@@ -218,6 +219,14 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             sets.value = listOf()
             boxes.value = listOf()
         }
+    }
+
+    private suspend fun insertHistory(componentId: Int, quantity: Int) {
+        val history = History(
+            componentId = componentId,
+            quantity = quantity
+        )
+        dataSource.insertHistory(history)
     }
 }
 
