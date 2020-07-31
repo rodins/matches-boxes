@@ -15,6 +15,7 @@ import androidx.test.filters.LargeTest
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
+import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 import com.sergeyrodin.matchesboxes.util.monitorActivity
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -1544,4 +1545,30 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun historyItemClick_dateDisplayed() = runBlocking {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component1 = RadioComponent(1, "LA78041", 1, box.id)
+        val component2 = RadioComponent(2, "BUH1015", 1, box.id)
+        val history1 = History(1, component1.id, component1.quantity)
+        val history2 = History(2, component2.id, component2.quantity, 1595999582038L)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component1)
+        dataSource.insertRadioComponent(component2)
+        dataSource.insertHistory(history1)
+        dataSource.insertHistory(history2)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_history)).perform(click())
+        onView(withText(component1.name)).perform(click())
+
+        onView(withText(convertLongToDateString(history2.date))).check(doesNotExist())
+
+        activityScenario.close()
+    }
 }
