@@ -19,3 +19,14 @@ class ComponentHistoryViewModel(val dataSource: RadioComponentsDataSource): View
         componentId.value = id
     }
 }
+
+class ComponentHistoryViewModelFactory(private var dataSource: RadioComponentsDataSource): ViewModelProvider.Factory {
+    @Suppress("unchecked_cast")
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if(modelClass.isAssignableFrom(ComponentHistoryViewModel::class.java)) {
+            return ComponentHistoryViewModel(dataSource) as T
+        }else{
+            throw IllegalArgumentException("No ViewModel class found.")
+        }
+    }
+}
