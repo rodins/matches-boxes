@@ -38,7 +38,7 @@ interface RadioComponentsDataSource {
     suspend fun getMatchesBoxesByMatchesBoxSetId(matchesBoxSetId: Int): List<MatchesBox>
 
     // RadioComponents
-    suspend fun insertRadioComponent(radioComponent: RadioComponent)
+    suspend fun insertRadioComponent(radioComponent: RadioComponent): Long
 
     suspend fun updateRadioComponent(radioComponent: RadioComponent)
 

@@ -98,9 +98,9 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
         }
     }
 
-    override suspend fun insertRadioComponent(radioComponent: RadioComponent) {
+    override suspend fun insertRadioComponent(radioComponent: RadioComponent): Long {
         wrapEspressoIdlingResource {
-            radioComponentsDatabaseDao.insertRadioComponent(radioComponent)
+            return radioComponentsDatabaseDao.insertRadioComponent(radioComponent)
         }
     }
 

@@ -171,7 +171,8 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
                 matchesBoxId = matchesBoxId,
                 isBuy = isBuy.value!!
             )
-            dataSource.insertRadioComponent(component)
+            val id = dataSource.insertRadioComponent(component)
+            insertHistory(id.toInt(), quantity)
             val box = dataSource.getMatchesBoxById(matchesBoxId)
             box?.let {
                 _addItemEvent.value = Event(it)

@@ -9,6 +9,7 @@ class FakeDataSource : RadioComponentsDataSource{
     private val matchesBoxSetList = mutableListOf<MatchesBoxSet>()
     private val matchesBoxList = mutableListOf<MatchesBox>()
     private val radioComponentsList = mutableListOf<RadioComponent>()
+    private var radioComponentId = 0L
     private val historyList = mutableListOf<History>()
     private val historyListLiveData = MutableLiveData<List<History>>()
 
@@ -125,10 +126,13 @@ class FakeDataSource : RadioComponentsDataSource{
         }
     }
 
-    override suspend fun insertRadioComponent(radioComponent: RadioComponent) {
+    override suspend fun insertRadioComponent(radioComponent: RadioComponent): Long {
         if(radioComponent.id == 0) {
+            radioComponent.id = (++radioComponentId).toInt()
             radioComponentsList.add(radioComponent)
+            return radioComponentId
         }
+        return 0L
     }
 
     override suspend fun updateRadioComponent(radioComponent: RadioComponent) {
