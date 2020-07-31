@@ -221,5 +221,18 @@
     <fragment
         android:id="@+id/historyAllFragment"
         android:name="com.sergeyrodin.matchesboxes.history.all.HistoryAllFragment"
-        android:label="@string/history_title" />
+        android:label="@string/history_title" >
+        <action
+            android:id="@+id/action_historyAllFragment_to_componentHistoryFragment"
+            app:destination="@id/componentHistoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/componentHistoryFragment"
+        android:name="com.sergeyrodin.matchesboxes.history.component.ComponentHistoryFragment"
+        android:label="fragment_component_history"
+        tools:layout="@layout/fragment_component_history" >
+        <argument
+            android:name="componentId"
+            app:argType="integer" />
+    </fragment>
 </navigation>

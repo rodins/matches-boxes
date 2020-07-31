@@ -1546,7 +1546,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun historyItemClick_dateDisplayed() = runBlocking {
+    fun historyItemClick_dateNotDisplayed() = runBlocking {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
