@@ -1,9 +1,6 @@
 package com.sergeyrodin.matchesboxes.history.component
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
-import androidx.lifecycle.switchMap
+import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 
 class ComponentHistoryViewModel(val dataSource: RadioComponentsDataSource): ViewModel() {
@@ -12,6 +9,10 @@ class ComponentHistoryViewModel(val dataSource: RadioComponentsDataSource): View
         liveData {
             emit(dataSource.getHistoryListByComponentId(id))
         }
+    }
+
+    val noItemsTextVisible = historyList.map { list ->
+        list.isEmpty()
     }
 
     fun start(id: Int) {
