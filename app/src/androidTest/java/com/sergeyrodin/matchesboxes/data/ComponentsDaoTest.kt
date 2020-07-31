@@ -570,4 +570,18 @@ class RadioComponentsDaoTest {
         val list = radioComponentsDatabase.radioComponentsDatabaseDao.getHistoryListByComponentId(component1.id)
         assertThat(list[0], `is`(history3))
     }
+
+    @Test
+    fun insertComponent_idEquals() = runBlockingTest {
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
+        val component1 = RadioComponent(name = "Component1", matchesBoxId = MATCHES_BOX.id)
+        val component2 = RadioComponent(name = "Component2", matchesBoxId = MATCHES_BOX.id)
+        val component3 = RadioComponent(name = "Component3", matchesBoxId = MATCHES_BOX.id)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component1)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component2)
+        val id = radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component3)
+        assertThat(id, `is`(3L))
+    }
 }

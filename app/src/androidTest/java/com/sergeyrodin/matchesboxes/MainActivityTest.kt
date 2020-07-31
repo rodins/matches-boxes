@@ -1522,4 +1522,26 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun addComponent_insertHistory_componentNameDisplayed() = runBlocking {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_buy)).perform(click())
+        onView(withId(R.id.add_search_buy_component_fab)).perform(click())
+        onView(withId(R.id.component_edit)).perform(typeText("Component"), closeSoftKeyboard())
+        onView(withId(R.id.save_component_fab)).perform(click())
+        Espresso.pressBack()
+        onView(withId(R.id.action_history)).perform(click())
+        onView(withText("Component")).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
 }

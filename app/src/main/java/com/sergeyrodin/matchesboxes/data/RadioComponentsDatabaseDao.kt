@@ -55,7 +55,7 @@ interface RadioComponentsDatabaseDao {
 
     // RadioComponents
     @Insert
-    suspend fun insertRadioComponent(radioComponent: RadioComponent)
+    suspend fun insertRadioComponent(radioComponent: RadioComponent): Long
 
     @Update
     suspend fun updateRadioComponent(radioComponent: RadioComponent)
