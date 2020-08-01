@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="displayComponentHistory"
+            type="com.sergeyrodin.matchesboxes.history.component.DisplayComponentHistory" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:text="@{displayComponentHistory.date}"
+            android:textSize="20sp"
+            tools:text="середа лип.-29-2020 Time: 08:13" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{displayComponentHistory.quantity}"
+            android:textSize="28sp"
+            tools:text="12" />
+
+    </LinearLayout>
+</layout>

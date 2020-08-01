@@ -15,10 +15,12 @@
         tools:context=".history.component.ComponentHistoryFragment">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/display_history_list"
+            android:id="@+id/display_component_history_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
+            app:displayComponentHistoryListData="@{viewModel.historyList}"
+            app:noDataViewHidden="@{viewModel.noItemsTextVisible}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <TextView

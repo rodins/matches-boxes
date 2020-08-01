@@ -10,6 +10,8 @@ import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.data.DisplayQuantity
 import com.sergeyrodin.matchesboxes.history.all.DisplayHistory
 import com.sergeyrodin.matchesboxes.history.all.DisplayHistoryAdapter
+import com.sergeyrodin.matchesboxes.history.component.DisplayComponentHistory
+import com.sergeyrodin.matchesboxes.history.component.DisplayComponentHistoryAdapter
 
 @BindingAdapter("displayQuantityListData")
 fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<DisplayQuantity>?) {
@@ -26,6 +28,12 @@ fun bindRadioComponentRecyclerView(recyclerView: RecyclerView, list: List<RadioC
 @BindingAdapter("displayHistoryListData")
 fun bindDisplayHistoryListRecyclerView(recyclerView: RecyclerView, list: List<DisplayHistory>?) {
     val adapter = recyclerView.adapter as DisplayHistoryAdapter
+    adapter.submitList(list)
+}
+
+@BindingAdapter("displayComponentHistoryListData")
+fun bindDisplayComponentHistoryListRecyclerView(recyclerView: RecyclerView, list: List<DisplayComponentHistory>?) {
+    val adapter = recyclerView.adapter as DisplayComponentHistoryAdapter
     adapter.submitList(list)
 }
 

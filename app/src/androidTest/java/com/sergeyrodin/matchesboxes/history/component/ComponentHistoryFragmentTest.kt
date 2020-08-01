@@ -75,7 +75,7 @@ class ComponentHistoryFragmentTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 3, box.id)
-        val history = History(1, component.id, component.quantity, 1595999582038L)
+        val history = History(1, component.id, component.quantity)
         dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
