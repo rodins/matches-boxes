@@ -3,6 +3,7 @@ package com.sergeyrodin.matchesboxes.history.component
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
+import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.*
 import org.junit.Before
@@ -102,5 +103,24 @@ class ComponentHistoryViewModelTest {
 
         val visible = subject.noItemsTextVisible.getOrAwaitValue()
         assertThat(visible, `is`(false))
+    }
+
+    @Test
+    fun oneItem_dateEquals() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 3, box.id)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+
+        subject.start(component.id)
+
+        val item = subject.historyList.getOrAwaitValue()[0]
+        assertThat(item.date, `is`(convertLongToDateString(history.date)))
     }
 }
