@@ -25,9 +25,9 @@ class HistoryAllFragment : Fragment() {
         }
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
-        binding.displayHistoryList.adapter = DisplayHistoryAdapter(DisplayHistoryListener { id ->
+        binding.displayHistoryList.adapter = DisplayHistoryAdapter(DisplayHistoryListener { id, name ->
             findNavController().navigate(
-                HistoryAllFragmentDirections.actionHistoryAllFragmentToComponentHistoryFragment(id)
+                HistoryAllFragmentDirections.actionHistoryAllFragmentToComponentHistoryFragment(id, name)
             )
         })
 

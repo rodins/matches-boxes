@@ -229,10 +229,13 @@
     <fragment
         android:id="@+id/componentHistoryFragment"
         android:name="com.sergeyrodin.matchesboxes.history.component.ComponentHistoryFragment"
-        android:label="fragment_component_history"
+        android:label="{title}"
         tools:layout="@layout/fragment_component_history" >
         <argument
             android:name="componentId"
             app:argType="integer" />
+        <argument
+            android:name="title"
+            app:argType="string" />
     </fragment>
 </navigation>

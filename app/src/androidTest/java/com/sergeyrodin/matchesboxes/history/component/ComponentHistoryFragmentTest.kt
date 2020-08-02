@@ -45,7 +45,7 @@ class ComponentHistoryFragmentTest {
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
         dataSource.addHistory()
-        val bundle = ComponentHistoryFragmentArgs.Builder(component.id).build().toBundle()
+        val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
         launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_history)).check(matches(isDisplayed()))
@@ -63,7 +63,7 @@ class ComponentHistoryFragmentTest {
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
-        val bundle = ComponentHistoryFragmentArgs.Builder(component.id).build().toBundle()
+        val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
         launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_history)).check(matches(not(isDisplayed())))
@@ -81,7 +81,7 @@ class ComponentHistoryFragmentTest {
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
-        val bundle = ComponentHistoryFragmentArgs.Builder(component.id).build().toBundle()
+        val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
         launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         onView(withText(convertLongToDateString(history.date))).check(matches(isDisplayed()))

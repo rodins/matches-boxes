@@ -146,7 +146,7 @@ class HistoryAllFragmentTest {
         onView(withText(component.name)).perform(click())
 
         verify(navController).navigate(
-            HistoryAllFragmentDirections.actionHistoryAllFragmentToComponentHistoryFragment(component.id)
+            HistoryAllFragmentDirections.actionHistoryAllFragmentToComponentHistoryFragment(component.id, component.name)
         )
     }
 

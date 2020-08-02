@@ -34,8 +34,8 @@ class DisplayHistoryAdapter(private val displayHistoryListener: DisplayHistoryLi
     }
 }
 
-class DisplayHistoryListener(val clickListener: (id: Int) -> Unit) {
-    fun onClick(id: Int) = clickListener(id)
+class DisplayHistoryListener(val clickListener: (id: Int, name: String) -> Unit) {
+    fun onClick(id: Int, name: String) = clickListener(id, name)
 }
 
 class DisplayHistoryDiffCallback: DiffUtil.ItemCallback<DisplayHistory>() {
