@@ -21,6 +21,8 @@ class RadioComponentDetailsFragment : Fragment() {
         )
     }
 
+    private val args by navArgs<RadioComponentDetailsFragmentArgs>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,8 +31,6 @@ class RadioComponentDetailsFragment : Fragment() {
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
-
-        val args by navArgs<RadioComponentDetailsFragmentArgs>()
 
         viewModel.start(args.componentId)
 
@@ -55,6 +55,16 @@ class RadioComponentDetailsFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.action_info) {
             startActivity(getWebSearchIntent(viewModel.details.value?.componentName?:""))
+            return true
+        }
+        if(item.itemId == R.id.action_history) {
+            findNavController().navigate(
+                RadioComponentDetailsFragmentDirections
+                    .actionRadioComponentDetailsFragmentToComponentHistoryFragment(
+                        args.componentId,
+                        viewModel.details.value?.componentName?:""
+                    )
+            )
             return true
         }
         return super.onOptionsItemSelected(item)

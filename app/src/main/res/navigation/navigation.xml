@@ -217,6 +217,9 @@
         <argument
             android:name="isBuy"
             app:argType="boolean" />
+        <action
+            android:id="@+id/action_radioComponentDetailsFragment_to_componentHistoryFragment"
+            app:destination="@id/componentHistoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/historyAllFragment"

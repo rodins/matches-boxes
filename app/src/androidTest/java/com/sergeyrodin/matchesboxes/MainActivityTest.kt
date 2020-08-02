@@ -1594,4 +1594,30 @@ class MainActivityTest {
 
         activityScenario.close()
     }
+
+    @Test
+    fun componentDetails_historyActionClick_dateDisplayed() = runBlocking {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        val history = History(1, component.id, component.quantity)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        dataSource.insertHistory(history)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_search)).perform(click())
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(typeText("78041\n"))
+        onView(withText(component.name)).perform(click())
+        onView(withId(R.id.action_history)).perform(click())
+
+        onView(withText(convertLongToDateString(history.date))).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
 }
