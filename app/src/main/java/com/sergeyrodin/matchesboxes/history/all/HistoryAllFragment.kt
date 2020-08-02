@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.databinding.FragmentHistoryAllBinding
 
@@ -25,7 +26,9 @@ class HistoryAllFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         binding.displayHistoryList.adapter = DisplayHistoryAdapter(DisplayHistoryListener { id ->
-            Toast.makeText(context, id.toString(), Toast.LENGTH_SHORT).show()
+            findNavController().navigate(
+                HistoryAllFragmentDirections.actionHistoryAllFragmentToComponentHistoryFragment(id)
+            )
         })
 
         return binding.root

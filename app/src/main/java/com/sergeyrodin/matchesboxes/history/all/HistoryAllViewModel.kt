@@ -15,6 +15,7 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource): ViewModel() {
                 val component = dataSource.getRadioComponentById(history.componentId)
                 val displayHistory = DisplayHistory(
                     history.id,
+                    history.componentId,
                     component?.name?:"",
                     history.quantity.toString(),
                     convertLongToDateString(history.date)
@@ -32,6 +33,7 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource): ViewModel() {
 
 data class DisplayHistory(
     var id: Int,
+    var componentId: Int,
     var name: String,
     var quantity: String,
     var date: String

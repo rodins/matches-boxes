@@ -2,7 +2,10 @@ package com.sergeyrodin.matchesboxes.history.all
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -18,6 +21,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.verify
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
@@ -118,6 +123,31 @@ class HistoryAllFragmentTest {
         onView(withText(component2.name)).check(matches(isDisplayed()))
         onView(withText(component3.name)).check(matches(isDisplayed()))
         onView(withText(component4.name)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun itemClick_navigationCalled() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 3, box.id)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        val scenario = launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+        val navController = Mockito.mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        onView(withText(component.name)).perform(click())
+
+        verify(navController).navigate(
+            HistoryAllFragmentDirections.actionHistoryAllFragmentToComponentHistoryFragment(component.id)
+        )
     }
 
 }
