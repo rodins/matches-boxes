@@ -20,19 +20,29 @@
         android:layout_height="wrap_content"
         android:onClick="@{() -> clickListener.onClick(displayHistory.componentId)}">
 
+        <!--        Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>-->
+
+        <ImageView
+            android:id="@+id/history_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:contentDescription="@string/history_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_history" />
+
         <TextView
             android:id="@+id/name_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:text="@{displayHistory.name}"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/date_text"
             app:layout_constraintEnd_toStartOf="@+id/quantity_text"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/history_icon"
+            app:layout_constraintTop_toTopOf="@+id/history_icon"
             app:layout_constraintVertical_chainStyle="packed"
             tools:text="LA78041" />
 
@@ -54,7 +64,6 @@
             android:id="@+id/date_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:text="@{displayHistory.date}"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"

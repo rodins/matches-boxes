@@ -55,4 +55,5 @@
     <string name="no_history">History is empty</string>
     <string name="history">History</string>
     <string name="history_title">Components History</string>
+    <string name="history_icon">History icon</string>
 </resources>
