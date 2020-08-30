@@ -1,5 +1,6 @@
 package com.sergeyrodin.matchesboxes.component.addeditdelete
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.*
@@ -8,6 +9,7 @@ import kotlinx.coroutines.launch
 const val NO_ID_SET = -1
 
 class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
+    private val LOG_TAG = "AddEditDeleteRadioComponentViewModel"
     val name = MutableLiveData<String>()
     val quantity = MutableLiveData<String>()
     val isBuy = MutableLiveData<Boolean>()
@@ -104,7 +106,12 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             isBuy.value = radioComponent?.isBuy?:false
 
             bags.value = dataSource.getBags()
-            val firstBagId = if(bags.value?.isNotEmpty() == true) bags.value?.get(0)?.id?: NO_ID_SET else NO_ID_SET
+            val firstBagId = if(bags.value?.isNotEmpty() == true){
+                bags.value?.get(0)?.id?: NO_ID_SET
+            } else {
+                NO_ID_SET
+            }
+            Log.i(LOG_TAG, "boxId: ${boxId}")
             updateSpinners(inputBagId = firstBagId, inputBoxId = boxId)
         }
     }
@@ -146,19 +153,25 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     }
 
     fun setSelected(index: Int) {
-        if(index != setSelectedIndex.value) {
-            viewModelScope.launch {
-                val setId = sets.value?.get(index)?.id?: NO_ID_SET
-                updateSpinners(inputSetId = setId)
+        setSelectedIndex.value?.let { prevIndex ->
+            if(index != prevIndex) {
+                viewModelScope.launch {
+                    val setId = sets.value?.get(index)?.id?: NO_ID_SET
+                    Log.i(LOG_TAG, "set selected, setId: ${setId}")
+                    updateSpinners(inputSetId = setId)
+                }
             }
         }
     }
 
     fun bagSelected(index: Int) {
-        if(index != bagSelectedIndex.value) {
-            viewModelScope.launch {
-                val bagId = bags.value?.get(index)?.id?: NO_ID_SET
-                updateSpinners(inputBagId = bagId)
+        bagSelectedIndex.value?.let {prevIndex ->
+            if(index != prevIndex) {
+                viewModelScope.launch {
+                    val bagId = bags.value?.get(index)?.id?: NO_ID_SET
+                    Log.i(LOG_TAG, "bag selected: bagSelectedIndex ${bagSelectedIndex.value}, bagId ${bagId}")
+                    updateSpinners(inputBagId = bagId)
+                }
             }
         }
     }
@@ -196,6 +209,7 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     }
 
     private suspend fun updateSpinners(inputBagId: Int = NO_ID_SET, inputSetId: Int = NO_ID_SET, inputBoxId: Int = NO_ID_SET) {
+        Log.i(LOG_TAG, "inputBagId: ${inputBagId}, inputSetId: ${inputSetId}, inputBoxId: ${inputBoxId}")
         if(inputBoxId != NO_ID_SET) { // if we have component or box get it's path
             val box = dataSource.getMatchesBoxById(inputBoxId)
             boxTitle = box?.name?:""
@@ -207,13 +221,25 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             selectedIndexIds.value = ThreeIds(bagId, setId, inputBoxId)
         }else if(inputBagId != NO_ID_SET) { // if we have no component and no box defined or bag is changed
             sets.value = dataSource.getMatchesBoxSetsByBagId(inputBagId)
-            val firstSetId = if(sets.value?.isNotEmpty() == true) sets.value?.get(0)?.id?: NO_ID_SET else NO_ID_SET // select first set
+            val firstSetId = if(sets.value?.isNotEmpty() == true) {
+                sets.value?.get(0)?.id?: NO_ID_SET
+            } else {
+                NO_ID_SET
+            } // select first set
             boxes.value = dataSource.getMatchesBoxesByMatchesBoxSetId(firstSetId)
-            matchesBoxId = if(boxes.value?.isNotEmpty() == true) boxes.value?.get(0)?.id?: NO_ID_SET else NO_ID_SET // select first box
+            matchesBoxId = if(boxes.value?.isNotEmpty() == true) {
+                boxes.value?.get(0)?.id?: NO_ID_SET
+            } else {
+                NO_ID_SET
+            } // select first box
             selectedIndexIds.value = ThreeIds(inputBagId, firstSetId, matchesBoxId)
         }else if(inputSetId != NO_ID_SET) {  // if set is changed
             boxes.value = dataSource.getMatchesBoxesByMatchesBoxSetId(inputSetId)
-            matchesBoxId = if(boxes.value?.isNotEmpty() == true) boxes.value?.get(0)?.id?: NO_ID_SET else NO_ID_SET // select first box
+            matchesBoxId = if(boxes.value?.isNotEmpty() == true) {
+                boxes.value?.get(0)?.id?: NO_ID_SET
+            } else {
+                NO_ID_SET
+            } // select first box
             selectedIndexIds.value = ThreeIds(inputBagId, inputSetId, matchesBoxId)
         }else{ // Set empty lists
             bags.value = listOf()

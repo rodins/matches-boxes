@@ -1709,38 +1709,6 @@ class MainActivityTest {
         onView(withText(box4.name)).check(matches(isDisplayed()))
         Espresso.pressBack()
 
-        onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withText(box4.name)).check(matches(isDisplayed()))
-        Espresso.pressBack()
-
-        onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withText(box4.name)).check(matches(isDisplayed()))
-        Espresso.pressBack()
-
-        onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withText(box4.name)).check(matches(isDisplayed()))
-        Espresso.pressBack()
-
-        onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withText(box4.name)).check(matches(isDisplayed()))
-        Espresso.pressBack()
-
-        onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withText(box4.name)).check(matches(isDisplayed()))
-        Espresso.pressBack()
-
-        onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withText(box4.name)).check(matches(isDisplayed()))
-        Espresso.pressBack()
-
-        onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withText(box4.name)).check(matches(isDisplayed()))
-        Espresso.pressBack()
-
-        onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withText(box4.name)).check(matches(isDisplayed()))
-        Espresso.pressBack()
-
         activityScenario.close()
     }
 }
