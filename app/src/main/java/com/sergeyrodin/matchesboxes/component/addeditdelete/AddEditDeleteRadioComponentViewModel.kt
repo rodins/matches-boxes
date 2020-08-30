@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 const val NO_ID_SET = -1
 
 class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
-    private val LOG_TAG = "AddEditDeleteRadioComponentViewModel"
     val name = MutableLiveData<String>()
     val quantity = MutableLiveData<String>()
     val isBuy = MutableLiveData<Boolean>()
@@ -112,7 +111,6 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
                 } else {
                     NO_ID_SET
                 }
-                Log.i(LOG_TAG, "boxId: ${boxId}")
                 updateSpinners(inputBagId = firstBagId, inputBoxId = boxId)
             }
         }
@@ -159,7 +157,6 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             if(index != prevIndex) {
                 viewModelScope.launch {
                     val setId = sets.value?.get(index)?.id?: NO_ID_SET
-                    Log.i(LOG_TAG, "set selected, setId: ${setId}")
                     updateSpinners(inputSetId = setId)
                 }
             }
@@ -171,7 +168,6 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
             if(index != prevIndex) {
                 viewModelScope.launch {
                     val bagId = bags.value?.get(index)?.id?: NO_ID_SET
-                    Log.i(LOG_TAG, "bag selected: bagSelectedIndex ${bagSelectedIndex.value}, bagId ${bagId}")
                     updateSpinners(inputBagId = bagId)
                 }
             }
@@ -211,7 +207,6 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     }
 
     private suspend fun updateSpinners(inputBagId: Int = NO_ID_SET, inputSetId: Int = NO_ID_SET, inputBoxId: Int = NO_ID_SET) {
-        Log.i(LOG_TAG, "inputBagId: ${inputBagId}, inputSetId: ${inputSetId}, inputBoxId: ${inputBoxId}")
         if(inputBoxId != NO_ID_SET) { // if we have component or box get it's path
             val box = dataSource.getMatchesBoxById(inputBoxId)
             boxTitle = box?.name?:""
