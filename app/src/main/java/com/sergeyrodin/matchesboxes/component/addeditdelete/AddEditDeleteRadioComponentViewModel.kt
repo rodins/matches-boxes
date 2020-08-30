@@ -99,20 +99,22 @@ class AddEditDeleteRadioComponentViewModel(private val dataSource: RadioComponen
     fun start(boxId: Int, componentId: Int){
         matchesBoxId = boxId
 
-        viewModelScope.launch {
-            radioComponent = dataSource.getRadioComponentById(componentId)
-            name.value = radioComponent?.name?:""
-            quantity.value = (radioComponent?.quantity?:"").toString()
-            isBuy.value = radioComponent?.isBuy?:false
+        if(name.value == null) {
+            viewModelScope.launch {
+                radioComponent = dataSource.getRadioComponentById(componentId)
+                name.value = radioComponent?.name?:""
+                quantity.value = (radioComponent?.quantity?:"").toString()
+                isBuy.value = radioComponent?.isBuy?:false
 
-            bags.value = dataSource.getBags()
-            val firstBagId = if(bags.value?.isNotEmpty() == true){
-                bags.value?.get(0)?.id?: NO_ID_SET
-            } else {
-                NO_ID_SET
+                bags.value = dataSource.getBags()
+                val firstBagId = if(bags.value?.isNotEmpty() == true){
+                    bags.value?.get(0)?.id?: NO_ID_SET
+                } else {
+                    NO_ID_SET
+                }
+                Log.i(LOG_TAG, "boxId: ${boxId}")
+                updateSpinners(inputBagId = firstBagId, inputBoxId = boxId)
             }
-            Log.i(LOG_TAG, "boxId: ${boxId}")
-            updateSpinners(inputBagId = firstBagId, inputBoxId = boxId)
         }
     }
 
