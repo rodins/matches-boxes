@@ -24,7 +24,6 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
         )
     }
     private var isDeleteVisible = false
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
