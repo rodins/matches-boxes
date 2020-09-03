@@ -28,15 +28,13 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
     val deleteItemEvent: LiveData<Event<String>>
         get() = _deleteItemEvent
 
-    private val _errorEvent = MutableLiveData<Event<Unit>>()
+    private val _savingErrorEvent = MutableLiveData<Event<Unit>>()
     val errorEvent: LiveData<Event<Unit>>
-        get() = _errorEvent
+        get() = _savingErrorEvent
 
     val minusEnabled = Transformations.map(quantity) {
         it.toIntOrNull() ?: 0 != 0
     }
-
-    private lateinit var boxTitle: String
 
     private val spinnersUpdater = SpinnersUpdater(dataSource)
 
@@ -70,10 +68,6 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
         isBuy.value = radioComponent?.isBuy ?: false
     }
 
-    private suspend fun getMatchesBoxFromDbByMatchesBoxIdProperty(): MatchesBox? {
-        return dataSource.getMatchesBoxById(spinnersUpdater.matchesBoxId)
-    }
-
     fun saveItem() {
         if (name.value?.trim() != "" && spinnersUpdater.matchesBoxId != NO_ID_SET) {
             val componentsQuantity = quantity.value?.toIntOrNull() ?: 0
@@ -83,9 +77,9 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
                 } else {
                     updateItem(name.value!!, componentsQuantity)
                 }
-            }
+            }// TODO: call error event also here but first I need to test it
         } else {
-            _errorEvent.value = Event(Unit)
+            callSavingErrorEvent()
         }
     }
 
@@ -125,6 +119,10 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
         }
     }
 
+    private suspend fun getMatchesBoxFromDbByMatchesBoxIdProperty(): MatchesBox? {
+        return dataSource.getMatchesBoxById(spinnersUpdater.matchesBoxId)
+    }
+
     private fun updateItem(name: String, quantity: Int) {
         viewModelScope.launch {
             updateRadioComponentInDb(name, quantity)
@@ -148,25 +146,29 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
         }
     }
 
+    private fun callSavingErrorEvent() {
+        _savingErrorEvent.value = Event(Unit)
+    }
+
     fun deleteItem() {
         viewModelScope.launch {
-            getMatchesBoxTitleFromMatchesBoxId()
             deleteRadioComponentFromDb()
             callDeleteItemEvent()
         }
-    }
-
-    private suspend fun getMatchesBoxTitleFromMatchesBoxId() {
-        val box = getMatchesBoxFromDbByMatchesBoxIdProperty()
-        boxTitle = box?.name ?: ""
     }
 
     private suspend fun deleteRadioComponentFromDb() {
         dataSource.deleteRadioComponent(radioComponent!!)
     }
 
-    private fun callDeleteItemEvent() {
+    private suspend fun callDeleteItemEvent() {
+        val boxTitle = getMatchesBoxTitleFromMatchesBoxId()
         _deleteItemEvent.value = Event(boxTitle)
+    }
+
+    private suspend fun getMatchesBoxTitleFromMatchesBoxId(): String {
+        val box = getMatchesBoxFromDbByMatchesBoxIdProperty()
+        return box?.name ?: ""
     }
 
     fun quantityPlus() {
@@ -174,13 +176,13 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
         quantity.value = numberOfComponents.plus(1).toString()
     }
 
+    private fun convertTextQuantityToNumber(): Int {
+        return quantity.value?.toIntOrNull() ?: 0
+    }
+
     fun quantityMinus() {
         val numberOfComponents = convertTextQuantityToNumber()
         quantity.value = numberOfComponents.minus(1).toString()
-    }
-
-    private fun convertTextQuantityToNumber(): Int {
-        return quantity.value?.toIntOrNull() ?: 0
     }
 
     fun boxSelected(newIndex: Int){
