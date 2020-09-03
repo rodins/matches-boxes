@@ -15,7 +15,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class AddEditDeleteRadioComponentViewModelTest{
+class RadioComponentManipulatorViewModelTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -23,12 +23,12 @@ class AddEditDeleteRadioComponentViewModelTest{
     val mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var dataSource: FakeDataSource
-    private lateinit var subject: AddEditDeleteRadioComponentViewModel
+    private lateinit var subject: RadioComponentManipulatorViewModel
 
     @Before
     fun init() {
         dataSource = FakeDataSource()
-        subject = AddEditDeleteRadioComponentViewModel(dataSource)
+        subject = RadioComponentManipulatorViewModel(dataSource)
     }
 
     @Test

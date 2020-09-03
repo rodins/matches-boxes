@@ -14,12 +14,12 @@ import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
-import com.sergeyrodin.matchesboxes.databinding.FragmentAddEditDeleteRadioComponentBinding
+import com.sergeyrodin.matchesboxes.databinding.FragmentRadioComponentManipulatorBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
 
-class AddEditDeleteRadioComponentFragment : Fragment() {
-    private val viewModel by viewModels<AddEditDeleteRadioComponentViewModel> {
-        AddEditDeleteRadioComponentViewModelFactory(
+class RadioComponentManipulatorFragment : Fragment() {
+    private val viewModel by viewModels<RadioComponentManipulatorViewModel> {
+        RadioComponentManipulatorViewModelFactory(
             (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
         )
     }
@@ -28,9 +28,9 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentAddEditDeleteRadioComponentBinding.inflate(inflater)
+        val binding = FragmentRadioComponentManipulatorBinding.inflate(inflater)
 
-        val args by navArgs<AddEditDeleteRadioComponentFragmentArgs>()
+        val args by navArgs<RadioComponentManipulatorFragmentArgs>()
         isDeleteVisible = args.componentId != ADD_NEW_ITEM_ID
 
         viewModel.start(args.boxId, args.componentId)
@@ -142,7 +142,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
             Toast.makeText(context, R.string.component_added, Toast.LENGTH_SHORT).show()
             if(args.isBuy || args.query.isNotEmpty()) {
                 findNavController().navigate(
-                    AddEditDeleteRadioComponentFragmentDirections
+                    RadioComponentManipulatorFragmentDirections
                         .actionAddEditDeleteRadioComponentFragmentToSearchBuyFragment(args.query, !args.isBuy,
                             if(args.isBuy)
                                 getString(R.string.buy_components)
@@ -152,7 +152,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
                 )
             }else {
                 findNavController().navigate(
-                    AddEditDeleteRadioComponentFragmentDirections
+                    RadioComponentManipulatorFragmentDirections
                         .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(box.id, box.name)
                 )
             }
@@ -163,7 +163,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
             Toast.makeText(context, R.string.component_updated, Toast.LENGTH_SHORT).show()
             if(args.isBuy || args.query.isNotEmpty()) {
                 findNavController().navigate(
-                    AddEditDeleteRadioComponentFragmentDirections
+                    RadioComponentManipulatorFragmentDirections
                         .actionAddEditDeleteRadioComponentFragmentToSearchBuyFragment(args.query, !args.isBuy,
                             if(args.isBuy)
                                 getString(R.string.buy_components)
@@ -173,7 +173,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
                 )
             }else {
                 findNavController().navigate(
-                    AddEditDeleteRadioComponentFragmentDirections
+                    RadioComponentManipulatorFragmentDirections
                         .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(box.id, box.name)
                 )
             }
@@ -183,7 +183,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
             Toast.makeText(context, R.string.component_deleted, Toast.LENGTH_SHORT).show()
             if(args.isBuy || args.query.isNotEmpty()) {
                 findNavController().navigate(
-                    AddEditDeleteRadioComponentFragmentDirections
+                    RadioComponentManipulatorFragmentDirections
                         .actionAddEditDeleteRadioComponentFragmentToSearchBuyFragment(args.query, !args.isBuy,
                             if(args.isBuy)
                                 getString(R.string.buy_components)
@@ -193,7 +193,7 @@ class AddEditDeleteRadioComponentFragment : Fragment() {
                 )
             }else {
                 findNavController().navigate(
-                    AddEditDeleteRadioComponentFragmentDirections
+                    RadioComponentManipulatorFragmentDirections
                         .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId, title)
                 )
             }

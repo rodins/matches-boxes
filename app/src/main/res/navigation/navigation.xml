@@ -152,9 +152,9 @@
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteRadioComponentFragment"
-        android:name="com.sergeyrodin.matchesboxes.component.addeditdelete.AddEditDeleteRadioComponentFragment"
+        android:name="com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorFragment"
         android:label="{title}"
-        tools:layout="@layout/fragment_add_edit_delete_radio_component" >
+        tools:layout="@layout/fragment_radio_component_manipulator" >
         <argument
             android:name="componentId"
             app:argType="integer" />

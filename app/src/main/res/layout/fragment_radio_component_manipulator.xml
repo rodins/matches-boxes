@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.sergeyrodin.matchesboxes.component.addeditdelete.AddEditDeleteRadioComponentViewModel" />
+            type="com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            tools:context=".component.addeditdelete.AddEditDeleteRadioComponentFragment">
+            tools:context=".component.addeditdelete.RadioComponentManipulatorFragment">
 
             <EditText
                 android:id="@+id/component_edit"
