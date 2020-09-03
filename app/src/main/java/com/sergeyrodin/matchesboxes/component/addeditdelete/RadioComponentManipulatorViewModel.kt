@@ -70,8 +70,8 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
         isBuy.value = radioComponent?.isBuy ?: false
     }
 
-    private suspend fun getMatchesBoxFromDbById(boxId: Int): MatchesBox? {
-        return dataSource.getMatchesBoxById(boxId)
+    private suspend fun getMatchesBoxFromDbByMatchesBoxIdProperty(): MatchesBox? {
+        return dataSource.getMatchesBoxById(spinnersUpdater.matchesBoxId)
     }
 
     fun saveItem() {
@@ -119,7 +119,7 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
     }
 
     private suspend fun callAddItemEvent() {
-        val box = getMatchesBoxFromDbById(spinnersUpdater.matchesBoxId)
+        val box = getMatchesBoxFromDbByMatchesBoxIdProperty()
         box?.let {
             _addItemEvent.value = Event(it)
         }
@@ -142,7 +142,7 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
     }
 
     private suspend fun callUpdateItemEvent() {
-        val box = getMatchesBoxFromDbById(spinnersUpdater.matchesBoxId)
+        val box = getMatchesBoxFromDbByMatchesBoxIdProperty()
         box?.let {
             _updateItemEvent.value = Event(box)
         }
@@ -157,7 +157,7 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
     }
 
     private suspend fun getMatchesBoxTitleFromMatchesBoxId() {
-        val box = dataSource.getMatchesBoxById(spinnersUpdater.matchesBoxId)
+        val box = getMatchesBoxFromDbByMatchesBoxIdProperty()
         boxTitle = box?.name ?: ""
     }
 
