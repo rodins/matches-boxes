@@ -1,14 +1,13 @@
 package com.sergeyrodin.matchesboxes.component.addeditdelete
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.*
 import kotlinx.coroutines.launch
 
 const val NO_ID_SET = -1
-private const val NO_INDEX_SET = -1
-private const val FIRST_INDEX = 0
+const val NO_INDEX_SET = -1
+const val FIRST_INDEX = 0
 
 class RadioComponentManipulatorViewModel(private val dataSource: RadioComponentsDataSource) :
     ViewModel() {
@@ -39,73 +38,27 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
 
     private lateinit var boxTitle: String
 
-    private var matchesBoxId = 0
+    private val spinnersUpdater = SpinnersUpdater(dataSource)
 
     private var radioComponent: RadioComponent? = null
 
-    // Bags spinner
-    private var currentBagSelectedIndex = NO_INDEX_SET
-    private lateinit var bags: List<Bag>
-    private val observableBags = MutableLiveData<List<Bag>>()
-    val bagNames = observableBags.map {
-        it.map { bag ->
-            bag.name
-        }
-    }
-    val noBagsTextVisible = bagNames.map {
-        it.isEmpty()
-    }
+    val bagNames = spinnersUpdater.bagNames
+    val noBagsTextVisible = spinnersUpdater.noBagsTextVisible
+    val bagSelectedIndex = spinnersUpdater.bagSelectedIndex
 
-    private val selectedBagId = MutableLiveData<Int>()
-    val bagSelectedIndex = selectedBagId.map { bagId ->
-        getBagIndexById(bagId)
-    }
+    val setNames = spinnersUpdater.setNames
+    val noSetsTextVisible = spinnersUpdater.noSetsTextVisible
+    val setSelectedIndex = spinnersUpdater.setSelectedIndex
 
-    // Sets spinner
-    private val observableSets = MutableLiveData<List<MatchesBoxSet>>()
-    val setNames = observableSets.map {
-        it.map { set ->
-            set.name
-        }
-    }
-    val noSetsTextVisible = setNames.map {
-        it.isEmpty()
-    }
-    private val selectedSetId = MutableLiveData<Int>()
-    val setSelectedIndex = selectedSetId.switchMap { setId ->
-        observableSets.map { setsList ->
-            setsList.indexOfFirst { set ->
-                set.id == setId
-            }
-        }
-    }
-
-    // Boxes spinner
-    private val observableBoxes = MutableLiveData<List<MatchesBox>>()
-    val boxNames = observableBoxes.map {
-        it.map { box ->
-            box.name
-        }
-    }
-    val noBoxesTextVisible = boxNames.map {
-        it.isEmpty()
-    }
-    private val selectedBoxId = MutableLiveData<Int>()
-    val boxSelectedIndex = selectedBoxId.switchMap { boxId ->
-        observableBoxes.map { boxesList ->
-            boxesList.indexOfFirst { box ->
-                box.id == boxId
-            }
-        }
-    }
+    val boxNames = spinnersUpdater.boxNames
+    val noBoxesTextVisible = spinnersUpdater.noBoxesTextVisible
+    val boxSelectedIndex = spinnersUpdater.boxSelectedIndex
 
     fun start(boxId: Int, componentId: Int) {
         if (name.value == null) {
-            matchesBoxId = boxId
             viewModelScope.launch {
                 unpackRadioComponent(componentId)
-                Log.i(tag, "start called: boxId = $boxId")
-                updateSpinnersOnStart(boxId)
+                spinnersUpdater.start(boxId)
             }
         }
     }
@@ -117,75 +70,12 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
         isBuy.value = radioComponent?.isBuy ?: false
     }
 
-    private suspend fun updateSpinnersOnStart(
-        boxId: Int
-    ) {
-        initBags()
-        if (boxId != NO_ID_SET) {
-            updateSpinnersByBoxId(boxId)
-        } else {
-            updateSpinnersByBagId(getFirstBagId())
-        }
-    }
-
-    private suspend fun initBags() {
-        bags = dataSource.getBags()
-    }
-
-    private suspend fun updateSpinnersByBoxId(boxId: Int) {
-        val box = getMatchesBoxFromDbById(boxId)
-        setBoxTitleForDeleteEvent(box)
-        val set = getMatchesBoxSetParentOfBox(box)
-        val bagId = set?.bagId ?: NO_ID_SET
-        val setId = set?.id ?: NO_ID_SET
-        getSetsFromDb(bagId)
-        getMatchesBoxesFromDb(setId)
-        updateBagsSpinner(bagId)
-        updateSelectedIds(bagId, setId, boxId)
-    }
-
     private suspend fun getMatchesBoxFromDbById(boxId: Int): MatchesBox? {
         return dataSource.getMatchesBoxById(boxId)
     }
 
-    private fun setBoxTitleForDeleteEvent(box: MatchesBox?) {
-        boxTitle = box?.name ?: ""
-    }
-
-    private suspend fun getMatchesBoxSetParentOfBox(box: MatchesBox?): MatchesBoxSet? {
-        val set = dataSource.getMatchesBoxSetById(box?.matchesBoxSetId ?: NO_ID_SET)
-        return set
-    }
-
-    private suspend fun updateSpinnersByBagId(bagId: Int) {
-        getSetsFromDb(bagId)
-        val firstSetId = getFirstSetId()
-        getMatchesBoxesFromDb(firstSetId)
-        setMatchesBoxIdToFirstElement()
-        updateBagsSpinner(bagId)
-        updateSelectedIds(bagId, firstSetId, matchesBoxId)
-    }
-
-    private fun updateSelectedIds(bagId: Int, setId: Int, boxId: Int) {
-        selectedBagId.value = bagId
-        selectedSetId.value = setId
-        selectedBoxId.value = boxId
-    }
-
-    private suspend fun getSetsFromDb(bagId: Int) {
-        observableSets.value = dataSource.getMatchesBoxSetsByBagId(bagId)
-    }
-
-    private fun getFirstBagId(): Int {
-        return if (bags.isNotEmpty()) {
-            bags[FIRST_INDEX].id
-        } else {
-            NO_ID_SET
-        }
-    }
-
     fun saveItem() {
-        if (name.value?.trim() != "" && matchesBoxId != NO_ID_SET) {
+        if (name.value?.trim() != "" && spinnersUpdater.matchesBoxId != NO_ID_SET) {
             val componentsQuantity = quantity.value?.toIntOrNull() ?: 0
             if (componentsQuantity >= 0) {
                 if (radioComponent == null) {
@@ -214,7 +104,7 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
         val component = RadioComponent(
             name = name,
             quantity = quantity,
-            matchesBoxId = matchesBoxId,
+            matchesBoxId = spinnersUpdater.matchesBoxId,
             isBuy = isBuy.value!!
         )
         return dataSource.insertRadioComponent(component)
@@ -229,7 +119,7 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
     }
 
     private suspend fun callAddItemEvent() {
-        val box = getMatchesBoxFromDbById(matchesBoxId)
+        val box = getMatchesBoxFromDbById(spinnersUpdater.matchesBoxId)
         box?.let {
             _addItemEvent.value = Event(it)
         }
@@ -246,25 +136,29 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
     private suspend fun updateRadioComponentInDb(name: String, quantity: Int) {
         radioComponent?.name = name
         radioComponent?.quantity = quantity
-        radioComponent?.matchesBoxId = matchesBoxId
+        radioComponent?.matchesBoxId = spinnersUpdater.matchesBoxId
         radioComponent?.isBuy = isBuy.value!!
         dataSource.updateRadioComponent(radioComponent!!)
     }
 
     private suspend fun callUpdateItemEvent() {
-        val box = getMatchesBoxFromDbById(matchesBoxId)
+        val box = getMatchesBoxFromDbById(spinnersUpdater.matchesBoxId)
         box?.let {
             _updateItemEvent.value = Event(box)
         }
     }
 
-
-
     fun deleteItem() {
         viewModelScope.launch {
+            getMatchesBoxTitleFromMatchesBoxId()
             deleteRadioComponentFromDb()
             callDeleteItemEvent()
         }
+    }
+
+    private suspend fun getMatchesBoxTitleFromMatchesBoxId() {
+        val box = dataSource.getMatchesBoxById(spinnersUpdater.matchesBoxId)
+        boxTitle = box?.name ?: ""
     }
 
     private suspend fun deleteRadioComponentFromDb() {
@@ -289,80 +183,19 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
         return quantity.value?.toIntOrNull() ?: 0
     }
 
-    fun boxSelected(index: Int) {
-        convertIndexToBoxId(index)
-    }
-
-    private fun convertIndexToBoxId(index: Int) {
-        matchesBoxId = observableBoxes.value?.get(index)?.id ?: NO_ID_SET
+    fun boxSelected(newIndex: Int){
+        spinnersUpdater.boxSelected(newIndex)
     }
 
     fun setSelected(newIndex: Int) {
-        if (newIndex != setSelectedIndex.value) {
-            viewModelScope.launch {
-                updateSpinnersBySetId(getSetIdByIndex(newIndex))
-            }
+        viewModelScope.launch {
+            spinnersUpdater.setSelected(newIndex)
         }
-    }
-
-    private suspend fun updateSpinnersBySetId(setId: Int) {
-        getMatchesBoxesFromDb(setId)
-        setMatchesBoxIdToFirstElement()
-        updateSelectedIds(setId)
-    }
-
-    private suspend fun getMatchesBoxesFromDb(setId: Int) {
-        observableBoxes.value = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)
-    }
-
-    private fun setMatchesBoxIdToFirstElement() {
-        matchesBoxId = if (observableBoxes.value?.isNotEmpty() == true) {
-            observableBoxes.value?.get(0)?.id ?: NO_ID_SET
-        } else {
-            NO_ID_SET
-        }
-    }
-
-    private fun updateSelectedIds(setId: Int) {
-        selectedSetId.value = setId
-        selectedBoxId.value = matchesBoxId
-    }
-
-    private fun getSetIdByIndex(newIndex: Int): Int {
-        return observableSets.value?.get(newIndex)?.id ?: NO_ID_SET
     }
 
     fun bagSelected(newIndex: Int) {
-        Log.i(tag, "bag selected called: newIndex = $newIndex, currentSelectedIndex = $currentBagSelectedIndex")
-        if (newIndex != currentBagSelectedIndex) {
-            currentBagSelectedIndex = newIndex
-            viewModelScope.launch {
-                updateSpinnersByBagId(getBagIdByIndex(newIndex))
-            }
-        }
-    }
-
-    private fun getBagIdByIndex(newIndex: Int): Int {
-        return observableBags.value?.get(newIndex)?.id ?: NO_ID_SET
-    }
-
-    private fun updateBagsSpinner(bagId: Int) {
-        currentBagSelectedIndex = getBagIndexById(bagId)?: NO_INDEX_SET
-        Log.i(tag, "currentBagSelectedIndex = $currentBagSelectedIndex")
-        observableBags.value = bags
-    }
-
-    private fun getBagIndexById(bagId: Int?): Int? {
-        return bags.indexOfFirst { bag ->
-            bag.id == bagId
-        }
-    }
-
-    private fun getFirstSetId(): Int {
-        return if (observableSets.value?.isNotEmpty() == true) {
-            observableSets.value?.get(0)?.id ?: NO_ID_SET
-        } else {
-            NO_ID_SET
+        viewModelScope.launch {
+            spinnersUpdater.bagSelected(newIndex)
         }
     }
 }
