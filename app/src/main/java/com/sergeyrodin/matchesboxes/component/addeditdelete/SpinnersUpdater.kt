@@ -69,7 +69,6 @@ class SpinnersUpdater(private val dataSource: RadioComponentsDataSource) {
     }
 
     suspend fun start(boxId: Int) {
-        Log.i(tag, "start called: boxId = $boxId")
         _matchesBoxId = boxId
         initBags()
         if (boxId != NO_ID_SET) {
@@ -113,7 +112,6 @@ class SpinnersUpdater(private val dataSource: RadioComponentsDataSource) {
 
     private fun updateBagsSpinner(bagId: Int) {
         currentBagSelectedIndex = getBagIndexById(bagId)?: NO_INDEX_SET
-        Log.i(tag, "currentBagSelectedIndex = $currentBagSelectedIndex")
         observableBags.value = bags
     }
 
@@ -192,7 +190,6 @@ class SpinnersUpdater(private val dataSource: RadioComponentsDataSource) {
     }
 
     suspend fun bagSelected(newIndex: Int) {
-        Log.i(tag, "bag selected called: newIndex = $newIndex, currentSelectedIndex = $currentBagSelectedIndex")
         if (newIndex != currentBagSelectedIndex) {
             currentBagSelectedIndex = newIndex
             updateSpinnersByBagId(getBagIdByIndex(newIndex))
