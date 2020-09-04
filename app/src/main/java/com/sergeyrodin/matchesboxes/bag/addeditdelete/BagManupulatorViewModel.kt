@@ -9,7 +9,7 @@ import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
 
-class AddEditDeleteBagViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel() {
+class BagManupulatorViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel() {
 
     val name = MutableLiveData<String>()
 

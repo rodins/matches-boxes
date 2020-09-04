@@ -24,7 +24,7 @@
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteBagFragment"
-        android:name="com.sergeyrodin.matchesboxes.bag.addeditdelete.AddEditDeleteBagFragment"
+        android:name="com.sergeyrodin.matchesboxes.bag.addeditdelete.BagManipulatorFragment"
         android:label="{title}" >
         <action
             android:id="@+id/action_addEditDeleteBagFragment_to_bagsListFragment"

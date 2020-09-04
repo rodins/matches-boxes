@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.MainCoroutineRule
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
-import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -14,7 +13,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddEditDeleteBagViewModelTest {
+class BagManupulatorViewModelTest {
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -24,12 +23,12 @@ class AddEditDeleteBagViewModelTest {
     val mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var dataSource: FakeDataSource
-    private lateinit var subject: AddEditDeleteBagViewModel
+    private lateinit var subject: BagManupulatorViewModel
 
     @Before
     fun init() {
         dataSource = FakeDataSource()
-        subject = AddEditDeleteBagViewModel(dataSource)
+        subject = BagManupulatorViewModel(dataSource)
     }
 
     @Test

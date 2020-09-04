@@ -1,24 +1,19 @@
 package com.sergeyrodin.matchesboxes.bag.addeditdelete
 
-import android.content.Context
 import android.os.Bundle
 import android.view.*
-import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.*
-
-import com.sergeyrodin.matchesboxes.databinding.FragmentAddEditDeleteBagBinding
+import com.sergeyrodin.matchesboxes.databinding.FragmentBagManipulatorBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
 
-class AddEditDeleteBagFragment : Fragment() {
-    private val viewModel by viewModels<AddEditDeleteBagViewModel> {
-        AddEditDeleteBagViewModelFactory(
+class BagManipulatorFragment : Fragment() {
+    private val viewModel by viewModels<BagManupulatorViewModel> {
+        BagManipulatorViewModelFactory(
             (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
         )
     }
@@ -29,11 +24,11 @@ class AddEditDeleteBagFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentAddEditDeleteBagBinding.inflate(inflater)
+        val binding = FragmentBagManipulatorBinding.inflate(inflater)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
-        val args by navArgs<AddEditDeleteBagFragmentArgs>()
+        val args by navArgs<BagManipulatorFragmentArgs>()
         isActionDeleteVisible = args.bagId != ADD_NEW_ITEM_ID
 
         viewModel.start(args.bagId)
@@ -42,7 +37,7 @@ class AddEditDeleteBagFragment : Fragment() {
             hideKeyboard(activity)
             Toast.makeText(requireContext(), R.string.bag_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
-                AddEditDeleteBagFragmentDirections.actionAddEditDeleteBagFragmentToBagsListFragment()
+                BagManipulatorFragmentDirections.actionAddEditDeleteBagFragmentToBagsListFragment()
             )
         })
 
@@ -50,14 +45,14 @@ class AddEditDeleteBagFragment : Fragment() {
             hideKeyboard(activity)
             Toast.makeText(requireContext(), R.string.bag_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
-                AddEditDeleteBagFragmentDirections.actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(args.bagId, title)
+                BagManipulatorFragmentDirections.actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(args.bagId, title)
             )
         })
 
         viewModel.eventDeleted.observe(viewLifecycleOwner, EventObserver{
             Toast.makeText(requireContext(), R.string.bag_deleted, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
-                AddEditDeleteBagFragmentDirections.actionAddEditDeleteBagFragmentToBagsListFragment()
+                BagManipulatorFragmentDirections.actionAddEditDeleteBagFragmentToBagsListFragment()
             )
         })
 
