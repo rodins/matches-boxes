@@ -29,7 +29,7 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
         get() = _deleteItemEvent
 
     private val _savingErrorEvent = MutableLiveData<Event<Unit>>()
-    val errorEvent: LiveData<Event<Unit>>
+    val savingErrorEvent: LiveData<Event<Unit>>
         get() = _savingErrorEvent
 
     val minusEnabled = Transformations.map(quantity) {
@@ -77,7 +77,9 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
                 } else {
                     updateItem(name.value!!, componentsQuantity)
                 }
-            }// TODO: call error event also here but first I need to test it
+            } else {
+                callSavingErrorEvent()
+            }
         } else {
             callSavingErrorEvent()
         }

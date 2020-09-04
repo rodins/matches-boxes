@@ -199,7 +199,7 @@ class RadioComponentManipulatorFragment : Fragment() {
             }
         })
 
-        viewModel.errorEvent.observe(viewLifecycleOwner, EventObserver{
+        viewModel.savingErrorEvent.observe(viewLifecycleOwner, EventObserver{
             Toast.makeText(requireContext(), R.string.save_component_error, Toast.LENGTH_SHORT).show()
         })
 

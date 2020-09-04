@@ -1048,7 +1048,7 @@ class RadioComponentManipulatorViewModelTest{
 
         subject.saveItem()
 
-        val errorEvent = subject.errorEvent.getOrAwaitValue()
+        val errorEvent = subject.savingErrorEvent.getOrAwaitValue()
         assertThat(errorEvent, `is`(not(nullValue())))
     }
 
@@ -1065,7 +1065,7 @@ class RadioComponentManipulatorViewModelTest{
         subject.name.value = ""
         subject.saveItem()
 
-        val errorEvent = subject.errorEvent.getOrAwaitValue()
+        val errorEvent = subject.savingErrorEvent.getOrAwaitValue()
         assertThat(errorEvent, `is`(not(nullValue())))
     }
 
@@ -1078,12 +1078,32 @@ class RadioComponentManipulatorViewModelTest{
         dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
-        subject.start(box.id, ADD_NEW_ITEM_ID)
+        dataSource.addRadioComponents(component)
+        subject.start(box.id, component.id)
 
         subject.name.value = ""
         subject.saveItem()
 
-        val errorEvent = subject.errorEvent.getOrAwaitValue()
+        val errorEvent = subject.savingErrorEvent.getOrAwaitValue()
+        assertThat(errorEvent, `is`(not(nullValue())))
+    }
+
+    @Test
+    fun negativeQuantity_updateItem_errorEventNotNull() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 4, box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(box.id, component.id)
+
+        subject.quantity.value = "-1"
+        subject.saveItem()
+
+        val errorEvent = subject.savingErrorEvent.getOrAwaitValue()
         assertThat(errorEvent, `is`(not(nullValue())))
     }
 }
