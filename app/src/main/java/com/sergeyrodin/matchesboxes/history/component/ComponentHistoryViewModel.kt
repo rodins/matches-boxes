@@ -10,7 +10,7 @@ class ComponentHistoryViewModel(val dataSource: RadioComponentsDataSource): View
         liveData {
             val list = dataSource.getHistoryListByComponentId(id)
             val output = list.map{history ->
-                DisplayComponentHistory(
+                ComponentHistoryPresentation(
                     history.id,
                     convertLongToDateString(history.date),
                     history.quantity.toString()
@@ -40,7 +40,7 @@ class ComponentHistoryViewModelFactory(private var dataSource: RadioComponentsDa
     }
 }
 
-data class DisplayComponentHistory(
+data class ComponentHistoryPresentation(
     var id: Int,
     var date: String,
     var quantity: String

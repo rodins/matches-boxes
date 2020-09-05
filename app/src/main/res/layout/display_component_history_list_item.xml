@@ -6,7 +6,7 @@
     <data>
         <variable
             name="displayComponentHistory"
-            type="com.sergeyrodin.matchesboxes.history.component.DisplayComponentHistory" />
+            type="com.sergeyrodin.matchesboxes.history.component.ComponentHistoryPresentation" />
     </data>
 
     <LinearLayout

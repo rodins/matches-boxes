@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.databinding.DisplayComponentHistoryListItemBinding
 
 class DisplayComponentHistoryAdapter:
-    ListAdapter<DisplayComponentHistory, DisplayComponentHistoryAdapter.ViewHolder>(DisplayComponentHistoryDiffCallback()){
+    ListAdapter<ComponentHistoryPresentation, DisplayComponentHistoryAdapter.ViewHolder>(DisplayComponentHistoryDiffCallback()){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
@@ -21,8 +21,8 @@ class DisplayComponentHistoryAdapter:
     class ViewHolder private constructor(private val binding: DisplayComponentHistoryListItemBinding):
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(displayComponentHistory: DisplayComponentHistory) {
-            binding.displayComponentHistory = displayComponentHistory
+        fun bind(componentHistoryPresentation: ComponentHistoryPresentation) {
+            binding.displayComponentHistory = componentHistoryPresentation
             binding.executePendingBindings()
         }
 
@@ -36,18 +36,18 @@ class DisplayComponentHistoryAdapter:
     }
 }
 
-class DisplayComponentHistoryDiffCallback: DiffUtil.ItemCallback<DisplayComponentHistory>() {
+class DisplayComponentHistoryDiffCallback: DiffUtil.ItemCallback<ComponentHistoryPresentation>() {
 
     override fun areItemsTheSame(
-        oldItem: DisplayComponentHistory,
-        newItem: DisplayComponentHistory
+        oldItem: ComponentHistoryPresentation,
+        newItem: ComponentHistoryPresentation
     ): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(
-        oldItem: DisplayComponentHistory,
-        newItem: DisplayComponentHistory
+        oldItem: ComponentHistoryPresentation,
+        newItem: ComponentHistoryPresentation
     ): Boolean {
         return oldItem == newItem
     }
