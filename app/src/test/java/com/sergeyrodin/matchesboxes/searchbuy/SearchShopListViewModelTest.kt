@@ -5,7 +5,7 @@ import com.sergeyrodin.matchesboxes.MainCoroutineRule
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
-import com.sergeyrodin.matchesboxes.searchbuy.list.SearchBuyListViewModel
+import com.sergeyrodin.matchesboxes.searchbuy.list.SearchShopListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class SearchBuyListViewModelTest{
+class SearchShopListViewModelTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -22,13 +22,13 @@ class SearchBuyListViewModelTest{
     val mainRule = MainCoroutineRule()
 
     private lateinit var dataSource: FakeDataSource
-    private lateinit var subject: SearchBuyListViewModel
+    private lateinit var subject: SearchShopListViewModel
 
     @Before
     fun init() {
         dataSource = FakeDataSource()
         subject =
-            SearchBuyListViewModel(
+            SearchShopListViewModel(
                 dataSource
             )
     }

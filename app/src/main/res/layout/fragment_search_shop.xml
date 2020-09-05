@@ -6,13 +6,13 @@
     <data>
         <variable
             name="viewModel"
-            type="com.sergeyrodin.matchesboxes.searchbuy.list.SearchBuyListViewModel" />
+            type="com.sergeyrodin.matchesboxes.searchbuy.list.SearchShopListViewModel" />
     </data>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".searchbuy.list.SearchBuyListFragment">
+        tools:context=".searchbuy.list.SearchShopListFragment">
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/coordinator_layout"
             android:layout_width="match_parent"

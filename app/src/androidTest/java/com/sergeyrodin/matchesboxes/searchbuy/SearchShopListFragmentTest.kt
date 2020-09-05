@@ -14,9 +14,9 @@ import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 import com.sergeyrodin.matchesboxes.data.*
-import com.sergeyrodin.matchesboxes.searchbuy.list.SearchBuyListFragment
-import com.sergeyrodin.matchesboxes.searchbuy.list.SearchBuyListFragmentArgs
-import com.sergeyrodin.matchesboxes.searchbuy.list.SearchBuyListFragmentDirections
+import com.sergeyrodin.matchesboxes.searchbuy.list.SearchShopListFragment
+import com.sergeyrodin.matchesboxes.searchbuy.list.SearchShopListFragmentArgs
+import com.sergeyrodin.matchesboxes.searchbuy.list.SearchShopListFragmentDirections
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
@@ -27,7 +27,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.verify
 
 @RunWith(AndroidJUnit4::class)
-class SearchBuyListFragmentTest{
+class SearchShopListFragmentTest{
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
     private lateinit var dataSource: FakeDataSource
@@ -48,8 +48,8 @@ class SearchBuyListFragmentTest{
         dataSource.addRadioComponents()
         val query = "compo"
         val isSearch = true
-        val bundle = SearchBuyListFragmentArgs.Builder(query, isSearch, "Title").build().toBundle()
-        launchFragmentInContainer<SearchBuyListFragment>(bundle, R.style.AppTheme)
+        val bundle = SearchShopListFragmentArgs.Builder(query, isSearch, "Title").build().toBundle()
+        launchFragmentInContainer<SearchShopListFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_components_found)).check(matches(isDisplayed()))
     }
@@ -61,8 +61,8 @@ class SearchBuyListFragmentTest{
         dataSource.addRadioComponents(component)
         val query = "compo"
         val isSearch = true
-        val bundle = SearchBuyListFragmentArgs.Builder(query, isSearch, "Title").build().toBundle()
-        launchFragmentInContainer<SearchBuyListFragment>(bundle, R.style.AppTheme)
+        val bundle = SearchShopListFragmentArgs.Builder(query, isSearch, "Title").build().toBundle()
+        launchFragmentInContainer<SearchShopListFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_components_found)).check(matches(not(isDisplayed())))
     }
@@ -77,8 +77,8 @@ class SearchBuyListFragmentTest{
 
         val query = "compo"
         val isSearch = true
-        val bundle = SearchBuyListFragmentArgs.Builder(query, isSearch, "Title").build().toBundle()
-        launchFragmentInContainer<SearchBuyListFragment>(bundle, R.style.AppTheme)
+        val bundle = SearchShopListFragmentArgs.Builder(query, isSearch, "Title").build().toBundle()
+        launchFragmentInContainer<SearchShopListFragment>(bundle, R.style.AppTheme)
 
         onView(withText(component1.name)).check(matches(isDisplayed()))
         onView(withText(component2.name)).check(matches(isDisplayed()))
@@ -95,8 +95,8 @@ class SearchBuyListFragmentTest{
 
         val query = "compo"
         val isSearch = true
-        val bundle = SearchBuyListFragmentArgs.Builder(query, isSearch, "Title").build().toBundle()
-        val scenario = launchFragmentInContainer<SearchBuyListFragment>(bundle, R.style.AppTheme)
+        val bundle = SearchShopListFragmentArgs.Builder(query, isSearch, "Title").build().toBundle()
+        val scenario = launchFragmentInContainer<SearchShopListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
@@ -104,7 +104,7 @@ class SearchBuyListFragmentTest{
 
         onView(withText(component2.name)).perform(click())
         verify(navController).navigate(
-            SearchBuyListFragmentDirections.actionSearchBuyFragmentToRadioComponentDetailsFragment(component2.id, query, !isSearch)
+            SearchShopListFragmentDirections.actionSearchBuyFragmentToRadioComponentDetailsFragment(component2.id, query, !isSearch)
         )
     }
 
@@ -116,8 +116,8 @@ class SearchBuyListFragmentTest{
 
         val query = "compo"
         val isSearch = true
-        val bundle = SearchBuyListFragmentArgs.Builder(query, isSearch, "Title").build().toBundle()
-        launchFragmentInContainer<SearchBuyListFragment>(bundle, R.style.AppTheme)
+        val bundle = SearchShopListFragmentArgs.Builder(query, isSearch, "Title").build().toBundle()
+        launchFragmentInContainer<SearchShopListFragment>(bundle, R.style.AppTheme)
 
         onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
     }
@@ -134,8 +134,8 @@ class SearchBuyListFragmentTest{
         dataSource.addRadioComponents(component)
         val query = "compo"
         val isSearch = true
-        val bundle = SearchBuyListFragmentArgs.Builder(query, isSearch, "Title").build().toBundle()
-        val scenario = launchFragmentInContainer<SearchBuyListFragment>(bundle, R.style.AppTheme)
+        val bundle = SearchShopListFragmentArgs.Builder(query, isSearch, "Title").build().toBundle()
+        val scenario = launchFragmentInContainer<SearchShopListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
         scenario.onFragment {
@@ -146,7 +146,7 @@ class SearchBuyListFragmentTest{
         onView(withId(R.id.add_search_buy_component_fab)).perform(click())
 
         verify(navController).navigate(
-            SearchBuyListFragmentDirections.actionSearchBuyFragmentToAddEditDeleteRadioComponentFragment(
+            SearchShopListFragmentDirections.actionSearchBuyFragmentToAddEditDeleteRadioComponentFragment(
                 ADD_NEW_ITEM_ID, NO_ID_SET, title, query, !isSearch)
         )
     }

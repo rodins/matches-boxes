@@ -12,22 +12,22 @@ import com.sergeyrodin.matchesboxes.*
 import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentListener
-import com.sergeyrodin.matchesboxes.databinding.FragmentSearchBuyBinding
+import com.sergeyrodin.matchesboxes.databinding.FragmentSearchShopBinding
 
 
-class SearchBuyListFragment : Fragment() {
+class SearchShopListFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentSearchBuyBinding.inflate(inflater)
-        val viewModel by viewModels<SearchBuyListViewModel> {
-            SearchBuyListViewModelFactory(
+        val binding = FragmentSearchShopBinding.inflate(inflater)
+        val viewModel by viewModels<SearchShopListViewModel> {
+            SearchShopListViewModelFactory(
                 (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
             )
         }
-        val args by navArgs<SearchBuyListFragmentArgs>()
+        val args by navArgs<SearchShopListFragmentArgs>()
 
         viewModel.start(args.query, args.isSearch)
 
@@ -35,13 +35,13 @@ class SearchBuyListFragment : Fragment() {
         binding.viewModel = viewModel
         binding.items.adapter = RadioComponentAdapter(RadioComponentListener {
             findNavController().navigate(
-                SearchBuyListFragmentDirections.actionSearchBuyFragmentToRadioComponentDetailsFragment(it, args.query, !args.isSearch)
+                SearchShopListFragmentDirections.actionSearchBuyFragmentToRadioComponentDetailsFragment(it, args.query, !args.isSearch)
             )
         })
 
         viewModel.addComponentEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
-                SearchBuyListFragmentDirections.actionSearchBuyFragmentToAddEditDeleteRadioComponentFragment(
+                SearchShopListFragmentDirections.actionSearchBuyFragmentToAddEditDeleteRadioComponentFragment(
                     ADD_NEW_ITEM_ID, NO_ID_SET, getString(R.string.add_component), args.query, !args.isSearch)
             )
         })

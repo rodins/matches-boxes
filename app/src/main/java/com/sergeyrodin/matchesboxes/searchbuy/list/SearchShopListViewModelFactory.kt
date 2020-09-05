@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 
-class SearchBuyListViewModelFactory(private  val dataSource: RadioComponentsDataSource):ViewModelProvider.Factory {
+class SearchShopListViewModelFactory(private  val dataSource: RadioComponentsDataSource):ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(SearchBuyListViewModel::class.java)) {
-            return SearchBuyListViewModel(
+        if(modelClass.isAssignableFrom(SearchShopListViewModel::class.java)) {
+            return SearchShopListViewModel(
                 dataSource
             ) as T
         }else {

@@ -6,7 +6,7 @@ import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
 
-class SearchBuyListViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
+class SearchShopListViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
     private lateinit var searchQuery: String
     private val isSearch = MutableLiveData<Boolean>()
     val items = isSearch.switchMap {
