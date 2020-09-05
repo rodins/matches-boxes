@@ -10,10 +10,10 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource): ViewModel() {
 
     val displayHistoryList = historyList.switchMap{list ->
         liveData{
-            val outputList = mutableListOf<DisplayHistory>()
+            val outputList = mutableListOf<HistoryPresentation>()
             list.forEach { history ->
                 val component = dataSource.getRadioComponentById(history.componentId)
-                val displayHistory = DisplayHistory(
+                val displayHistory = HistoryPresentation(
                     history.id,
                     history.componentId,
                     component?.name?:"",
@@ -31,7 +31,7 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource): ViewModel() {
     }
 }
 
-data class DisplayHistory(
+data class HistoryPresentation(
     var id: Int,
     var componentId: Int,
     var name: String,
@@ -39,7 +39,7 @@ data class DisplayHistory(
     var date: String
 )
 
-class HistoryAddViewModelFactory(private val dataSource: RadioComponentsDataSource): ViewModelProvider.Factory {
+class HistoryAllViewModelFactory(private val dataSource: RadioComponentsDataSource): ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if(modelClass.isAssignableFrom(HistoryAllViewModel::class.java)) {
