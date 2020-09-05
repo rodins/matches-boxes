@@ -45,8 +45,5 @@
                 app:layout_anchor="@id/items"
                 app:layout_anchorGravity="bottom|right|end" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-
     </FrameLayout>
 </layout>
