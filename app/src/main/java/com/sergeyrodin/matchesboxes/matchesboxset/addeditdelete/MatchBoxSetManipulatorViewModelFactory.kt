@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 
-class AddEditDeleteMatchBoxSetViewModelFactory(private val dataSource: RadioComponentsDataSource): ViewModelProvider.Factory {
+class MatchBoxSetManipulatorViewModelFactory(private val dataSource: RadioComponentsDataSource): ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(AddEditDeleteMatchesBoxSetViewModel::class.java)) {
-            return AddEditDeleteMatchesBoxSetViewModel(
+        if (modelClass.isAssignableFrom(MatchesBoxSetManipulatorViewModel::class.java)) {
+            return MatchesBoxSetManipulatorViewModel(
                 dataSource
             ) as T
         }

@@ -10,7 +10,7 @@ import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
 
-class AddEditDeleteMatchesBoxSetViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
+class MatchesBoxSetManipulatorViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
 
     private var matchesBoxSet: MatchesBoxSet? = null
     private var _bagId: Int = 0

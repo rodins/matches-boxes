@@ -11,13 +11,13 @@ import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
-import com.sergeyrodin.matchesboxes.databinding.FragmentAddEditDeleteMatchesBoxSetBinding
+import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxSetManipulatorBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
 
-class AddEditDeleteMatchesBoxSetFragment : Fragment() {
+class MatchesBoxSetManipulatorFragment : Fragment() {
 
-    private val viewModel by viewModels<AddEditDeleteMatchesBoxSetViewModel> {
-        AddEditDeleteMatchBoxSetViewModelFactory(
+    private val viewModel by viewModels<MatchesBoxSetManipulatorViewModel> {
+        MatchBoxSetManipulatorViewModelFactory(
             (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
         )
     }
@@ -27,11 +27,11 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentAddEditDeleteMatchesBoxSetBinding.inflate(inflater)
+        val binding = FragmentMatchesBoxSetManipulatorBinding.inflate(inflater)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
-        val args by navArgs<AddEditDeleteMatchesBoxSetFragmentArgs>()
+        val args by navArgs<MatchesBoxSetManipulatorFragmentArgs>()
         isDeleteVisible = args.setId != ADD_NEW_ITEM_ID
 
         viewModel.start(args.bagId, args.setId)
@@ -40,7 +40,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
             hideKeyboard(activity)
             Toast.makeText(context, R.string.matches_box_set_added, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
-                AddEditDeleteMatchesBoxSetFragmentDirections
+                MatchesBoxSetManipulatorFragmentDirections
                     .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(args.bagId, title)
             )
         })
@@ -49,7 +49,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
             hideKeyboard(activity)
             Toast.makeText(context, R.string.matches_box_set_updated, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
-                AddEditDeleteMatchesBoxSetFragmentDirections
+                MatchesBoxSetManipulatorFragmentDirections
                     .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(args.setId, set.name)
             )
         })
@@ -57,7 +57,7 @@ class AddEditDeleteMatchesBoxSetFragment : Fragment() {
         viewModel.deletedEvent.observe(viewLifecycleOwner, EventObserver{ bag ->
             Toast.makeText(context, R.string.matches_box_set_deleted, Toast.LENGTH_SHORT).show()
             findNavController().navigate(
-                AddEditDeleteMatchesBoxSetFragmentDirections
+                MatchesBoxSetManipulatorFragmentDirections
                     .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(bag.id, bag.name)
             )
         })

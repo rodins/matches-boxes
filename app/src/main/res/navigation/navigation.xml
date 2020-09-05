@@ -65,9 +65,9 @@
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteMatchesBoxSetFragment"
-        android:name="com.sergeyrodin.matchesboxes.matchesboxset.addeditdelete.AddEditDeleteMatchesBoxSetFragment"
+        android:name="com.sergeyrodin.matchesboxes.matchesboxset.addeditdelete.MatchesBoxSetManipulatorFragment"
         android:label="{title}"
-        tools:layout="@layout/fragment_add_edit_delete_matches_box_set" >
+        tools:layout="@layout/fragment_matches_box_set_manipulator" >
         <action
             android:id="@+id/action_addEditDeleteMatchesBoxSetFragment_to_matchesBoxSetsListFragment"
             app:destination="@id/matchesBoxSetsListFragment"
