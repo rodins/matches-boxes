@@ -10,7 +10,7 @@ import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
 
-class AddEditDeleteMatchesBoxViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
+class MatchesBoxManipulatorViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
     val name = MutableLiveData<String>()
 
     private var matchesBox: MatchesBox? = null

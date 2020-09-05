@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.sergeyrodin.matchesboxes.matchesbox.addeditdelete.AddEditDeleteMatchesBoxViewModel" />
+            type="com.sergeyrodin.matchesboxes.matchesbox.addeditdelete.MatchesBoxManipulatorViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -17,7 +17,7 @@
             android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".matchesbox.addeditdelete.AddEditDeleteMatchesBoxFragment">
+            tools:context=".matchesbox.addeditdelete.MatchesBoxManipulatorFragment">
 
             <EditText
                 android:id="@+id/box_edit"

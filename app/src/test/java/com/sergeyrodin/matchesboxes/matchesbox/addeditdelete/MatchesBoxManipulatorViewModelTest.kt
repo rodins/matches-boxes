@@ -13,17 +13,17 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class AddEditDeleteMatchesBoxViewModelTest {
+class MatchesBoxManipulatorViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var dataSource: FakeDataSource
-    private lateinit var subject: AddEditDeleteMatchesBoxViewModel
+    private lateinit var subject: MatchesBoxManipulatorViewModel
 
     @Before
     fun init() {
         dataSource = FakeDataSource()
-        subject = AddEditDeleteMatchesBoxViewModel(dataSource)
+        subject = MatchesBoxManipulatorViewModel(dataSource)
     }
 
     @Test
