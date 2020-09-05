@@ -16,7 +16,6 @@ import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 import com.sergeyrodin.matchesboxes.data.*
-import com.sergeyrodin.matchesboxes.searchbuy.list.SearchShopListFragmentDirections
 import org.hamcrest.CoreMatchers
 import org.junit.After
 import org.junit.Before
