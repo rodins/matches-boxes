@@ -24,6 +24,9 @@
         <action
             android:id="@+id/action_bagsListFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_bagsListFragment_to_neededComponentsFragment"
+            app:destination="@id/neededComponentsFragment" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteBagFragment"
@@ -256,6 +259,17 @@
             app:destination="@id/radioComponentDetailsFragment" />
         <action
             android:id="@+id/action_searchFragment_to_addEditDeleteRadioComponentFragment"
+            app:destination="@id/addEditDeleteRadioComponentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/neededComponentsFragment"
+        android:name="com.sergeyrodin.matchesboxes.needed.NeededComponentsFragment"
+        android:label="NeededComponentsFragment" >
+        <action
+            android:id="@+id/action_neededComponentsFragment_to_radioComponentDetailsFragment"
+            app:destination="@id/radioComponentDetailsFragment" />
+        <action
+            android:id="@+id/action_neededComponentsFragment_to_addEditDeleteRadioComponentFragment"
             app:destination="@id/addEditDeleteRadioComponentFragment" />
     </fragment>
 </navigation>
