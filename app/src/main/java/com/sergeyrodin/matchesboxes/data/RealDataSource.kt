@@ -154,7 +154,7 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
         }
     }
 
-    override fun getBagsDisplayQuantityList(): LiveData<List<ItemWithQuantityPresentation>> {
+    override fun getBagsQuantityPresentationList(): LiveData<List<ItemWithQuantityPresentation>> {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getBagsDisplayQuantityList()
         }
