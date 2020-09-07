@@ -14,23 +14,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+        <FrameLayout
             android:id="@+id/layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center"
-            tools:context=".categories.addedit.AddEditCategoryFragment">
+            android:layout_height="match_parent">
 
             <EditText
                 android:id="@+id/bag_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:hint="@string/enter_bag_name"
                 android:text="@={viewModel.name}"
                 android:layout_margin="16dp" />
 
-        </LinearLayout>
+        </FrameLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/save_bag_fab"
