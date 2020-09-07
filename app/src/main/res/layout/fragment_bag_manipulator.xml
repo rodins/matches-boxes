@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.sergeyrodin.matchesboxes.bag.addeditdelete.BagManupulatorViewModel" />
+            type="com.sergeyrodin.matchesboxes.bag.addeditdelete.BagManipulatorViewModel" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

@@ -12,58 +12,109 @@ import com.sergeyrodin.matchesboxes.databinding.FragmentBagManipulatorBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
 
 class BagManipulatorFragment : Fragment() {
-    private val viewModel by viewModels<BagManupulatorViewModel> {
-        BagManipulatorViewModelFactory(
-            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-        )
-    }
-
+    private lateinit var viewModel: BagManipulatorViewModel
+    private val args by navArgs<BagManipulatorFragmentArgs>()
     private var isActionDeleteVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentBagManipulatorBinding.inflate(inflater)
+        val binding = createBinding(inflater)
+        viewModel = createViewModel()
+        setupBinding(binding)
+        setupIsActionDeleteVisible()
+        startViewModel()
+        observeAddedEvent()
+        observeEditedEvent()
+        observeDeletedEvent()
+        setHasOptionsMenu(true)
+        return binding.root
+    }
+
+    private fun createBinding(inflater: LayoutInflater): FragmentBagManipulatorBinding {
+        return FragmentBagManipulatorBinding.inflate(inflater)
+    }
+
+    private fun createViewModel(): BagManipulatorViewModel {
+        val viewModel by viewModels<BagManipulatorViewModel> {
+            BagManipulatorViewModelFactory(
+                (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
+            )
+        }
+        return viewModel
+    }
+
+    private fun setupBinding(binding: FragmentBagManipulatorBinding) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+    }
 
-        val args by navArgs<BagManipulatorFragmentArgs>()
+    private fun setupIsActionDeleteVisible() {
         isActionDeleteVisible = args.bagId != ADD_NEW_ITEM_ID
+    }
 
+    private fun startViewModel() {
         viewModel.start(args.bagId)
+    }
 
-        viewModel.eventAdded.observe(viewLifecycleOwner, EventObserver{
+    private fun observeDeletedEvent() {
+        viewModel.eventDeleted.observe(viewLifecycleOwner, EventObserver {
+            displayBagDeletedToast()
+            navigateToBagsListFragment()
+        })
+    }
+
+    private fun navigateToBagsListFragment() {
+        findNavController().navigate(
+            BagManipulatorFragmentDirections.actionAddEditDeleteBagFragmentToBagsListFragment()
+        )
+    }
+
+    private fun displayBagDeletedToast() {
+        Toast.makeText(requireContext(), R.string.bag_deleted, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun observeEditedEvent() {
+        viewModel.eventEdited.observe(viewLifecycleOwner, EventObserver { title ->
             hideKeyboard(activity)
-            Toast.makeText(requireContext(), R.string.bag_added, Toast.LENGTH_SHORT).show()
-            findNavController().navigate(
-                BagManipulatorFragmentDirections.actionAddEditDeleteBagFragmentToBagsListFragment()
-            )
+            displayBagUpdatedToast()
+            navigateToMatchesBoxSetListFragment(title)
         })
+    }
 
-        viewModel.eventEdited.observe(viewLifecycleOwner, EventObserver{ title ->
+    private fun navigateToMatchesBoxSetListFragment(title: String) {
+        findNavController().navigate(
+            BagManipulatorFragmentDirections.actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(
+                args.bagId,
+                title
+            )
+        )
+    }
+
+    private fun displayBagUpdatedToast() {
+        Toast.makeText(requireContext(), R.string.bag_updated, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun observeAddedEvent() {
+        viewModel.eventAdded.observe(viewLifecycleOwner, EventObserver {
             hideKeyboard(activity)
-            Toast.makeText(requireContext(), R.string.bag_updated, Toast.LENGTH_SHORT).show()
-            findNavController().navigate(
-                BagManipulatorFragmentDirections.actionAddEditDeleteBagFragmentToMatchesBoxSetsListFragment(args.bagId, title)
-            )
+            displayBagAddedToast()
+            navigateToBagsListFragment()
         })
+    }
 
-        viewModel.eventDeleted.observe(viewLifecycleOwner, EventObserver{
-            Toast.makeText(requireContext(), R.string.bag_deleted, Toast.LENGTH_SHORT).show()
-            findNavController().navigate(
-                BagManipulatorFragmentDirections.actionAddEditDeleteBagFragmentToBagsListFragment()
-            )
-        })
-
-        setHasOptionsMenu(true)
-
-        return binding.root
+    private fun displayBagAddedToast() {
+        Toast.makeText(requireContext(), R.string.bag_added, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.delete_menu, menu)
+        setActionDeleteVisibility(menu)
+    }
+
+    private fun setActionDeleteVisibility(menu: Menu) {
         val item = menu.findItem(R.id.action_delete)
         item.isVisible = isActionDeleteVisible
     }

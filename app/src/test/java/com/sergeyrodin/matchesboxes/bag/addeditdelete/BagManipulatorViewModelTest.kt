@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class BagManupulatorViewModelTest {
+class BagManipulatorViewModelTest {
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -23,12 +23,12 @@ class BagManupulatorViewModelTest {
     val mainCoroutineRule = MainCoroutineRule()
 
     private lateinit var dataSource: FakeDataSource
-    private lateinit var subject: BagManupulatorViewModel
+    private lateinit var subject: BagManipulatorViewModel
 
     @Before
     fun init() {
         dataSource = FakeDataSource()
-        subject = BagManupulatorViewModel(dataSource)
+        subject = BagManipulatorViewModel(dataSource)
     }
 
     @Test

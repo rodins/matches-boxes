@@ -7,8 +7,8 @@ import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 class BagManipulatorViewModelFactory(private val dataSource: RadioComponentsDataSource): ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(BagManupulatorViewModel::class.java)) {
-            return BagManupulatorViewModel(
+        if (modelClass.isAssignableFrom(BagManipulatorViewModel::class.java)) {
+            return BagManipulatorViewModel(
                 dataSource
             ) as T
         }
