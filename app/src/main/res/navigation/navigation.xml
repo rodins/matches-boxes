@@ -16,9 +16,6 @@
             android:id="@+id/action_bagsListFragment_to_matchesBoxSetsListFragment"
             app:destination="@id/matchesBoxSetsListFragment" />
         <action
-            android:id="@+id/action_bagsListFragment_to_searchBuyFragment"
-            app:destination="@id/searchBuyFragment" />
-        <action
             android:id="@+id/action_bagsListFragment_to_historyAllFragment"
             app:destination="@id/historyAllFragment" />
         <action
@@ -181,36 +178,13 @@
             android:name="isBuy"
             app:argType="boolean" />
         <action
-            android:id="@+id/action_addEditDeleteRadioComponentFragment_to_searchBuyFragment"
-            app:destination="@id/searchBuyFragment"
+            android:id="@+id/action_addEditDeleteRadioComponentFragment_to_searchFragment"
+            app:destination="@id/searchFragment"
             app:popUpTo="@id/bagsListFragment" />
         <action
-            android:id="@+id/action_addEditDeleteRadioComponentFragment_to_searchFragment"
-            app:destination="@id/searchFragment" />
-        <action
             android:id="@+id/action_addEditDeleteRadioComponentFragment_to_neededComponentsFragment"
-            app:destination="@id/neededComponentsFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/searchBuyFragment"
-        android:name="com.sergeyrodin.matchesboxes.searchbuy.list.SearchShopListFragment"
-        android:label="{title}"
-        tools:layout="@layout/fragment_search_shop" >
-        <argument
-            android:name="query"
-            app:argType="string" />
-        <argument
-            android:name="isSearch"
-            app:argType="boolean" />
-        <argument
-            android:name="title"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_searchBuyFragment_to_radioComponentDetailsFragment"
-            app:destination="@id/radioComponentDetailsFragment" />
-        <action
-            android:id="@+id/action_searchBuyFragment_to_addEditDeleteRadioComponentFragment"
-            app:destination="@id/addEditDeleteRadioComponentFragment" />
+            app:destination="@id/neededComponentsFragment"
+            app:popUpTo="@id/bagsListFragment" />
     </fragment>
     <fragment
         android:id="@+id/radioComponentDetailsFragment"

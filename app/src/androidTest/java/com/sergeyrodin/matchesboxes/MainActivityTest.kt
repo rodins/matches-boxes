@@ -1535,7 +1535,7 @@ class MainActivityTest {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         onView(withId(R.id.action_buy)).perform(click())
-        onView(withId(R.id.add_search_buy_component_fab)).perform(click())
+        onView(withId(R.id.add_needed_component_fab)).perform(click())
         onView(withId(R.id.component_edit)).perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
         Espresso.pressBack()

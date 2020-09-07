@@ -16,7 +16,6 @@ import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentListener
 import com.sergeyrodin.matchesboxes.databinding.FragmentSearchBinding
-import com.sergeyrodin.matchesboxes.databinding.FragmentSearchShopBinding
 
 class SearchFragment : Fragment() {
 
