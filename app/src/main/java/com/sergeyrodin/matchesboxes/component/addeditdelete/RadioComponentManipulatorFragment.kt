@@ -141,15 +141,15 @@ class RadioComponentManipulatorFragment : Fragment() {
             hideKeyboard(activity)
             Toast.makeText(context, R.string.component_added, Toast.LENGTH_SHORT).show()
             if(args.isBuy || args.query.isNotEmpty()) {
-                findNavController().navigate(
-                    RadioComponentManipulatorFragmentDirections
-                        .actionAddEditDeleteRadioComponentFragmentToSearchBuyFragment(args.query, !args.isBuy,
-                            if(args.isBuy)
-                                getString(R.string.buy_components)
-                            else
-                                getString(R.string.search_components)
-                        )
-                )
+                if(args.isBuy) {
+                    findNavController().navigate(
+                        RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToNeededComponentsFragment()
+                    )
+                }else {
+                    findNavController().navigate(
+                        RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(args.query)
+                    )
+                }
             }else {
                 findNavController().navigate(
                     RadioComponentManipulatorFragmentDirections
@@ -162,15 +162,15 @@ class RadioComponentManipulatorFragment : Fragment() {
             hideKeyboard(activity)
             Toast.makeText(context, R.string.component_updated, Toast.LENGTH_SHORT).show()
             if(args.isBuy || args.query.isNotEmpty()) {
-                findNavController().navigate(
-                    RadioComponentManipulatorFragmentDirections
-                        .actionAddEditDeleteRadioComponentFragmentToSearchBuyFragment(args.query, !args.isBuy,
-                            if(args.isBuy)
-                                getString(R.string.buy_components)
-                            else
-                                getString(R.string.search_components)
-                        )
-                )
+                if(args.isBuy) {
+                    findNavController().navigate(
+                        RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToNeededComponentsFragment()
+                    )
+                }else {
+                    findNavController().navigate(
+                        RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(args.query)
+                    )
+                }
             }else {
                 findNavController().navigate(
                     RadioComponentManipulatorFragmentDirections
@@ -182,15 +182,15 @@ class RadioComponentManipulatorFragment : Fragment() {
         viewModel.deleteItemEvent.observe(viewLifecycleOwner, EventObserver{ title ->
             Toast.makeText(context, R.string.component_deleted, Toast.LENGTH_SHORT).show()
             if(args.isBuy || args.query.isNotEmpty()) {
-                findNavController().navigate(
-                    RadioComponentManipulatorFragmentDirections
-                        .actionAddEditDeleteRadioComponentFragmentToSearchBuyFragment(args.query, !args.isBuy,
-                            if(args.isBuy)
-                                getString(R.string.buy_components)
-                            else
-                                getString(R.string.search_components)
-                        )
-                )
+                if(args.isBuy) {
+                    findNavController().navigate(
+                        RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToNeededComponentsFragment()
+                    )
+                }else {
+                    findNavController().navigate(
+                        RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(args.query)
+                    )
+                }
             }else {
                 findNavController().navigate(
                     RadioComponentManipulatorFragmentDirections

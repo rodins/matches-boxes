@@ -61,8 +61,7 @@ class BagsListFragment : Fragment() {
         searchView.setOnQueryTextListener(object: OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 findNavController().navigate(
-                    BagsListFragmentDirections
-                        .actionBagsListFragmentToSearchBuyFragment(query!!, true, getString(R.string.search_components))
+                    BagsListFragmentDirections.actionBagsListFragmentToSearchFragment(query!!)
                 )
 
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
@@ -81,8 +80,7 @@ class BagsListFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.action_buy){
             findNavController().navigate(
-                BagsListFragmentDirections
-                    .actionBagsListFragmentToSearchBuyFragment("", false, getString(R.string.buy_components))
+                BagsListFragmentDirections.actionBagsListFragmentToNeededComponentsFragment()
             )
             return true
         }

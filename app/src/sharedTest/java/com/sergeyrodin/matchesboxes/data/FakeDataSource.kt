@@ -209,6 +209,7 @@ class FakeDataSource : RadioComponentsDataSource{
     }
 
     override fun getBagsDisplayQuantityList(): LiveData<List<DisplayQuantity>> {
+        initBagsLiveData()
         return bagsLiveData
     }
 

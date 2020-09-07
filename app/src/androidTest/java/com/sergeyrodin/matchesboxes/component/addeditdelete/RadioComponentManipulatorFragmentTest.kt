@@ -529,8 +529,7 @@ class RadioComponentManipulatorFragmentTest {
         onView(withId(R.id.save_component_fab)).perform(click())
 
         verify(navController).navigate(
-            RadioComponentManipulatorFragmentDirections
-                .actionAddEditDeleteRadioComponentFragmentToSearchBuyFragment(query, !isBuy, title)
+            RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(query)
         )
     }
 
@@ -559,8 +558,7 @@ class RadioComponentManipulatorFragmentTest {
         onView(withId(R.id.save_component_fab)).perform(click())
 
         verify(navController).navigate(
-            RadioComponentManipulatorFragmentDirections
-                .actionAddEditDeleteRadioComponentFragmentToSearchBuyFragment(query, !isBuy, title)
+            RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToNeededComponentsFragment()
         )
     }
 
@@ -588,8 +586,7 @@ class RadioComponentManipulatorFragmentTest {
         clickDeleteAction(scenario)
 
         verify(navController).navigate(
-            RadioComponentManipulatorFragmentDirections
-                .actionAddEditDeleteRadioComponentFragmentToSearchBuyFragment(query, !isBuy, title)
+            RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(query)
         )
     }
 
@@ -618,8 +615,7 @@ class RadioComponentManipulatorFragmentTest {
         onView(withId(R.id.save_component_fab)).perform(click())
 
         verify(navController).navigate(
-            RadioComponentManipulatorFragmentDirections
-                .actionAddEditDeleteRadioComponentFragmentToSearchBuyFragment(query, !isBuy, title)
+            RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(query)
         )
     }
 
@@ -648,8 +644,7 @@ class RadioComponentManipulatorFragmentTest {
         onView(withId(R.id.save_component_fab)).perform(click())
 
         verify(navController).navigate(
-            RadioComponentManipulatorFragmentDirections
-                .actionAddEditDeleteRadioComponentFragmentToSearchBuyFragment(query, !isBuy, title)
+            RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToNeededComponentsFragment()
         )
     }
 
