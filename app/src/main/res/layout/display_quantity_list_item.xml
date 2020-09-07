@@ -6,7 +6,7 @@
     <data>
         <variable
             name="displayQuantity"
-            type="com.sergeyrodin.matchesboxes.data.DisplayQuantity" />
+            type="com.sergeyrodin.matchesboxes.data.ItemWithQuantityPresentation" />
 
         <variable
             name="clickListener"

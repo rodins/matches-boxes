@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.data.RadioComponent
-import com.sergeyrodin.matchesboxes.data.DisplayQuantity
+import com.sergeyrodin.matchesboxes.data.ItemWithQuantityPresentation
 import com.sergeyrodin.matchesboxes.history.all.HistoryPresentation
 import com.sergeyrodin.matchesboxes.history.all.DisplayHistoryAdapter
 import com.sergeyrodin.matchesboxes.history.component.ComponentHistoryPresentation
 import com.sergeyrodin.matchesboxes.history.component.DisplayComponentHistoryAdapter
 
 @BindingAdapter("displayQuantityListData")
-fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<DisplayQuantity>?) {
+fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<ItemWithQuantityPresentation>?) {
     val adapter = recyclerView.adapter as DisplayQuantityAdapter
     adapter.submitList(list)
 }

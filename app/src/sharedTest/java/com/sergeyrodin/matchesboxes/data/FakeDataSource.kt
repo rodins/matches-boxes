@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 
 class FakeDataSource : RadioComponentsDataSource{
     private val bagsList = mutableListOf<Bag>()
-    private val bagsLiveData = MutableLiveData<List<DisplayQuantity>>(listOf())
+    private val bagsLiveData = MutableLiveData<List<ItemWithQuantityPresentation>>(listOf())
     private val matchesBoxSetList = mutableListOf<MatchesBoxSet>()
     private val matchesBoxList = mutableListOf<MatchesBox>()
     private val radioComponentsList = mutableListOf<RadioComponent>()
@@ -170,8 +170,8 @@ class FakeDataSource : RadioComponentsDataSource{
         }
     }
 
-    override suspend fun getDisplayQuantityListBySetId(setId: Int): List<DisplayQuantity> {
-        val output = mutableListOf<DisplayQuantity>()
+    override suspend fun getDisplayQuantityListBySetId(setId: Int): List<ItemWithQuantityPresentation> {
+        val output = mutableListOf<ItemWithQuantityPresentation>()
         matchesBoxList.filter { box ->
             box.matchesBoxSetId == setId
         }.forEach { box ->
@@ -181,14 +181,14 @@ class FakeDataSource : RadioComponentsDataSource{
             }.forEach { component ->
                 sum += component.quantity
             }
-            val displayQuantity = DisplayQuantity(box.id, box.name, sum.toString())
+            val displayQuantity = ItemWithQuantityPresentation(box.id, box.name, sum.toString())
             output.add(displayQuantity)
         }
         return output
     }
 
-    override suspend fun getDisplayQuantityListByBagId(bagId: Int): List<DisplayQuantity> {
-        val output = mutableListOf<DisplayQuantity>()
+    override suspend fun getDisplayQuantityListByBagId(bagId: Int): List<ItemWithQuantityPresentation> {
+        val output = mutableListOf<ItemWithQuantityPresentation>()
         matchesBoxSetList.filter { set ->
             set.bagId == bagId
         }.forEach { set ->
@@ -202,13 +202,13 @@ class FakeDataSource : RadioComponentsDataSource{
                     sum += component.quantity
                 }
             }
-            val displayQuantity = DisplayQuantity(set.id, set.name, sum.toString())
+            val displayQuantity = ItemWithQuantityPresentation(set.id, set.name, sum.toString())
             output.add(displayQuantity)
         }
         return output
     }
 
-    override fun getBagsDisplayQuantityList(): LiveData<List<DisplayQuantity>> {
+    override fun getBagsDisplayQuantityList(): LiveData<List<ItemWithQuantityPresentation>> {
         initBagsLiveData()
         return bagsLiveData
     }
@@ -222,7 +222,7 @@ class FakeDataSource : RadioComponentsDataSource{
     }
 
     fun initBagsLiveData() {
-        val list = mutableListOf<DisplayQuantity>()
+        val list = mutableListOf<ItemWithQuantityPresentation>()
 
         bagsList.forEach { bag ->
             var sum = 0
@@ -239,7 +239,7 @@ class FakeDataSource : RadioComponentsDataSource{
                     }
                 }
             }
-            val displayQuantity = DisplayQuantity(bag.id, bag.name, sum.toString())
+            val displayQuantity = ItemWithQuantityPresentation(bag.id, bag.name, sum.toString())
             list.add(displayQuantity)
         }
         bagsLiveData.value = list

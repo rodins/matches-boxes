@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.databinding.DisplayQuantityListItemBinding
-import com.sergeyrodin.matchesboxes.data.DisplayQuantity
+import com.sergeyrodin.matchesboxes.data.ItemWithQuantityPresentation
 
-class DisplayQuantityAdapter(private val displayQuantityListener: DisplayQuantityListener) : ListAdapter<DisplayQuantity, DisplayQuantityAdapter.ViewHolder>(BagDiffCallback()) {
+class DisplayQuantityAdapter(private val displayQuantityListener: DisplayQuantityListener) : ListAdapter<ItemWithQuantityPresentation, DisplayQuantityAdapter.ViewHolder>(BagDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
     }
@@ -20,8 +20,8 @@ class DisplayQuantityAdapter(private val displayQuantityListener: DisplayQuantit
 
     class ViewHolder private constructor(private val binding: DisplayQuantityListItemBinding): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(displayQuantity: DisplayQuantity, displayQuantityListener: DisplayQuantityListener) {
-            binding.displayQuantity = displayQuantity
+        fun bind(itemWithQuantityPresentation: ItemWithQuantityPresentation, displayQuantityListener: DisplayQuantityListener) {
+            binding.displayQuantity = itemWithQuantityPresentation
             binding.clickListener = displayQuantityListener
             binding.executePendingBindings()
         }
@@ -36,12 +36,12 @@ class DisplayQuantityAdapter(private val displayQuantityListener: DisplayQuantit
     }
 }
 
-class BagDiffCallback: DiffUtil.ItemCallback<DisplayQuantity>() {
-    override fun areItemsTheSame(oldItem: DisplayQuantity, newItem: DisplayQuantity): Boolean {
+class BagDiffCallback: DiffUtil.ItemCallback<ItemWithQuantityPresentation>() {
+    override fun areItemsTheSame(oldItem: ItemWithQuantityPresentation, newItem: ItemWithQuantityPresentation): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: DisplayQuantity, newItem: DisplayQuantity): Boolean {
+    override fun areContentsTheSame(oldItem: ItemWithQuantityPresentation, newItem: ItemWithQuantityPresentation): Boolean {
         return oldItem == newItem
     }
 }

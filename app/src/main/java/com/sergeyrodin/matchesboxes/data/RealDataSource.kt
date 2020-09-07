@@ -142,19 +142,19 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
 
     // DisplayQuantity
 
-    override suspend fun getDisplayQuantityListBySetId(setId: Int): List<DisplayQuantity> {
+    override suspend fun getDisplayQuantityListBySetId(setId: Int): List<ItemWithQuantityPresentation> {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getDisplayQuantityListBySetId(setId)
         }
     }
 
-    override suspend fun getDisplayQuantityListByBagId(bagId: Int): List<DisplayQuantity> {
+    override suspend fun getDisplayQuantityListByBagId(bagId: Int): List<ItemWithQuantityPresentation> {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getDisplayQuantityListByBagId(bagId)
         }
     }
 
-    override fun getBagsDisplayQuantityList(): LiveData<List<DisplayQuantity>> {
+    override fun getBagsDisplayQuantityList(): LiveData<List<ItemWithQuantityPresentation>> {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getBagsDisplayQuantityList()
         }
