@@ -11,65 +11,136 @@ import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
+import com.sergeyrodin.matchesboxes.data.Bag
+import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxSetManipulatorBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
 
 class MatchesBoxSetManipulatorFragment : Fragment() {
 
-    private val viewModel by viewModels<MatchesBoxSetManipulatorViewModel> {
-        MatchBoxSetManipulatorViewModelFactory(
-            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-        )
-    }
+    private lateinit var viewModel: MatchesBoxSetManipulatorViewModel
+    private lateinit var args: MatchesBoxSetManipulatorFragmentArgs
     private var isDeleteVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentMatchesBoxSetManipulatorBinding.inflate(inflater)
+        viewModel = createViewModel()
+        val binding = createBinding(inflater)
+        setupBinding(binding)
+        args = createArgs()
+        setupIsDeleteVisible()
+        startViewModel()
+        observeAddEvent()
+        observeUpdateEvent()
+        observeDeleteEvent()
+        setHasOptionsMenu(true)
+        return binding.root
+    }
+
+    private fun createViewModel(): MatchesBoxSetManipulatorViewModel {
+        val viewModel by viewModels<MatchesBoxSetManipulatorViewModel> {
+            MatchBoxSetManipulatorViewModelFactory(
+                (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
+            )
+        }
+        return viewModel
+    }
+
+    private fun createBinding(inflater: LayoutInflater) =
+        FragmentMatchesBoxSetManipulatorBinding.inflate(inflater)
+
+    private fun setupBinding(binding: FragmentMatchesBoxSetManipulatorBinding) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+    }
 
+    private fun createArgs(): MatchesBoxSetManipulatorFragmentArgs {
         val args by navArgs<MatchesBoxSetManipulatorFragmentArgs>()
+        return args
+    }
+
+    private fun setupIsDeleteVisible() {
         isDeleteVisible = args.setId != ADD_NEW_ITEM_ID
+    }
 
+    private fun startViewModel() {
         viewModel.start(args.bagId, args.setId)
+    }
 
-        viewModel.addedEvent.observe(viewLifecycleOwner, EventObserver{ title ->
+    private fun observeAddEvent() {
+        viewModel.addedEvent.observe(viewLifecycleOwner, EventObserver { title ->
             hideKeyboard(activity)
-            Toast.makeText(context, R.string.matches_box_set_added, Toast.LENGTH_SHORT).show()
-            findNavController().navigate(
-                MatchesBoxSetManipulatorFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(args.bagId, title)
-            )
+            makeToastForAddEvent()
+            navigateToMatchesBoxSetListFragment(title)
         })
+    }
 
-        viewModel.updatedEvent.observe(viewLifecycleOwner, EventObserver{ set ->
+    private fun makeToastForAddEvent() {
+        Toast.makeText(context, R.string.matches_box_set_added, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun navigateToMatchesBoxSetListFragment(title: String) {
+        findNavController().navigate(
+            MatchesBoxSetManipulatorFragmentDirections
+                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(
+                    args.bagId,
+                    title
+                )
+        )
+    }
+
+    private fun observeUpdateEvent() {
+        viewModel.updatedEvent.observe(viewLifecycleOwner, EventObserver { set ->
             hideKeyboard(activity)
-            Toast.makeText(context, R.string.matches_box_set_updated, Toast.LENGTH_SHORT).show()
-            findNavController().navigate(
-                MatchesBoxSetManipulatorFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(args.setId, set.name)
-            )
+            makeToastForUpdateEvent()
+            navigateToMatchesBoxListFragment(set)
         })
+    }
 
-        viewModel.deletedEvent.observe(viewLifecycleOwner, EventObserver{ bag ->
-            Toast.makeText(context, R.string.matches_box_set_deleted, Toast.LENGTH_SHORT).show()
-            findNavController().navigate(
-                MatchesBoxSetManipulatorFragmentDirections
-                    .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(bag.id, bag.name)
-            )
+    private fun makeToastForUpdateEvent() {
+        Toast.makeText(context, R.string.matches_box_set_updated, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun navigateToMatchesBoxListFragment(set: MatchesBoxSet) {
+        findNavController().navigate(
+            MatchesBoxSetManipulatorFragmentDirections
+                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(
+                    args.setId,
+                    set.name
+                )
+        )
+    }
+
+    private fun observeDeleteEvent() {
+        viewModel.deletedEvent.observe(viewLifecycleOwner, EventObserver { bag ->
+            makeToastForDeleteEvent()
+            navigateToMatchesBoxSetListFragment(bag)
         })
+    }
 
-        setHasOptionsMenu(true)
+    private fun makeToastForDeleteEvent() {
+        Toast.makeText(context, R.string.matches_box_set_deleted, Toast.LENGTH_SHORT).show()
+    }
 
-        return binding.root
+    private fun navigateToMatchesBoxSetListFragment(bag: Bag) {
+        findNavController().navigate(
+            MatchesBoxSetManipulatorFragmentDirections
+                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(
+                    bag.id,
+                    bag.name
+                )
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.delete_menu, menu)
+        setupActionDeleteVisibility(menu)
+    }
+
+    private fun setupActionDeleteVisibility(menu: Menu) {
         val item = menu.findItem(R.id.action_delete)
         item.isVisible = isDeleteVisible
     }
