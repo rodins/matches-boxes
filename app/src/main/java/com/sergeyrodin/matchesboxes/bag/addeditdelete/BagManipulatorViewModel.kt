@@ -29,41 +29,77 @@ class BagManipulatorViewModel(private val dataSource: RadioComponentsDataSource)
 
     fun start(id: Int) {
         viewModelScope.launch{
-            bag = dataSource.getBagById(id)
-            name.value = bag?.name?:""
+            getBagById(id)
+            getBagNameToDisplay()
         }
+    }
+
+    private suspend fun getBagById(id: Int) {
+        bag = dataSource.getBagById(id)
+    }
+
+    private fun getBagNameToDisplay() {
+        name.value = bag?.name ?: ""
     }
 
     fun saveBag() {
         if(name.value?.trim() != "") {
-            if(bag == null) {
-                addNewBag()
-            }else{
-                updateBag()
-            }
+            addOrUpdateBag()
         }
     }
 
-    fun deleteBag(){
-        viewModelScope.launch {
-            dataSource.deleteBag(bag!!)
-            _eventDeleted.value = Event(Unit)
+    private fun addOrUpdateBag() {
+        if (bag == null) {
+            addNewBag()
+        } else {
+            updateBag()
         }
     }
 
     private fun addNewBag() {
         viewModelScope.launch {
-            val newBag = Bag(name = name.value!!)
-            dataSource.insertBag(newBag)
-            _eventAdded.value = Event(Unit)
+            insertBagToDb()
+            callAddEvent()
         }
+    }
+
+    private suspend fun insertBagToDb() {
+        val newBag = Bag(name = name.value!!)
+        dataSource.insertBag(newBag)
+    }
+
+    private fun callAddEvent() {
+        _eventAdded.value = Event(Unit)
     }
 
     private fun updateBag() {
         viewModelScope.launch {
-            bag?.name = name.value!!
-            dataSource.updateBag(bag!!)
-            _eventEdited.value = Event(name.value!!)
+            updateBagInDb()
+            callUpdateEvent()
         }
+    }
+
+    private suspend fun updateBagInDb() {
+        bag?.name = name.value!!
+        dataSource.updateBag(bag!!)
+    }
+
+    private fun callUpdateEvent() {
+        _eventEdited.value = Event(name.value!!)
+    }
+
+    fun deleteBag(){
+        viewModelScope.launch {
+            deleteBagFromDb()
+            callDeleteEvent()
+        }
+    }
+
+    private suspend fun deleteBagFromDb() {
+        dataSource.deleteBag(bag!!)
+    }
+
+    private fun callDeleteEvent() {
+        _eventDeleted.value = Event(Unit)
     }
 }
