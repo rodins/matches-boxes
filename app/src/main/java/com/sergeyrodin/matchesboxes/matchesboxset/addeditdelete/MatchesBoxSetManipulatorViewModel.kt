@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 class MatchesBoxSetManipulatorViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
 
     private var matchesBoxSet: MatchesBoxSet? = null
-    private var _bagId: Int = 0
+    private var bagIdForNewMatchesBoxSet: Int = 0
 
     private val _addedEvent = MutableLiveData<Event<String>>()
     val addedEvent: LiveData<Event<String>>
@@ -30,48 +30,105 @@ class MatchesBoxSetManipulatorViewModel(private val dataSource: RadioComponentsD
     val name = MutableLiveData<String>()
 
     fun start(bagId: Int, setId: Int) {
-        _bagId = bagId
+        bagIdForNewMatchesBoxSet = bagId
         viewModelScope.launch {
-            matchesBoxSet = dataSource.getMatchesBoxSetById(setId)
-            name.value = matchesBoxSet?.name?:""
+            getMatchesBoxSetById(setId)
+            getMatchesBoxSetNameToDisplay()
         }
+    }
+
+    private suspend fun getMatchesBoxSetById(setId: Int) {
+        matchesBoxSet = dataSource.getMatchesBoxSetById(setId)
+    }
+
+    private fun getMatchesBoxSetNameToDisplay() {
+        name.value = matchesBoxSet?.name ?: ""
     }
 
     fun saveMatchesBoxSet() {
         if(name.value?.trim() != "") {
-            if(matchesBoxSet == null) {
-                addMatchesBoxSet()
-            }else{
-                updateMatchesBoxSet()
-            }
+            addOrUpdateMatchesBoxSet()
         }
     }
 
-    fun deleteMatchesBoxSet() {
-        viewModelScope.launch {
-            val bagId = matchesBoxSet?.bagId
-            dataSource.deleteMatchesBoxSet(matchesBoxSet!!)
-            val bag = dataSource.getBagById(bagId!!)
-            bag?.let {
-                _deletedEvent.value = Event(bag)
-            }
+    private fun addOrUpdateMatchesBoxSet() {
+        if (matchesBoxSet == null) {
+            addMatchesBoxSet()
+        } else {
+            updateMatchesBoxSet()
         }
     }
 
     private fun addMatchesBoxSet() {
         viewModelScope.launch {
-            val newMatchesBoxSet = MatchesBoxSet(name = name.value!!, bagId = _bagId)
-            dataSource.insertMatchesBoxSet(newMatchesBoxSet)
-            val bag = dataSource.getBagById(_bagId)
-            _addedEvent.value = Event(bag?.name?:"")
+            insertMatchesBoxSetToDb()
+            callAddedEvent()
         }
+    }
+
+    private suspend fun insertMatchesBoxSetToDb() {
+        val newMatchesBoxSet = MatchesBoxSet(name = name.value!!, bagId = bagIdForNewMatchesBoxSet)
+        dataSource.insertMatchesBoxSet(newMatchesBoxSet)
+    }
+
+    private suspend fun callAddedEvent() {
+        val bagName = getBagNameById()
+        callAddedEventWithBagName(bagName)
+    }
+
+    private suspend fun getBagNameById(): String {
+        val bag = dataSource.getBagById(bagIdForNewMatchesBoxSet)
+        return bag?.name ?: ""
+    }
+
+    private fun callAddedEventWithBagName(bagName: String) {
+        _addedEvent.value = Event(bagName)
     }
 
     private fun updateMatchesBoxSet() {
         viewModelScope.launch {
-            matchesBoxSet?.name = name.value!!
-            dataSource.updateMatchesBoxSet(matchesBoxSet!!)
-            _updatedEvent.value = Event(matchesBoxSet!!)
+            updateMatchesBoxSetInDb()
+            callUpdatedEvent()
+        }
+    }
+
+    private suspend fun updateMatchesBoxSetInDb() {
+        matchesBoxSet?.name = name.value!!
+        dataSource.updateMatchesBoxSet(matchesBoxSet!!)
+    }
+
+    private fun callUpdatedEvent() {
+        _updatedEvent.value = Event(matchesBoxSet!!)
+    }
+
+    fun deleteMatchesBoxSet() {
+        viewModelScope.launch {
+            val bagId = getBagIdOfMatchesBoxSetToBeDeleted()
+            deleteMatchesBoxSetFromDb()
+            callDeleteEventWithBagId(bagId)
+        }
+    }
+
+    private fun getBagIdOfMatchesBoxSetToBeDeleted(): Int? {
+        return matchesBoxSet?.bagId
+    }
+
+    private suspend fun deleteMatchesBoxSetFromDb() {
+        dataSource.deleteMatchesBoxSet(matchesBoxSet!!)
+    }
+
+    private suspend fun callDeleteEventWithBagId(bagId: Int?) {
+        val bag = getBagById(bagId)
+        callDeleteEvent(bag)
+    }
+
+    private suspend fun getBagById(bagId: Int?): Bag? {
+        return dataSource.getBagById(bagId!!)
+    }
+
+    private fun callDeleteEvent(bag: Bag?) {
+        bag?.let {
+            _deletedEvent.value = Event(bag)
         }
     }
 }
