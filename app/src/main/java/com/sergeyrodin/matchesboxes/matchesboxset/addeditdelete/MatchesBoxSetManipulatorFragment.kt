@@ -19,7 +19,7 @@ import com.sergeyrodin.matchesboxes.util.hideKeyboard
 class MatchesBoxSetManipulatorFragment : Fragment() {
 
     private lateinit var viewModel: MatchesBoxSetManipulatorViewModel
-    private lateinit var args: MatchesBoxSetManipulatorFragmentArgs
+    private val args by navArgs<MatchesBoxSetManipulatorFragmentArgs>()
     private var isDeleteVisible = false
 
     override fun onCreateView(
@@ -29,7 +29,6 @@ class MatchesBoxSetManipulatorFragment : Fragment() {
         viewModel = createViewModel()
         val binding = createBinding(inflater)
         setupBinding(binding)
-        args = createArgs()
         setupIsDeleteVisible()
         startViewModel()
         observeAddEvent()
@@ -54,11 +53,6 @@ class MatchesBoxSetManipulatorFragment : Fragment() {
     private fun setupBinding(binding: FragmentMatchesBoxSetManipulatorBinding) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
-    }
-
-    private fun createArgs(): MatchesBoxSetManipulatorFragmentArgs {
-        val args by navArgs<MatchesBoxSetManipulatorFragmentArgs>()
-        return args
     }
 
     private fun setupIsDeleteVisible() {
