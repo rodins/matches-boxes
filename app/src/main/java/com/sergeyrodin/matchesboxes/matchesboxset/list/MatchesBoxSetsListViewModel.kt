@@ -31,15 +31,23 @@ class MatchesBoxSetsListViewModel(private val dataSource: RadioComponentsDataSou
     }
 
     fun addSet() {
+        callAddEvent()
+    }
+
+    private fun callAddEvent() {
         _addSetEvent.value = Event(Unit)
     }
 
     fun selectSet(id: Int) {
         viewModelScope.launch {
             val set = dataSource.getMatchesBoxSetById(id)
-            set?.let{
-                _selectSetEvent.value = Event(it)
-            }
+            callSelectEvent(set)
+        }
+    }
+
+    private fun callSelectEvent(set: MatchesBoxSet?) {
+        set?.let {
+            _selectSetEvent.value = Event(it)
         }
     }
 }
