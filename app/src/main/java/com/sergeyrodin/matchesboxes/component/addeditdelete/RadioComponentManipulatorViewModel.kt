@@ -200,7 +200,7 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
         spinnersUpdater.boxSelected(newIndex)
     }
 
-    fun setSelected(newIndex: Int) {
+    fun setOfBoxesSelected(newIndex: Int) {
         viewModelScope.launch {
             spinnersUpdater.setSelected(newIndex)
         }

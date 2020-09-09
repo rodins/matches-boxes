@@ -19,193 +19,278 @@ import com.sergeyrodin.matchesboxes.util.hideKeyboard
 
 class RadioComponentManipulatorFragment : Fragment() {
     private val viewModel by viewModels<RadioComponentManipulatorViewModel> {
-        RadioComponentManipulatorViewModelFactory(
+        getViewModelFactory()
+    }
+    private val args by navArgs<RadioComponentManipulatorFragmentArgs>()
+
+    private fun getViewModelFactory(): RadioComponentManipulatorViewModelFactory {
+        return RadioComponentManipulatorViewModelFactory(
             (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
         )
     }
+
+    private lateinit var binding: FragmentRadioComponentManipulatorBinding
     private var isDeleteVisible = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentRadioComponentManipulatorBinding.inflate(inflater)
+        binding = createBinding(inflater)
+        setupIsDeleteVisible()
+        startViewModel()
+        setupBinding()
+        setupSpinners()
+        setupManipulatorEvents()
+        observeSavingErrorEvent()
+        setHasOptionsMenu(true)
+        return binding.root
+    }
 
-        val args by navArgs<RadioComponentManipulatorFragmentArgs>()
+    private fun createBinding(inflater: LayoutInflater): FragmentRadioComponentManipulatorBinding {
+        return FragmentRadioComponentManipulatorBinding.inflate(inflater)
+    }
+
+    private fun setupIsDeleteVisible() {
         isDeleteVisible = args.componentId != ADD_NEW_ITEM_ID
+    }
 
+    private fun startViewModel() {
         viewModel.start(args.boxId, args.componentId)
+    }
+
+    private fun setupBinding() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+    }
 
-        viewModel.boxNames.observe(viewLifecycleOwner, Observer{ boxNames ->
-            context?.let{
-                ArrayAdapter(
-                    it,
-                    android.R.layout.simple_spinner_item,
-                    boxNames
-                ).also{ adapter ->
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                    binding.boxesSpinner.adapter = adapter
-                    binding.boxesSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
-                        override fun onNothingSelected(p0: AdapterView<*>?) {
-                            TODO("Not yet implemented")
-                        }
+    private fun setupSpinners() {
+        setupBoxSpinner()
+        setupSetSpinner()
+        setupBagSpinner()
+    }
 
-                        override fun onItemSelected(
-                            parent: AdapterView<*>?,
-                            view: View?,
-                            position: Int,
-                            id: Long
-                        ) {
-                            viewModel.boxSelected(position)
-                        }
+    private fun setupBoxSpinner() {
+        observeBoxNames()
+        observeBoxSelectedIndex()
+    }
 
-                    }
-                }
-            }
+    private fun observeBoxNames() {
+        viewModel.boxNames.observe(viewLifecycleOwner, Observer { boxNames ->
+            setAdapterForBoxes(createArrayAdapter(boxNames))
+            setItemSelectedListenerForBoxes()
         })
+    }
 
+    private fun createArrayAdapter(
+        names: List<String>
+    ): ArrayAdapter<String> {
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            names
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        return adapter
+    }
+
+    private fun setAdapterForBoxes(adapter: ArrayAdapter<String>) {
+        binding.boxesSpinner.adapter = adapter
+    }
+
+    private fun setItemSelectedListenerForBoxes() {
+        binding.boxesSpinner.onItemSelectedListener = getItemSelectedListener { position ->
+            viewModel.boxSelected(position)
+        }
+    }
+
+    private fun getItemSelectedListener(itemSelectedCallback: (Int) -> Unit): AdapterView.OnItemSelectedListener {
+        return object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                itemSelectedCallback(position)
+            }
+
+        }
+    }
+
+    private fun observeBoxSelectedIndex() {
         viewModel.boxSelectedIndex.observe(viewLifecycleOwner, Observer { index ->
-            index?.let{
-                binding.boxesSpinner.setSelection(index)
-            }
+            setBoxesSpinnerSelection(index)
         })
+    }
 
-        viewModel.setNames.observe(viewLifecycleOwner, Observer{ setNames ->
-            context?.let{
-                ArrayAdapter(
-                    it,
-                    android.R.layout.simple_spinner_item,
-                    setNames
-                ).also{ adapter ->
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                    binding.setsSpinner.adapter = adapter
-                    binding.setsSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
-                        override fun onNothingSelected(p0: AdapterView<*>?) {
-                            TODO("Not yet implemented")
-                        }
+    private fun setBoxesSpinnerSelection(index: Int) {
+        binding.boxesSpinner.setSelection(index)
+    }
 
-                        override fun onItemSelected(
-                            parent: AdapterView<*>?,
-                            view: View?,
-                            position: Int,
-                            id: Long
-                        ) {
-                            viewModel.setSelected(position)
-                        }
-                    }
-                }
-            }
+    private fun setupSetSpinner() {
+        observeSetNames()
+        observeSetSelectedIndex()
+    }
+
+    private fun observeSetNames() {
+        viewModel.setNames.observe(viewLifecycleOwner, Observer { setNames ->
+            setAdapterForSets(createArrayAdapter(setNames))
+            setItemSelectedListenerForSets()
         })
+    }
 
-        viewModel.setSelectedIndex.observe(viewLifecycleOwner, Observer{ index ->
-            index?.let{
-                binding.setsSpinner.setSelection(index)
-            }
+    private fun setAdapterForSets(adapter: ArrayAdapter<String>) {
+        binding.setsSpinner.adapter = adapter
+    }
+
+    private fun setItemSelectedListenerForSets() {
+        binding.setsSpinner.onItemSelectedListener = getItemSelectedListener { position ->
+            viewModel.setOfBoxesSelected(position)
+        }
+    }
+
+    private fun observeSetSelectedIndex() {
+        viewModel.setSelectedIndex.observe(viewLifecycleOwner, Observer { index ->
+            setSetsSpinnerSelection(index)
         })
+    }
 
-        viewModel.bagNames.observe(viewLifecycleOwner, Observer{ bagNames ->
-            context?.let{
-                ArrayAdapter(
-                    it,
-                    android.R.layout.simple_spinner_item,
-                    bagNames
-                ).also{ adapter ->
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                    binding.bagsSpinner.adapter = adapter
-                    binding.bagsSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
-                        override fun onNothingSelected(p0: AdapterView<*>?) {
-                            TODO("Not yet implemented")
-                        }
+    private fun setSetsSpinnerSelection(index: Int) {
+        binding.setsSpinner.setSelection(index)
+    }
 
-                        override fun onItemSelected(
-                            parent: AdapterView<*>?,
-                            view: View?,
-                            position: Int,
-                            id: Long
-                        ) {
-                           viewModel.bagSelected(position)
-                        }
-                    }
-                }
-            }
+    private fun setupBagSpinner() {
+        observeBagNames()
+        observeBagSelectedIndex()
+    }
+
+    private fun observeBagNames() {
+        viewModel.bagNames.observe(viewLifecycleOwner, Observer { bagNames ->
+            setBagsAdapter(createArrayAdapter(bagNames))
+            setItemSelectedListenerForBags()
         })
+    }
 
-        viewModel.bagSelectedIndex.observe(viewLifecycleOwner, Observer{ index ->
-            index?.let{
-                binding.bagsSpinner.setSelection(index)
-            }
+    private fun setBagsAdapter(adapter: ArrayAdapter<String>) {
+        binding.bagsSpinner.adapter = adapter
+    }
+
+    private fun setItemSelectedListenerForBags() {
+        binding.bagsSpinner.onItemSelectedListener = getItemSelectedListener { position ->
+            viewModel.bagSelected(position)
+        }
+    }
+
+    private fun observeBagSelectedIndex() {
+        viewModel.bagSelectedIndex.observe(viewLifecycleOwner, Observer { index ->
+            setSelectionForBagsSpinner(index)
         })
+    }
 
-        viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver{ box ->
+    private fun setSelectionForBagsSpinner(index: Int?) {
+        index?.let {
+            binding.bagsSpinner.setSelection(index)
+        }
+    }
+
+    private fun setupManipulatorEvents() {
+        observeAddEvent()
+        observeUpdateEvent()
+        observeDeleteEvent()
+    }
+
+    private fun observeAddEvent() {
+        viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver { box ->
             hideKeyboard(activity)
             Toast.makeText(context, R.string.component_added, Toast.LENGTH_SHORT).show()
-            if(args.isBuy || args.query.isNotEmpty()) {
-                if(args.isBuy) {
+            if (args.isBuy || args.query.isNotEmpty()) {
+                if (args.isBuy) {
                     findNavController().navigate(
                         RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToNeededComponentsFragment()
                     )
-                }else {
+                } else {
                     findNavController().navigate(
-                        RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(args.query)
+                        RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(
+                            args.query
+                        )
                     )
                 }
-            }else {
+            } else {
                 findNavController().navigate(
                     RadioComponentManipulatorFragmentDirections
-                        .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(box.id, box.name)
+                        .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(
+                            box.id,
+                            box.name
+                        )
                 )
             }
         })
+    }
 
-        viewModel.updateItemEvent.observe(viewLifecycleOwner, EventObserver{ box ->
+    private fun observeUpdateEvent() {
+        viewModel.updateItemEvent.observe(viewLifecycleOwner, EventObserver { box ->
             hideKeyboard(activity)
             Toast.makeText(context, R.string.component_updated, Toast.LENGTH_SHORT).show()
-            if(args.isBuy || args.query.isNotEmpty()) {
-                if(args.isBuy) {
+            if (args.isBuy || args.query.isNotEmpty()) {
+                if (args.isBuy) {
                     findNavController().navigate(
                         RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToNeededComponentsFragment()
                     )
-                }else {
+                } else {
                     findNavController().navigate(
-                        RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(args.query)
+                        RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(
+                            args.query
+                        )
                     )
                 }
-            }else {
+            } else {
                 findNavController().navigate(
                     RadioComponentManipulatorFragmentDirections
-                        .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(box.id, box.name)
+                        .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(
+                            box.id,
+                            box.name
+                        )
                 )
             }
         })
+    }
 
-        viewModel.deleteItemEvent.observe(viewLifecycleOwner, EventObserver{ title ->
+    private fun observeDeleteEvent() {
+        viewModel.deleteItemEvent.observe(viewLifecycleOwner, EventObserver { title ->
             Toast.makeText(context, R.string.component_deleted, Toast.LENGTH_SHORT).show()
-            if(args.isBuy || args.query.isNotEmpty()) {
-                if(args.isBuy) {
+            if (args.isBuy || args.query.isNotEmpty()) {
+                if (args.isBuy) {
                     findNavController().navigate(
                         RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToNeededComponentsFragment()
                     )
-                }else {
+                } else {
                     findNavController().navigate(
-                        RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(args.query)
+                        RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(
+                            args.query
+                        )
                     )
                 }
-            }else {
+            } else {
                 findNavController().navigate(
                     RadioComponentManipulatorFragmentDirections
-                        .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(args.boxId, title)
+                        .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(
+                            args.boxId,
+                            title
+                        )
                 )
             }
         })
+    }
 
-        viewModel.savingErrorEvent.observe(viewLifecycleOwner, EventObserver{
-            Toast.makeText(requireContext(), R.string.save_component_error, Toast.LENGTH_SHORT).show()
+    private fun observeSavingErrorEvent() {
+        viewModel.savingErrorEvent.observe(viewLifecycleOwner, EventObserver {
+            Toast.makeText(requireContext(), R.string.save_component_error, Toast.LENGTH_SHORT)
+                .show()
         })
-
-        setHasOptionsMenu(true)
-
-        return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -216,7 +301,7 @@ class RadioComponentManipulatorFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.action_delete) {
+        if (item.itemId == R.id.action_delete) {
             viewModel.deleteItem()
             return true
         }

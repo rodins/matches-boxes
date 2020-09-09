@@ -567,7 +567,7 @@ class RadioComponentManipulatorViewModelTest{
         dataSource.addRadioComponents(component)
         subject.start(box4.id, component.id)
 
-        subject.setSelected(0)
+        subject.setOfBoxesSelected(0)
 
         val boxNames = subject.boxNames.getOrAwaitValue()
         assertThat(boxNames[0], `is`(box1.name))
@@ -657,7 +657,7 @@ class RadioComponentManipulatorViewModelTest{
         dataSource.addRadioComponents(component)
         subject.start(box5.id, component.id)
 
-        subject.setSelected(1)
+        subject.setOfBoxesSelected(1)
         subject.saveItem()
 
         val componentUpdated = dataSource.getRadioComponentById(component.id)
@@ -811,7 +811,7 @@ class RadioComponentManipulatorViewModelTest{
         dataSource.addMatchesBoxes(box1, box2)
         dataSource.addRadioComponents(component)
         subject.start(box1.id, component.id)
-        subject.setSelected(1)
+        subject.setOfBoxesSelected(1)
 
         val boxes = subject.boxNames.getOrAwaitValue()
         assertThat(boxes.size, `is`(0))
@@ -875,7 +875,7 @@ class RadioComponentManipulatorViewModelTest{
         dataSource.addMatchesBoxes(box1, box2)
         dataSource.addRadioComponents(component)
         subject.start(box1.id, component.id)
-        subject.setSelected(1)
+        subject.setOfBoxesSelected(1)
 
         val noBoxesTextVisible = subject.noBoxesTextVisible.getOrAwaitValue()
         assertThat(noBoxesTextVisible, `is`(true))
