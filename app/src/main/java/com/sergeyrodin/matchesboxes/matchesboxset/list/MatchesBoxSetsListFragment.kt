@@ -12,53 +12,81 @@ import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityAdapter
 import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityListener
+import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxSetsListBinding
 
-/**
- * A simple [Fragment] subclass.
- */
 class MatchesBoxSetsListFragment : Fragment() {
 
     private val args by navArgs<MatchesBoxSetsListFragmentArgs>()
+    private val viewModel by viewModels<MatchesBoxSetsListViewModel> {
+        getViewModelFactory()
+    }
+
+    private fun getViewModelFactory(): MatchesBoxSetsListViewModelFactory {
+        return MatchesBoxSetsListViewModelFactory(
+            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentMatchesBoxSetsListBinding.inflate(inflater)
-        val viewModel by viewModels<MatchesBoxSetsListViewModel> {
-            MatchesBoxSetsListViewModelFactory(
-                (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-            )
-        }
+        val binding = createBinding(inflater)
+        startViewModel()
+        setupBinding(binding)
+        observeAddEvent()
+        observeSelectEvent()
+        setHasOptionsMenu(true)
+        return binding.root
+    }
 
+    private fun createBinding(inflater: LayoutInflater): FragmentMatchesBoxSetsListBinding {
+        return FragmentMatchesBoxSetsListBinding.inflate(inflater)
+    }
+
+    private fun startViewModel() {
         viewModel.startSet(args.bagId)
+    }
 
-        val adapter = DisplayQuantityAdapter(DisplayQuantityListener{
-            viewModel.selectSet(it)
-        })
+    private fun setupBinding(binding: FragmentMatchesBoxSetsListBinding) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
-        binding.items.adapter = adapter
+        binding.items.adapter = createAdapter()
+    }
 
-        viewModel.addSetEvent.observe(viewLifecycleOwner, EventObserver{
-            findNavController().navigate(
-                MatchesBoxSetsListFragmentDirections
-                    .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(
-                        args.bagId, ADD_NEW_ITEM_ID, getString(R.string.add_set))
-            )
+    private fun createAdapter(): DisplayQuantityAdapter {
+        return DisplayQuantityAdapter(DisplayQuantityListener {
+            viewModel.selectSet(it)
         })
+    }
 
-        viewModel.selectSetEvent.observe(viewLifecycleOwner, EventObserver{ set ->
-            findNavController().navigate(
-                MatchesBoxSetsListFragmentDirections
-                    .actionMatchesBoxSetsListFragmentToMatchesBoxListFragment(set.id, set.name)
-            )
+    private fun observeAddEvent() {
+        viewModel.addSetEvent.observe(viewLifecycleOwner, EventObserver {
+            navigateToMatchesBoxSetManipulatorFragment()
         })
+    }
 
-        setHasOptionsMenu(true)
+    private fun navigateToMatchesBoxSetManipulatorFragment() {
+        findNavController().navigate(
+            MatchesBoxSetsListFragmentDirections
+                .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(
+                    args.bagId, ADD_NEW_ITEM_ID, getString(R.string.add_set)
+                )
+        )
+    }
 
-        return binding.root
+    private fun observeSelectEvent() {
+        viewModel.selectSetEvent.observe(viewLifecycleOwner, EventObserver { set ->
+            navigateToMatchesBoxListFragment(set)
+        })
+    }
+
+    private fun navigateToMatchesBoxListFragment(set: MatchesBoxSet) {
+        findNavController().navigate(
+            MatchesBoxSetsListFragmentDirections
+                .actionMatchesBoxSetsListFragmentToMatchesBoxListFragment(set.id, set.name)
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -68,13 +96,20 @@ class MatchesBoxSetsListFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if(item.itemId == R.id.action_edit) {
-            findNavController().navigate(
-                MatchesBoxSetsListFragmentDirections
-                    .actionMatchesBoxSetsListFragmentToAddEditDeleteBagFragment(args.bagId, getString(R.string.update_bag))
-            )
+            navigateToBagManipulatorFragment()
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun navigateToBagManipulatorFragment() {
+        findNavController().navigate(
+            MatchesBoxSetsListFragmentDirections
+                .actionMatchesBoxSetsListFragmentToAddEditDeleteBagFragment(
+                    args.bagId,
+                    getString(R.string.update_bag)
+                )
+        )
     }
 
 }
