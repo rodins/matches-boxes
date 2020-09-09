@@ -10,11 +10,12 @@ import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import kotlinx.coroutines.launch
 
-class MatchesBoxManipulatorViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
+class MatchesBoxManipulatorViewModel(private val dataSource: RadioComponentsDataSource) :
+    ViewModel() {
     val name = MutableLiveData<String>()
 
     private var matchesBox: MatchesBox? = null
-    private var _setId: Int = 0
+    private var matchesBoxSetIdForNewMatchesBox: Int = 0
 
     private val _addEvent = MutableLiveData<Event<String>>()
     val addEvent: LiveData<Event<String>>
@@ -29,46 +30,102 @@ class MatchesBoxManipulatorViewModel(private val dataSource: RadioComponentsData
         get() = _deleteEvent
 
     fun start(setId: Int, boxId: Int) {
-        _setId = setId
-       viewModelScope.launch {
-           matchesBox = dataSource.getMatchesBoxById(boxId)
-           name.value = matchesBox?.name?:""
-       }
-    }
-
-    fun saveMatchesBox() {
-        if(name.value?.trim() != "") {
-            if(matchesBox == null) {
-                addMatchesBox()
-            }else {
-                updateMatchesBox()
-            }
+        matchesBoxSetIdForNewMatchesBox = setId
+        viewModelScope.launch {
+            getMatchesBoxById(boxId)
+            displayMatchesBoxName()
         }
     }
 
-    fun deleteMatchesBox() {
-        viewModelScope.launch {
-            val id = matchesBox?.matchesBoxSetId
-            dataSource.deleteMatchesBox(matchesBox!!)
-            val set = dataSource.getMatchesBoxSetById(id!!)
-            _deleteEvent.value = Event(set!!)
+    private fun displayMatchesBoxName() {
+        name.value = matchesBox?.name ?: ""
+    }
+
+    private suspend fun getMatchesBoxById(boxId: Int) {
+        matchesBox = dataSource.getMatchesBoxById(boxId)
+    }
+
+    fun saveMatchesBox() {
+        if (name.value?.trim() != "") {
+            addOrUpdateMatchesBox()
+        }
+    }
+
+    private fun addOrUpdateMatchesBox() {
+        if (matchesBox == null) {
+            addMatchesBox()
+        } else {
+            updateMatchesBox()
         }
     }
 
     private fun addMatchesBox() {
         viewModelScope.launch {
-            val box = MatchesBox(name = name.value!!, matchesBoxSetId = _setId)
-            dataSource.insertMatchesBox(box)
-            val set = dataSource.getMatchesBoxSetById(_setId)
-            _addEvent.value = Event(set?.name?:"")
+            insertMatchesBox()
+            callAddEvent()
         }
+    }
+
+    private suspend fun insertMatchesBox() {
+        val box = MatchesBox(name = name.value!!, matchesBoxSetId = matchesBoxSetIdForNewMatchesBox)
+        dataSource.insertMatchesBox(box)
+    }
+
+    private suspend fun callAddEvent() {
+        val name = getMatchesBoxSetNameById()
+        callAddEventWithMatchesBoxSetName(name)
+    }
+
+    private suspend fun getMatchesBoxSetNameById(): String {
+        val set = dataSource.getMatchesBoxSetById(matchesBoxSetIdForNewMatchesBox)
+        return set?.name ?: ""
+    }
+
+    private fun callAddEventWithMatchesBoxSetName(name: String) {
+        _addEvent.value = Event(name)
     }
 
     private fun updateMatchesBox() {
         viewModelScope.launch {
-            matchesBox?.name = name.value!!
-            dataSource.updateMatchesBox(matchesBox!!)
-            _updateEvent.value = Event(name.value!!)
+            updateMatchesBoxInDb()
+            callUpdateEvent()
         }
+    }
+
+    private suspend fun updateMatchesBoxInDb() {
+        matchesBox?.name = name.value!!
+        dataSource.updateMatchesBox(matchesBox!!)
+    }
+
+    private fun callUpdateEvent() {
+        _updateEvent.value = Event(name.value!!)
+    }
+
+    fun deleteMatchesBox() {
+        viewModelScope.launch {
+            val id = getMatchesBoxSetIdOfMatchesBoxBeforeDeleted()
+            deleteMatchesBoxIdDb()
+            callDeleteEvent(id)
+        }
+    }
+
+    private fun getMatchesBoxSetIdOfMatchesBoxBeforeDeleted(): Int? {
+        return matchesBox?.matchesBoxSetId
+    }
+
+    private suspend fun deleteMatchesBoxIdDb() {
+        dataSource.deleteMatchesBox(matchesBox!!)
+    }
+
+    private suspend fun callDeleteEvent(id: Int?) {
+        callDeleteEventWithMatchesBoxSet(getMatchesBoxSetById(id))
+    }
+
+    private suspend fun getMatchesBoxSetById(id: Int?): MatchesBoxSet? {
+        return dataSource.getMatchesBoxSetById(id!!)
+    }
+
+    private fun callDeleteEventWithMatchesBoxSet(set: MatchesBoxSet?) {
+        _deleteEvent.value = Event(set!!)
     }
 }
