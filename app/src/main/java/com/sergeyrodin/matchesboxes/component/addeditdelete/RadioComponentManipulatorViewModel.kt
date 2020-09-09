@@ -70,30 +70,39 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
 
     fun saveItem() {
         if (name.value?.trim() != "" && spinnersUpdater.matchesBoxId != NO_ID_SET) {
-            val componentsQuantity = quantity.value?.toIntOrNull() ?: 0
-            if (componentsQuantity >= 0) {
-                if (radioComponent == null) {
-                    addItem(name.value!!, componentsQuantity)
-                } else {
-                    updateItem(name.value!!, componentsQuantity)
-                }
-            } else {
-                callSavingErrorEvent()
-            }
+            saveItemIfQuantityIsNotNegative(getComponentsQuantity())
         } else {
             callSavingErrorEvent()
         }
     }
 
+    private fun saveItemIfQuantityIsNotNegative(componentsQuantity: Int) {
+        if (componentsQuantity >= 0) {
+            addOrUpdateRadioComponent(componentsQuantity)
+        } else {
+            callSavingErrorEvent()
+        }
+    }
+
+    private fun getComponentsQuantity() = quantity.value?.toIntOrNull() ?: 0
+
+    private fun addOrUpdateRadioComponent(componentsQuantity: Int) {
+        if (radioComponent == null) {
+            addItem(name.value!!, componentsQuantity)
+        } else {
+            updateItem(name.value!!, componentsQuantity)
+        }
+    }
+
     private fun addItem(name: String, quantity: Int) {
         viewModelScope.launch {
-            val id = insertRadioComponentToDb(name, quantity)
+            val id = insertRadioComponentToDbAndReturnId(name, quantity)
             insertHistory(id.toInt(), quantity)
             callAddItemEvent()
         }
     }
 
-    private suspend fun insertRadioComponentToDb(
+    private suspend fun insertRadioComponentToDbAndReturnId(
         name: String,
         quantity: Int
     ): Long {
