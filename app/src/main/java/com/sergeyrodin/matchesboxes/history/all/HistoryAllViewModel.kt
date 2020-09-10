@@ -1,29 +1,39 @@
 package com.sergeyrodin.matchesboxes.history.all
 
 import androidx.lifecycle.*
+import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 import java.lang.IllegalArgumentException
 
-class HistoryAllViewModel(dataSource: RadioComponentsDataSource): ViewModel() {
+class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
     private val historyList = dataSource.getHistoryList()
 
-    val displayHistoryList = historyList.switchMap{list ->
+    val displayHistoryList = historyList.switchMap{ list ->
         liveData{
-            val outputList = mutableListOf<HistoryPresentation>()
-            list.forEach { history ->
-                val component = dataSource.getRadioComponentById(history.componentId)
-                val displayHistory = HistoryPresentation(
-                    history.id,
-                    history.componentId,
-                    component?.name?:"",
-                    history.quantity.toString(),
-                    convertLongToDateString(history.date)
-                )
-                outputList.add(displayHistory)
-            }
-            emit(outputList)
+            emit(convertHistoryListToHistoryPresentationList(list))
         }
+    }
+
+    private suspend fun convertHistoryListToHistoryPresentationList(
+        list: List<History>
+    ): List<HistoryPresentation> {
+        val outputList = mutableListOf<HistoryPresentation>()
+        list.forEach { history ->
+            outputList.add(convertHistoryToHistoryPresentation(history))
+        }
+        return outputList
+    }
+
+    private suspend fun convertHistoryToHistoryPresentation(history: History): HistoryPresentation {
+        val component = dataSource.getRadioComponentById(history.componentId)
+        return HistoryPresentation(
+            history.id,
+            history.componentId,
+            component?.name ?: "",
+            history.quantity.toString(),
+            convertLongToDateString(history.date)
+        )
     }
 
     val noHistoryTextVisible = historyList.map{
