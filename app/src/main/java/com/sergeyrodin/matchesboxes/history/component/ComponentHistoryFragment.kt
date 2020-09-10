@@ -12,24 +12,39 @@ import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentComponentHistoryBinding
 
 class ComponentHistoryFragment : Fragment() {
+    private lateinit var binding: FragmentComponentHistoryBinding
+    private val args by navArgs<ComponentHistoryFragmentArgs>()
+    private val viewModel by viewModels<ComponentHistoryViewModel> {
+        getViewModelFactory()
+    }
+
+    private fun getViewModelFactory(): ComponentHistoryViewModelFactory {
+        return ComponentHistoryViewModelFactory(
+            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentComponentHistoryBinding.inflate(inflater)
-        val viewModel by viewModels<ComponentHistoryViewModel> {
-            ComponentHistoryViewModelFactory(
-                (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-            )
-        }
-        val args by navArgs<ComponentHistoryFragmentArgs>()
-        viewModel.start(args.componentId)
-        binding.displayComponentHistoryList.adapter = DisplayComponentHistoryAdapter()
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
-
+        createBinding(inflater)
+        startViewModel()
+        setupBinding()
         return binding.root
     }
 
+    private fun createBinding(inflater: LayoutInflater) {
+        binding = FragmentComponentHistoryBinding.inflate(inflater)
+    }
+
+    private fun startViewModel() {
+        viewModel.start(args.componentId)
+    }
+
+    private fun setupBinding() {
+        binding.displayComponentHistoryList.adapter = DisplayComponentHistoryAdapter()
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
+    }
 }
