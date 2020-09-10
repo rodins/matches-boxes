@@ -4,19 +4,22 @@ import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 
-class ComponentHistoryViewModel(val dataSource: RadioComponentsDataSource): ViewModel() {
+class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
     private val componentId = MutableLiveData<Int>()
     val historyList = componentId.switchMap { id ->
         liveData {
-            val list = dataSource.getHistoryListByComponentId(id)
-            val output = list.map{history ->
-                ComponentHistoryPresentation(
-                    history.id,
-                    convertLongToDateString(history.date),
-                    history.quantity.toString()
-                )
-            }
-            emit(output)
+            emit(getComponentHistoryPresentationListByComponentId(id))
+        }
+    }
+
+    private suspend fun getComponentHistoryPresentationListByComponentId(id: Int): List<ComponentHistoryPresentation> {
+        val list = dataSource.getHistoryListByComponentId(id)
+        return list.map { history ->
+            ComponentHistoryPresentation(
+                history.id,
+                convertLongToDateString(history.date),
+                history.quantity.toString()
+            )
         }
     }
 
