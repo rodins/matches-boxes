@@ -18,13 +18,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="@dimen/small_margin"
         android:onClick="@{() -> clickListener.onClick(displayQuantity.id)}">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="@dimen/small_margin"
             android:contentDescription="@string/direcotry_icon"
             app:srcCompat="@drawable/ic_matchesbox" />
 
@@ -34,14 +34,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@{displayQuantity.name}"
-            android:textSize="20sp"
-            tools:text="Bug text is here" />
+            android:textSize="@dimen/name_text_size"
+            tools:text="Bag text is here" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{displayQuantity.componentsQuantity}"
-            android:textSize="24sp"
+            android:textSize="@dimen/quantity_text_size"
             tools:text="34" />
     </LinearLayout>
 </layout>
