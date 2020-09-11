@@ -27,8 +27,7 @@ class MatchesBoxSetsListViewModel(private val dataSource: RadioComponentsDataSou
         get() = _selectSetEvent
 
     fun startSet(id: Int) {
-        if(setsList.value == null)
-            bagId.value = id
+        bagId.value = id
     }
 
     fun addSet() {
