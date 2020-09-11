@@ -28,9 +28,11 @@ class BagManipulatorViewModel(private val dataSource: RadioComponentsDataSource)
     private var bag: Bag? = null
 
     fun start(id: Int) {
-        viewModelScope.launch{
-            getBagById(id)
-            getBagNameToDisplay()
+        if(name.value == null) {
+            viewModelScope.launch{
+                getBagById(id)
+                getBagNameToDisplay()
+            }
         }
     }
 
