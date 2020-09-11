@@ -582,7 +582,6 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
@@ -911,6 +910,33 @@ class MainActivityTest {
         onView(withText(component.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(R.string.update_component)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun updateComponent_nameInListUpdated() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 3, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withText(box.name)).perform(click())
+        onView(withText(component.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withId(R.id.component_edit)).perform(replaceText("Component updated"))
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        onView(withText("Component updated")).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
