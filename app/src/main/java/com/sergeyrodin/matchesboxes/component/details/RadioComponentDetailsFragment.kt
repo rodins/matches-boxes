@@ -29,6 +29,7 @@ class RadioComponentDetailsFragment : Fragment() {
     private lateinit var binding: FragmentRadioComponentDetailsBinding
 
     private val args by navArgs<RadioComponentDetailsFragmentArgs>()
+    private var shouldInfoButtonBeDisplayed = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,6 +40,7 @@ class RadioComponentDetailsFragment : Fragment() {
         startViewModel()
         observeEditEvent()
         showInfoButtonIfSearchWebAppAvailable()
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -82,7 +84,7 @@ class RadioComponentDetailsFragment : Fragment() {
                 getComponentName()
             ).resolveActivity(requireActivity().packageManager)
         ) {
-            setHasOptionsMenu(true)
+            shouldInfoButtonBeDisplayed = true
         }
     }
 
@@ -91,6 +93,12 @@ class RadioComponentDetailsFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.info_menu, menu)
+        setupActionInfoVisibility(menu)
+    }
+
+    private fun setupActionInfoVisibility(menu: Menu) {
+        val item = menu.findItem(R.id.action_info)
+        item.isVisible = shouldInfoButtonBeDisplayed
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
