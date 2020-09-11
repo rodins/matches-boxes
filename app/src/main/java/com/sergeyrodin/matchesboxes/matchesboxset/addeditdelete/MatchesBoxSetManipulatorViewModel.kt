@@ -30,10 +30,12 @@ class MatchesBoxSetManipulatorViewModel(private val dataSource: RadioComponentsD
     val name = MutableLiveData<String>()
 
     fun start(bagId: Int, setId: Int) {
-        bagIdForNewMatchesBoxSet = bagId
-        viewModelScope.launch {
-            getMatchesBoxSetById(setId)
-            getMatchesBoxSetNameToDisplay()
+        if(name.value == null) {
+            bagIdForNewMatchesBoxSet = bagId
+            viewModelScope.launch {
+                getMatchesBoxSetById(setId)
+                getMatchesBoxSetNameToDisplay()
+            }
         }
     }
 
