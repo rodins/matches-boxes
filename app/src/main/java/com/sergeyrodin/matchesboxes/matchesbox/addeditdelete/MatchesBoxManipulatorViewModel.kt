@@ -30,10 +30,12 @@ class MatchesBoxManipulatorViewModel(private val dataSource: RadioComponentsData
         get() = _deleteEvent
 
     fun start(setId: Int, boxId: Int) {
-        matchesBoxSetIdForNewMatchesBox = setId
-        viewModelScope.launch {
-            getMatchesBoxById(boxId)
-            displayMatchesBoxName()
+        if(name.value == null) {
+            matchesBoxSetIdForNewMatchesBox = setId
+            viewModelScope.launch {
+                getMatchesBoxById(boxId)
+                displayMatchesBoxName()
+            }
         }
     }
 
