@@ -18,7 +18,7 @@
             android:id="@+id/display_component_history_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="8dp"
+            android:layout_margin="@dimen/list_margin"
             app:displayComponentHistoryListData="@{viewModel.historyList}"
             app:noDataViewHidden="@{viewModel.noItemsTextVisible}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
@@ -28,7 +28,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:textAlignment="center"
-            android:textSize="20sp"
+            android:textSize="@dimen/no_items_text_size"
             android:text="@string/no_history"
             app:noDataTextVisible="@{viewModel.noItemsTextVisible}"/>
 

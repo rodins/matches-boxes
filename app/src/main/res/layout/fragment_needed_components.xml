@@ -17,7 +17,7 @@
             android:id="@+id/items"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="8dp"
+            android:layout_margin="@dimen/list_margin"
             app:radioComponentsListData="@{viewModel.items}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/no_components_found"
-            android:textSize="20sp"
+            android:textSize="@dimen/no_items_text_size"
             app:noDataTextVisible="@{viewModel.noComponentsTextVisible}" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

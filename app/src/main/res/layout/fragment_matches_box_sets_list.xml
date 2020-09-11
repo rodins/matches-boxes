@@ -18,7 +18,7 @@
                 android:id="@+id/items"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="8dp"
+                android:layout_margin="@dimen/list_margin"
                 app:displayQuantityListData="@{viewModel.setsList}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:textSize="20sp"
+                android:textSize="@dimen/no_items_text_size"
                 android:text="@string/no_matches_box_sets_added"
                 app:noDataTextVisible="@{viewModel.isNoSetsTextVisible}"/>
 
