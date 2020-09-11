@@ -110,6 +110,25 @@ class MainActivityTest {
     }
 
     @Test
+    fun updateBag_nameInListUpdated() = runBlocking{
+        val bag = Bag(1, "Bag")
+        dataSource.insertBag(bag)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+
+        onView(withId(R.id.bag_edit)).perform(replaceText("Bag updated"))
+        onView(withId(R.id.save_bag_fab)).perform(click())
+        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
+
+        onView(withText("Bag updated")).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
     fun editBagClick_nameEquals() = runBlocking{
         val bag = Bag(1, "Bag")
         dataSource.insertBag(bag)
