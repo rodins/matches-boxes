@@ -20,7 +20,8 @@ class RadioComponentDetailsViewModel(private val dataSource: RadioComponentsData
         get() = _editEvent
 
     fun start(id: Int) {
-        componentId.value = id
+        if(details.value == null)
+            componentId.value = id
     }
 
     fun editComponent() {
