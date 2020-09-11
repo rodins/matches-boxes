@@ -25,7 +25,8 @@ class SearchViewModel(private val dataSource: RadioComponentsDataSource) : ViewM
         get() = _addComponentEvent
 
     fun start(query: String) {
-        searchQuery.value = query
+        if(items.value == null)
+            searchQuery.value = query
     }
 
     fun addComponent() {
