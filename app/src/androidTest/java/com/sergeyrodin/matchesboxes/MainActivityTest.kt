@@ -273,6 +273,27 @@ class MainActivityTest {
     }
 
     @Test
+    fun updateSet_nameInListUpdated() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.set_edit)).perform(replaceText("Set updated"))
+        onView(withId(R.id.save_set_fab)).perform(click())
+        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
+
+        onView(withText("Set updated")).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
     fun setClick_titleEquals() = runBlocking {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)

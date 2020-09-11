@@ -27,8 +27,7 @@ class MatchesBoxListViewModel(private val dataSource: RadioComponentsDataSource)
         get() = _selectBoxEvent
 
     fun startBox(id: Int) {
-        if(boxesList.value == null)
-            matchesBoxSetId.value = id
+        matchesBoxSetId.value = id
     }
 
     fun addBox() {
