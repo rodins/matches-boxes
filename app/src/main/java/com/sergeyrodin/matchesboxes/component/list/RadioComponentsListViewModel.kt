@@ -21,7 +21,8 @@ class RadioComponentsListViewModel(private val dataSource: RadioComponentsDataSo
     }
 
     fun startComponent(id: Int) {
-        boxId.value = id
+        if(componentsList.value == null)
+            boxId.value = id
     }
 
     fun addComponent() {
