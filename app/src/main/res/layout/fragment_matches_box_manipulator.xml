@@ -26,7 +26,7 @@
                 android:layout_gravity="center"
                 android:text="@={viewModel.name}"
                 android:hint="@string/enter_box_name"
-                android:layout_margin="16dp"/>
+                android:layout_margin="@dimen/edit_text_margin"/>
 
         </LinearLayout>
 

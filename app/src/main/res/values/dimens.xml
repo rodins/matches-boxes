@@ -7,4 +7,11 @@
     <dimen name="quantity_text_size">28sp</dimen>
     <dimen name="date_text_size">12sp</dimen>
     <dimen name="small_margin">8dp</dimen>
+    <dimen name="edit_text_margin">16dp</dimen>
+    <dimen name="details_name_text_size">24sp</dimen>
+    <dimen name="details_quantity_text_size">24sp</dimen>
+    <dimen name="quantity_width">114dp</dimen>
+    <dimen name="quantity_margin">8dp</dimen>
+    <dimen name="plus_minus_text_size">20sp</dimen>
+    <dimen name="no_spinner_items_text_size">18sp</dimen>
 </resources>
