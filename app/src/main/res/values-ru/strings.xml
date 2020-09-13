@@ -9,11 +9,11 @@
     <string name="delete">Удалить</string>
     <string name="bags_label">Сумки</string>
     <string name="edit_bag_label">Редактировать сумку</string>
-    <string name="no_matches_box_sets_added">Набор коробков добавлен</string>
-    <string name="enter_matches_box_set_name">Введите имя набора коробков</string>
-    <string name="matches_box_set_added">Набор коробков добавлен</string>
+    <string name="no_matches_box_sets_added">Наборы коробок не добавлены</string>
+    <string name="enter_matches_box_set_name">Введите имя набора коробок</string>
+    <string name="matches_box_set_added">Набор коробок добавлен</string>
     <string name="edit">Редактировать</string>
-    <string name="no_matches_boxes_added">Наборы коробков не добавлены</string>
+    <string name="no_matches_boxes_added">Коробки не добавлены</string>
     <string name="enter_box_name">Введите имя коробки</string>
     <string name="box_added">Коробка добавлена</string>
     <string name="matches_box_set_updated">Набор коробок обновлен</string>
@@ -27,7 +27,7 @@
     <string name="add_bag">Добавить сумку</string>
     <string name="update_bag">Обновить сумку</string>
     <string name="add_set">Добавить набор</string>
-    <string name="update_set">ОБновить набор</string>
+    <string name="update_set">Обновить набор</string>
     <string name="add_box">Добавить коробку</string>
     <string name="update_box">Обновить коробку</string>
     <string name="add_component">Добавить компонент</string>
