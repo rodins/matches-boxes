@@ -11,7 +11,11 @@
         android:label="@string/bags_label" >
         <action
             android:id="@+id/action_bagsListFragment_to_addEditDeleteBagFragment"
-            app:destination="@id/addEditDeleteBagFragment" />
+            app:destination="@id/addEditDeleteBagFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_bagsListFragment_to_matchesBoxSetsListFragment"
             app:destination="@id/matchesBoxSetsListFragment"
@@ -68,10 +72,18 @@
         tools:layout="@layout/fragment_matches_box_sets_list" >
         <action
             android:id="@+id/action_matchesBoxSetsListFragment_to_addEditDeleteMatchesBoxSetFragment"
-            app:destination="@id/addEditDeleteMatchesBoxSetFragment" />
+            app:destination="@id/addEditDeleteMatchesBoxSetFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_matchesBoxSetsListFragment_to_addEditDeleteBagFragment"
-            app:destination="@id/addEditDeleteBagFragment" />
+            app:destination="@id/addEditDeleteBagFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_matchesBoxSetsListFragment_to_matchesBoxListFragment"
             app:destination="@id/matchesBoxListFragment"
@@ -115,10 +127,18 @@
         android:label="{title}" >
         <action
             android:id="@+id/action_matchesBoxListFragment_to_addEditDeleteMatchesBoxFragment"
-            app:destination="@id/addEditDeleteMatchesBoxFragment" />
+            app:destination="@id/addEditDeleteMatchesBoxFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_matchesBoxListFragment_to_addEditDeleteMatchesBoxSetFragment"
-            app:destination="@id/addEditDeleteMatchesBoxSetFragment" />
+            app:destination="@id/addEditDeleteMatchesBoxSetFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_matchesBoxListFragment_to_radioComponentsListFragment"
             app:destination="@id/radioComponentsListFragment"
@@ -163,10 +183,18 @@
         tools:layout="@layout/fragment_radio_components_list" >
         <action
             android:id="@+id/action_radioComponentsListFragment_to_addEditDeleteRadioComponentFragment"
-            app:destination="@id/addEditDeleteRadioComponentFragment" />
+            app:destination="@id/addEditDeleteRadioComponentFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_radioComponentsListFragment_to_addEditDeleteMatchesBoxFragment"
-            app:destination="@id/addEditDeleteMatchesBoxFragment" />
+            app:destination="@id/addEditDeleteMatchesBoxFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
         <argument
             android:name="boxId"
             app:argType="integer" />
@@ -175,7 +203,11 @@
             app:argType="string" />
         <action
             android:id="@+id/action_radioComponentsListFragment_to_radioComponentDetailsFragment"
-            app:destination="@id/radioComponentDetailsFragment" />
+            app:destination="@id/radioComponentDetailsFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteRadioComponentFragment"
@@ -220,7 +252,11 @@
             app:argType="integer" />
         <action
             android:id="@+id/action_radioComponentDetailsFragment_to_addEditDeleteRadioComponentFragment"
-            app:destination="@id/addEditDeleteRadioComponentFragment" />
+            app:destination="@id/addEditDeleteRadioComponentFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <argument
             android:name="query"
             app:argType="string" />
@@ -229,7 +265,11 @@
             app:argType="boolean" />
         <action
             android:id="@+id/action_radioComponentDetailsFragment_to_componentHistoryFragment"
-            app:destination="@id/componentHistoryFragment" />
+            app:destination="@id/componentHistoryFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/historyAllFragment"
@@ -237,7 +277,11 @@
         android:label="@string/history_title" >
         <action
             android:id="@+id/action_historyAllFragment_to_componentHistoryFragment"
-            app:destination="@id/componentHistoryFragment" />
+            app:destination="@id/componentHistoryFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/componentHistoryFragment"
@@ -260,10 +304,18 @@
             app:argType="string" />
         <action
             android:id="@+id/action_searchFragment_to_radioComponentDetailsFragment"
-            app:destination="@id/radioComponentDetailsFragment" />
+            app:destination="@id/radioComponentDetailsFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_searchFragment_to_addEditDeleteRadioComponentFragment"
-            app:destination="@id/addEditDeleteRadioComponentFragment" />
+            app:destination="@id/addEditDeleteRadioComponentFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/neededComponentsFragment"
@@ -271,9 +323,17 @@
         android:label="@string/buy_components">
         <action
             android:id="@+id/action_neededComponentsFragment_to_radioComponentDetailsFragment"
-            app:destination="@id/radioComponentDetailsFragment" />
+            app:destination="@id/radioComponentDetailsFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
         <action
             android:id="@+id/action_neededComponentsFragment_to_addEditDeleteRadioComponentFragment"
-            app:destination="@id/addEditDeleteRadioComponentFragment" />
+            app:destination="@id/addEditDeleteRadioComponentFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
 </navigation>
