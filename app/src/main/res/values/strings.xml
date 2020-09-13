@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">MatchesBoxes</string>
-
     <string name="no_bags_added">No bags added</string>
     <string name="enter_bag_name">Enter bag name</string>
     <string name="bag_added">Bag added</string>
@@ -10,9 +9,6 @@
     <string name="bags_label">Bags</string>
     <string name="edit_bag_label">Edit Bag</string>
     <string name="no_matches_box_sets_added">No matches box sets added</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="enter_matches_box_set_name">Enter matches box set name</string>
     <string name="matches_box_set_added">Matches box set added</string>
     <string name="edit">Edit</string>
@@ -29,8 +25,8 @@
     <string name="component_deleted">Component deleted</string>
     <string name="box_updated">Matches box updated</string>
     <string name="box_deleted">Matches Box Deleted</string>
-    <string name="button_plus">+</string>
-    <string name="button_minus">-</string>
+    <string name="button_plus" translatable="false">+</string>
+    <string name="button_minus" translatable="false">-</string>
     <string name="add_bag">Add Bag</string>
     <string name="update_bag">Update Bag</string>
     <string name="add_set">Add Set</string>
@@ -44,7 +40,7 @@
     <string name="search_components">Search components</string>
     <string name="buy_components">Buy components</string>
     <string name="buy_component">Buy</string>
-    <string name="quantity_hint">0</string>
+    <string name="quantity_hint" translatable="false">0</string>
     <string name="direcotry_icon">Directory Icon</string>
     <string name="component_icon">Component icon</string>
     <string name="details">Details</string>
