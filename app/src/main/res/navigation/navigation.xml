@@ -14,16 +14,32 @@
             app:destination="@id/addEditDeleteBagFragment" />
         <action
             android:id="@+id/action_bagsListFragment_to_matchesBoxSetsListFragment"
-            app:destination="@id/matchesBoxSetsListFragment" />
+            app:destination="@id/matchesBoxSetsListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_bagsListFragment_to_historyAllFragment"
-            app:destination="@id/historyAllFragment" />
+            app:destination="@id/historyAllFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_bagsListFragment_to_searchFragment"
-            app:destination="@id/searchFragment" />
+            app:destination="@id/searchFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_bagsListFragment_to_neededComponentsFragment"
-            app:destination="@id/neededComponentsFragment" />
+            app:destination="@id/neededComponentsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteBagFragment"
@@ -58,7 +74,11 @@
             app:destination="@id/addEditDeleteBagFragment" />
         <action
             android:id="@+id/action_matchesBoxSetsListFragment_to_matchesBoxListFragment"
-            app:destination="@id/matchesBoxListFragment" />
+            app:destination="@id/matchesBoxListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <argument
             android:name="bagId"
             app:argType="integer" />
@@ -101,7 +121,11 @@
             app:destination="@id/addEditDeleteMatchesBoxSetFragment" />
         <action
             android:id="@+id/action_matchesBoxListFragment_to_radioComponentsListFragment"
-            app:destination="@id/radioComponentsListFragment" />
+            app:destination="@id/radioComponentsListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <argument
             android:name="setId"
             app:argType="integer" />
