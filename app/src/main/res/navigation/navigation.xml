@@ -52,11 +52,19 @@
         <action
             android:id="@+id/action_addEditDeleteBagFragment_to_bagsListFragment"
             app:destination="@id/bagsListFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/bagsListFragment"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_addEditDeleteBagFragment_to_matchesBoxSetsListFragment"
             app:destination="@id/matchesBoxSetsListFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/bagsListFragment" />
         <argument
             android:name="bagId"
@@ -106,10 +114,18 @@
         <action
             android:id="@+id/action_addEditDeleteMatchesBoxSetFragment_to_matchesBoxSetsListFragment"
             app:destination="@id/matchesBoxSetsListFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/bagsListFragment" />
         <action
             android:id="@+id/action_addEditDeleteMatchesBoxSetFragment_to_matchesBoxListFragment"
             app:destination="@id/matchesBoxListFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/matchesBoxSetsListFragment" />
         <argument
             android:name="bagId"
@@ -161,10 +177,18 @@
         <action
             android:id="@+id/action_addEditDeleteMatchesBoxFragment_to_matchesBoxListFragment"
             app:destination="@id/matchesBoxListFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/matchesBoxSetsListFragment" />
         <action
             android:id="@+id/action_addEditDeleteMatchesBoxFragment_to_radioComponentsListFragment"
             app:destination="@id/radioComponentsListFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/matchesBoxListFragment" />
         <argument
             android:name="setId"
@@ -220,6 +244,10 @@
         <action
             android:id="@+id/action_addEditDeleteRadioComponentFragment_to_radioComponentsListFragment"
             app:destination="@id/radioComponentsListFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/matchesBoxListFragment" />
         <argument
             android:name="boxId"
@@ -236,10 +264,18 @@
         <action
             android:id="@+id/action_addEditDeleteRadioComponentFragment_to_searchFragment"
             app:destination="@id/searchFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/bagsListFragment" />
         <action
             android:id="@+id/action_addEditDeleteRadioComponentFragment_to_neededComponentsFragment"
             app:destination="@id/neededComponentsFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/bagsListFragment" />
     </fragment>
     <fragment
