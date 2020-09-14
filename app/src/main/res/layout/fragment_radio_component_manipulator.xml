@@ -90,8 +90,7 @@
                 android:layout_height="wrap_content"
                 android:spinnerMode="dropdown"
                 app:layout_constraintBottom_toTopOf="@+id/component_edit"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/component_edit"
                 app:layout_constraintTop_toBottomOf="@+id/sets_spinner"
                 app:layout_constraintVertical_chainStyle="spread"
                 app:noDataViewHidden="@{viewModel.noBoxesTextVisible}" />
@@ -100,21 +99,19 @@
                 android:id="@+id/sets_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:noDataViewHidden="@{viewModel.noSetsTextVisible}"
                 app:layout_constraintBottom_toTopOf="@+id/boxes_spinner"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bags_spinner" />
+                app:layout_constraintStart_toStartOf="@+id/boxes_spinner"
+                app:layout_constraintTop_toBottomOf="@+id/bags_spinner"
+                app:noDataViewHidden="@{viewModel.noSetsTextVisible}" />
 
             <Spinner
                 android:id="@+id/bags_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:noDataViewHidden="@{viewModel.noBagsTextVisible}"
                 app:layout_constraintBottom_toTopOf="@+id/sets_spinner"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="@+id/boxes_spinner"
+                app:layout_constraintTop_toTopOf="parent"
+                app:noDataViewHidden="@{viewModel.noBagsTextVisible}" />
 
             <TextView
                 android:id="@+id/no_sets_visible_text"
@@ -122,11 +119,10 @@
                 android:layout_height="wrap_content"
                 android:text="@string/no_sets"
                 android:textSize="@dimen/no_spinner_items_text_size"
-                app:noDataTextVisible="@{viewModel.noSetsTextVisible}"
                 app:layout_constraintBottom_toBottomOf="@+id/sets_spinner"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/sets_spinner" />
+                app:layout_constraintStart_toStartOf="@+id/sets_spinner"
+                app:layout_constraintTop_toTopOf="@+id/sets_spinner"
+                app:noDataTextVisible="@{viewModel.noSetsTextVisible}" />
 
             <TextView
                 android:id="@+id/no_boxes_text"
@@ -134,11 +130,10 @@
                 android:layout_height="wrap_content"
                 android:text="@string/no_boxes"
                 android:textSize="@dimen/no_spinner_items_text_size"
-                app:noDataTextVisible="@{viewModel.noBoxesTextVisible}"
                 app:layout_constraintBottom_toBottomOf="@+id/boxes_spinner"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/boxes_spinner" />
+                app:layout_constraintStart_toStartOf="@+id/boxes_spinner"
+                app:layout_constraintTop_toTopOf="@+id/boxes_spinner"
+                app:noDataTextVisible="@{viewModel.noBoxesTextVisible}" />
 
             <TextView
                 android:id="@+id/no_bags_text"
@@ -146,11 +141,10 @@
                 android:layout_height="wrap_content"
                 android:text="@string/no_bags"
                 android:textSize="@dimen/no_spinner_items_text_size"
-                app:noDataTextVisible="@{viewModel.noBagsTextVisible}"
                 app:layout_constraintBottom_toBottomOf="@+id/bags_spinner"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/bags_spinner" />
+                app:layout_constraintStart_toStartOf="@+id/bags_spinner"
+                app:layout_constraintTop_toTopOf="@+id/bags_spinner"
+                app:noDataTextVisible="@{viewModel.noBagsTextVisible}" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
