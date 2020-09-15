@@ -9,7 +9,7 @@
 
     <item
         android:id="@+id/action_buy"
-        android:icon="@android:drawable/ic_menu_view"
+        android:icon="@drawable/ic_action_buy"
         android:title="@string/buy"
         app:showAsAction="ifRoom" />
 
