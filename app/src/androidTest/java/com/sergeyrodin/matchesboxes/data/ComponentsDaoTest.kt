@@ -584,4 +584,20 @@ class RadioComponentsDaoTest {
         val id = radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component3)
         assertThat(id, `is`(3L))
     }
+
+    @Test
+    fun deleteHistory() = runBlockingTest {
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
+        val component = RadioComponent(1, "Component", 4, MATCHES_BOX.id)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component)
+        val history = History(1, component.id, component.quantity)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertHistory(history)
+
+        radioComponentsDatabase.radioComponentsDatabaseDao.deleteHistory(history)
+
+        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getHistoryList().getOrAwaitValue()
+        assertThat(list.size, `is`(0))
+    }
 }

@@ -78,7 +78,7 @@ interface RadioComponentsDatabaseDao {
     @Query("SELECT * FROM radio_components WHERE buy = 1")
     suspend fun getRadioComponentsToBuy(): List<RadioComponent>
 
-    // DisplayQuantity
+    // Display quantity
 
     @Query("SELECT b.id, b.name, TOTAL(quantity) as componentsQuantity FROM matches_boxes b LEFT JOIN radio_components ON matches_box_id = b.id GROUP BY b.id HAVING matches_box_set_id = :setId")
     suspend fun getDisplayQuantityListBySetId(setId: Int): List<ItemWithQuantityPresentation>
@@ -104,6 +104,9 @@ interface RadioComponentsDatabaseDao {
 
     @Insert
     suspend fun insertHistory(history: History)
+
+    @Delete
+    suspend fun deleteHistory(history: History)
 
     @Query("SELECT * FROM history WHERE id = :id")
     suspend fun getHistoryById(id: Int): History
