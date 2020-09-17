@@ -6,21 +6,39 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.DisplayQuantityListItemBinding
 import com.sergeyrodin.matchesboxes.data.ItemWithQuantityPresentation
 
-class DisplayQuantityAdapter(private val displayQuantityListener: DisplayQuantityListener) : ListAdapter<ItemWithQuantityPresentation, DisplayQuantityAdapter.ViewHolder>(BagDiffCallback()) {
+class DisplayQuantityAdapter(
+    private val displayQuantityListener: DisplayQuantityListener,
+    private val itemIconResource: Int) : ListAdapter<ItemWithQuantityPresentation, DisplayQuantityAdapter.ViewHolder>(BagDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position), displayQuantityListener)
+        holder.bind(getItem(position), displayQuantityListener, itemIconResource)
     }
 
     class ViewHolder private constructor(private val binding: DisplayQuantityListItemBinding): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(itemWithQuantityPresentation: ItemWithQuantityPresentation, displayQuantityListener: DisplayQuantityListener) {
+        fun bind(itemWithQuantityPresentation: ItemWithQuantityPresentation,
+                 displayQuantityListener: DisplayQuantityListener,
+                 itemIconResource: Int) {
+            setItemIcon(itemIconResource)
+            setItemDataAndListener(itemWithQuantityPresentation, displayQuantityListener)
+        }
+
+        private fun setItemIcon(itemIconResource: Int) {
+            binding.itemIcon.tag = itemIconResource
+            binding.itemIcon.setImageResource(itemIconResource)
+        }
+
+        private fun setItemDataAndListener(
+            itemWithQuantityPresentation: ItemWithQuantityPresentation,
+            displayQuantityListener: DisplayQuantityListener
+        ) {
             binding.displayQuantity = itemWithQuantityPresentation
             binding.clickListener = displayQuantityListener
             binding.executePendingBindings()

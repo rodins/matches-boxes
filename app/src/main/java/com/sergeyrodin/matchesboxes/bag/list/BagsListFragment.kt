@@ -59,7 +59,7 @@ class BagsListFragment : Fragment() {
     private fun createAdapter(): DisplayQuantityAdapter {
         return DisplayQuantityAdapter(DisplayQuantityListener { bagId ->
             selectBagCallback(bagId)
-        })
+        }, R.drawable.ic_bag)
     }
 
     private fun selectBagCallback(bagId: Int) {

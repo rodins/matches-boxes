@@ -55,7 +55,7 @@ class MatchesBoxListFragment : Fragment() {
     private fun createAdapter(): DisplayQuantityAdapter {
         return DisplayQuantityAdapter(DisplayQuantityListener {
             viewModel.selectBox(it)
-        })
+        }, R.drawable.ic_matchesbox)
     }
 
     private fun observeSelectEvent() {

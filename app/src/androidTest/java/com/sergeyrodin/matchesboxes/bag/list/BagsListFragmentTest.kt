@@ -14,6 +14,8 @@ import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.*
+import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -140,5 +142,14 @@ class BagsListFragmentTest {
 
         onView(withText("36")).check(matches(isDisplayed()))
         onView(withText("100")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun bagListIconIsDisplayed() {
+        val bag = Bag(1, "Bag")
+        dataSource.addBags(bag)
+        launchFragmentInContainer<BagsListFragment>(null, R.style.AppTheme)
+
+        onView(withId(R.id.bags_list)).check(matches(hasDescendant(withTagValue(equalTo(R.drawable.ic_bag)))))
     }
 }

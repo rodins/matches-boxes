@@ -22,11 +22,11 @@
         android:onClick="@{() -> clickListener.onClick(displayQuantity.id)}">
 
         <ImageView
+            android:id="@+id/item_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/small_margin"
-            android:contentDescription="@string/direcotry_icon"
-            app:srcCompat="@drawable/ic_matchesbox" />
+            android:contentDescription="@string/direcotry_icon" />
 
         <TextView
             android:id="@+id/bag_text"

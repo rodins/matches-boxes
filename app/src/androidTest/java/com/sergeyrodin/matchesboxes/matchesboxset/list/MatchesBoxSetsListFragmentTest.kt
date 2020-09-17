@@ -18,6 +18,8 @@ import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.*
+import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -131,6 +133,15 @@ class MatchesBoxSetsListFragmentTest {
         )
     }
 
+    private fun clickEditAction(scenario: FragmentScenario<MatchesBoxSetsListFragment>) {
+        // Create dummy menu item with the desired item id
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val editMenuItem = ActionMenuItem(context, 0, R.id.action_edit, 0, 0, null)
+        scenario.onFragment{
+            it.onOptionsItemSelected(editMenuItem)
+        }
+    }
+
     @Test
     fun setsList_quantityDisplayed() {
         val bag = Bag(1, "Bag")
@@ -159,12 +170,14 @@ class MatchesBoxSetsListFragmentTest {
         onView(withText("26")).check(matches(isDisplayed()))
     }
 
-    private fun clickEditAction(scenario: FragmentScenario<MatchesBoxSetsListFragment>) {
-        // Create dummy menu item with the desired item id
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        val editMenuItem = ActionMenuItem(context, 0, R.id.action_edit, 0, 0, null)
-        scenario.onFragment{
-            it.onOptionsItemSelected(editMenuItem)
-        }
+    @Test
+    fun setListIconIsDisplayed() {
+        val bagId = 1
+        val set = MatchesBoxSet(1, "Set", bagId)
+        dataSource.addMatchesBoxSets(set)
+        val bundle = MatchesBoxSetsListFragmentArgs.Builder(bagId, "Title").build().toBundle()
+        launchFragmentInContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme)
+
+        onView(withId(R.id.items)).check(matches(hasDescendant(withTagValue(equalTo(R.drawable.ic_set)))))
     }
 }

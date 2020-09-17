@@ -20,6 +20,7 @@ import com.sergeyrodin.matchesboxes.DO_NOT_NEED_THIS_VARIABLE
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.*
+import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
@@ -154,6 +155,15 @@ class MatchesBoxListFragmentTest {
         )
     }
 
+    private fun clickEditAction(scenario: FragmentScenario<MatchesBoxListFragment>) {
+        // Create dummy menu item with the desired item id
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val editMenuItem = ActionMenuItem(context, 0, R.id.action_edit, 0, 0, null)
+        scenario.onFragment{
+            it.onOptionsItemSelected(editMenuItem)
+        }
+    }
+
     @Test
     fun boxInput_quantityDisplayed() {
         val bag = Bag(1, "Bag")
@@ -169,13 +179,14 @@ class MatchesBoxListFragmentTest {
         onView(withText("10")).check(matches(isDisplayed())) // sum of components quantities 3+7=10
     }
 
-    private fun clickEditAction(scenario: FragmentScenario<MatchesBoxListFragment>) {
-        // Create dummy menu item with the desired item id
-        val context = ApplicationProvider.getApplicationContext<Context>()
-        val editMenuItem = ActionMenuItem(context, 0, R.id.action_edit, 0, 0, null)
-        scenario.onFragment{
-            it.onOptionsItemSelected(editMenuItem)
-        }
-    }
+    @Test
+    fun boxesListIconIsDisplayed() {
+        val setId = 1
+        val box = MatchesBox(1, "Box", setId)
+        dataSource.addMatchesBoxes(box)
+        val bundle = MatchesBoxListFragmentArgs.Builder(setId, "Title").build().toBundle()
+        launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
 
+        onView(withId(R.id.items)).check(matches(hasDescendant(withTagValue(CoreMatchers.equalTo(R.drawable.ic_matchesbox)))))
+    }
 }

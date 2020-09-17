@@ -58,7 +58,7 @@ class MatchesBoxSetsListFragment : Fragment() {
     private fun createAdapter(): DisplayQuantityAdapter {
         return DisplayQuantityAdapter(DisplayQuantityListener {
             viewModel.selectSet(it)
-        })
+        }, R.drawable.ic_set)
     }
 
     private fun observeAddEvent() {
