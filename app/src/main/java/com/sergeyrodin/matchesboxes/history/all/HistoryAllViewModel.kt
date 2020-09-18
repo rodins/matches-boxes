@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
+import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
 class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
@@ -38,6 +39,12 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
 
     val noHistoryTextVisible = historyList.map{
         it.isEmpty()
+    }
+
+    fun deleteHistory(history: History) {
+        viewModelScope.launch {
+            dataSource.deleteHistory(history)
+        }
     }
 }
 

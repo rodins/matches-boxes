@@ -119,4 +119,18 @@ class HistoryAllViewModelTest {
         val list = subject.displayHistoryList.getOrAwaitValue()
         assertThat(list[0].date, `is`("середа лип.-29-2020 Time: 08:13"))
     }
+
+    @Test
+    fun deleteHistory() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+
+        subject.deleteHistory(history)
+
+        val list = subject.displayHistoryList.getOrAwaitValue()
+        assertThat(list.size, `is`(0))
+    }
 }
