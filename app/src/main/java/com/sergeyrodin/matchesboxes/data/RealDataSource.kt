@@ -3,7 +3,6 @@ package com.sergeyrodin.matchesboxes.data
 import androidx.lifecycle.LiveData
 import com.sergeyrodin.matchesboxes.util.wrapEspressoIdlingResource
 
-// This is only needed to be able to use fake data source in tests
 class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsDatabaseDao) : RadioComponentsDataSource {
     override suspend fun insertBag(bag: Bag) {
         wrapEspressoIdlingResource {
@@ -185,6 +184,12 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
     override suspend fun getHistoryListByComponentId(id: Int): List<History> {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getHistoryListByComponentId(id)
+        }
+    }
+
+    override suspend fun deleteHistory(history: History) {
+        wrapEspressoIdlingResource {
+            radioComponentsDatabaseDao.deleteHistory(history)
         }
     }
 }

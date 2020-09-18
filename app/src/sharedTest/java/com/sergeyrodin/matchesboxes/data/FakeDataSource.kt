@@ -268,4 +268,9 @@ class FakeDataSource : RadioComponentsDataSource{
             it.componentId == id
         }
     }
+
+    override suspend fun deleteHistory(history: History) {
+        historyList.remove(history)
+        historyListLiveData.value = historyList
+    }
 }

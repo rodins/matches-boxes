@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
@@ -302,8 +303,6 @@ class RealDataSourceTest{
         assertThat(loaded2.size, `is`(3))
     }
 
-    // Search
-
     @Test
     fun searchQuery_nameEquals() = runBlockingTest {
         subject.insertBag(BAG)
@@ -313,5 +312,20 @@ class RealDataSourceTest{
 
         val items = subject.getRadioComponentsByQuery("compo")
         assertThat(items[0].name, `is`(RADIO_COMPONENT.name))
+    }
+
+    @Test
+    fun deleteHistory() = runBlockingTest {
+        subject.insertBag(BAG)
+        subject.insertMatchesBoxSet(MATCHES_BOX_SET)
+        subject.insertMatchesBox(MATCHES_BOX)
+        subject.insertRadioComponent(RADIO_COMPONENT)
+        val history = History(1, RADIO_COMPONENT.id, RADIO_COMPONENT.quantity)
+        subject.insertHistory(history)
+
+        subject.deleteHistory(history)
+
+        val items = subject.getHistoryList().getOrAwaitValue()
+        assertThat(items.size, `is`(0))
     }
 }
