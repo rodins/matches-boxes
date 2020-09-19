@@ -2,9 +2,11 @@ package com.sergeyrodin.matchesboxes.history.all
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.DisplayHistoryListItemBinding
 
 class DisplayHistoryAdapter(private val displayHistoryListener: DisplayHistoryListener): ListAdapter<HistoryPresentation, DisplayHistoryAdapter.ViewHolder>(DisplayHistoryDiffCallback()) {
@@ -19,6 +21,12 @@ class DisplayHistoryAdapter(private val displayHistoryListener: DisplayHistoryLi
 
     class ViewHolder private constructor(private val binding: DisplayHistoryListItemBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(historyPresentation: HistoryPresentation, listener: DisplayHistoryListener) {
+            binding.historyItemLayout.setOnLongClickListener { view ->
+                view?.let{
+                    view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.secondaryLightColor))
+                }
+                true
+            }
             binding.displayHistory = historyPresentation
             binding.clickListener = listener
             binding.executePendingBindings()

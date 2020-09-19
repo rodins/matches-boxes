@@ -1,20 +1,29 @@
 package com.sergeyrodin.matchesboxes.history.all
 
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
+import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.longClick
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
+import androidx.test.internal.util.Checks
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.*
 import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Description
+import org.hamcrest.Matcher
+import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -154,6 +163,42 @@ class HistoryAllFragmentTest {
         verify(navController).navigate(
             HistoryAllFragmentDirections.actionHistoryAllFragmentToComponentHistoryFragment(component.id, component.name)
         )
+    }
+
+    @Test
+    fun longClick_itemHighlighted() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+
+        onView(withId(R.id.display_history_list)).check(matches(hasDescendant(hasBackgroundColor(R.color.design_default_color_background))))
+        onView(withId(R.id.display_history_list))
+            .perform(RecyclerViewActions
+                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component.name)), longClick()))
+        onView(withId(R.id.display_history_list)).check(matches(hasDescendant(hasBackgroundColor(R.color.secondaryLightColor))))
+    }
+
+    private fun hasBackgroundColor(colorRes: Int): Matcher<View> {
+        Checks.checkNotNull(colorRes)
+        return object: TypeSafeMatcher<View>() {
+
+            override fun describeTo(description: Description?) {
+                description?.appendText("background color: $colorRes")
+            }
+
+            override fun matchesSafely(item: View?): Boolean {
+                if(item?.background == null) {
+                    return false
+                }
+                val actualColor = (item.background as ColorDrawable).color
+                val expectedColor = ColorDrawable(ContextCompat.getColor(item.context, colorRes)).color
+                return actualColor == expectedColor
+            }
+
+        }
     }
 
 }
