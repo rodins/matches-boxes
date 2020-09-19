@@ -158,7 +158,10 @@ class HistoryAllFragmentTest {
             Navigation.setViewNavController(it.view!!, navController)
         }
 
-        onView(withText(component.name)).perform(click())
+        //onView(withText(component.name)).perform(click())
+        onView(withId(R.id.display_history_list))
+            .perform(RecyclerViewActions
+                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component.name)), click()))
 
         verify(navController).navigate(
             HistoryAllFragmentDirections.actionHistoryAllFragmentToComponentHistoryFragment(component.id, component.name)
@@ -179,6 +182,44 @@ class HistoryAllFragmentTest {
             .perform(RecyclerViewActions
                 .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component.name)), longClick()))
         onView(withId(R.id.display_history_list)).check(matches(hasDescendant(hasBackgroundColor(R.color.secondaryLightColor))))
+    }
+
+    @Test
+    fun clickOnHighlighted_notHighlighted() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+
+        onView(withId(R.id.display_history_list))
+            .perform(RecyclerViewActions
+                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component.name)), longClick()))
+        onView(withId(R.id.display_history_list))
+            .perform(RecyclerViewActions
+                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component.name)), click()))
+        onView(withId(R.id.display_history_list)).check(matches(hasDescendant(hasBackgroundColor(R.color.design_default_color_background))))
+    }
+
+    @Test
+    fun oneHighlighted_longClickOnSecond_backgroundNotChanged() {
+        val boxId = 1
+        val component1 = RadioComponent(1, "Component1", 3, boxId)
+        val component2 = RadioComponent(2, "Component2", 4, boxId)
+        val history1 = History(1, component1.id, component1.quantity)
+        val history2 = History(2, component2.id, component2.quantity)
+        dataSource.addRadioComponents(component1, component2)
+        dataSource.addHistory(history1, history2)
+        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+
+        onView(withId(R.id.display_history_list))
+            .perform(RecyclerViewActions
+                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component1.name)), longClick()))
+        onView(withId(R.id.display_history_list))
+            .perform(RecyclerViewActions
+                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component2.name)), longClick()))
+
     }
 
     private fun hasBackgroundColor(colorRes: Int): Matcher<View> {
