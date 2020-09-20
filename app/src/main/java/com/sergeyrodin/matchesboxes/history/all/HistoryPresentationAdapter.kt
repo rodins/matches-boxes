@@ -23,26 +23,59 @@ class DisplayHistoryAdapter(private val displayHistoryListener: DisplayHistoryLi
     class ViewHolder private constructor(private val binding: DisplayHistoryListItemBinding): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(historyPresentation: HistoryPresentation, listener: DisplayHistoryListener) {
+            setupLongClickListener()
+            setupClickListener(listener, historyPresentation)
+            setHistoryPresentationToBinding(historyPresentation)
+        }
+
+        private fun setupLongClickListener() {
             binding.historyItemLayout.setOnLongClickListener { view ->
-                view?.let{
-                    if(!isDeleteMode) {
-                        view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.secondaryLightColor))
-                        isDeleteMode = true
-                        highlightedView = view
+                view?.let {
+                    if (!isDeleteMode) {
+                        highlightView(view)
                     }
                 }
                 true
             }
+        }
+
+        private fun highlightView(view: View) {
+            view.setBackgroundColor(
+                ContextCompat.getColor(
+                    view.context,
+                    R.color.secondaryLightColor
+                )
+            )
+            isDeleteMode = true
+            highlightedView = view
+        }
+
+        private fun setupClickListener(
+            listener: DisplayHistoryListener,
+            historyPresentation: HistoryPresentation
+        ) {
             binding.historyItemLayout.setOnClickListener { view ->
-                view?.let{
-                    if(!isDeleteMode) {
+                view?.let {
+                    if (!isDeleteMode) {
                         listener.onClick(historyPresentation.componentId, historyPresentation.name)
-                    }else {
-                        highlightedView.setBackgroundColor(ContextCompat.getColor(view.context, R.color.design_default_color_background))
-                        isDeleteMode = false
+                    } else {
+                        makeViewNotHighlighted()
                     }
                 }
             }
+        }
+
+        private fun makeViewNotHighlighted() {
+            highlightedView.setBackgroundColor(
+                ContextCompat.getColor(
+                    highlightedView.context,
+                    R.color.design_default_color_background
+                )
+            )
+            isDeleteMode = false
+        }
+
+        private fun setHistoryPresentationToBinding(historyPresentation: HistoryPresentation) {
             binding.displayHistory = historyPresentation
             binding.executePendingBindings()
         }

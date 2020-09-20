@@ -159,10 +159,7 @@ class HistoryAllFragmentTest {
             Navigation.setViewNavController(it.view!!, navController)
         }
 
-        //onView(withText(component.name)).perform(click())
-        onView(withId(R.id.display_history_list))
-            .perform(RecyclerViewActions
-                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component.name)), click()))
+        onView(withText(component.name)).perform(click())
 
         verify(navController).navigate(
             HistoryAllFragmentDirections.actionHistoryAllFragmentToComponentHistoryFragment(component.id, component.name)
