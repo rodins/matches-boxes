@@ -20,12 +20,14 @@ class DisplayHistoryAdapter(private val displayHistoryListener: DisplayHistoryLi
     }
 
     class ViewHolder private constructor(private val binding: DisplayHistoryListItemBinding): RecyclerView.ViewHolder(binding.root) {
-        private var isDeleteMode = false
+
         fun bind(historyPresentation: HistoryPresentation, listener: DisplayHistoryListener) {
             binding.historyItemLayout.setOnLongClickListener { view ->
                 view?.let{
-                    view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.secondaryLightColor))
-                    isDeleteMode = true
+                    if(!isDeleteMode) {
+                        view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.secondaryLightColor))
+                        isDeleteMode = true
+                    }
                 }
                 true
             }
@@ -44,6 +46,7 @@ class DisplayHistoryAdapter(private val displayHistoryListener: DisplayHistoryLi
         }
 
         companion object {
+            private var isDeleteMode = false
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = DisplayHistoryListItemBinding.inflate(layoutInflater, parent, false)

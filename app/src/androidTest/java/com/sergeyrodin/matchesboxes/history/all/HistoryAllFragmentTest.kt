@@ -3,6 +3,7 @@ package com.sergeyrodin.matchesboxes.history.all
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.view.View
+import android.widget.TextView
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.testing.launchFragmentInContainer
@@ -203,7 +204,7 @@ class HistoryAllFragmentTest {
     }
 
     @Test
-    fun oneHighlighted_longClickOnSecond_backgroundNotChanged() {
+    fun oneHighlighted_longClickOnSecondItem_backgroundNotChanged() {
         val boxId = 1
         val component1 = RadioComponent(1, "Component1", 3, boxId)
         val component2 = RadioComponent(2, "Component2", 4, boxId)
@@ -220,6 +221,10 @@ class HistoryAllFragmentTest {
             .perform(RecyclerViewActions
                 .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component2.name)), longClick()))
 
+        onView(withId(R.id.display_history_list))
+            .check(matches(hasDescendant(hasBackgroundColorAndText(R.color.secondaryLightColor, component1.name))))
+        onView(withId(R.id.display_history_list))
+            .check(matches(hasDescendant(hasBackgroundColorAndText(R.color.design_default_color_background, component2.name))))
     }
 
     private fun hasBackgroundColor(colorRes: Int): Matcher<View> {
@@ -239,6 +244,26 @@ class HistoryAllFragmentTest {
                 return actualColor == expectedColor
             }
 
+        }
+    }
+
+    private fun hasBackgroundColorAndText(colorRes: Int, text: String): Matcher<View> {
+        return object: TypeSafeMatcher<View>() {
+
+            override fun describeTo(description: Description?) {
+                description?.appendText("text: $text, background color: $colorRes")
+            }
+
+            override fun matchesSafely(item: View?): Boolean {
+                if(item?.background == null)
+                    return false
+                val actualColor = (item.background as ColorDrawable).color
+                val expectedColor = ColorDrawable(ContextCompat.getColor(item.context, colorRes)).color
+
+                val nameTextView = item.findViewById<TextView>(R.id.name_text)
+                val actualText = nameTextView.text.toString()
+                return actualColor == expectedColor && text == actualText
+            }
         }
     }
 
