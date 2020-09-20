@@ -1,6 +1,7 @@
 package com.sergeyrodin.matchesboxes.history.all
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
@@ -27,6 +28,7 @@ class DisplayHistoryAdapter(private val displayHistoryListener: DisplayHistoryLi
                     if(!isDeleteMode) {
                         view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.secondaryLightColor))
                         isDeleteMode = true
+                        highlightedView = view
                     }
                 }
                 true
@@ -36,7 +38,7 @@ class DisplayHistoryAdapter(private val displayHistoryListener: DisplayHistoryLi
                     if(!isDeleteMode) {
                         listener.onClick(historyPresentation.componentId, historyPresentation.name)
                     }else {
-                        view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.design_default_color_background))
+                        highlightedView.setBackgroundColor(ContextCompat.getColor(view.context, R.color.design_default_color_background))
                         isDeleteMode = false
                     }
                 }
@@ -47,6 +49,7 @@ class DisplayHistoryAdapter(private val displayHistoryListener: DisplayHistoryLi
 
         companion object {
             private var isDeleteMode = false
+            private lateinit var highlightedView: View
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = DisplayHistoryListItemBinding.inflate(layoutInflater, parent, false)

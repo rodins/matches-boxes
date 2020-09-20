@@ -227,6 +227,29 @@ class HistoryAllFragmentTest {
             .check(matches(hasDescendant(hasBackgroundColorAndText(R.color.design_default_color_background, component2.name))))
     }
 
+    @Test
+    fun clickOnNotHighlightedItem_highlightedItemIsNotHighlighted() {
+        val boxId = 1
+        val component1 = RadioComponent(1, "Component1", 3, boxId)
+        val component2 = RadioComponent(2, "Component2", 4, boxId)
+        val history1 = History(1, component1.id, component1.quantity)
+        val history2 = History(2, component2.id, component2.quantity)
+        dataSource.addRadioComponents(component1, component2)
+        dataSource.addHistory(history1, history2)
+        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+
+        onView(withId(R.id.display_history_list))
+            .perform(RecyclerViewActions
+                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component1.name)), longClick()))
+        onView(withId(R.id.display_history_list))
+            .check(matches(hasDescendant(hasBackgroundColorAndText(R.color.secondaryLightColor, component1.name))))
+        onView(withId(R.id.display_history_list))
+            .perform(RecyclerViewActions
+                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component2.name)), click()))
+        onView(withId(R.id.display_history_list))
+            .check(matches(hasDescendant(hasBackgroundColorAndText(R.color.design_default_color_background, component1.name))))
+    }
+
     private fun hasBackgroundColor(colorRes: Int): Matcher<View> {
         Checks.checkNotNull(colorRes)
         return object: TypeSafeMatcher<View>() {
