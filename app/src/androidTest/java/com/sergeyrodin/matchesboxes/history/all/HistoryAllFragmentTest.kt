@@ -218,6 +218,8 @@ class HistoryAllFragmentTest {
 
         checkIfHighlighted(component1)
         checkIfNotHighlighted(component2)
+
+        performClick(component1) // exit from delete mode
     }
 
     @Test
