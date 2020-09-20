@@ -175,10 +175,12 @@ class HistoryAllFragmentTest {
         dataSource.addHistory(history)
         launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
-        onView(withId(R.id.display_history_list)).check(matches(hasDescendant(hasBackgroundColor(R.color.design_default_color_background))))
-        onView(withId(R.id.display_history_list))
-            .perform(RecyclerViewActions
-                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component.name)), longClick()))
+        checkIfNotHighlighted()
+        performLongClick(component)
+        checkIfHighlighted()
+    }
+
+    private fun checkIfHighlighted() {
         onView(withId(R.id.display_history_list)).check(matches(hasDescendant(hasBackgroundColor(R.color.secondaryLightColor))))
     }
 
@@ -191,12 +193,12 @@ class HistoryAllFragmentTest {
         dataSource.addHistory(history)
         launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
-        onView(withId(R.id.display_history_list))
-            .perform(RecyclerViewActions
-                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component.name)), longClick()))
-        onView(withId(R.id.display_history_list))
-            .perform(RecyclerViewActions
-                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component.name)), click()))
+        performLongClick(component)
+        performClick(component)
+        checkIfNotHighlighted()
+    }
+
+    private fun checkIfNotHighlighted() {
         onView(withId(R.id.display_history_list)).check(matches(hasDescendant(hasBackgroundColor(R.color.design_default_color_background))))
     }
 
@@ -211,17 +213,11 @@ class HistoryAllFragmentTest {
         dataSource.addHistory(history1, history2)
         launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
-        onView(withId(R.id.display_history_list))
-            .perform(RecyclerViewActions
-                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component1.name)), longClick()))
-        onView(withId(R.id.display_history_list))
-            .perform(RecyclerViewActions
-                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component2.name)), longClick()))
+        performLongClick(component1)
+        performLongClick(component2)
 
-        onView(withId(R.id.display_history_list))
-            .check(matches(hasDescendant(hasBackgroundColorAndText(R.color.secondaryLightColor, component1.name))))
-        onView(withId(R.id.display_history_list))
-            .check(matches(hasDescendant(hasBackgroundColorAndText(R.color.design_default_color_background, component2.name))))
+        checkIfHighlighted(component1)
+        checkIfNotHighlighted(component2)
     }
 
     @Test
@@ -235,16 +231,66 @@ class HistoryAllFragmentTest {
         dataSource.addHistory(history1, history2)
         launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
+        performLongClick(component1)
+        checkIfHighlighted(component1)
+        performClick(component2)
+        checkIfNotHighlighted(component1)
+    }
+
+    private fun checkIfNotHighlighted(component2: RadioComponent) {
         onView(withId(R.id.display_history_list))
-            .perform(RecyclerViewActions
-                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component1.name)), longClick()))
+            .check(
+                matches(
+                    hasDescendant(
+                        hasBackgroundColorAndText(
+                            R.color.design_default_color_background,
+                            component2.name
+                        )
+                    )
+                )
+            )
+    }
+
+    private fun performClick(component2: RadioComponent) {
         onView(withId(R.id.display_history_list))
-            .check(matches(hasDescendant(hasBackgroundColorAndText(R.color.secondaryLightColor, component1.name))))
+            .perform(
+                RecyclerViewActions
+                    .actionOnItem<DisplayHistoryAdapter.ViewHolder>(
+                        hasDescendant(
+                            withText(
+                                component2.name
+                            )
+                        ), click()
+                    )
+            )
+    }
+
+    private fun checkIfHighlighted(component1: RadioComponent) {
         onView(withId(R.id.display_history_list))
-            .perform(RecyclerViewActions
-                .actionOnItem<DisplayHistoryAdapter.ViewHolder>(hasDescendant(withText(component2.name)), click()))
+            .check(
+                matches(
+                    hasDescendant(
+                        hasBackgroundColorAndText(
+                            R.color.secondaryLightColor,
+                            component1.name
+                        )
+                    )
+                )
+            )
+    }
+
+    private fun performLongClick(component1: RadioComponent) {
         onView(withId(R.id.display_history_list))
-            .check(matches(hasDescendant(hasBackgroundColorAndText(R.color.design_default_color_background, component1.name))))
+            .perform(
+                RecyclerViewActions
+                    .actionOnItem<DisplayHistoryAdapter.ViewHolder>(
+                        hasDescendant(
+                            withText(
+                                component1.name
+                            )
+                        ), longClick()
+                    )
+            )
     }
 
     private fun hasBackgroundColor(colorRes: Int): Matcher<View> {
