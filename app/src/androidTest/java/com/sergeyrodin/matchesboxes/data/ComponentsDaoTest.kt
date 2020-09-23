@@ -476,6 +476,32 @@ class RadioComponentsDaoTest {
     }
 
     @Test
+    fun observeHistoryList_sizeEquals() = runBlockingTest{
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
+        val component1 = RadioComponent(1, "Component1", 4, MATCHES_BOX.id)
+        val component2 = RadioComponent(2, "Component2", 4, MATCHES_BOX.id)
+        val component3 = RadioComponent(3, "Component3", 4, MATCHES_BOX.id)
+        val component4 = RadioComponent(4, "Component4", 4, MATCHES_BOX.id)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component1)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component2)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component3)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component4)
+        val history1 = History(1, component1.id, component1.quantity)
+        val history2 = History(2, component2.id, component2.quantity)
+        val history3 = History(3, component3.id, component3.quantity)
+        val history4 = History(4, component4.id, component4.quantity)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertHistory(history1)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertHistory(history2)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertHistory(history3)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertHistory(history4)
+
+        val list = radioComponentsDatabase.radioComponentsDatabaseDao.observeHistoryList().getOrAwaitValue()
+        assertThat(list.size, `is`(4))
+    }
+
+    @Test
     fun getHistoryList_sizeEquals() = runBlockingTest{
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
@@ -497,7 +523,7 @@ class RadioComponentsDaoTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertHistory(history3)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertHistory(history4)
 
-        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getHistoryList().getOrAwaitValue()
+        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getHistoryList()
         assertThat(list.size, `is`(4))
     }
 
@@ -523,7 +549,7 @@ class RadioComponentsDaoTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertHistory(history3)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertHistory(history4)
 
-        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getHistoryList().getOrAwaitValue()
+        val list = radioComponentsDatabase.radioComponentsDatabaseDao.observeHistoryList().getOrAwaitValue()
         assertThat(list[0], `is`(history4))
     }
 
@@ -597,7 +623,7 @@ class RadioComponentsDaoTest {
 
         radioComponentsDatabase.radioComponentsDatabaseDao.deleteHistory(history)
 
-        val list = radioComponentsDatabase.radioComponentsDatabaseDao.getHistoryList().getOrAwaitValue()
+        val list = radioComponentsDatabase.radioComponentsDatabaseDao.observeHistoryList().getOrAwaitValue()
         assertThat(list.size, `is`(0))
     }
 }

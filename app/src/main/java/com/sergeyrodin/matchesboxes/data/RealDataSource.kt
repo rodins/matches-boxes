@@ -175,7 +175,13 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
         }
     }
 
-    override fun getHistoryList(): LiveData<List<History>> {
+    override fun observeHistoryList(): LiveData<List<History>> {
+        wrapEspressoIdlingResource {
+            return radioComponentsDatabaseDao.observeHistoryList()
+        }
+    }
+
+    override suspend fun getHistoryList(): List<History> {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getHistoryList()
         }

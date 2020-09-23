@@ -1,6 +1,8 @@
 package com.sergeyrodin.matchesboxes.history.all
 
 import androidx.lifecycle.*
+import com.sergeyrodin.matchesboxes.Event
+import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
@@ -8,22 +10,82 @@ import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
 class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
-    private val historyList = dataSource.getHistoryList()
+    private var isDeleteMode = false
+    private var highlightedPresentationId = NO_ID_SET
+    private lateinit var historyItems: List<History>
+    private lateinit var convertedHistoryPresentationItems: MutableList<HistoryPresentation>
 
-    val displayHistoryList = historyList.switchMap{ list ->
-        liveData{
-            emit(convertHistoryListToHistoryPresentationList(list))
+    private val _historyPresentationItems = MutableLiveData<List<HistoryPresentation>>()
+    val historyPresentationItems: LiveData<List<HistoryPresentation>>
+        get() = _historyPresentationItems
+
+    val noHistoryTextVisible = historyPresentationItems.map{
+        it.isEmpty()
+    }
+
+    private val _selectedEvent = MutableLiveData<Event<HistoryPresentation>>()
+    val selectedEvent: LiveData<Event<HistoryPresentation>>
+        get() = _selectedEvent
+
+    init{
+        viewModelScope.launch {
+            getAndConvertHistoryItems()
         }
     }
 
-    private suspend fun convertHistoryListToHistoryPresentationList(
-        list: List<History>
-    ): List<HistoryPresentation> {
-        val outputList = mutableListOf<HistoryPresentation>()
-        list.forEach { history ->
-            outputList.add(convertHistoryToHistoryPresentation(history))
+    fun presentationClick(presentation: HistoryPresentation) {
+        if(!isDeleteMode) {
+            _selectedEvent.value = Event(presentation)
+        }else {
+            val presentationInConvertedItems = findPresentationById(highlightedPresentationId)
+            setPresentationNotHighlighted(presentationInConvertedItems)
+            updatePresentationItems()
+            isDeleteMode = false
         }
-        return outputList
+    }
+
+    private fun setPresentationNotHighlighted(presentationInConvertedItems: HistoryPresentation?) {
+        presentationInConvertedItems?.isHighlighted = false
+        highlightedPresentationId = NO_ID_SET
+    }
+
+    fun presentationLongClick(id: Int) {
+        if(!isDeleteMode) {
+            val presentationInConvertedItems = findPresentationById(id)
+            setPresentationHighlighted(presentationInConvertedItems)
+            updatePresentationItems()
+            isDeleteMode = true
+        }
+    }
+
+    private fun findPresentationById(id: Int): HistoryPresentation? {
+        return convertedHistoryPresentationItems.find {
+            it.id == id
+        }
+    }
+
+    private fun setPresentationHighlighted(presentationInConvertedItems: HistoryPresentation?) {
+        presentationInConvertedItems?.let {
+            presentationInConvertedItems.isHighlighted = true
+            highlightedPresentationId = presentationInConvertedItems.id
+        }
+    }
+
+    private fun updatePresentationItems() {
+        _historyPresentationItems.value = convertedHistoryPresentationItems
+    }
+
+    private suspend fun getAndConvertHistoryItems() {
+        getHistoryItemsFromDb()
+        convertHistoryItemsToHistoryPresentationItems()
+    }
+
+    private suspend fun convertHistoryItemsToHistoryPresentationItems() {
+        convertedHistoryPresentationItems = mutableListOf<HistoryPresentation>()
+        historyItems.forEach { history ->
+            convertedHistoryPresentationItems.add(convertHistoryToHistoryPresentation(history))
+        }
+        updatePresentationItems()
     }
 
     private suspend fun convertHistoryToHistoryPresentation(history: History): HistoryPresentation {
@@ -37,24 +99,17 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
         )
     }
 
-    val noHistoryTextVisible = historyList.map{
-        it.isEmpty()
+    private suspend fun getHistoryItemsFromDb() {
+        historyItems = dataSource.getHistoryList()
     }
 
     fun deleteHistory(history: History) {
         viewModelScope.launch {
             dataSource.deleteHistory(history)
+            getAndConvertHistoryItems()
         }
     }
 }
-
-data class HistoryPresentation(
-    var id: Int,
-    var componentId: Int,
-    var name: String,
-    var quantity: String,
-    var date: String
-)
 
 class HistoryAllViewModelFactory(private val dataSource: RadioComponentsDataSource): ViewModelProvider.Factory {
     @Suppress("unchecked_cast")

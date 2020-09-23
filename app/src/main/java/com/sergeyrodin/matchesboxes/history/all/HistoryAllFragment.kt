@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.databinding.FragmentHistoryAllBinding
 
@@ -28,6 +29,7 @@ class HistoryAllFragment : Fragment() {
     ): View? {
         createBinding(inflater, container)
         setupBinding()
+        observeSelectedEvent()
         return binding.root
     }
 
@@ -45,8 +47,27 @@ class HistoryAllFragment : Fragment() {
     }
 
     private fun createDisplayHistoryAdapter(): DisplayHistoryAdapter {
-        return DisplayHistoryAdapter(DisplayHistoryListener { id, name ->
-            navigateToComponentHistoryFragment(id, name)
+        return DisplayHistoryAdapter(
+            createHistoryPresentationClickListener(),
+            createHistoryPresentationLongClickListener()
+        )
+    }
+
+    private fun createHistoryPresentationClickListener(): HistoryPresentationClickListener {
+        return HistoryPresentationClickListener { presentation ->
+            viewModel.presentationClick(presentation)
+        }
+    }
+
+    private fun createHistoryPresentationLongClickListener(): HistoryPresentationLongClickListener {
+        return HistoryPresentationLongClickListener { id ->
+            viewModel.presentationLongClick(id)
+        }
+    }
+
+    private fun observeSelectedEvent() {
+        viewModel.selectedEvent.observe(viewLifecycleOwner, EventObserver {
+            navigateToComponentHistoryFragment(it.componentId, it.name)
         })
     }
 

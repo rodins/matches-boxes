@@ -325,7 +325,26 @@ class RealDataSourceTest{
 
         subject.deleteHistory(history)
 
-        val items = subject.getHistoryList().getOrAwaitValue()
+        val items = subject.observeHistoryList().getOrAwaitValue()
         assertThat(items.size, `is`(0))
+    }
+
+    @Test
+    fun getHistoryList_sizeEquals() = runBlockingTest {
+        subject.insertBag(BAG)
+        subject.insertMatchesBoxSet(MATCHES_BOX_SET)
+        subject.insertMatchesBox(MATCHES_BOX)
+        subject.insertRadioComponent(RADIO_COMPONENT)
+        val history1 = History(1, RADIO_COMPONENT.id, RADIO_COMPONENT.quantity)
+        val history2 = History(2, RADIO_COMPONENT.id, RADIO_COMPONENT.quantity)
+        val history3 = History(3, RADIO_COMPONENT.id, RADIO_COMPONENT.quantity)
+        val history4 = History(4, RADIO_COMPONENT.id, RADIO_COMPONENT.quantity)
+        subject.insertHistory(history1)
+        subject.insertHistory(history2)
+        subject.insertHistory(history3)
+        subject.insertHistory(history4)
+
+        val items = subject.getHistoryList()
+        assertThat(items.size, `is`(4))
     }
 }

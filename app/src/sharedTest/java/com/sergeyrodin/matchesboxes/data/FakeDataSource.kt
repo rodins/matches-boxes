@@ -259,8 +259,12 @@ class FakeDataSource : RadioComponentsDataSource{
         historyListLiveData.value = historyList
     }
 
-    override fun getHistoryList(): LiveData<List<History>> {
+    override fun observeHistoryList(): LiveData<List<History>> {
         return historyListLiveData
+    }
+
+    override suspend fun getHistoryList(): List<History> {
+        return historyList
     }
 
     override suspend fun getHistoryListByComponentId(id: Int): List<History> {

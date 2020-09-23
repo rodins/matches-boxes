@@ -519,10 +519,8 @@ class RadioComponentManipulatorFragmentTest {
         val bundle = RadioComponentManipulatorFragmentArgs.Builder(component.id, box.id, "Title", query, isBuy).build().toBundle()
         val scenario = launchFragmentInContainer<RadioComponentManipulatorFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
-        var title = ""
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
-            title = it.getString(R.string.search_components)
         }
 
         onView(withText(R.string.button_plus)).perform(click())
@@ -548,10 +546,8 @@ class RadioComponentManipulatorFragmentTest {
         val bundle = RadioComponentManipulatorFragmentArgs.Builder(component.id, box.id, "Title", query, isBuy).build().toBundle()
         val scenario = launchFragmentInContainer<RadioComponentManipulatorFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
-        var title = ""
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
-            title = it.getString(R.string.buy_components)
         }
 
         onView(withText(R.string.button_plus)).perform(click())
@@ -577,10 +573,8 @@ class RadioComponentManipulatorFragmentTest {
         val bundle = RadioComponentManipulatorFragmentArgs.Builder(component.id, box.id, "Title", query, isBuy).build().toBundle()
         val scenario = launchFragmentInContainer<RadioComponentManipulatorFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
-        var title = ""
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
-            title = it.getString(R.string.search_components)
         }
 
         clickDeleteAction(scenario)
@@ -605,10 +599,8 @@ class RadioComponentManipulatorFragmentTest {
         val bundle = RadioComponentManipulatorFragmentArgs.Builder(ADD_NEW_ITEM_ID, NO_ID_SET, "Title", query, isBuy).build().toBundle()
         val scenario = launchFragmentInContainer<RadioComponentManipulatorFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
-        var title = ""
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
-            title = it.getString(R.string.search_components)
         }
 
         onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), closeSoftKeyboard())
@@ -634,10 +626,8 @@ class RadioComponentManipulatorFragmentTest {
         val bundle = RadioComponentManipulatorFragmentArgs.Builder(ADD_NEW_ITEM_ID, NO_ID_SET, "Title", query, isBuy).build().toBundle()
         val scenario = launchFragmentInContainer<RadioComponentManipulatorFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
-        var title = ""
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
-            title = it.getString(R.string.buy_components)
         }
 
         onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), closeSoftKeyboard())

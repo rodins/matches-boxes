@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes
 
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityAdapter
@@ -20,34 +21,68 @@ fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<ItemWithQuantityP
 }
 
 @BindingAdapter("radioComponentsListData")
-fun bindRadioComponentRecyclerView(recyclerView: RecyclerView, list: List<RadioComponent>?){
+fun bindRadioComponentRecyclerView(recyclerView: RecyclerView, list: List<RadioComponent>?) {
     val adapter = recyclerView.adapter as RadioComponentAdapter
     adapter.submitList(list)
 }
 
 @BindingAdapter("displayHistoryListData")
-fun bindDisplayHistoryListRecyclerView(recyclerView: RecyclerView, list: List<HistoryPresentation>?) {
+fun bindDisplayHistoryListRecyclerView(
+    recyclerView: RecyclerView,
+    list: List<HistoryPresentation>?
+) {
     val adapter = recyclerView.adapter as DisplayHistoryAdapter
     adapter.submitList(list)
+    adapter.notifyDataSetChanged()
 }
 
 @BindingAdapter("displayComponentHistoryListData")
-fun bindDisplayComponentHistoryListRecyclerView(recyclerView: RecyclerView, list: List<ComponentHistoryPresentation>?) {
+fun bindDisplayComponentHistoryListRecyclerView(
+    recyclerView: RecyclerView,
+    list: List<ComponentHistoryPresentation>?
+) {
     val adapter = recyclerView.adapter as DisplayComponentHistoryAdapter
     adapter.submitList(list)
 }
 
 @BindingAdapter("noDataTextVisible")
 fun bindNoDataViewVisibility(view: View, visible: Boolean) {
-    view.visibility = if(visible) View.VISIBLE else View.GONE
+    view.visibility = if (visible) View.VISIBLE else View.GONE
 }
 
 @BindingAdapter("noDataViewHidden")
 fun bindNoDataViewHidden(view: View, hidden: Boolean) {
-    view.visibility = if(hidden) View.INVISIBLE else View.VISIBLE
+    view.visibility = if (hidden) View.INVISIBLE else View.VISIBLE
 }
 
 @BindingAdapter("quantityInteger")
 fun bindQuantityTextView(textView: TextView, quantity: Int) {
     textView.text = quantity.toString()
+}
+
+@BindingAdapter("highlightView")
+fun bindViewBackgroundChange(view: View, isHighlighted: Boolean) {
+    if (isHighlighted) {
+        highlightView(view)
+    }else {
+        makeViewNotHighlighted(view)
+    }
+}
+
+private fun highlightView(view: View) {
+    view.setBackgroundColor(
+        ContextCompat.getColor(
+            view.context,
+            R.color.secondaryLightColor
+        )
+    )
+}
+
+private fun makeViewNotHighlighted(view: View) {
+    view.setBackgroundColor(
+        ContextCompat.getColor(
+            view.context,
+            R.color.design_default_color_background
+        )
+    )
 }

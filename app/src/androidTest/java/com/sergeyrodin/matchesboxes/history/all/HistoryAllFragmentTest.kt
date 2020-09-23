@@ -194,8 +194,9 @@ class HistoryAllFragmentTest {
         launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
         performLongClick(component)
+        checkIfHighlighted(component)
         performClick(component)
-        checkIfNotHighlighted()
+        checkIfNotHighlighted(component)
     }
 
     private fun checkIfNotHighlighted() {
@@ -253,42 +254,42 @@ class HistoryAllFragmentTest {
             )
     }
 
-    private fun performClick(component2: RadioComponent) {
+    private fun performClick(component: RadioComponent) {
         onView(withId(R.id.display_history_list))
             .perform(
                 RecyclerViewActions
                     .actionOnItem<DisplayHistoryAdapter.ViewHolder>(
                         hasDescendant(
                             withText(
-                                component2.name
+                                component.name
                             )
                         ), click()
                     )
             )
     }
 
-    private fun checkIfHighlighted(component1: RadioComponent) {
+    private fun checkIfHighlighted(component: RadioComponent) {
         onView(withId(R.id.display_history_list))
             .check(
                 matches(
                     hasDescendant(
                         hasBackgroundColorAndText(
                             R.color.secondaryLightColor,
-                            component1.name
+                            component.name
                         )
                     )
                 )
             )
     }
 
-    private fun performLongClick(component1: RadioComponent) {
+    private fun performLongClick(component: RadioComponent) {
         onView(withId(R.id.display_history_list))
             .perform(
                 RecyclerViewActions
                     .actionOnItem<DisplayHistoryAdapter.ViewHolder>(
                         hasDescendant(
                             withText(
-                                component1.name
+                                component.name
                             )
                         ), longClick()
                     )
