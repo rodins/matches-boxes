@@ -26,6 +26,10 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
     val selectedEvent: LiveData<Event<HistoryPresentation>>
         get() = _selectedEvent
 
+    private val _actionDeleteVisibilityEvent = MutableLiveData<Event<Boolean>>()
+    val actionDeleteVisibilityEvent: LiveData<Event<Boolean>>
+        get() = _actionDeleteVisibilityEvent
+
     init{
         viewModelScope.launch {
             getAndConvertHistoryItems()
@@ -65,8 +69,11 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
             callSelectedEvent(presentation)
         }else {
             makeHighlightedPresentationNotHighlighted()
+            callActionDeleteVisibilityEvent()
         }
     }
+
+    private fun isActionDeleteVisible() = !presentationIsNotHighlighted()
 
     private fun callSelectedEvent(presentation: HistoryPresentation) {
         _selectedEvent.value = Event(presentation)
@@ -79,18 +86,26 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
     }
 
     private fun findHighlightedPresentation(): HistoryPresentation? {
-        val presentationInConvertedItems = findPresentationById(highlightedPresentationId)
-        return presentationInConvertedItems
+        return findPresentationById(highlightedPresentationId)
     }
 
-    private fun setPresentationNotHighlighted(presentationInConvertedItems: HistoryPresentation?) {
-        presentationInConvertedItems?.isHighlighted = false
+    private fun setPresentationNotHighlighted(presentation: HistoryPresentation?) {
+        presentation?.isHighlighted = false
+        resetHighlightedPresentationId()
+    }
+
+    private fun resetHighlightedPresentationId() {
         highlightedPresentationId = NO_ID_SET
+    }
+
+    private fun callActionDeleteVisibilityEvent() {
+        _actionDeleteVisibilityEvent.value = Event(isActionDeleteVisible())
     }
 
     fun presentationLongClick(presentationId: Int) {
         if(presentationIsNotHighlighted()) {
             makePresentationHighlighted(presentationId)
+            callActionDeleteVisibilityEvent()
         }
     }
 
@@ -119,8 +134,23 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
         _historyPresentationItems.value = convertedHistoryPresentationItems
     }
 
-    fun deleteHistory(history: History) {
+    fun deleteHighlightedPresentation() {
         viewModelScope.launch {
+            val history = findHistoryByHighlightedPresentationId()
+            deleteHistory(history)
+            resetHighlightedPresentationId()
+            callActionDeleteVisibilityEvent()
+        }
+    }
+
+    private fun findHistoryByHighlightedPresentationId(): History? {
+        return historyItems.find {
+            it.id == highlightedPresentationId
+        }
+    }
+
+    private suspend fun deleteHistory(history: History?) {
+        history?.let {
             dataSource.deleteHistory(history)
             getAndConvertHistoryItems()
         }

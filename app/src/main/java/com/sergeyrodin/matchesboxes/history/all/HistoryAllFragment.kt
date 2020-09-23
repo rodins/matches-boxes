@@ -1,14 +1,13 @@
 package com.sergeyrodin.matchesboxes.history.all
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
+import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentHistoryAllBinding
 
 class HistoryAllFragment : Fragment() {
@@ -30,6 +29,8 @@ class HistoryAllFragment : Fragment() {
         createBinding(inflater, container)
         setupBinding()
         observeSelectedEvent()
+        observeActionDeleteVisibilityEvent()
+        setHasOptionsMenu(false)
         return binding.root
     }
 
@@ -80,5 +81,22 @@ class HistoryAllFragment : Fragment() {
         )
     }
 
+    private fun observeActionDeleteVisibilityEvent() {
+        viewModel.actionDeleteVisibilityEvent.observe(viewLifecycleOwner, EventObserver { visible ->
+            setHasOptionsMenu(visible)
+        })
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.delete_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.action_delete) {
+            viewModel.deleteHighlightedPresentation()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
 }
