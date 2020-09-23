@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
 class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
-    private var isDeleteMode = false
     private var highlightedPresentationId = NO_ID_SET
     private lateinit var historyItems: List<History>
     private lateinit var convertedHistoryPresentationItems: MutableList<HistoryPresentation>
@@ -33,55 +32,17 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
         }
     }
 
-    fun presentationClick(presentation: HistoryPresentation) {
-        if(!isDeleteMode) {
-            _selectedEvent.value = Event(presentation)
-        }else {
-            val presentationInConvertedItems = findPresentationById(highlightedPresentationId)
-            setPresentationNotHighlighted(presentationInConvertedItems)
-            updatePresentationItems()
-            isDeleteMode = false
-        }
-    }
-
-    private fun setPresentationNotHighlighted(presentationInConvertedItems: HistoryPresentation?) {
-        presentationInConvertedItems?.isHighlighted = false
-        highlightedPresentationId = NO_ID_SET
-    }
-
-    fun presentationLongClick(id: Int) {
-        if(!isDeleteMode) {
-            val presentationInConvertedItems = findPresentationById(id)
-            setPresentationHighlighted(presentationInConvertedItems)
-            updatePresentationItems()
-            isDeleteMode = true
-        }
-    }
-
-    private fun findPresentationById(id: Int): HistoryPresentation? {
-        return convertedHistoryPresentationItems.find {
-            it.id == id
-        }
-    }
-
-    private fun setPresentationHighlighted(presentationInConvertedItems: HistoryPresentation?) {
-        presentationInConvertedItems?.let {
-            presentationInConvertedItems.isHighlighted = true
-            highlightedPresentationId = presentationInConvertedItems.id
-        }
-    }
-
-    private fun updatePresentationItems() {
-        _historyPresentationItems.value = convertedHistoryPresentationItems
-    }
-
     private suspend fun getAndConvertHistoryItems() {
         getHistoryItemsFromDb()
         convertHistoryItemsToHistoryPresentationItems()
     }
 
+    private suspend fun getHistoryItemsFromDb() {
+        historyItems = dataSource.getHistoryList()
+    }
+
     private suspend fun convertHistoryItemsToHistoryPresentationItems() {
-        convertedHistoryPresentationItems = mutableListOf<HistoryPresentation>()
+        convertedHistoryPresentationItems = mutableListOf()
         historyItems.forEach { history ->
             convertedHistoryPresentationItems.add(convertHistoryToHistoryPresentation(history))
         }
@@ -99,8 +60,63 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
         )
     }
 
-    private suspend fun getHistoryItemsFromDb() {
-        historyItems = dataSource.getHistoryList()
+    fun presentationClick(presentation: HistoryPresentation) {
+        if(presentationIsNotHighlighted()) {
+            callSelectedEvent(presentation)
+        }else {
+            makeHighlightedPresentationNotHighlighted()
+        }
+    }
+
+    private fun callSelectedEvent(presentation: HistoryPresentation) {
+        _selectedEvent.value = Event(presentation)
+    }
+
+    private fun makeHighlightedPresentationNotHighlighted() {
+        val highlightedPresentation = findHighlightedPresentation()
+        setPresentationNotHighlighted(highlightedPresentation)
+        updatePresentationItems()
+    }
+
+    private fun findHighlightedPresentation(): HistoryPresentation? {
+        val presentationInConvertedItems = findPresentationById(highlightedPresentationId)
+        return presentationInConvertedItems
+    }
+
+    private fun setPresentationNotHighlighted(presentationInConvertedItems: HistoryPresentation?) {
+        presentationInConvertedItems?.isHighlighted = false
+        highlightedPresentationId = NO_ID_SET
+    }
+
+    fun presentationLongClick(presentationId: Int) {
+        if(presentationIsNotHighlighted()) {
+            makePresentationHighlighted(presentationId)
+        }
+    }
+
+    private fun presentationIsNotHighlighted() = highlightedPresentationId == NO_ID_SET
+
+    private fun makePresentationHighlighted(id: Int) {
+        val presentation = findPresentationById(id)
+        setPresentationHighlighted(presentation)
+        updatePresentationItems()
+    }
+
+    private fun findPresentationById(id: Int): HistoryPresentation? {
+        return convertedHistoryPresentationItems.find {
+            it.id == id
+        }
+    }
+
+    private fun setPresentationHighlighted(presentationInConvertedItems: HistoryPresentation?) {
+        presentationInConvertedItems?.let {
+            presentationInConvertedItems.isHighlighted = true
+            highlightedPresentationId = presentationInConvertedItems.id
+        }
+    }
+
+    private fun updatePresentationItems() {
+        _historyPresentationItems.value = convertedHistoryPresentationItems
     }
 
     fun deleteHistory(history: History) {
