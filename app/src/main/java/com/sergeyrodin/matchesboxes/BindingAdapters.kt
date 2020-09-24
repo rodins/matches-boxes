@@ -10,7 +10,7 @@ import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.data.ItemWithQuantityPresentation
 import com.sergeyrodin.matchesboxes.history.all.HistoryPresentation
-import com.sergeyrodin.matchesboxes.history.all.DisplayHistoryAdapter
+import com.sergeyrodin.matchesboxes.history.all.HistoryPresentationAdapter
 import com.sergeyrodin.matchesboxes.history.component.ComponentHistoryPresentation
 import com.sergeyrodin.matchesboxes.history.component.DisplayComponentHistoryAdapter
 
@@ -31,7 +31,7 @@ fun bindDisplayHistoryListRecyclerView(
     recyclerView: RecyclerView,
     list: List<HistoryPresentation>?
 ) {
-    val adapter = recyclerView.adapter as DisplayHistoryAdapter
+    val adapter = recyclerView.adapter as HistoryPresentationAdapter
     adapter.submitList(list)
     adapter.notifyDataSetChanged()
 }

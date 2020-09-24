@@ -1,7 +1,6 @@
 package com.sergeyrodin.matchesboxes.history.all
 
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.view.View
 import android.widget.TextView
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -26,7 +25,6 @@ import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher
 import org.junit.After
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -258,7 +256,7 @@ class HistoryAllFragmentTest {
         onView(withId(R.id.display_history_list))
             .perform(
                 RecyclerViewActions
-                    .actionOnItem<DisplayHistoryAdapter.ViewHolder>(
+                    .actionOnItem<HistoryPresentationAdapter.ViewHolder>(
                         hasDescendant(
                             withText(
                                 component.name
@@ -286,7 +284,7 @@ class HistoryAllFragmentTest {
         onView(withId(R.id.display_history_list))
             .perform(
                 RecyclerViewActions
-                    .actionOnItem<DisplayHistoryAdapter.ViewHolder>(
+                    .actionOnItem<HistoryPresentationAdapter.ViewHolder>(
                         hasDescendant(
                             withText(
                                 component.name

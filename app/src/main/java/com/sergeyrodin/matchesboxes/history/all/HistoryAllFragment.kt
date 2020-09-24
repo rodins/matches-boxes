@@ -47,8 +47,8 @@ class HistoryAllFragment : Fragment() {
         binding.displayHistoryList.adapter = createDisplayHistoryAdapter()
     }
 
-    private fun createDisplayHistoryAdapter(): DisplayHistoryAdapter {
-        return DisplayHistoryAdapter(
+    private fun createDisplayHistoryAdapter(): HistoryPresentationAdapter {
+        return HistoryPresentationAdapter(
             createHistoryPresentationClickListener(),
             createHistoryPresentationLongClickListener()
         )

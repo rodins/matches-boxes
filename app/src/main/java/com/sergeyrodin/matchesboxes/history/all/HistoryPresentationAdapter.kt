@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.databinding.DisplayHistoryListItemBinding
 
-class DisplayHistoryAdapter(
+class HistoryPresentationAdapter(
     private val historyPresentationClickListener: HistoryPresentationClickListener,
     private val historyPresentationLongClickListener: HistoryPresentationLongClickListener
-) : ListAdapter<HistoryPresentation, DisplayHistoryAdapter.ViewHolder>(DisplayHistoryDiffCallback()) {
+) : ListAdapter<HistoryPresentation, HistoryPresentationAdapter.ViewHolder>(HistoryPresentationDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
@@ -67,7 +67,7 @@ class HistoryPresentationLongClickListener(val clickListener: (id: Int) -> Unit)
     fun onClick(id: Int) = clickListener(id)
 }
 
-class DisplayHistoryDiffCallback : DiffUtil.ItemCallback<HistoryPresentation>() {
+class HistoryPresentationDiffCallback : DiffUtil.ItemCallback<HistoryPresentation>() {
     override fun areItemsTheSame(
         oldItem: HistoryPresentation,
         newItem: HistoryPresentation
