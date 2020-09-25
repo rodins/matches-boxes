@@ -284,4 +284,66 @@ class HistoryAllViewModelTest {
         val deleteVisible = subject.actionDeleteVisibilityEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(deleteVisible, `is`(false))
     }
+
+    @Test
+    fun longClick_dataSetChangedEventNotNull() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject = HistoryAllViewModel(dataSource)
+
+        subject.presentationLongClick(history.id)
+
+        val dataSetChanged = subject.dataSetChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(dataSetChanged, `is`(not(nullValue())))
+    }
+
+    @Test
+    fun itemClickInDeleteMode_dataSetChangedEventNotNull() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        val presentation = HistoryPresentation(
+            history.id,
+            history.componentId,
+            component.name,
+            history.quantity.toString(),
+            convertLongToDateString(history.date)
+        )
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject = HistoryAllViewModel(dataSource)
+
+        subject.presentationLongClick(history.id)
+
+        val longClickDataSetChanged = subject.dataSetChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(longClickDataSetChanged, `is`(not(nullValue())))
+
+        subject.presentationClick(presentation)
+
+        val clickDataSetChanged = subject.dataSetChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(clickDataSetChanged, `is`(not(nullValue())))
+    }
+
+    @Test
+    fun deletePresentation_dataSetChangedEventNotNull() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject = HistoryAllViewModel(dataSource)
+
+        subject.presentationLongClick(history.id)
+
+        val longClickDataSetChanged = subject.dataSetChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(longClickDataSetChanged, `is`(not(nullValue())))
+
+        subject.deleteHighlightedPresentation()
+
+        val deleteDataSetChanged = subject.dataSetChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(deleteDataSetChanged, `is`(not(nullValue())))
+    }
 }

@@ -30,6 +30,10 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
     val actionDeleteVisibilityEvent: LiveData<Event<Boolean>>
         get() = _actionDeleteVisibilityEvent
 
+    private val _dataSetChangedEvent = MutableLiveData<Event<Unit>>()
+    val dataSetChangedEvent: LiveData<Event<Unit>>
+        get() = _dataSetChangedEvent
+
     init{
         viewModelScope.launch {
             getAndConvertHistoryItems()
@@ -83,6 +87,7 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
         val highlightedPresentation = findHighlightedPresentation()
         setPresentationNotHighlighted(highlightedPresentation)
         updatePresentationItems()
+        callDataSetChangedEvent()
     }
 
     private fun findHighlightedPresentation(): HistoryPresentation? {
@@ -115,6 +120,7 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
         val presentation = findPresentationById(id)
         setPresentationHighlighted(presentation)
         updatePresentationItems()
+        callDataSetChangedEvent()
     }
 
     private fun findPresentationById(id: Int): HistoryPresentation? {
@@ -134,11 +140,16 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
         _historyPresentationItems.value = convertedHistoryPresentationItems
     }
 
+    private fun callDataSetChangedEvent() {
+        _dataSetChangedEvent.value = Event(Unit)
+    }
+
     fun deleteHighlightedPresentation() {
         viewModelScope.launch {
             val history = findHistoryByHighlightedPresentationId()
             deleteHistory(history)
             resetHighlightedPresentationId()
+            callDataSetChangedEvent()
             callActionDeleteVisibilityEvent()
         }
     }
