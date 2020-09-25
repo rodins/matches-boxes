@@ -33,7 +33,6 @@ fun bindDisplayHistoryListRecyclerView(
 ) {
     val adapter = recyclerView.adapter as HistoryPresentationAdapter
     adapter.submitList(list)
-    adapter.notifyDataSetChanged()
 }
 
 @BindingAdapter("displayComponentHistoryListData")

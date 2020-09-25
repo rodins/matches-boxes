@@ -28,8 +28,7 @@ class HistoryAllFragment : Fragment() {
     ): View? {
         createBinding(inflater, container)
         setupBinding()
-        observeSelectedEvent()
-        observeActionDeleteVisibilityEvent()
+        setupObservers()
         setHasOptionsMenu(false)
         return binding.root
     }
@@ -64,6 +63,18 @@ class HistoryAllFragment : Fragment() {
         return HistoryPresentationLongClickListener { id ->
             viewModel.presentationLongClick(id)
         }
+    }
+
+    private fun setupObservers() {
+        observeDataSetChangedEvent()
+        observeSelectedEvent()
+        observeActionDeleteVisibilityEvent()
+    }
+
+    private fun observeDataSetChangedEvent() {
+        viewModel.dataSetChangedEvent.observe(viewLifecycleOwner, EventObserver {
+            binding.displayHistoryList.adapter?.notifyDataSetChanged()
+        })
     }
 
     private fun observeSelectedEvent() {
