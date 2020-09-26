@@ -34,6 +34,12 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
     val dataSetChangedEvent: LiveData<Event<Unit>>
         get() = _dataSetChangedEvent
 
+    private val _itemChangedEvent = MutableLiveData<Event<Int>>()
+    val itemChangedEvent: LiveData<Event<Int>>
+        get() = _itemChangedEvent
+
+    private var highlightedPosition = NO_ID_SET
+
     init{
         viewModelScope.launch {
             getAndConvertHistoryItems()
@@ -73,6 +79,7 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
             callSelectedEvent(presentation)
         }else {
             makeHighlightedPresentationNotHighlighted()
+            callItemChangedEvent(highlightedPosition)
             callActionDeleteVisibilityEvent()
         }
     }
@@ -111,8 +118,14 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
         if(presentationIsNotHighlighted()) {
             val presentation = getPresentationByPosition(position)
             makePresentationHighlighted(presentation)
+            saveHighlightedPosition(position)
+            callItemChangedEvent(position)
             callActionDeleteVisibilityEvent()
         }
+    }
+
+    private fun callItemChangedEvent(position: Int) {
+        _itemChangedEvent.value = Event(position)
     }
 
     private fun presentationIsNotHighlighted() = highlightedPresentationId == NO_ID_SET
@@ -125,7 +138,6 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
     private fun makePresentationHighlighted(presentation: HistoryPresentation?) {
         setPresentationHighlighted(presentation)
         updatePresentationItems()
-        callDataSetChangedEvent()
     }
 
     private fun findPresentationById(id: Int): HistoryPresentation? {
@@ -134,11 +146,15 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
         }
     }
 
-    private fun setPresentationHighlighted(presentationInConvertedItems: HistoryPresentation?) {
-        presentationInConvertedItems?.let {
-            presentationInConvertedItems.isHighlighted = true
-            highlightedPresentationId = presentationInConvertedItems.id
+    private fun setPresentationHighlighted(presentation: HistoryPresentation?) {
+        presentation?.let {
+            presentation.isHighlighted = true
+            highlightedPresentationId = presentation.id
         }
+    }
+
+    private fun saveHighlightedPosition(position: Int) {
+        highlightedPosition = position
     }
 
     private fun updatePresentationItems() {

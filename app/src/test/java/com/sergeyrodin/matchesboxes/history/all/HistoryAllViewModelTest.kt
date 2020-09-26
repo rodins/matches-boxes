@@ -293,7 +293,7 @@ class HistoryAllViewModelTest {
     }
 
     @Test
-    fun longClick_dataSetChangedEventNotNull() {
+    fun deletePresentation_dataSetChangedEventNotNull() {
         val boxId = 1
         val position = 0
         val component = RadioComponent(1, "Component", 3, boxId)
@@ -304,12 +304,30 @@ class HistoryAllViewModelTest {
 
         subject.presentationLongClick(position)
 
-        val dataSetChanged = subject.dataSetChangedEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(dataSetChanged, `is`(not(nullValue())))
+        subject.deleteHighlightedPresentation()
+
+        val deleteDataSetChanged = subject.dataSetChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(deleteDataSetChanged, `is`(not(nullValue())))
     }
 
     @Test
-    fun itemClickInDeleteMode_dataSetChangedEventNotNull() {
+    fun presentationLongClick_itemChangedEventEquals() {
+        val boxId = 1
+        val position = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject = HistoryAllViewModel(dataSource)
+
+        subject.presentationLongClick(position)
+
+        val changedItemPosition = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(changedItemPosition, `is`(position))
+    }
+
+    @Test
+    fun presentationClick_itemChangedEventEquals() {
         val boxId = 1
         val position = 0
         val component = RadioComponent(1, "Component", 3, boxId)
@@ -327,33 +345,12 @@ class HistoryAllViewModelTest {
 
         subject.presentationLongClick(position)
 
-        val longClickDataSetChanged = subject.dataSetChangedEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(longClickDataSetChanged, `is`(not(nullValue())))
+        val changedItemPosition1 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(changedItemPosition1, `is`(position))
 
         subject.presentationClick(presentation)
 
-        val clickDataSetChanged = subject.dataSetChangedEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(clickDataSetChanged, `is`(not(nullValue())))
-    }
-
-    @Test
-    fun deletePresentation_dataSetChangedEventNotNull() {
-        val boxId = 1
-        val position = 0
-        val component = RadioComponent(1, "Component", 3, boxId)
-        val history = History(1, component.id, component.quantity)
-        dataSource.addRadioComponents(component)
-        dataSource.addHistory(history)
-        subject = HistoryAllViewModel(dataSource)
-
-        subject.presentationLongClick(position)
-
-        val longClickDataSetChanged = subject.dataSetChangedEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(longClickDataSetChanged, `is`(not(nullValue())))
-
-        subject.deleteHighlightedPresentation()
-
-        val deleteDataSetChanged = subject.dataSetChangedEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(deleteDataSetChanged, `is`(not(nullValue())))
+        val changedItemPosition2 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(changedItemPosition2, `is`(position))
     }
 }

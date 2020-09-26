@@ -28,6 +28,9 @@ class HistoryAllFragment : Fragment() {
     ): View? {
         createBinding(inflater, container)
         setupBinding()
+        viewModel.itemChangedEvent.observe(viewLifecycleOwner, EventObserver{ position ->
+            binding.displayHistoryList.adapter?.notifyItemChanged(position)
+        })
         setupObservers()
         setHasOptionsMenu(false)
         return binding.root
