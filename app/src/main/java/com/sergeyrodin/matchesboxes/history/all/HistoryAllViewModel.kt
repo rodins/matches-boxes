@@ -107,17 +107,22 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
         _actionDeleteVisibilityEvent.value = Event(isActionDeleteVisible())
     }
 
-    fun presentationLongClick(presentationId: Int) {
+    fun presentationLongClick(position: Int) {
         if(presentationIsNotHighlighted()) {
-            makePresentationHighlighted(presentationId)
+            val presentation = getPresentationByPosition(position)
+            makePresentationHighlighted(presentation)
             callActionDeleteVisibilityEvent()
         }
     }
 
     private fun presentationIsNotHighlighted() = highlightedPresentationId == NO_ID_SET
 
-    private fun makePresentationHighlighted(id: Int) {
-        val presentation = findPresentationById(id)
+    private fun getPresentationByPosition(position: Int): HistoryPresentation? {
+        val presentation = historyPresentationItems.value?.get(position)
+        return presentation
+    }
+
+    private fun makePresentationHighlighted(presentation: HistoryPresentation?) {
         setPresentationHighlighted(presentation)
         updatePresentationItems()
         callDataSetChangedEvent()

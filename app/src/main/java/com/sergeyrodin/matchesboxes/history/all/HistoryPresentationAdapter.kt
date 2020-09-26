@@ -17,7 +17,7 @@ class HistoryPresentationAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position), historyPresentationClickListener, historyPresentationLongClickListener)
+        holder.bind(getItem(position), position, historyPresentationClickListener, historyPresentationLongClickListener)
     }
 
     class ViewHolder private constructor(private val binding: DisplayHistoryListItemBinding) :
@@ -26,17 +26,18 @@ class HistoryPresentationAdapter(
 
         fun bind(
             historyPresentation: HistoryPresentation,
+            position: Int,
             presentationClickListener: HistoryPresentationClickListener,
             presentationLongClickListener: HistoryPresentationLongClickListener
         ) {
             this.historyPresentation = historyPresentation
-            setupLongClickListener(presentationLongClickListener)
+            setupLongClickListener(position, presentationLongClickListener)
             setupBinding(presentationClickListener)
         }
 
-        private fun setupLongClickListener(longClickListener: HistoryPresentationLongClickListener) {
+        private fun setupLongClickListener(position: Int, longClickListener: HistoryPresentationLongClickListener) {
             binding.historyItemLayout.setOnLongClickListener {
-                longClickListener.onClick(historyPresentation.id)
+                longClickListener.onClick(position)
                 true
             }
         }
@@ -63,8 +64,8 @@ class HistoryPresentationClickListener(val clickListener: (presentation: History
     fun onClick(presentation: HistoryPresentation) = clickListener(presentation)
 }
 
-class HistoryPresentationLongClickListener(val clickListener: (id: Int) -> Unit) {
-    fun onClick(id: Int) = clickListener(id)
+class HistoryPresentationLongClickListener(val clickListener: (position: Int) -> Unit) {
+    fun onClick(position: Int) = clickListener(position)
 }
 
 class HistoryPresentationDiffCallback : DiffUtil.ItemCallback<HistoryPresentation>() {

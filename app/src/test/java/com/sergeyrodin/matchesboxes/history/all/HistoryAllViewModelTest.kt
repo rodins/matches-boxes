@@ -129,6 +129,7 @@ class HistoryAllViewModelTest {
     @Test
     fun deleteHistory() {
         val boxId = 1
+        val position = 0
         val component1 = RadioComponent(1, "Component1", 2, boxId)
         val component2 = RadioComponent(2, "Component2", 3, boxId)
         val history1 = History(1, component1.id, component1.quantity)
@@ -137,7 +138,7 @@ class HistoryAllViewModelTest {
         dataSource.addHistory(history1, history2)
         subject = HistoryAllViewModel(dataSource)
 
-        subject.presentationLongClick(history1.id)
+        subject.presentationLongClick(position)
         subject.deleteHighlightedPresentation()
 
         val list = subject.historyPresentationItems.getOrAwaitValue()
@@ -147,6 +148,7 @@ class HistoryAllViewModelTest {
     @Test
     fun deleteHistoryItem_actionDeleteVisibilityEventFalse() {
         val boxId = 1
+        val position = 0
         val component1 = RadioComponent(1, "Component1", 2, boxId)
         val component2 = RadioComponent(2, "Component2", 3, boxId)
         val history1 = History(1, component1.id, component1.quantity)
@@ -155,7 +157,7 @@ class HistoryAllViewModelTest {
         dataSource.addHistory(history1, history2)
         subject = HistoryAllViewModel(dataSource)
 
-        subject.presentationLongClick(history1.id)
+        subject.presentationLongClick(position)
         subject.deleteHighlightedPresentation()
 
         val actionDeleteVisibility = subject.actionDeleteVisibilityEvent.getOrAwaitValue().getContentIfNotHandled()
@@ -188,13 +190,14 @@ class HistoryAllViewModelTest {
     @Test
     fun longClick_notDeleteMode_itemHighlighted() {
         val boxId = 1
+        val position = 0
         val component = RadioComponent(1, "Component", 3, boxId)
         val history = History(1, component.id, component.quantity)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         subject = HistoryAllViewModel(dataSource)
 
-        subject.presentationLongClick(history.id)
+        subject.presentationLongClick(position)
 
         val items = subject.historyPresentationItems.getOrAwaitValue()
         assertThat(items[0].isHighlighted, `is`(true))
@@ -203,6 +206,7 @@ class HistoryAllViewModelTest {
     @Test
     fun highlightedItemClick_deleteMode_itemNotHighlighted() {
         val boxId = 1
+        val position = 0
         val component = RadioComponent(1, "Component", 3, boxId)
         val history = History(1, component.id, component.quantity)
         val presentation = HistoryPresentation(
@@ -216,7 +220,7 @@ class HistoryAllViewModelTest {
         dataSource.addHistory(history)
         subject = HistoryAllViewModel(dataSource)
 
-        subject.presentationLongClick(history.id)
+        subject.presentationLongClick(position)
         subject.presentationClick(presentation)
 
         val items = subject.historyPresentationItems.getOrAwaitValue()
@@ -226,6 +230,7 @@ class HistoryAllViewModelTest {
     @Test
     fun clickOnNotHighlightedItem_highlightedItemIsNotHighlighted() {
         val boxId = 1
+        val position = 0
         val component = RadioComponent(1, "Component", 3, boxId)
         val history1 = History(1, component.id, component.quantity)
         val history2 = History(2, component.id, component.quantity)
@@ -240,7 +245,7 @@ class HistoryAllViewModelTest {
         dataSource.addHistory(history1, history2)
         subject = HistoryAllViewModel(dataSource)
 
-        subject.presentationLongClick(history2.id)
+        subject.presentationLongClick(position)
         subject.presentationClick(presentation)
 
         val items = subject.historyPresentationItems.getOrAwaitValue()
@@ -250,13 +255,14 @@ class HistoryAllViewModelTest {
     @Test
     fun itemLongClick_actionDeleteEventTrue() {
         val boxId = 1
+        val position = 0
         val component = RadioComponent(1, "Component", 3, boxId)
         val history = History(1, component.id, component.quantity)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         subject = HistoryAllViewModel(dataSource)
 
-        subject.presentationLongClick(history.id)
+        subject.presentationLongClick(position)
 
         val deleteVisible = subject.actionDeleteVisibilityEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(deleteVisible, `is`(true))
@@ -265,6 +271,7 @@ class HistoryAllViewModelTest {
     @Test
     fun clickOnHighlighted_actionDeleteEventFalse() {
         val boxId = 1
+        val position = 0
         val component = RadioComponent(1, "Component", 3, boxId)
         val history = History(1, component.id, component.quantity)
         val presentation = HistoryPresentation(
@@ -278,7 +285,7 @@ class HistoryAllViewModelTest {
         dataSource.addHistory(history)
         subject = HistoryAllViewModel(dataSource)
 
-        subject.presentationLongClick(history.id)
+        subject.presentationLongClick(position)
         subject.presentationClick(presentation)
 
         val deleteVisible = subject.actionDeleteVisibilityEvent.getOrAwaitValue().getContentIfNotHandled()
@@ -288,13 +295,14 @@ class HistoryAllViewModelTest {
     @Test
     fun longClick_dataSetChangedEventNotNull() {
         val boxId = 1
+        val position = 0
         val component = RadioComponent(1, "Component", 3, boxId)
         val history = History(1, component.id, component.quantity)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         subject = HistoryAllViewModel(dataSource)
 
-        subject.presentationLongClick(history.id)
+        subject.presentationLongClick(position)
 
         val dataSetChanged = subject.dataSetChangedEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(dataSetChanged, `is`(not(nullValue())))
@@ -303,6 +311,7 @@ class HistoryAllViewModelTest {
     @Test
     fun itemClickInDeleteMode_dataSetChangedEventNotNull() {
         val boxId = 1
+        val position = 0
         val component = RadioComponent(1, "Component", 3, boxId)
         val history = History(1, component.id, component.quantity)
         val presentation = HistoryPresentation(
@@ -316,7 +325,7 @@ class HistoryAllViewModelTest {
         dataSource.addHistory(history)
         subject = HistoryAllViewModel(dataSource)
 
-        subject.presentationLongClick(history.id)
+        subject.presentationLongClick(position)
 
         val longClickDataSetChanged = subject.dataSetChangedEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(longClickDataSetChanged, `is`(not(nullValue())))
@@ -330,13 +339,14 @@ class HistoryAllViewModelTest {
     @Test
     fun deletePresentation_dataSetChangedEventNotNull() {
         val boxId = 1
+        val position = 0
         val component = RadioComponent(1, "Component", 3, boxId)
         val history = History(1, component.id, component.quantity)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         subject = HistoryAllViewModel(dataSource)
 
-        subject.presentationLongClick(history.id)
+        subject.presentationLongClick(position)
 
         val longClickDataSetChanged = subject.dataSetChangedEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(longClickDataSetChanged, `is`(not(nullValue())))
