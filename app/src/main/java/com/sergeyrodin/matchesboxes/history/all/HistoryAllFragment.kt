@@ -28,9 +28,6 @@ class HistoryAllFragment : Fragment() {
     ): View? {
         createBinding(inflater, container)
         setupBinding()
-        viewModel.itemChangedEvent.observe(viewLifecycleOwner, EventObserver{ position ->
-            binding.displayHistoryList.adapter?.notifyItemChanged(position)
-        })
         setupObservers()
         setHasOptionsMenu(false)
         return binding.root
@@ -72,6 +69,7 @@ class HistoryAllFragment : Fragment() {
         observeDataSetChangedEvent()
         observeSelectedEvent()
         observeActionDeleteVisibilityEvent()
+        observeItemChangedEvent()
     }
 
     private fun observeDataSetChangedEvent() {
@@ -98,6 +96,12 @@ class HistoryAllFragment : Fragment() {
     private fun observeActionDeleteVisibilityEvent() {
         viewModel.actionDeleteVisibilityEvent.observe(viewLifecycleOwner, EventObserver { visible ->
             setHasOptionsMenu(visible)
+        })
+    }
+
+    private fun observeItemChangedEvent() {
+        viewModel.itemChangedEvent.observe(viewLifecycleOwner, EventObserver { position ->
+            binding.displayHistoryList.adapter?.notifyItemChanged(position)
         })
     }
 
