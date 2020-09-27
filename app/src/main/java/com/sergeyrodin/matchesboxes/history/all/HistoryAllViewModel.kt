@@ -12,7 +12,6 @@ import java.lang.IllegalArgumentException
 class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
     private var highlightedPresentationId = NO_ID_SET
     private lateinit var historyItems: List<History>
-    private lateinit var convertedHistoryPresentationItems: MutableList<HistoryPresentation>
 
     private val _historyPresentationItems = MutableLiveData<List<HistoryPresentation>>()
     val historyPresentationItems: LiveData<List<HistoryPresentation>>
@@ -56,11 +55,11 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
     }
 
     private suspend fun convertHistoryItemsToHistoryPresentationItems() {
-        convertedHistoryPresentationItems = mutableListOf()
+        val presentationItems = mutableListOf<HistoryPresentation>()
         historyItems.forEach { history ->
-            convertedHistoryPresentationItems.add(convertHistoryToHistoryPresentation(history))
+            presentationItems.add(convertHistoryToHistoryPresentation(history))
         }
-        updatePresentationItems()
+        updatePresentationItems(presentationItems)
     }
 
     private suspend fun convertHistoryToHistoryPresentation(history: History): HistoryPresentation {
@@ -72,6 +71,10 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
             history.quantity.toString(),
             convertLongToDateString(history.date)
         )
+    }
+
+    private fun updatePresentationItems(presentationItems: List<HistoryPresentation>) {
+        _historyPresentationItems.value = presentationItems
     }
 
     fun presentationClick(presentation: HistoryPresentation) {
@@ -93,12 +96,11 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
     private fun makeHighlightedPresentationNotHighlighted() {
         val highlightedPresentation = findHighlightedPresentation()
         setPresentationNotHighlighted(highlightedPresentation)
-        updatePresentationItems()
         callDataSetChangedEvent()
     }
 
     private fun findHighlightedPresentation(): HistoryPresentation? {
-        return findPresentationById(highlightedPresentationId)
+        return getPresentationByPosition(highlightedPosition)
     }
 
     private fun setPresentationNotHighlighted(presentation: HistoryPresentation?) {
@@ -131,19 +133,11 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
     private fun presentationIsNotHighlighted() = highlightedPresentationId == NO_ID_SET
 
     private fun getPresentationByPosition(position: Int): HistoryPresentation? {
-        val presentation = historyPresentationItems.value?.get(position)
-        return presentation
+        return historyPresentationItems.value?.get(position)
     }
 
     private fun makePresentationHighlighted(presentation: HistoryPresentation?) {
         setPresentationHighlighted(presentation)
-        updatePresentationItems()
-    }
-
-    private fun findPresentationById(id: Int): HistoryPresentation? {
-        return convertedHistoryPresentationItems.find {
-            it.id == id
-        }
     }
 
     private fun setPresentationHighlighted(presentation: HistoryPresentation?) {
@@ -155,10 +149,6 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
 
     private fun saveHighlightedPosition(position: Int) {
         highlightedPosition = position
-    }
-
-    private fun updatePresentationItems() {
-        _historyPresentationItems.value = convertedHistoryPresentationItems
     }
 
     private fun callDataSetChangedEvent() {
