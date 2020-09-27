@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
 class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
-    private var highlightedPresentationId = NO_ID_SET
     private lateinit var historyItems: List<History>
 
     private val _historyPresentationItems = MutableLiveData<List<HistoryPresentation>>()
@@ -105,11 +104,11 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
 
     private fun setPresentationNotHighlighted(presentation: HistoryPresentation?) {
         presentation?.isHighlighted = false
-        resetHighlightedPresentationId()
+        resetHighlightedPosition()
     }
 
-    private fun resetHighlightedPresentationId() {
-        highlightedPresentationId = NO_ID_SET
+    private fun resetHighlightedPosition() {
+        highlightedPosition = NO_ID_SET
     }
 
     private fun callActionDeleteVisibilityEvent() {
@@ -130,7 +129,7 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
         _itemChangedEvent.value = Event(position)
     }
 
-    private fun presentationIsNotHighlighted() = highlightedPresentationId == NO_ID_SET
+    private fun presentationIsNotHighlighted() = highlightedPosition == NO_ID_SET
 
     private fun getPresentationByPosition(position: Int): HistoryPresentation? {
         return historyPresentationItems.value?.get(position)
@@ -143,7 +142,6 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
     private fun setPresentationHighlighted(presentation: HistoryPresentation?) {
         presentation?.let {
             presentation.isHighlighted = true
-            highlightedPresentationId = presentation.id
         }
     }
 
@@ -159,15 +157,16 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
         viewModelScope.launch {
             val history = findHistoryByHighlightedPresentationId()
             deleteHistory(history)
-            resetHighlightedPresentationId()
+            resetHighlightedPosition()
             callDataSetChangedEvent()
             callActionDeleteVisibilityEvent()
         }
     }
 
     private fun findHistoryByHighlightedPresentationId(): History? {
+        val highlightedPresentation = findHighlightedPresentation()
         return historyItems.find {
-            it.id == highlightedPresentationId
+            it.id == highlightedPresentation?.id
         }
     }
 
