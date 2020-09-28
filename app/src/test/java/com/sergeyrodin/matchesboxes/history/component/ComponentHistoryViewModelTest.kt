@@ -5,10 +5,12 @@ import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.nullValue
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.concurrent.TimeoutException
 
 class ComponentHistoryViewModelTest {
     @get:Rule
@@ -42,7 +44,7 @@ class ComponentHistoryViewModelTest {
 
         subject.start(component1.id)
 
-        val list = subject.historyList.getOrAwaitValue()
+        val list = subject.historyPresentationItems.getOrAwaitValue()
         assertThat(list.size, `is`(3))
     }
 
@@ -60,7 +62,7 @@ class ComponentHistoryViewModelTest {
 
         subject.start(component.id)
 
-        val list = subject.historyList.getOrAwaitValue()
+        val list = subject.historyPresentationItems.getOrAwaitValue()
         assertThat(list.size, `is`(0))
     }
 
@@ -120,7 +122,186 @@ class ComponentHistoryViewModelTest {
 
         subject.start(component.id)
 
-        val item = subject.historyList.getOrAwaitValue()[0]
+        val item = subject.historyPresentationItems.getOrAwaitValue()[0]
         assertThat(item.date, `is`(convertLongToDateString(history.date)))
+    }
+
+    @Test
+    fun longPresentationClick_itemHighlighted() {
+        val boxId = 1
+        val position = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items.size, `is`(1))
+
+        subject.presentationLongClick(position)
+
+        val item = subject.historyPresentationItems.getOrAwaitValue()[0]
+        assertThat(item.isHighlighted, `is`(true))
+    }
+
+    @Test
+    fun longPresentationClick_itemChangedEventEquals() {
+        val boxId = 1
+        val position = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items.size, `is`(1))
+
+        subject.presentationLongClick(position)
+
+        val changedPosition = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(changedPosition, `is`(position))
+    }
+
+    @Test
+    fun longClickOnSecondElement_secondElementNotHighligted() {
+        val boxId = 1
+        val position1 = 0
+        val position2 = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history1 = History(1, component.id, component.quantity)
+        val history2 = History(2, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history1, history2)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items.size, `is`(2))
+
+        subject.presentationLongClick(position1)
+        subject.presentationLongClick(position2)
+
+        val item = subject.historyPresentationItems.getOrAwaitValue()[position2]
+        assertThat(item.isHighlighted, `is`(false))
+    }
+
+    @Test
+    fun presentationClick_highlightedItemNotHighlighted() {
+        val boxId = 1
+        val position = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items.size, `is`(1))
+
+        subject.presentationLongClick(position)
+
+        subject.presentationClick()
+
+        val item = subject.historyPresentationItems.getOrAwaitValue()[position]
+        assertThat(item.isHighlighted, `is`(false))
+    }
+
+    @Test
+    fun presentationClick_itemChangedEventEquals() {
+        val boxId = 1
+        val position = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items.size, `is`(1))
+
+        subject.presentationLongClick(position)
+
+        val changedPosition1 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(changedPosition1, `is`(position))
+
+        subject.presentationClick()
+
+        val changedPosition2 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(changedPosition2, `is`(position))
+    }
+
+    @Test
+    fun presentationClick_noHighlightedItem_itemEventChangedIsNull() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items.size, `is`(1))
+
+        subject.presentationClick()
+
+        try{
+            subject.itemChangedEvent.getOrAwaitValue()
+            fail()
+        }catch(e: TimeoutException) {
+
+        }
+    }
+
+    @Test
+    fun twoPresentationClicks_secondItemChangedEventIsNull() {
+        val boxId = 1
+        val position = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items.size, `is`(1))
+
+        subject.presentationLongClick(position)
+
+        val changedPosition1 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(changedPosition1, `is`(position))
+
+        subject.presentationClick()
+
+        val changedPosition2 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(changedPosition2, `is`(position))
+
+        subject.presentationClick()
+
+        val changedPosition3 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(changedPosition3, `is`(nullValue()))
+    }
+
+    @Test
+    fun deleteHighlightedPresentation_sizeEquals() {
+        val boxId = 1
+        val position1 = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history1 = History(1, component.id, component.quantity)
+        val history2 = History(2, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history1, history2)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items.size, `is`(2))
+
+        subject.presentationLongClick(position1)
+
+        subject.deleteHighlightedPresentation()
+
+        val items2 = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items2.size, `is`(1))
+        assertThat(items2[0].id, `is`(history2.id))
     }
 }
