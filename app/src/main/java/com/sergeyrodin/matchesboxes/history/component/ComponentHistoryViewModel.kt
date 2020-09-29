@@ -24,6 +24,10 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
 
     private lateinit var historyItems: List<History>
 
+    private val _actionDeleteVisibleEvent = MutableLiveData<Event<Boolean>>()
+    val actionDeleteVisibleEvent: LiveData<Event<Boolean>>
+        get() = _actionDeleteVisibleEvent
+
     private suspend fun getComponentHistoryPresentationListByComponentId(id: Int): List<ComponentHistoryPresentation> {
         getHistoryItemsFromDb(id)
         return convertHistoryItemsToHistoryPresentationItems()
@@ -56,8 +60,13 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
             val presentation = getPresentationByPosition(position)
             setPresentationHighlighted(presentation)
             setHighlightedPosition(position)
-            callItemChangedEvent(position)
+            notifyItemChanged(position)
+            setActionDeleteVisible()
         }
+    }
+
+    private fun setActionDeleteVisible() {
+        _actionDeleteVisibleEvent.value = Event(true)
     }
 
     private fun isItemNotHighlighted() = highlightedPosition == NO_ID_SET
@@ -74,7 +83,7 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
         highlightedPosition = position
     }
 
-    private fun callItemChangedEvent(position: Int) {
+    private fun notifyItemChanged(position: Int) {
         _itemChangedEvent.value = Event(position)
     }
 
@@ -82,8 +91,9 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
         if(isItemHighlighted()) {
             val presentation = getHighlightedPresentation()
             makePresentationNotHighlighted(presentation)
-            callItemChangedEventOnHighlightedPosition()
+            notifyItemChangedOnHighlightedPosition()
             resetHighlightedPosition()
+            setActionDeleteNotVisible()
         }
     }
 
@@ -97,12 +107,16 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
         presentation?.isHighlighted = false
     }
 
-    private fun callItemChangedEventOnHighlightedPosition() {
+    private fun notifyItemChangedOnHighlightedPosition() {
         _itemChangedEvent.value = Event(highlightedPosition)
     }
 
     private fun resetHighlightedPosition() {
         highlightedPosition = NO_ID_SET
+    }
+
+    private fun setActionDeleteNotVisible() {
+        _actionDeleteVisibleEvent.value = Event(false)
     }
 
     fun deleteHighlightedPresentation() {
@@ -122,6 +136,7 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
             viewModelScope.launch {
                 dataSource.deleteHistory(history)
                 refreshHistoryItemsFromDb(history)
+                setActionDeleteNotVisible()
             }
         }
     }

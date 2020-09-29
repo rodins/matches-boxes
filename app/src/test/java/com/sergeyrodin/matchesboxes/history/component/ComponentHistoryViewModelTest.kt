@@ -304,4 +304,63 @@ class ComponentHistoryViewModelTest {
         assertThat(items2.size, `is`(1))
         assertThat(items2[0].id, `is`(history2.id))
     }
+
+    @Test
+    fun itemHighlighted_actionDeleteVisibleEventTrue() {
+        val boxId = 1
+        val position = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items.size, `is`(1))
+
+        subject.presentationLongClick(position)
+
+        val visible = subject.actionDeleteVisibleEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(visible, `is`(true))
+    }
+
+    @Test
+    fun itemNotHighlighted_actionDeleteVisibleEventFalse() {
+        val boxId = 1
+        val position = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items.size, `is`(1))
+
+        subject.presentationLongClick(position)
+        subject.presentationClick()
+
+        val visible = subject.actionDeleteVisibleEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(visible, `is`(false))
+    }
+
+    @Test
+    fun deleteItem_actionDeleteVisibleFalse() {
+        val boxId = 1
+        val position = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items.size, `is`(1))
+
+        subject.presentationLongClick(position)
+        subject.deleteHighlightedPresentation()
+
+        val visible = subject.actionDeleteVisibleEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(visible, `is`(false))
+    }
 }
