@@ -3,22 +3,18 @@ package com.sergeyrodin.matchesboxes.history.component
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.longClick
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.*
-import com.sergeyrodin.matchesboxes.history.all.HistoryPresentationAdapter
 import com.sergeyrodin.matchesboxes.history.hasBackgroundColor
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -105,7 +101,7 @@ class ComponentHistoryFragmentTest {
 
         presentationLongClick(history)
 
-        checkItemIsHighlighted()
+        checkIfListHasHighlightedElement()
     }
 
     private fun presentationLongClick(history: History) {
@@ -122,7 +118,7 @@ class ComponentHistoryFragmentTest {
             )
     }
 
-    private fun checkItemIsHighlighted() {
+    private fun checkIfListHasHighlightedElement() {
         onView(withId(R.id.display_component_history_list))
             .check(matches(hasDescendant(hasBackgroundColor(R.color.secondaryLightColor))))
     }
@@ -141,6 +137,17 @@ class ComponentHistoryFragmentTest {
 
         presentationLongClick(history)
 
+        presentationClick(history)
+
+        checkIfListHasNotHighlightedElement()
+    }
+
+    private fun checkIfListHasNotHighlightedElement() {
+        onView(withId(R.id.display_component_history_list))
+            .check(matches(hasDescendant(hasBackgroundColor(R.color.design_default_color_background))))
+    }
+
+    private fun presentationClick(history: History) {
         onView(withId(R.id.display_component_history_list))
             .perform(
                 RecyclerViewActions
@@ -152,8 +159,5 @@ class ComponentHistoryFragmentTest {
                         ), click()
                     )
             )
-
-        onView(withId(R.id.display_component_history_list))
-            .check(matches(hasDescendant(hasBackgroundColor(R.color.design_default_color_background))))
     }
 }
