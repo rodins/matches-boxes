@@ -28,6 +28,10 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
     val actionDeleteVisibleEvent: LiveData<Event<Boolean>>
         get() = _actionDeleteVisibleEvent
 
+    private val _dataSetChangedEvent = MutableLiveData<Event<Unit>>()
+    val dataSetChangedEvent: LiveData<Event<Unit>>
+        get() = _dataSetChangedEvent
+
     private suspend fun getComponentHistoryPresentationListByComponentId(id: Int): List<ComponentHistoryPresentation> {
         getHistoryItemsFromDb(id)
         return convertHistoryItemsToHistoryPresentationItems()
@@ -137,12 +141,17 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
                 dataSource.deleteHistory(history)
                 refreshHistoryItemsFromDb(history)
                 setActionDeleteNotVisible()
+                notifyDataSetChanged()
             }
         }
     }
 
     private fun refreshHistoryItemsFromDb(history: History) {
         start(history.componentId)
+    }
+
+    private fun notifyDataSetChanged() {
+        _dataSetChangedEvent.value = Event(Unit)
     }
 }
 
