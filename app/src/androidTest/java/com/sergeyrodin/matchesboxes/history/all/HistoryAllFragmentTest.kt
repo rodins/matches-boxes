@@ -1,10 +1,6 @@
 package com.sergeyrodin.matchesboxes.history.all
 
-import android.graphics.drawable.ColorDrawable
-import android.view.View
-import android.widget.TextView
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -16,14 +12,12 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import androidx.test.internal.util.Checks
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.*
+import com.sergeyrodin.matchesboxes.history.hasBackgroundColor
+import com.sergeyrodin.matchesboxes.history.hasBackgroundColorAndText
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.TypeSafeMatcher
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -292,46 +286,6 @@ class HistoryAllFragmentTest {
                         ), longClick()
                     )
             )
-    }
-
-    private fun hasBackgroundColor(colorRes: Int): Matcher<View> {
-        Checks.checkNotNull(colorRes)
-        return object: TypeSafeMatcher<View>() {
-
-            override fun describeTo(description: Description?) {
-                description?.appendText("background color: $colorRes")
-            }
-
-            override fun matchesSafely(item: View?): Boolean {
-                if(item?.background == null) {
-                    return false
-                }
-                val actualColor = (item.background as ColorDrawable).color
-                val expectedColor = ColorDrawable(ContextCompat.getColor(item.context, colorRes)).color
-                return actualColor == expectedColor
-            }
-
-        }
-    }
-
-    private fun hasBackgroundColorAndText(colorRes: Int, text: String): Matcher<View> {
-        return object: TypeSafeMatcher<View>() {
-
-            override fun describeTo(description: Description?) {
-                description?.appendText("text: $text, background color: $colorRes")
-            }
-
-            override fun matchesSafely(item: View?): Boolean {
-                if(item?.background == null)
-                    return false
-                val actualColor = (item.background as ColorDrawable).color
-                val expectedColor = ColorDrawable(ContextCompat.getColor(item.context, colorRes)).color
-
-                val nameTextView = item.findViewById<TextView>(R.id.name_text)
-                val actualText = nameTextView.text.toString()
-                return actualColor == expectedColor && text == actualText
-            }
-        }
     }
 
 }

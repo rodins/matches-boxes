@@ -7,9 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentComponentHistoryBinding
+import com.sergeyrodin.matchesboxes.history.all.HistoryPresentationLongClickListener
 
 class ComponentHistoryFragment : Fragment() {
     private lateinit var binding: FragmentComponentHistoryBinding
@@ -30,7 +32,9 @@ class ComponentHistoryFragment : Fragment() {
     ): View? {
         createBinding(inflater)
         startViewModel()
+        createAdapter()
         setupBinding()
+        observeItemChangedEvent()
         return binding.root
     }
 
@@ -42,9 +46,22 @@ class ComponentHistoryFragment : Fragment() {
         viewModel.start(args.componentId)
     }
 
+    private fun createAdapter() {
+        binding.displayComponentHistoryList.adapter = DisplayComponentHistoryAdapter(
+            HistoryPresentationLongClickListener { position ->
+                viewModel.presentationLongClick(position)
+            }
+        )
+    }
+
     private fun setupBinding() {
-        binding.displayComponentHistoryList.adapter = DisplayComponentHistoryAdapter()
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+    }
+
+    private fun observeItemChangedEvent() {
+        viewModel.itemChangedEvent.observe(viewLifecycleOwner, EventObserver { position ->
+            binding.displayComponentHistoryList.adapter?.notifyItemChanged(position)
+        })
     }
 }

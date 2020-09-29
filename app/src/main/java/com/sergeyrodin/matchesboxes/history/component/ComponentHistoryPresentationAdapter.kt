@@ -6,8 +6,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.databinding.DisplayComponentHistoryListItemBinding
+import com.sergeyrodin.matchesboxes.history.all.HistoryPresentationLongClickListener
 
-class DisplayComponentHistoryAdapter:
+class DisplayComponentHistoryAdapter(private val longClickListener: HistoryPresentationLongClickListener):
     ListAdapter<ComponentHistoryPresentation, DisplayComponentHistoryAdapter.ViewHolder>(DisplayComponentHistoryDiffCallback()){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -15,14 +16,18 @@ class DisplayComponentHistoryAdapter:
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), position, longClickListener)
     }
 
     class ViewHolder private constructor(private val binding: DisplayComponentHistoryListItemBinding):
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(componentHistoryPresentation: ComponentHistoryPresentation) {
-            binding.displayComponentHistory = componentHistoryPresentation
+        fun bind(presentation: ComponentHistoryPresentation, position: Int, longClickListener: HistoryPresentationLongClickListener) {
+            binding.layout.setOnLongClickListener {
+                longClickListener.onClick(position)
+                true
+            }
+            binding.displayComponentHistory = presentation
             binding.executePendingBindings()
         }
 
