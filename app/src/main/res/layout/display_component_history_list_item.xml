@@ -7,6 +7,10 @@
         <variable
             name="displayComponentHistory"
             type="com.sergeyrodin.matchesboxes.history.component.ComponentHistoryPresentation" />
+
+        <variable
+            name="clickListener"
+            type="com.sergeyrodin.matchesboxes.history.component.ComponentHistoryPresentationClickListener" />
     </data>
 
     <LinearLayout
@@ -15,6 +19,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:onClick="@{ () -> clickListener.onClick() }"
         app:highlightView="@{displayComponentHistory.isHighlighted}">
 
         <ImageView

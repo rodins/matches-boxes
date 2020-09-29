@@ -48,10 +48,21 @@ class ComponentHistoryFragment : Fragment() {
 
     private fun createAdapter() {
         binding.displayComponentHistoryList.adapter = DisplayComponentHistoryAdapter(
-            HistoryPresentationLongClickListener { position ->
-                viewModel.presentationLongClick(position)
-            }
+            createLongClickListener(),
+            createClickListener()
         )
+    }
+
+    private fun createLongClickListener(): HistoryPresentationLongClickListener {
+        return HistoryPresentationLongClickListener { position ->
+            viewModel.presentationLongClick(position)
+        }
+    }
+
+    private fun createClickListener(): ComponentHistoryPresentationClickListener {
+        return ComponentHistoryPresentationClickListener {
+            viewModel.presentationClick()
+        }
     }
 
     private fun setupBinding() {

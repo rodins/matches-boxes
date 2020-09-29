@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.longClick
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -102,6 +103,12 @@ class ComponentHistoryFragmentTest {
         val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
         launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
+        presentationLongClick(history)
+
+        checkItemIsHighlighted()
+    }
+
+    private fun presentationLongClick(history: History) {
         onView(withId(R.id.display_component_history_list))
             .perform(
                 RecyclerViewActions
@@ -113,8 +120,40 @@ class ComponentHistoryFragmentTest {
                         ), longClick()
                     )
             )
+    }
 
+    private fun checkItemIsHighlighted() {
         onView(withId(R.id.display_component_history_list))
             .check(matches(hasDescendant(hasBackgroundColor(R.color.secondaryLightColor))))
+    }
+
+
+
+    @Test
+    fun presentationClickOnHighlightedItem_itemIsNotHighlighted() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
+        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+
+        presentationLongClick(history)
+
+        onView(withId(R.id.display_component_history_list))
+            .perform(
+                RecyclerViewActions
+                    .actionOnItem<DisplayComponentHistoryAdapter.ViewHolder>(
+                        hasDescendant(
+                            withText(
+                                convertLongToDateString(history.date)
+                            )
+                        ), click()
+                    )
+            )
+
+        onView(withId(R.id.display_component_history_list))
+            .check(matches(hasDescendant(hasBackgroundColor(R.color.design_default_color_background))))
     }
 }
