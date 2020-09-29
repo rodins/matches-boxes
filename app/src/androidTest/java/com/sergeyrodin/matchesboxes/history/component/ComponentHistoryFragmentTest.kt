@@ -12,6 +12,7 @@ import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.history.hasBackgroundColor
+import com.sergeyrodin.matchesboxes.history.hasBackgroundColorAndText
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
@@ -160,4 +161,37 @@ class ComponentHistoryFragmentTest {
                     )
             )
     }
+
+    @Test
+    fun clickOnNotHighlightedItem_highlightedItemNotHighlighted() {
+        val boxId = 1
+        val date = 12345L
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val historyHighlighted = History(1, component.id, component.quantity)
+        val historyNotHighlighted = History(2, component.id, component.quantity, date)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(historyHighlighted, historyNotHighlighted)
+        val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
+        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+
+        presentationLongClick(historyHighlighted)
+        presentationClick(historyNotHighlighted)
+
+        checkIfItemIsNotHighlighted(historyHighlighted)
+    }
+
+    private fun checkIfItemIsNotHighlighted(historyHighlighted: History) {
+        onView(withId(R.id.display_component_history_list))
+            .check(
+                matches(
+                    hasDescendant(
+                        hasBackgroundColorAndText(
+                            R.color.design_default_color_background,
+                            convertLongToDateString(historyHighlighted.date)
+                        )
+                    )
+                )
+            )
+    }
+
 }
