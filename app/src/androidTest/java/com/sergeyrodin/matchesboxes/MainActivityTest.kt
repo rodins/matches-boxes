@@ -1929,4 +1929,134 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun componentHistoryPresentationLongClick_actionDeleteVisible() = runBlocking {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        val history = History(1, component.id, component.quantity)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        dataSource.insertHistory(history)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_history)).perform(click())
+        onView(withText(component.name)).perform(click())
+        onView(withText(convertLongToDateString(history.date))).perform(longClick())
+
+        onView(withId(R.id.action_delete)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun highlightedComponentHistoryPresentationClick_actionDeleteNotVisible() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        val history = History(1, component.id, component.quantity)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        dataSource.insertHistory(history)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_history)).perform(click())
+        onView(withText(component.name)).perform(click())
+        onView(withText(convertLongToDateString(history.date))).perform(longClick())
+        onView(withText(convertLongToDateString(history.date))).perform(click())
+
+        onView(withId(R.id.action_delete)).check(doesNotExist())
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun deleteComponentPresentation_actionDeleteNotVisible() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        val history = History(1, component.id, component.quantity)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        dataSource.insertHistory(history)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_history)).perform(click())
+        onView(withText(component.name)).perform(click())
+        onView(withText(convertLongToDateString(history.date))).perform(longClick())
+        onView(withId(R.id.action_delete)).perform(click())
+
+        onView(withId(R.id.action_delete)).check(doesNotExist())
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun deleteComponentHistory_itemNotDisplayed() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        val history = History(1, component.id, component.quantity)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        dataSource.insertHistory(history)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_history)).perform(click())
+        onView(withText(component.name)).perform(click())
+        onView(withText(convertLongToDateString(history.date))).perform(longClick())
+        onView(withId(R.id.action_delete)).perform(click())
+
+        onView(withText(convertLongToDateString(history.date))).check(doesNotExist())
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun deleteOneOfTwoComponentHistoryPresentations_deletedItemNotVisisble() = runBlocking {
+        val date = 123456789L
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        val history1 = History(1, component.id, component.quantity)
+        val history2 = History(2, component.id, component.quantity, date)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        dataSource.insertHistory(history1)
+        dataSource.insertHistory(history2)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withText(bag.name)).perform(click())
+        onView(withText(set.name)).perform(click())
+        onView(withText(box.name)).perform(click())
+        onView(withText(component.name)).perform(click())
+        onView(withId(R.id.action_history)).perform(click())
+        onView(withText(convertLongToDateString(history1.date))).perform(longClick())
+        onView(withId(R.id.action_delete)).perform(click())
+
+        onView(withText(convertLongToDateString(history1.date))).check(doesNotExist())
+
+        activityScenario.close()
+    }
+
 }

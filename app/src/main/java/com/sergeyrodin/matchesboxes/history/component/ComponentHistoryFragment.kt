@@ -1,10 +1,8 @@
 package com.sergeyrodin.matchesboxes.history.component
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.EventObserver
@@ -35,6 +33,9 @@ class ComponentHistoryFragment : Fragment() {
         createAdapter()
         setupBinding()
         observeItemChangedEvent()
+        viewModel.actionDeleteVisibleEvent.observe(viewLifecycleOwner, EventObserver{
+            setHasOptionsMenu(it)
+        })
         return binding.root
     }
 
@@ -74,5 +75,18 @@ class ComponentHistoryFragment : Fragment() {
         viewModel.itemChangedEvent.observe(viewLifecycleOwner, EventObserver { position ->
             binding.displayComponentHistoryList.adapter?.notifyItemChanged(position)
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.delete_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.action_delete) {
+            viewModel.deleteHighlightedPresentation()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
