@@ -21,16 +21,32 @@ class HistoryPresentationHighlighter {
     }
 
     fun makePositionHighlighted(position: Int) {
+        setHighlightedPosition(position)
+        notifyItemChanged(position)
+    }
+
+    private fun setHighlightedPosition(position: Int) {
         highlightedPosition = position
+    }
+
+    private fun notifyItemChanged(position: Int) {
         _itemChangedEvent.value = Event(position)
     }
 
     fun makeHighlightedPositionNotHighlighted() {
+        notifyHighlightedItemChanged()
+        resetHighlightedPosition()
+    }
+
+    private fun notifyHighlightedItemChanged() {
         _itemChangedEvent.value = Event(highlightedPosition)
+    }
+
+    private fun resetHighlightedPosition() {
         highlightedPosition = NO_ID_SET
     }
 
     fun resetHighlightModeAfterDelete() {
-        highlightedPosition = NO_ID_SET
+        resetHighlightedPosition()
     }
 }
