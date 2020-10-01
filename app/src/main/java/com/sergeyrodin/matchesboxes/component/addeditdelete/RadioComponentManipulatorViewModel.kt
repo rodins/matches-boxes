@@ -139,19 +139,35 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
     private fun updateItem(name: String, quantity: Int) {
         viewModelScope.launch {
             updateRadioComponentInDb(name, quantity)
-            if(quantityFromDatabase != quantity) {
-                insertHistory(radioComponent!!.id, radioComponent!!.quantity)
-            }
+            saveHistoryIfQuantityChanged(quantity)
             callUpdateItemEvent()
         }
     }
 
     private suspend fun updateRadioComponentInDb(name: String, quantity: Int) {
-        radioComponent?.name = name
-        radioComponent?.quantity = quantity
-        radioComponent?.matchesBoxId = spinnersUpdater.matchesBoxId
-        radioComponent?.isBuy = isBuy.value!!
-        dataSource.updateRadioComponent(radioComponent!!)
+        updateRadioComponent(name, quantity)
+        saveRadioComponentToDatabase()
+    }
+
+    private fun updateRadioComponent(name: String, quantity: Int) {
+        radioComponent?.let {
+            it.name = name
+            it.quantity = quantity
+            it.matchesBoxId = spinnersUpdater.matchesBoxId
+            it.isBuy = isBuy.value!!
+        }
+    }
+
+    private suspend fun saveRadioComponentToDatabase() {
+        radioComponent?.let {
+            dataSource.updateRadioComponent(it)
+        }
+    }
+
+    private suspend fun saveHistoryIfQuantityChanged(quantity: Int) {
+        if (quantityFromDatabase != quantity) {
+            insertHistory(radioComponent!!.id, quantity)
+        }
     }
 
     private suspend fun callUpdateItemEvent() {
