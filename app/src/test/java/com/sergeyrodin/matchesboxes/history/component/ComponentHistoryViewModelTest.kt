@@ -1,9 +1,11 @@
 package com.sergeyrodin.matchesboxes.history.component
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.sergeyrodin.matchesboxes.MainCoroutineRule
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
 import org.junit.Before
@@ -361,5 +363,32 @@ class ComponentHistoryViewModelTest {
 
         val visible = subject.actionDeleteVisibleEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(visible, `is`(false))
+    }
+
+    @Test
+    fun highlightItemAfterDelete_itemHighlighted() {
+        val boxId = 1
+        val position1 = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history1 = History(1, component.id, component.quantity)
+        val history2 = History(2, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history1, history2)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items.size, `is`(2))
+
+        subject.presentationLongClick(position1)
+
+        subject.deleteHighlightedPresentation()
+
+        val items1 = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items1.size, `is`(1))
+
+        subject.presentationLongClick(position1)
+
+        val items2 = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items2[0].isHighlighted, `is`(true))
     }
 }

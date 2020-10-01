@@ -5,10 +5,13 @@ import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import com.sergeyrodin.matchesboxes.history.HistoryPresentationHighlighter
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 import kotlinx.coroutines.launch
 
 class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
+    private val highlighter = HistoryPresentationHighlighter()
+
     private val componentId = MutableLiveData<Int>()
     val historyPresentationItems = componentId.switchMap { id ->
         liveData {
@@ -16,11 +19,8 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
         }
     }
 
-    private val _itemChangedEvent = MutableLiveData<Event<Int>>()
     val itemChangedEvent: LiveData<Event<Int>>
-        get() = _itemChangedEvent
-
-    private var highlightedPosition: Int = NO_ID_SET
+        get() = highlighter.itemChangedEvent
 
     private lateinit var historyItems: List<History>
 
@@ -56,11 +56,10 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
     }
 
     fun presentationLongClick(position: Int) {
-        if(isItemNotHighlighted()) {
+        if(highlighter.isNotHighlightMode()) {
             val presentation = getPresentationByPosition(position)
             setPresentationHighlighted(presentation)
-            setHighlightedPosition(position)
-            notifyItemChanged(position)
+            highlighter.makePositionHighlighted(position)
             setActionDeleteVisible()
         }
     }
@@ -68,8 +67,6 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
     private fun setActionDeleteVisible() {
         _actionDeleteVisibleEvent.value = Event(true)
     }
-
-    private fun isItemNotHighlighted() = highlightedPosition == NO_ID_SET
 
     private fun getPresentationByPosition(position: Int): ComponentHistoryPresentation? {
         return historyPresentationItems.value?.get(position)
@@ -79,40 +76,21 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
         presentation?.isHighlighted = true
     }
 
-    private fun setHighlightedPosition(position: Int) {
-        highlightedPosition = position
-    }
-
-    private fun notifyItemChanged(position: Int) {
-        _itemChangedEvent.value = Event(position)
-    }
-
     fun presentationClick() {
-        if(isItemHighlighted()) {
+        if(highlighter.isHighlightMode()) {
             val presentation = getHighlightedPresentation()
             makePresentationNotHighlighted(presentation)
-            notifyItemChangedOnHighlightedPosition()
-            resetHighlightedPosition()
+            highlighter.makeHighlightedPositionNotHighlighted()
             setActionDeleteNotVisible()
         }
     }
 
-    private fun isItemHighlighted() = highlightedPosition != NO_ID_SET
-
     private fun getHighlightedPresentation(): ComponentHistoryPresentation? {
-        return historyPresentationItems.value?.get(highlightedPosition)
+        return historyPresentationItems.value?.get(highlighter.highlightedPosition)
     }
 
     private fun makePresentationNotHighlighted(presentation: ComponentHistoryPresentation?) {
         presentation?.isHighlighted = false
-    }
-
-    private fun notifyItemChangedOnHighlightedPosition() {
-        _itemChangedEvent.value = Event(highlightedPosition)
-    }
-
-    private fun resetHighlightedPosition() {
-        highlightedPosition = NO_ID_SET
     }
 
     private fun setActionDeleteNotVisible() {
@@ -136,6 +114,7 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
             viewModelScope.launch {
                 dataSource.deleteHistory(history)
                 refreshHistoryItemsFromDb(history)
+                highlighter.resetHighlightModeAfterDelete()
                 setActionDeleteNotVisible()
             }
         }
