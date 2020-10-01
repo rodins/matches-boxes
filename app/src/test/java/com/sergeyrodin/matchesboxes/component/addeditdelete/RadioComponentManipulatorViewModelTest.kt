@@ -1106,4 +1106,41 @@ class RadioComponentManipulatorViewModelTest{
         val errorEvent = subject.savingErrorEvent.getOrAwaitValue()
         assertThat(errorEvent, `is`(not(nullValue())))
     }
+
+    @Test
+    fun quantityChanged_historySaved() = runBlockingTest{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 4, box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(box.id, component.id)
+
+        subject.quantityPlus()
+        subject.saveItem()
+
+        val historyItems = dataSource.getHistoryList()
+        assertThat(historyItems.size, `is`(1))
+    }
+
+    @Test
+    fun quantityNotChanged_historyNotSaved() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "Component", 4, box.id)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component)
+        subject.start(box.id, component.id)
+
+        subject.saveItem()
+
+        val historyItems = dataSource.getHistoryList()
+        assertThat(historyItems.size, `is`(0))
+    }
 }

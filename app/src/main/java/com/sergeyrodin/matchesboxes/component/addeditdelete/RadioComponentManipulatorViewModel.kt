@@ -14,6 +14,7 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
     private val tag = javaClass.simpleName
     val name = MutableLiveData<String>()
     val quantity = MutableLiveData<String>()
+    var quantityFromDatabase = NO_ID_SET
     val isBuy = MutableLiveData<Boolean>()
 
     private val _addItemEvent = MutableLiveData<Event<MatchesBox>>()
@@ -65,6 +66,7 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
         radioComponent = dataSource.getRadioComponentById(componentId)
         name.value = radioComponent?.name ?: ""
         quantity.value = (radioComponent?.quantity ?: "").toString()
+        quantityFromDatabase = radioComponent?.quantity?: NO_ID_SET
         isBuy.value = radioComponent?.isBuy ?: false
     }
 
@@ -137,7 +139,9 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
     private fun updateItem(name: String, quantity: Int) {
         viewModelScope.launch {
             updateRadioComponentInDb(name, quantity)
-            insertHistory(radioComponent!!.id, radioComponent!!.quantity)
+            if(quantityFromDatabase != quantity) {
+                insertHistory(radioComponent!!.id, radioComponent!!.quantity)
+            }
             callUpdateItemEvent()
         }
     }
