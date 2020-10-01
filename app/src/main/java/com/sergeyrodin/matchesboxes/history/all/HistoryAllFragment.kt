@@ -66,16 +66,9 @@ class HistoryAllFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        observeDataSetChangedEvent()
         observeSelectedEvent()
         observeActionDeleteVisibilityEvent()
         observeItemChangedEvent()
-    }
-
-    private fun observeDataSetChangedEvent() {
-        viewModel.dataSetChangedEvent.observe(viewLifecycleOwner, EventObserver {
-            binding.displayHistoryList.adapter?.notifyDataSetChanged()
-        })
     }
 
     private fun observeSelectedEvent() {

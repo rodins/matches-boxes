@@ -293,24 +293,6 @@ class HistoryAllViewModelTest {
     }
 
     @Test
-    fun deletePresentation_dataSetChangedEventNotNull() {
-        val boxId = 1
-        val position = 0
-        val component = RadioComponent(1, "Component", 3, boxId)
-        val history = History(1, component.id, component.quantity)
-        dataSource.addRadioComponents(component)
-        dataSource.addHistory(history)
-        subject = HistoryAllViewModel(dataSource)
-
-        subject.presentationLongClick(position)
-
-        subject.deleteHighlightedPresentation()
-
-        val deleteDataSetChanged = subject.dataSetChangedEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(deleteDataSetChanged, `is`(not(nullValue())))
-    }
-
-    @Test
     fun presentationLongClick_itemChangedEventEquals() {
         val boxId = 1
         val position = 0
