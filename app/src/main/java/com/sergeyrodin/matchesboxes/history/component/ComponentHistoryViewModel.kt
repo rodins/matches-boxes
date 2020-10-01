@@ -2,15 +2,14 @@ package com.sergeyrodin.matchesboxes.history.component
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
-import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.history.HistoryPresentationHighlighter
+import com.sergeyrodin.matchesboxes.history.HihgligtedPositionSaverAndNotifier
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 import kotlinx.coroutines.launch
 
 class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
-    private val highlighter = HistoryPresentationHighlighter()
+    private val positionSaverAndNotifier = HihgligtedPositionSaverAndNotifier()
 
     private val componentId = MutableLiveData<Int>()
     val historyPresentationItems = componentId.switchMap { id ->
@@ -20,7 +19,7 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
     }
 
     val itemChangedEvent: LiveData<Event<Int>>
-        get() = highlighter.itemChangedEvent
+        get() = positionSaverAndNotifier.itemChangedEvent
 
     private lateinit var historyItems: List<History>
 
@@ -56,10 +55,10 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
     }
 
     fun presentationLongClick(position: Int) {
-        if(highlighter.isNotHighlightMode()) {
+        if(positionSaverAndNotifier.isNotHighlightMode()) {
             val presentation = getPresentationByPosition(position)
             setPresentationHighlighted(presentation)
-            highlighter.makePositionHighlighted(position)
+            positionSaverAndNotifier.saveHighlightedPositionAndNotifyItChanged(position)
             setActionDeleteVisible()
         }
     }
@@ -77,16 +76,16 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
     }
 
     fun presentationClick() {
-        if(highlighter.isHighlightMode()) {
+        if(positionSaverAndNotifier.isHighlightMode()) {
             val presentation = getHighlightedPresentation()
             makePresentationNotHighlighted(presentation)
-            highlighter.makeHighlightedPositionNotHighlighted()
+            positionSaverAndNotifier.notifyChangedAndResetHighlightedPosition()
             setActionDeleteNotVisible()
         }
     }
 
     private fun getHighlightedPresentation(): ComponentHistoryPresentation? {
-        return historyPresentationItems.value?.get(highlighter.highlightedPosition)
+        return historyPresentationItems.value?.get(positionSaverAndNotifier.highlightedPosition)
     }
 
     private fun makePresentationNotHighlighted(presentation: ComponentHistoryPresentation?) {
@@ -114,7 +113,7 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
             viewModelScope.launch {
                 dataSource.deleteHistory(history)
                 refreshHistoryItemsFromDb(history)
-                highlighter.resetHighlightModeAfterDelete()
+                positionSaverAndNotifier.resetHighlightedPositionAfterDelete()
                 setActionDeleteNotVisible()
             }
         }

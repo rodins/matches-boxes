@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 
-class HistoryPresentationHighlighter {
+class HihgligtedPositionSaverAndNotifier {
     var highlightedPosition: Int = NO_ID_SET
         private set
     private val _itemChangedEvent = MutableLiveData<Event<Int>>()
@@ -20,7 +20,7 @@ class HistoryPresentationHighlighter {
         return highlightedPosition == NO_ID_SET
     }
 
-    fun makePositionHighlighted(position: Int) {
+    fun saveHighlightedPositionAndNotifyItChanged(position: Int) {
         setHighlightedPosition(position)
         notifyItemChanged(position)
     }
@@ -33,7 +33,7 @@ class HistoryPresentationHighlighter {
         _itemChangedEvent.value = Event(position)
     }
 
-    fun makeHighlightedPositionNotHighlighted() {
+    fun notifyChangedAndResetHighlightedPosition() {
         notifyHighlightedItemChanged()
         resetHighlightedPosition()
     }
@@ -46,7 +46,7 @@ class HistoryPresentationHighlighter {
         highlightedPosition = NO_ID_SET
     }
 
-    fun resetHighlightModeAfterDelete() {
+    fun resetHighlightedPositionAfterDelete() {
         resetHighlightedPosition()
     }
 }
