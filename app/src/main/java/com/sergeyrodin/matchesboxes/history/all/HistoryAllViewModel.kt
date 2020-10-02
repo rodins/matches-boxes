@@ -2,7 +2,6 @@ package com.sergeyrodin.matchesboxes.history.all
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
-import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.history.HihgligtedPositionSaverAndNotifier
@@ -33,8 +32,9 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
 
     val itemChangedEvent = highlightedPositionSaver.itemChangedEvent
 
-    private var previousComponentQuantity = NO_ID_SET
     private val previousHistoryQuantity = mutableMapOf<Int,Int>()
+
+    private val componentNames = mutableMapOf<Int, String>()
 
     init {
         viewModelScope.launch {
@@ -52,34 +52,52 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
     }
 
     private suspend fun convertHistoryItemsToHistoryPresentationItems() {
-        val presentationItems = mutableListOf<HistoryPresentation>()
-        historyItems.forEach { history ->
-            presentationItems.add(convertHistoryToHistoryPresentation(history))
+        val presentationItems = historyItems.map { history ->
+            HistoryPresentation(
+                history.id,
+                history.componentId,
+                getComponentName(history),
+                history.quantity.toString(),
+                convertLongToDateString(history.date),
+                getHistoryDelta(history)
+            )
         }
         updatePresentationItems(presentationItems)
     }
 
-    private suspend fun convertHistoryToHistoryPresentation(history: History): HistoryPresentation {
+    private suspend fun getComponentName(history: History): String {
+        return getComponentNameFromCache(history) ?: getComponentNameFromDatabase(history)
+    }
+
+    private fun getComponentNameFromCache(history: History) =
+        componentNames[history.componentId]
+
+    private suspend fun getComponentNameFromDatabase(history: History): String {
         val component = dataSource.getRadioComponentById(history.componentId)
-        var delta = ""
+        val name = component?.name ?: ""
+        componentNames[history.componentId] = name
+        return name
+    }
+
+    private fun getHistoryDelta(history: History): String {
         val previousQuantity = previousHistoryQuantity[history.componentId]
-        if (previousQuantity != null) {
-            val numericDelta = history.quantity - previousQuantity
-            if(numericDelta > 0) {
-                delta = "+$numericDelta"
-            }else {
-                delta = numericDelta.toString()
-            }
-        }
         previousHistoryQuantity[history.componentId] = history.quantity
-        return HistoryPresentation(
-            history.id,
-            history.componentId,
-            component?.name ?: "",
-            history.quantity.toString(),
-            convertLongToDateString(history.date),
-            delta
-        )
+        if (previousQuantity != null) {
+            return calculateHistoryDelta(history, previousQuantity)
+        }
+        return ""
+    }
+
+    private fun calculateHistoryDelta(
+        history: History,
+        previousQuantity: Int
+    ): String {
+        val numericDelta = history.quantity - previousQuantity
+        return if (numericDelta > 0) {
+            "+$numericDelta"
+        } else {
+            numericDelta.toString()
+        }
     }
 
     private fun updatePresentationItems(presentationItems: List<HistoryPresentation>) {
