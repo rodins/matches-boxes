@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.history.all
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
+import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.history.HihgligtedPositionSaverAndNotifier
@@ -9,7 +10,7 @@ import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
-class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
+class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel() {
     private val highlightedPositionSaver = HihgligtedPositionSaverAndNotifier()
 
     private lateinit var historyItems: List<History>
@@ -18,7 +19,7 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
     val historyPresentationItems: LiveData<List<HistoryPresentation>>
         get() = _historyPresentationItems
 
-    val noHistoryTextVisible = historyPresentationItems.map{
+    val noHistoryTextVisible = historyPresentationItems.map {
         it.isEmpty()
     }
 
@@ -32,7 +33,10 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
 
     val itemChangedEvent = highlightedPositionSaver.itemChangedEvent
 
-    init{
+    private var previousComponentQuantity = NO_ID_SET
+    private val previousHistoryQuantity = mutableMapOf<Int,Int>()
+
+    init {
         viewModelScope.launch {
             getAndConvertHistoryItems()
         }
@@ -57,12 +61,24 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
 
     private suspend fun convertHistoryToHistoryPresentation(history: History): HistoryPresentation {
         val component = dataSource.getRadioComponentById(history.componentId)
+        var delta = ""
+        val previousQuantity = previousHistoryQuantity[history.componentId]
+        if (previousQuantity != null) {
+            val numericDelta = history.quantity - previousQuantity
+            if(numericDelta > 0) {
+                delta = "+$numericDelta"
+            }else {
+                delta = numericDelta.toString()
+            }
+        }
+        previousHistoryQuantity[history.componentId] = history.quantity
         return HistoryPresentation(
             history.id,
             history.componentId,
             component?.name ?: "",
             history.quantity.toString(),
-            convertLongToDateString(history.date)
+            convertLongToDateString(history.date),
+            delta
         )
     }
 
@@ -71,9 +87,9 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
     }
 
     fun presentationClick(presentation: HistoryPresentation) {
-        if(highlightedPositionSaver.isNotHighlightMode()) {
+        if (highlightedPositionSaver.isNotHighlightMode()) {
             callSelectedEvent(presentation)
-        }else {
+        } else {
             makeHighlightedPresentationNotHighlighted()
             highlightedPositionSaver.notifyChangedAndResetHighlightedPosition()
             callActionDeleteVisibilityEvent()
@@ -102,7 +118,7 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
     }
 
     fun presentationLongClick(position: Int) {
-        if(highlightedPositionSaver.isNotHighlightMode()) {
+        if (highlightedPositionSaver.isNotHighlightMode()) {
             val presentation = getPresentationByPosition(position)
             makePresentationHighlighted(presentation)
             highlightedPositionSaver.saveHighlightedPositionAndNotifyItChanged(position)
@@ -148,12 +164,13 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource): Vi
     }
 }
 
-class HistoryAllViewModelFactory(private val dataSource: RadioComponentsDataSource): ViewModelProvider.Factory {
+class HistoryAllViewModelFactory(private val dataSource: RadioComponentsDataSource) :
+    ViewModelProvider.Factory {
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(HistoryAllViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(HistoryAllViewModel::class.java)) {
             return HistoryAllViewModel(dataSource) as T
-        }else {
+        } else {
             throw IllegalArgumentException("No view mode class found.")
         }
     }

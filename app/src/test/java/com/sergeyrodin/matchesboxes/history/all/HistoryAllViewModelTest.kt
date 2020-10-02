@@ -123,7 +123,7 @@ class HistoryAllViewModelTest {
         subject = HistoryAllViewModel(dataSource)
 
         val list = subject.historyPresentationItems.getOrAwaitValue()
-        assertThat(list[0].date, `is`("середа лип.-29-2020 Time: 08:13"))
+        assertThat(list[0].date, `is`("середа лип.-29-2020 08:13"))
     }
 
     @Test
@@ -334,5 +334,88 @@ class HistoryAllViewModelTest {
 
         val changedItemPosition2 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(changedItemPosition2, `is`(position))
+    }
+
+    @Test
+    fun oneComponent_deltaIsEmpty() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject = HistoryAllViewModel(dataSource)
+
+        val presentation = subject.historyPresentationItems.getOrAwaitValue()[0]
+        assertThat(presentation.delta, `is`(""))
+    }
+
+    @Test
+    fun oneComponent_twoHistories_positiveDeltaEquals() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history1 = History(1, component.id, component.quantity)
+        val history2 = History(2, component.id, component.quantity+5)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history1, history2)
+        subject = HistoryAllViewModel(dataSource)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items[0].delta, `is`(""))
+        assertThat(items[1].delta, `is`("+5"))
+    }
+
+    @Test
+    fun oneComponent_twoHistories_negativeDeltaEquals() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history1 = History(1, component.id, component.quantity)
+        val history2 = History(2, component.id, component.quantity-3)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history1, history2)
+        subject = HistoryAllViewModel(dataSource)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items[0].delta, `is`(""))
+        assertThat(items[1].delta, `is`("-3"))
+    }
+
+    @Test
+    fun twoComponents_fourHistories_positiveDeltaEquals() {
+        val boxId = 1
+        val component1 = RadioComponent(1,"Component1", 3, boxId)
+        val component2 = RadioComponent(2, "Component2", 7, boxId)
+        val history1 = History(1, component1.id, component1.quantity)
+        val history2 = History(2, component1.id, component1.quantity+3)
+        val history3 = History(3, component2.id, component2.quantity)
+        val history4 = History(4, component2.id, component2.quantity+5)
+        dataSource.addRadioComponents(component1, component2)
+        dataSource.addHistory(history1, history2, history3, history4)
+        subject = HistoryAllViewModel(dataSource)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items[0].delta, `is`(""))
+        assertThat(items[1].delta, `is`("+3"))
+        assertThat(items[2].delta, `is`(""))
+        assertThat(items[3].delta, `is`("+5"))
+    }
+
+    @Test
+    fun twoComponents_fourHistories_negativeDeltaEquals() {
+        val boxId = 1
+        val component1 = RadioComponent(1,"Component1", 3, boxId)
+        val component2 = RadioComponent(2, "Component2", 7, boxId)
+        val history1 = History(1, component1.id, component1.quantity)
+        val history2 = History(2, component1.id, component1.quantity-3)
+        val history3 = History(3, component2.id, component2.quantity)
+        val history4 = History(4, component2.id, component2.quantity-5)
+        dataSource.addRadioComponents(component1, component2)
+        dataSource.addHistory(history1, history2, history3, history4)
+        subject = HistoryAllViewModel(dataSource)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items[0].delta, `is`(""))
+        assertThat(items[1].delta, `is`("-3"))
+        assertThat(items[2].delta, `is`(""))
+        assertThat(items[3].delta, `is`("-5"))
     }
 }
