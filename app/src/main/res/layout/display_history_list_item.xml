@@ -49,6 +49,22 @@
             tools:text="LA78041" />
 
         <TextView
+            android:id="@+id/delta_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@{displayHistory.delta}"
+            android:textSize="@dimen/delta_text_size"
+            app:layout_constraintBottom_toBottomOf="@+id/quantity_text"
+            app:layout_constraintEnd_toStartOf="@+id/quantity_text"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/name_text"
+            app:layout_constraintTop_toTopOf="@+id/quantity_text"
+            tools:text="+4" />
+
+        <TextView
             android:id="@+id/quantity_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,6 +87,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/name_text"
             app:layout_constraintTop_toBottomOf="@+id/name_text"
-            tools:text="середа лип.-29-2020 Time: 08:13" />
+            tools:text="середа лип.-29-2020 08:13" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

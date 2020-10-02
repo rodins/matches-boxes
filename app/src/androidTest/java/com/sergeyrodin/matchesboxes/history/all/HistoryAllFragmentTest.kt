@@ -288,4 +288,42 @@ class HistoryAllFragmentTest {
             )
     }
 
+    @Test
+    fun oneComponent_twoHistories_positiveDeltaDisplayed() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history1 = History(1, component.id, component.quantity)
+        val history2 = History(2, component.id, component.quantity+4)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history1, history2)
+        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+
+        onView(withText("+4")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun oneComponent_twoHistories_negativeDeltaDisplayed() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history1 = History(1, component.id, component.quantity)
+        val history2 = History(2, component.id, component.quantity-5)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history1, history2)
+        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+
+        onView(withText("-5")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun oneComponent_oneHistory_noDeltaDisplayed() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+
+        onView(withId(R.id.delta_text)).check(matches(withText("")))
+    }
+
 }

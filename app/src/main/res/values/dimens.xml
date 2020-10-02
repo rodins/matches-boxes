@@ -14,4 +14,5 @@
     <dimen name="quantity_margin">8dp</dimen>
     <dimen name="plus_minus_text_size">20sp</dimen>
     <dimen name="no_spinner_items_text_size">18sp</dimen>
+    <dimen name="delta_text_size">22sp</dimen>
 </resources>
