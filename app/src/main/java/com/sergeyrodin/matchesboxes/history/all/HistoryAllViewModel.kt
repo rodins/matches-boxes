@@ -11,6 +11,7 @@ import java.lang.IllegalArgumentException
 
 class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel() {
     private val highlightedPositionSaver = HihgligtedPositionSaverAndNotifier()
+    private val deltaCalculator = DeltaCalculator()
 
     private lateinit var historyItems: List<History>
 
@@ -31,9 +32,6 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
         get() = _actionDeleteVisibilityEvent
 
     val itemChangedEvent = highlightedPositionSaver.itemChangedEvent
-
-    private val previousHistoryQuantity = mutableMapOf<Int,Int>()
-    private val deltas = mutableMapOf<Int, String>()
     private val componentNames = mutableMapOf<Int, String>()
 
     init {
@@ -44,10 +42,7 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
 
     private suspend fun getAndConvertHistoryItems() {
         getHistoryItemsFromDb()
-        historyItems.reversed().forEach { history ->
-            val delta = getHistoryDelta(history)
-            deltas[history.id] = delta
-        }
+        deltaCalculator.calculateDeltasForHistoryItems(historyItems)
         convertHistoryItemsToHistoryPresentationItems()
     }
 
@@ -63,7 +58,7 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
                 getComponentName(history),
                 history.quantity.toString(),
                 convertLongToDateString(history.date),
-                deltas[history.id]?:""
+                deltaCalculator.getDeltaByHistoryId(history.id)
             )
         }
         updatePresentationItems(presentationItems)
@@ -81,29 +76,6 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
         val name = component?.name ?: ""
         componentNames[history.componentId] = name
         return name
-    }
-
-    private fun getHistoryDelta(history: History): String {
-        val previousQuantity = previousHistoryQuantity[history.componentId]
-        previousHistoryQuantity[history.componentId] = history.quantity
-        if (previousQuantity != null) {
-            return calculateHistoryDelta(history, previousQuantity)
-        }
-        return ""
-    }
-
-    private fun calculateHistoryDelta(
-        history: History,
-        previousQuantity: Int
-    ): String {
-        val numericDelta = history.quantity - previousQuantity
-        if (numericDelta > 0) {
-            return "+$numericDelta"
-        }
-        if(numericDelta < 0){
-            return numericDelta.toString()
-        }
-        return ""
     }
 
     private fun updatePresentationItems(presentationItems: List<HistoryPresentation>) {
