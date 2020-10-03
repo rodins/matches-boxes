@@ -418,4 +418,19 @@ class HistoryAllViewModelTest {
         assertThat(items[2].delta, `is`("-5"))
         assertThat(items[3].delta, `is`(""))
     }
+
+    @Test
+    fun oneComponentTwoHistoriesEqual_noDeltaDisplayed() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history1 = History(1, component.id, component.quantity)
+        val history2 = History(2, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history1, history2)
+        subject = HistoryAllViewModel(dataSource)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items[0].delta, `is`(""))
+        assertThat(items[1].delta, `is`(""))
+    }
 }

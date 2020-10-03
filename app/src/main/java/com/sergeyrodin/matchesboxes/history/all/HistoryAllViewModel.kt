@@ -97,11 +97,13 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
         previousQuantity: Int
     ): String {
         val numericDelta = history.quantity - previousQuantity
-        return if (numericDelta > 0) {
-            "+$numericDelta"
-        } else {
-            numericDelta.toString()
+        if (numericDelta > 0) {
+            return "+$numericDelta"
         }
+        if(numericDelta < 0){
+            return numericDelta.toString()
+        }
+        return ""
     }
 
     private fun updatePresentationItems(presentationItems: List<HistoryPresentation>) {
