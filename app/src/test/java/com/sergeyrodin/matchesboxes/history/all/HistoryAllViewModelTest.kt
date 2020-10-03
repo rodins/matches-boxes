@@ -353,30 +353,30 @@ class HistoryAllViewModelTest {
     fun oneComponent_twoHistories_positiveDeltaEquals() {
         val boxId = 1
         val component = RadioComponent(1, "Component", 3, boxId)
-        val history1 = History(1, component.id, component.quantity)
-        val history2 = History(2, component.id, component.quantity+5)
+        val history1 = History(1, component.id, component.quantity+5)
+        val history2 = History(2, component.id, component.quantity)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history1, history2)
         subject = HistoryAllViewModel(dataSource)
 
         val items = subject.historyPresentationItems.getOrAwaitValue()
-        assertThat(items[0].delta, `is`(""))
-        assertThat(items[1].delta, `is`("+5"))
+        assertThat(items[0].delta, `is`("+5"))
+        assertThat(items[1].delta, `is`(""))
     }
 
     @Test
     fun oneComponent_twoHistories_negativeDeltaEquals() {
         val boxId = 1
         val component = RadioComponent(1, "Component", 3, boxId)
-        val history1 = History(1, component.id, component.quantity)
-        val history2 = History(2, component.id, component.quantity-3)
+        val history1 = History(1, component.id, component.quantity-3)
+        val history2 = History(2, component.id, component.quantity)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history1, history2)
         subject = HistoryAllViewModel(dataSource)
 
         val items = subject.historyPresentationItems.getOrAwaitValue()
-        assertThat(items[0].delta, `is`(""))
-        assertThat(items[1].delta, `is`("-3"))
+        assertThat(items[0].delta, `is`("-3"))
+        assertThat(items[1].delta, `is`(""))
     }
 
     @Test
@@ -384,19 +384,19 @@ class HistoryAllViewModelTest {
         val boxId = 1
         val component1 = RadioComponent(1,"Component1", 3, boxId)
         val component2 = RadioComponent(2, "Component2", 7, boxId)
-        val history1 = History(1, component1.id, component1.quantity)
-        val history2 = History(2, component1.id, component1.quantity+3)
-        val history3 = History(3, component2.id, component2.quantity)
-        val history4 = History(4, component2.id, component2.quantity+5)
+        val history1 = History(1, component1.id, component1.quantity+3)
+        val history2 = History(2, component1.id, component1.quantity)
+        val history3 = History(3, component2.id, component2.quantity+5)
+        val history4 = History(4, component2.id, component2.quantity)
         dataSource.addRadioComponents(component1, component2)
         dataSource.addHistory(history1, history2, history3, history4)
         subject = HistoryAllViewModel(dataSource)
 
         val items = subject.historyPresentationItems.getOrAwaitValue()
-        assertThat(items[0].delta, `is`(""))
-        assertThat(items[1].delta, `is`("+3"))
-        assertThat(items[2].delta, `is`(""))
-        assertThat(items[3].delta, `is`("+5"))
+        assertThat(items[0].delta, `is`("+3"))
+        assertThat(items[1].delta, `is`(""))
+        assertThat(items[2].delta, `is`("+5"))
+        assertThat(items[3].delta, `is`(""))
     }
 
     @Test
@@ -404,18 +404,18 @@ class HistoryAllViewModelTest {
         val boxId = 1
         val component1 = RadioComponent(1,"Component1", 3, boxId)
         val component2 = RadioComponent(2, "Component2", 7, boxId)
-        val history1 = History(1, component1.id, component1.quantity)
-        val history2 = History(2, component1.id, component1.quantity-3)
-        val history3 = History(3, component2.id, component2.quantity)
-        val history4 = History(4, component2.id, component2.quantity-5)
+        val history1 = History(1, component1.id, component1.quantity-3)
+        val history2 = History(2, component1.id, component1.quantity)
+        val history3 = History(3, component2.id, component2.quantity-5)
+        val history4 = History(4, component2.id, component2.quantity)
         dataSource.addRadioComponents(component1, component2)
         dataSource.addHistory(history1, history2, history3, history4)
         subject = HistoryAllViewModel(dataSource)
 
         val items = subject.historyPresentationItems.getOrAwaitValue()
-        assertThat(items[0].delta, `is`(""))
-        assertThat(items[1].delta, `is`("-3"))
-        assertThat(items[2].delta, `is`(""))
-        assertThat(items[3].delta, `is`("-5"))
+        assertThat(items[0].delta, `is`("-3"))
+        assertThat(items[1].delta, `is`(""))
+        assertThat(items[2].delta, `is`("-5"))
+        assertThat(items[3].delta, `is`(""))
     }
 }

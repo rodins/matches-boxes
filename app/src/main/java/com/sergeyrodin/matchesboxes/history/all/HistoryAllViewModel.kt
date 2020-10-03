@@ -33,7 +33,7 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
     val itemChangedEvent = highlightedPositionSaver.itemChangedEvent
 
     private val previousHistoryQuantity = mutableMapOf<Int,Int>()
-
+    private val deltas = mutableMapOf<Int, String>()
     private val componentNames = mutableMapOf<Int, String>()
 
     init {
@@ -44,6 +44,10 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
 
     private suspend fun getAndConvertHistoryItems() {
         getHistoryItemsFromDb()
+        historyItems.reversed().forEach { history ->
+            val delta = getHistoryDelta(history)
+            deltas[history.id] = delta
+        }
         convertHistoryItemsToHistoryPresentationItems()
     }
 
@@ -59,7 +63,7 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
                 getComponentName(history),
                 history.quantity.toString(),
                 convertLongToDateString(history.date),
-                getHistoryDelta(history)
+                deltas[history.id]?:""
             )
         }
         updatePresentationItems(presentationItems)
