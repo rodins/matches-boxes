@@ -4,12 +4,14 @@ import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import com.sergeyrodin.matchesboxes.history.DeltaCalculator
 import com.sergeyrodin.matchesboxes.history.HihgligtedPositionSaverAndNotifier
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 import kotlinx.coroutines.launch
 
 class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
     private val positionSaverAndNotifier = HihgligtedPositionSaverAndNotifier()
+    private val deltaCalculator = DeltaCalculator()
 
     private val componentId = MutableLiveData<Int>()
     val historyPresentationItems = componentId.switchMap { id ->
@@ -29,6 +31,7 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
 
     private suspend fun getComponentHistoryPresentationListByComponentId(id: Int): List<ComponentHistoryPresentation> {
         getHistoryItemsFromDb(id)
+        deltaCalculator.calculateDeltasForHistoryItems(historyItems)
         return convertHistoryItemsToHistoryPresentationItems()
     }
 
@@ -41,7 +44,8 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
             ComponentHistoryPresentation(
                 history.id,
                 convertLongToDateString(history.date),
-                history.quantity.toString()
+                history.quantity.toString(),
+                deltaCalculator.getDeltaByHistoryId(history.id)
             )
         }
     }

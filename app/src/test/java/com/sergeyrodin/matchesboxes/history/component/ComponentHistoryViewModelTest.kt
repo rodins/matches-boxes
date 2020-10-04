@@ -391,4 +391,62 @@ class ComponentHistoryViewModelTest {
         val items2 = subject.historyPresentationItems.getOrAwaitValue()
         assertThat(items2[0].isHighlighted, `is`(true))
     }
+
+    @Test
+    fun twoHistories_positiveDeltaEquals() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history1 = History(1, component.id, component.quantity+5)
+        val history2 = History(2, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history1, history2)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items[0].delta, `is`("+5"))
+        assertThat(items[1].delta, `is`(""))
+    }
+
+    @Test
+    fun twoHistories_negativeDeltaEquals() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history1 = History(1, component.id, component.quantity-5)
+        val history2 = History(2, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history1, history2)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items[0].delta, `is`("-5"))
+        assertThat(items[1].delta, `is`(""))
+    }
+
+    @Test
+    fun twoHistories_equalQuantities_deltasEmpty() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history1 = History(1, component.id, component.quantity)
+        val history2 = History(2, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history1, history2)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items[0].delta, `is`(""))
+        assertThat(items[1].delta, `is`(""))
+    }
+
+    @Test
+    fun oneHistory_deltaEmpty() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history1 = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history1)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items[0].delta, `is`(""))
+    }
 }

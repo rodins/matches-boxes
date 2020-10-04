@@ -1,4 +1,4 @@
-package com.sergeyrodin.matchesboxes.history.all
+package com.sergeyrodin.matchesboxes.history
 
 import com.sergeyrodin.matchesboxes.data.History
 

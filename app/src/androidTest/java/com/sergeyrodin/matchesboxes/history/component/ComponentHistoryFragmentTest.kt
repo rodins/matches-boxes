@@ -194,4 +194,18 @@ class ComponentHistoryFragmentTest {
             )
     }
 
+    @Test
+    fun twoHistories_deltaDisplayed() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history1 = History(1, component.id, component.quantity+5)
+        val history2 = History(2, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history1, history2)
+        val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
+        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+
+        onView(withText("+5")).check(matches(isDisplayed()))
+    }
+
 }

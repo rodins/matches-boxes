@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import com.sergeyrodin.matchesboxes.history.DeltaCalculator
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 
 class HistoryPresentationConverter(private val dataSource: RadioComponentsDataSource) {
