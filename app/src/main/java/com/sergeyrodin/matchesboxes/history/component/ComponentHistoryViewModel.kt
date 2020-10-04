@@ -11,51 +11,22 @@ import kotlinx.coroutines.launch
 
 class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
     private val positionSaverAndNotifier = HihgligtedPositionSaverAndNotifier()
-    private val deltaCalculator = DeltaCalculator()
+    private val converter = ConverterToComponentHistoryPresentation(dataSource)
 
-    private val componentId = MutableLiveData<Int>()
-    val historyPresentationItems = componentId.switchMap { id ->
-        liveData {
-            emit(getComponentHistoryPresentationListByComponentId(id))
-        }
-    }
+    val itemChangedEvent = positionSaverAndNotifier.itemChangedEvent
 
-    val itemChangedEvent: LiveData<Event<Int>>
-        get() = positionSaverAndNotifier.itemChangedEvent
-
-    private lateinit var historyItems: List<History>
-
-    private val _actionDeleteVisibleEvent = MutableLiveData<Event<Boolean>>()
-    val actionDeleteVisibleEvent: LiveData<Event<Boolean>>
-        get() = _actionDeleteVisibleEvent
-
-    private suspend fun getComponentHistoryPresentationListByComponentId(id: Int): List<ComponentHistoryPresentation> {
-        getHistoryItemsFromDb(id)
-        deltaCalculator.calculateDeltasForHistoryItems(historyItems)
-        return convertHistoryItemsToHistoryPresentationItems()
-    }
-
-    private suspend fun getHistoryItemsFromDb(id: Int) {
-        historyItems = dataSource.getHistoryListByComponentId(id)
-    }
-
-    private fun convertHistoryItemsToHistoryPresentationItems(): List<ComponentHistoryPresentation> {
-        return historyItems.map { history ->
-            ComponentHistoryPresentation(
-                history.id,
-                convertLongToDateString(history.date),
-                history.quantity.toString(),
-                deltaCalculator.getDeltaByHistoryId(history.id)
-            )
-        }
-    }
+    val historyPresentationItems = converter.historyPresentationItems
 
     val noItemsTextVisible = historyPresentationItems.map { list ->
         list.isEmpty()
     }
 
+    private val _actionDeleteVisibleEvent = MutableLiveData<Event<Boolean>>()
+    val actionDeleteVisibleEvent: LiveData<Event<Boolean>>
+        get() = _actionDeleteVisibleEvent
+
     fun start(id: Int) {
-        componentId.value = id
+        converter.convert(id)
     }
 
     fun presentationLongClick(position: Int) {
@@ -107,9 +78,7 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
     }
 
     private fun getHighlightedHistoryItem(presentation: ComponentHistoryPresentation?): History? {
-        return historyItems.find {
-            it.id == presentation?.id
-        }
+        return converter.findHistoryById(presentation?.id)
     }
 
     private fun deleteHistory(history: History?) {
@@ -124,7 +93,7 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
     }
 
     private fun refreshHistoryItemsFromDb(history: History) {
-        start(history.componentId)
+        converter.convert(history.componentId)
     }
 }
 
