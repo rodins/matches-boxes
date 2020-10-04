@@ -12,11 +12,10 @@ import kotlinx.coroutines.launch
 class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
     private val positionSaverAndNotifier = HihgligtedPositionSaverAndNotifier()
     private val converter = ConverterToComponentHistoryPresentation(dataSource)
+    private val deleter = ComponentHistoryDeleter(dataSource, positionSaverAndNotifier, converter)
 
     val itemChangedEvent = positionSaverAndNotifier.itemChangedEvent
-
     val historyPresentationItems = converter.historyPresentationItems
-
     val noItemsTextVisible = historyPresentationItems.map { list ->
         list.isEmpty()
     }
@@ -72,28 +71,10 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
     }
 
     fun deleteHighlightedPresentation() {
-        val presentation = getHighlightedPresentation()
-        val history = getHighlightedHistoryItem(presentation)
-        deleteHistory(history)
-    }
-
-    private fun getHighlightedHistoryItem(presentation: ComponentHistoryPresentation?): History? {
-        return converter.findHistoryById(presentation?.id)
-    }
-
-    private fun deleteHistory(history: History?) {
-        history?.let {
-            viewModelScope.launch {
-                dataSource.deleteHistory(history)
-                refreshHistoryItemsFromDb(history)
-                positionSaverAndNotifier.resetHighlightedPositionAfterDelete()
-                setActionDeleteNotVisible()
-            }
+        viewModelScope.launch {
+            deleter.deleteHighlightedPresentation()
+            setActionDeleteNotVisible()
         }
-    }
-
-    private fun refreshHistoryItemsFromDb(history: History) {
-        converter.convert(history.componentId)
     }
 }
 
