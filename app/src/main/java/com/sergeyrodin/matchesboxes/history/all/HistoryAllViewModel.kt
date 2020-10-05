@@ -4,14 +4,14 @@ import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.history.HihgligtedPositionSaverAndNotifier
-import com.sergeyrodin.matchesboxes.util.convertLongToDateString
+import com.sergeyrodin.matchesboxes.history.HighligtedPositionSaverAndNotifier
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
 class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel() {
-    private val highlightedPositionSaver = HihgligtedPositionSaverAndNotifier()
+    private val highlightedPositionSaver = HighligtedPositionSaverAndNotifier()
     private val converter = HistoryPresentationConverter(dataSource)
+    private val deleter = HistoryDeleter(dataSource, converter, highlightedPositionSaver)
 
     val historyPresentationItems = converter.historyPresentationItems
 
@@ -91,22 +91,8 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
 
     fun deleteHighlightedPresentation() {
         viewModelScope.launch {
-            val history = findHistoryByHighlightedPresentationId()
-            deleteHistory(history)
-            highlightedPositionSaver.resetHighlightedPositionAfterDelete()
+            deleter.deleteHighlightedPresentation()
             callActionDeleteVisibilityEvent()
-        }
-    }
-
-    private fun findHistoryByHighlightedPresentationId(): History? {
-        val highlightedPresentation = findHighlightedPresentation()
-        return converter.findHistoryById(highlightedPresentation?.id)
-    }
-
-    private suspend fun deleteHistory(history: History?) {
-        history?.let {
-            dataSource.deleteHistory(history)
-            converter.convert()
         }
     }
 }

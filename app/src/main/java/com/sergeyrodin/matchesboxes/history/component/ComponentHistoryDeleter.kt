@@ -2,11 +2,11 @@ package com.sergeyrodin.matchesboxes.history.component
 
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.history.HihgligtedPositionSaverAndNotifier
+import com.sergeyrodin.matchesboxes.history.HighligtedPositionSaverAndNotifier
 
 class ComponentHistoryDeleter(
     private val dataSource: RadioComponentsDataSource,
-    private val positionSaverAndNotifier: HihgligtedPositionSaverAndNotifier,
+    private val positionSaverAndNotifier: HighligtedPositionSaverAndNotifier,
     private val converter: ConverterToComponentHistoryPresentation
 ) {
     suspend fun deleteHighlightedPresentation() {
