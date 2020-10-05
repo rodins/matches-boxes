@@ -1,10 +1,10 @@
 package com.sergeyrodin.matchesboxes.history.component
 
-import com.sergeyrodin.matchesboxes.history.HighligtedPositionSaverAndNotifier
+import com.sergeyrodin.matchesboxes.history.HighlightedPositionSaverAndNotifier
 
 class ComponentHistoryPresentationHighlighter(
     private val converter: ConverterToComponentHistoryPresentation,
-    private val positionSaverAndNotifier: HighligtedPositionSaverAndNotifier) {
+    private val positionSaverAndNotifier: HighlightedPositionSaverAndNotifier) {
 
     fun highlight(position: Int) {
         val presentation = getPresentationByPosition(position)

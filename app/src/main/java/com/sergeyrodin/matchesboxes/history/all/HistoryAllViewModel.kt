@@ -2,19 +2,18 @@ package com.sergeyrodin.matchesboxes.history.all
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
-import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.history.HighligtedPositionSaverAndNotifier
+import com.sergeyrodin.matchesboxes.history.HighlightedPositionSaverAndNotifier
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
-class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel() {
-    private val highlightedPositionSaver = HighligtedPositionSaverAndNotifier()
+class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel() {
+    private val highlightedPositionSaver = HighlightedPositionSaverAndNotifier()
     private val converter = HistoryPresentationConverter(dataSource)
     private val deleter = HistoryDeleter(dataSource, converter, highlightedPositionSaver)
+    private val highlighter = HistoryPresentationHighlighter(converter, highlightedPositionSaver)
 
     val historyPresentationItems = converter.historyPresentationItems
-
     val noHistoryTextVisible = historyPresentationItems.map {
         it.isEmpty()
     }
@@ -39,7 +38,7 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
         if (highlightedPositionSaver.isNotHighlightMode()) {
             callSelectedEvent(presentation)
         } else {
-            makeHighlightedPresentationNotHighlighted()
+            highlighter.unhighlight()
             highlightedPositionSaver.notifyChangedAndResetHighlightedPosition()
             callActionDeleteVisibilityEvent()
         }
@@ -49,43 +48,15 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
         _selectedEvent.value = Event(presentation)
     }
 
-    private fun makeHighlightedPresentationNotHighlighted() {
-        val highlightedPresentation = findHighlightedPresentation()
-        setPresentationNotHighlighted(highlightedPresentation)
-    }
-
-    private fun findHighlightedPresentation(): HistoryPresentation? {
-        return getPresentationByPosition(highlightedPositionSaver.highlightedPosition)
-    }
-
-    private fun setPresentationNotHighlighted(presentation: HistoryPresentation?) {
-        presentation?.isHighlighted = false
-    }
-
     private fun callActionDeleteVisibilityEvent() {
         _actionDeleteVisibilityEvent.value = Event(highlightedPositionSaver.isHighlightMode())
     }
 
     fun presentationLongClick(position: Int) {
         if (highlightedPositionSaver.isNotHighlightMode()) {
-            val presentation = getPresentationByPosition(position)
-            makePresentationHighlighted(presentation)
+            highlighter.highlight(position)
             highlightedPositionSaver.saveHighlightedPositionAndNotifyItChanged(position)
             callActionDeleteVisibilityEvent()
-        }
-    }
-
-    private fun getPresentationByPosition(position: Int): HistoryPresentation? {
-        return historyPresentationItems.value?.get(position)
-    }
-
-    private fun makePresentationHighlighted(presentation: HistoryPresentation?) {
-        setPresentationHighlighted(presentation)
-    }
-
-    private fun setPresentationHighlighted(presentation: HistoryPresentation?) {
-        presentation?.let {
-            presentation.isHighlighted = true
         }
     }
 

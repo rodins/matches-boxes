@@ -2,12 +2,12 @@ package com.sergeyrodin.matchesboxes.history.all
 
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.history.HighligtedPositionSaverAndNotifier
+import com.sergeyrodin.matchesboxes.history.HighlightedPositionSaverAndNotifier
 
 class HistoryDeleter(
     private val dataSource: RadioComponentsDataSource,
     private val converter: HistoryPresentationConverter,
-    private val highlightedPositionSaver: HighligtedPositionSaverAndNotifier
+    private val highlightedPositionSaver: HighlightedPositionSaverAndNotifier
     ) {
     suspend fun deleteHighlightedPresentation() {
             val history = findHistoryByHighlightedPresentationId()

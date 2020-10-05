@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 
-class HighligtedPositionSaverAndNotifier {
+class HighlightedPositionSaverAndNotifier {
     var highlightedPosition: Int = NO_ID_SET
         private set
     private val _itemChangedEvent = MutableLiveData<Event<Int>>()

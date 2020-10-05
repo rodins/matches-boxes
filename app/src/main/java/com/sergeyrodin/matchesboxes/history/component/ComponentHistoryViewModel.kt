@@ -3,11 +3,11 @@ package com.sergeyrodin.matchesboxes.history.component
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.history.HighligtedPositionSaverAndNotifier
+import com.sergeyrodin.matchesboxes.history.HighlightedPositionSaverAndNotifier
 import kotlinx.coroutines.launch
 
 class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
-    private val positionSaverAndNotifier = HighligtedPositionSaverAndNotifier()
+    private val positionSaverAndNotifier = HighlightedPositionSaverAndNotifier()
     private val converter = ConverterToComponentHistoryPresentation(dataSource)
     private val deleter = ComponentHistoryDeleter(dataSource, positionSaverAndNotifier, converter)
     private val highlighter = ComponentHistoryPresentationHighlighter(converter, positionSaverAndNotifier)
