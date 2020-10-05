@@ -13,6 +13,7 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
     private val positionSaverAndNotifier = HihgligtedPositionSaverAndNotifier()
     private val converter = ConverterToComponentHistoryPresentation(dataSource)
     private val deleter = ComponentHistoryDeleter(dataSource, positionSaverAndNotifier, converter)
+    private val highlighter = ComponentHistoryPresentationHighlighter(converter, positionSaverAndNotifier)
 
     val itemChangedEvent = positionSaverAndNotifier.itemChangedEvent
     val historyPresentationItems = converter.historyPresentationItems
@@ -30,8 +31,7 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
 
     fun presentationLongClick(position: Int) {
         if(positionSaverAndNotifier.isNotHighlightMode()) {
-            val presentation = getPresentationByPosition(position)
-            setPresentationHighlighted(presentation)
+            highlighter.highlight(position)
             positionSaverAndNotifier.saveHighlightedPositionAndNotifyItChanged(position)
             setActionDeleteVisible()
         }
@@ -41,29 +41,12 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
         _actionDeleteVisibleEvent.value = Event(true)
     }
 
-    private fun getPresentationByPosition(position: Int): ComponentHistoryPresentation? {
-        return historyPresentationItems.value?.get(position)
-    }
-
-    private fun setPresentationHighlighted(presentation: ComponentHistoryPresentation?) {
-        presentation?.isHighlighted = true
-    }
-
     fun presentationClick() {
         if(positionSaverAndNotifier.isHighlightMode()) {
-            val presentation = getHighlightedPresentation()
-            makePresentationNotHighlighted(presentation)
+            highlighter.unhighlight()
             positionSaverAndNotifier.notifyChangedAndResetHighlightedPosition()
             setActionDeleteNotVisible()
         }
-    }
-
-    private fun getHighlightedPresentation(): ComponentHistoryPresentation? {
-        return historyPresentationItems.value?.get(positionSaverAndNotifier.highlightedPosition)
-    }
-
-    private fun makePresentationNotHighlighted(presentation: ComponentHistoryPresentation?) {
-        presentation?.isHighlighted = false
     }
 
     private fun setActionDeleteNotVisible() {
