@@ -25,14 +25,13 @@ class HistoryPresentationAdapter(
                                          private val presentationClickListener: HistoryPresentationClickListener,
                                          private val longClickListener: HistoryPresentationClickListener) :
         RecyclerView.ViewHolder(binding.root) {
-        private lateinit var historyPresentation: HistoryPresentation
 
         fun bind(presentation: HistoryPresentation, position: Int
         ) {
-            historyPresentation = presentation
             setupClickListener(position)
             setupLongClickListener(position)
-            setupBinding()
+            setHistoryPresentation(presentation)
+            executePendingBindings()
         }
 
         private fun setupClickListener(position: Int) {
@@ -48,11 +47,12 @@ class HistoryPresentationAdapter(
             }
         }
 
-        private fun setupBinding() {
-            binding.apply{
-                displayHistory = historyPresentation
-                executePendingBindings()
-            }
+        private fun setHistoryPresentation(presentation: HistoryPresentation) {
+            binding.displayHistory = presentation
+        }
+
+        private fun executePendingBindings() {
+            binding.executePendingBindings()
         }
 
         companion object {
