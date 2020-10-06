@@ -4,13 +4,15 @@ import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.history.HighlightedPositionSaverAndNotifier
+import com.sergeyrodin.matchesboxes.history.HistoryDeleter
+import com.sergeyrodin.matchesboxes.history.HistoryPresentationHighlighter
 import kotlinx.coroutines.launch
 
 class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
     private val positionSaverAndNotifier = HighlightedPositionSaverAndNotifier()
     private val converter = ConverterToComponentHistoryPresentation(dataSource)
-    private val deleter = ComponentHistoryDeleter(dataSource, positionSaverAndNotifier, converter)
-    private val highlighter = ComponentHistoryPresentationHighlighter(converter, positionSaverAndNotifier)
+    private val deleter = HistoryDeleter(dataSource, converter, positionSaverAndNotifier)
+    private val highlighter = HistoryPresentationHighlighter(converter, positionSaverAndNotifier)
 
     val itemChangedEvent = positionSaverAndNotifier.itemChangedEvent
     val historyPresentationItems = converter.historyPresentationItems
@@ -23,7 +25,9 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
         get() = _actionDeleteVisibleEvent
 
     fun start(id: Int) {
-        converter.convert(id)
+        viewModelScope.launch {
+            converter.convert(id)
+        }
     }
 
     fun presentationLongClick(position: Int) {

@@ -1,9 +1,7 @@
-package com.sergeyrodin.matchesboxes.history.all
-
-import com.sergeyrodin.matchesboxes.history.HighlightedPositionSaverAndNotifier
+package com.sergeyrodin.matchesboxes.history
 
 class HistoryPresentationHighlighter(
-    private val converter: HistoryPresentationConverter,
+    private val converter: HistoryConverter,
     private val highlightedPositionSaver: HighlightedPositionSaverAndNotifier
 ) {
     fun highlight(position: Int) {

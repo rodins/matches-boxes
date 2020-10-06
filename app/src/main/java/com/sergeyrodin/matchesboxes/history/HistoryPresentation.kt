@@ -1,11 +1,10 @@
-package com.sergeyrodin.matchesboxes.history.all
+package com.sergeyrodin.matchesboxes.history
 
 data class HistoryPresentation(
     var id: Int,
-    var componentId: Int,
-    var name: String,
+    var title: String,
     var quantity: String,
-    var date: String,
+    var subTitle: String = "",
     var delta: String = "",
     var isHighlighted: Boolean = false
 )

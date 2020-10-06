@@ -6,7 +6,7 @@
     <data>
         <variable
             name="displayComponentHistory"
-            type="com.sergeyrodin.matchesboxes.history.component.ComponentHistoryPresentation" />
+            type="com.sergeyrodin.matchesboxes.history.HistoryPresentation" />
 
         <variable
             name="clickListener"
@@ -37,7 +37,7 @@
             android:id="@+id/name_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{displayComponentHistory.date}"
+            android:text="@{displayComponentHistory.title}"
             android:textSize="@dimen/name_text_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/delta_text"

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.databinding.DisplayHistoryListItemBinding
+import com.sergeyrodin.matchesboxes.history.HistoryPresentation
 
 class HistoryPresentationAdapter(
     private val clickListener: HistoryPresentationClickListener,

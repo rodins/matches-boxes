@@ -124,7 +124,7 @@ class ComponentHistoryViewModelTest {
         subject.start(component.id)
 
         val item = subject.historyPresentationItems.getOrAwaitValue()[0]
-        assertThat(item.date, `is`(convertLongToDateString(history.date)))
+        assertThat(item.title, `is`(convertLongToDateString(history.date)))
     }
 
     @Test

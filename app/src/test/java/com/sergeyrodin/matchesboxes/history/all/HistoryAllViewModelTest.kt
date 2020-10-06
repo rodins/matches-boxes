@@ -3,6 +3,7 @@ package com.sergeyrodin.matchesboxes.history.all
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
+import com.sergeyrodin.matchesboxes.history.HistoryPresentation
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
@@ -105,7 +106,7 @@ class HistoryAllViewModelTest {
         subject = HistoryAllViewModel(dataSource)
 
         val list = subject.historyPresentationItems.getOrAwaitValue()
-        assertThat(list[0].name, `is`(component.name))
+        assertThat(list[0].title, `is`(component.name))
     }
 
     @Test
@@ -123,7 +124,7 @@ class HistoryAllViewModelTest {
         subject = HistoryAllViewModel(dataSource)
 
         val list = subject.historyPresentationItems.getOrAwaitValue()
-        assertThat(list[0].date, `is`("середа лип.-29-2020 08:13"))
+        assertThat(list[0].subTitle, `is`("середа лип.-29-2020 08:13"))
     }
 
     @Test
@@ -142,7 +143,7 @@ class HistoryAllViewModelTest {
         subject.deleteHighlightedPresentation()
 
         val list = subject.historyPresentationItems.getOrAwaitValue()
-        assertThat(list[0].name, `is`(component2.name))
+        assertThat(list[0].title, `is`(component2.name))
     }
 
     @Test
@@ -171,7 +172,6 @@ class HistoryAllViewModelTest {
         val history = History(1, component.id, component.quantity)
         val presentation = HistoryPresentation(
             history.id,
-            history.componentId,
             component.name,
             history.quantity.toString(),
             convertLongToDateString(history.date)
@@ -184,7 +184,8 @@ class HistoryAllViewModelTest {
 
         val event = subject.selectedEvent.getOrAwaitValue()
         assertThat(event, `is`(not(nullValue())))
-        assertThat(event.peekContent(), `is`(presentation))
+        assertThat(event.peekContent().componentId, `is`(component.id))
+        assertThat(event.peekContent().name, `is`(component.name))
     }
 
     @Test
@@ -211,7 +212,6 @@ class HistoryAllViewModelTest {
         val history = History(1, component.id, component.quantity)
         val presentation = HistoryPresentation(
             history.id,
-            history.componentId,
             component.name,
             history.quantity.toString(),
             convertLongToDateString(history.date)
@@ -236,7 +236,6 @@ class HistoryAllViewModelTest {
         val history2 = History(2, component.id, component.quantity)
         val presentation = HistoryPresentation(
             history1.id,
-            history1.componentId,
             component.name,
             history1.quantity.toString(),
             convertLongToDateString(history1.date)
@@ -276,7 +275,6 @@ class HistoryAllViewModelTest {
         val history = History(1, component.id, component.quantity)
         val presentation = HistoryPresentation(
             history.id,
-            history.componentId,
             component.name,
             history.quantity.toString(),
             convertLongToDateString(history.date)
@@ -316,7 +314,6 @@ class HistoryAllViewModelTest {
         val history = History(1, component.id, component.quantity)
         val presentation = HistoryPresentation(
             history.id,
-            history.componentId,
             component.name,
             history.quantity.toString(),
             convertLongToDateString(history.date)

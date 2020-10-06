@@ -5,19 +5,22 @@ import androidx.lifecycle.MutableLiveData
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.history.DeltaCalculator
+import com.sergeyrodin.matchesboxes.history.HistoryConverter
+import com.sergeyrodin.matchesboxes.history.HistoryPresentation
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 
-class HistoryPresentationConverter(private val dataSource: RadioComponentsDataSource) {
+class HistoryPresentationConverter(private val dataSource: RadioComponentsDataSource):
+    HistoryConverter {
     private val deltaCalculator = DeltaCalculator()
     private lateinit var historyItems: List<History>
 
     private val _historyPresentationItems = MutableLiveData<List<HistoryPresentation>>()
-    val historyPresentationItems: LiveData<List<HistoryPresentation>>
+    override val historyPresentationItems: LiveData<List<HistoryPresentation>>
         get() = _historyPresentationItems
 
     private val componentNames = mutableMapOf<Int, String>()
 
-    suspend fun convert() {
+    override suspend fun convert(id: Int) {
         getHistoryItemsFromDb()
         deltaCalculator.calculateDeltasForHistoryItems(historyItems)
         convertHistoryItemsToHistoryPresentationItems()
@@ -31,7 +34,6 @@ class HistoryPresentationConverter(private val dataSource: RadioComponentsDataSo
         val presentationItems = historyItems.map { history ->
             HistoryPresentation(
                 history.id,
-                history.componentId,
                 getComponentName(history),
                 history.quantity.toString(),
                 convertLongToDateString(history.date),
@@ -59,7 +61,7 @@ class HistoryPresentationConverter(private val dataSource: RadioComponentsDataSo
         _historyPresentationItems.value = presentationItems
     }
 
-    fun findHistoryById(id: Int?) : History?{
+    override fun findHistoryById(id: Int?) : History?{
         return historyItems.find { history ->
             history.id == id
         }

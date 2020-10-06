@@ -6,11 +6,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.databinding.DisplayComponentHistoryListItemBinding
+import com.sergeyrodin.matchesboxes.history.HistoryPresentation
 import com.sergeyrodin.matchesboxes.history.all.HistoryPresentationLongClickListener
 
 class DisplayComponentHistoryAdapter(private val longClickListener: HistoryPresentationLongClickListener,
                                      private val clickListener: ComponentHistoryPresentationClickListener):
-    ListAdapter<ComponentHistoryPresentation, DisplayComponentHistoryAdapter.ViewHolder>(DisplayComponentHistoryDiffCallback()){
+    ListAdapter<HistoryPresentation, DisplayComponentHistoryAdapter.ViewHolder>(DisplayComponentHistoryDiffCallback()){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
@@ -23,7 +24,7 @@ class DisplayComponentHistoryAdapter(private val longClickListener: HistoryPrese
     class ViewHolder private constructor(private val binding: DisplayComponentHistoryListItemBinding):
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(presentation: ComponentHistoryPresentation,
+        fun bind(presentation: HistoryPresentation,
                  position: Int,
                  longClickListener: HistoryPresentationLongClickListener,
                  clickListener: ComponentHistoryPresentationClickListener) {
@@ -43,7 +44,7 @@ class DisplayComponentHistoryAdapter(private val longClickListener: HistoryPrese
             }
         }
 
-        private fun setupPresentation(presentation: ComponentHistoryPresentation) {
+        private fun setupPresentation(presentation: HistoryPresentation) {
             binding.displayComponentHistory = presentation
         }
 
@@ -69,18 +70,18 @@ class ComponentHistoryPresentationClickListener(private val listener: () -> Unit
     fun onClick() = listener()
 }
 
-class DisplayComponentHistoryDiffCallback: DiffUtil.ItemCallback<ComponentHistoryPresentation>() {
+class DisplayComponentHistoryDiffCallback: DiffUtil.ItemCallback<HistoryPresentation>() {
 
     override fun areItemsTheSame(
-        oldItem: ComponentHistoryPresentation,
-        newItem: ComponentHistoryPresentation
+        oldItem: HistoryPresentation,
+        newItem: HistoryPresentation
     ): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(
-        oldItem: ComponentHistoryPresentation,
-        newItem: ComponentHistoryPresentation
+        oldItem: HistoryPresentation,
+        newItem: HistoryPresentation
     ): Boolean {
         return oldItem == newItem
     }

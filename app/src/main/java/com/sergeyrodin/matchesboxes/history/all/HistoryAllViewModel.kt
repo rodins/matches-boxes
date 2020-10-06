@@ -4,6 +4,9 @@ import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.history.HighlightedPositionSaverAndNotifier
+import com.sergeyrodin.matchesboxes.history.HistoryDeleter
+import com.sergeyrodin.matchesboxes.history.HistoryPresentation
+import com.sergeyrodin.matchesboxes.history.HistoryPresentationHighlighter
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
@@ -18,8 +21,8 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel() {
         it.isEmpty()
     }
 
-    private val _selectedEvent = MutableLiveData<Event<HistoryPresentation>>()
-    val selectedEvent: LiveData<Event<HistoryPresentation>>
+    private val _selectedEvent = MutableLiveData<Event<SelectedComponentHistoryArgs>>()
+    val selectedEvent: LiveData<Event<SelectedComponentHistoryArgs>>
         get() = _selectedEvent
 
     private val _actionDeleteVisibilityEvent = MutableLiveData<Event<Boolean>>()
@@ -45,7 +48,12 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel() {
     }
 
     private fun callSelectedEvent(presentation: HistoryPresentation) {
-        _selectedEvent.value = Event(presentation)
+        val history = converter.findHistoryById(presentation.id)
+        val componentId = history?.componentId
+        componentId?.let{
+            val args = SelectedComponentHistoryArgs(componentId, presentation.title)
+            _selectedEvent.value = Event(args)
+        }
     }
 
     private fun callActionDeleteVisibilityEvent() {
@@ -79,3 +87,8 @@ class HistoryAllViewModelFactory(private val dataSource: RadioComponentsDataSour
         }
     }
 }
+
+data class SelectedComponentHistoryArgs(
+    var componentId: Int,
+    var name: String
+)

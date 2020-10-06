@@ -1,12 +1,11 @@
-package com.sergeyrodin.matchesboxes.history.all
+package com.sergeyrodin.matchesboxes.history
 
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.history.HighlightedPositionSaverAndNotifier
 
 class HistoryDeleter(
     private val dataSource: RadioComponentsDataSource,
-    private val converter: HistoryPresentationConverter,
+    private val converter: HistoryConverter,
     private val highlightedPositionSaver: HighlightedPositionSaverAndNotifier
     ) {
     suspend fun deleteHighlightedPresentation() {
@@ -31,7 +30,7 @@ class HistoryDeleter(
     private suspend fun deleteHistory(history: History?) {
         history?.let {
             dataSource.deleteHistory(history)
-            converter.convert()
+            converter.convert(history.componentId)
         }
     }
 }
