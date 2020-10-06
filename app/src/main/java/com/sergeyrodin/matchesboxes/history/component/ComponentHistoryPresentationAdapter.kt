@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.databinding.DisplayComponentHistoryListItemBinding
 import com.sergeyrodin.matchesboxes.history.HistoryPresentation
-import com.sergeyrodin.matchesboxes.history.all.HistoryPresentationLongClickListener
+import com.sergeyrodin.matchesboxes.history.all.HistoryPresentationClickListener
 
-class DisplayComponentHistoryAdapter(private val longClickListener: HistoryPresentationLongClickListener,
+class DisplayComponentHistoryAdapter(private val longClickListener: HistoryPresentationClickListener,
                                      private val clickListener: ComponentHistoryPresentationClickListener):
     ListAdapter<HistoryPresentation, DisplayComponentHistoryAdapter.ViewHolder>(DisplayComponentHistoryDiffCallback()){
 
@@ -26,7 +26,7 @@ class DisplayComponentHistoryAdapter(private val longClickListener: HistoryPrese
 
         fun bind(presentation: HistoryPresentation,
                  position: Int,
-                 longClickListener: HistoryPresentationLongClickListener,
+                 longClickListener: HistoryPresentationClickListener,
                  clickListener: ComponentHistoryPresentationClickListener) {
             setupLongClickListener(longClickListener, position)
             setupClickListener(clickListener)
@@ -35,7 +35,7 @@ class DisplayComponentHistoryAdapter(private val longClickListener: HistoryPrese
         }
 
         private fun setupLongClickListener(
-            longClickListener: HistoryPresentationLongClickListener,
+            longClickListener: HistoryPresentationClickListener,
             position: Int
         ) {
             binding.layout.setOnLongClickListener {

@@ -37,9 +37,15 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel() {
         }
     }
 
-    fun presentationClick(presentation: HistoryPresentation) {
+    fun presentationClick(position: Int) {
         if (highlightedPositionSaver.isNotHighlightMode()) {
-            callSelectedEvent(presentation)
+            val presentation = getPresentationByPosition(position)
+            presentation?.let {
+                val componentId = getComponentIdByPresentationId(presentation.id)
+                componentId?.let {
+                    callSelectedEvent(componentId, presentation.title)
+                }
+            }
         } else {
             highlighter.unhighlight()
             highlightedPositionSaver.notifyChangedAndResetHighlightedPosition()
@@ -47,13 +53,18 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel() {
         }
     }
 
-    private fun callSelectedEvent(presentation: HistoryPresentation) {
-        val history = converter.findHistoryById(presentation.id)
-        val componentId = history?.componentId
-        componentId?.let{
-            val args = SelectedComponentHistoryArgs(componentId, presentation.title)
-            _selectedEvent.value = Event(args)
-        }
+    private fun getPresentationByPosition(position: Int): HistoryPresentation? {
+        return historyPresentationItems.value?.get(position)
+    }
+
+    private fun getComponentIdByPresentationId(id: Int): Int? {
+        val history = converter.findHistoryById(id)
+        return history?.componentId
+    }
+
+    private fun callSelectedEvent(componentId: Int, title: String) {
+        val args = SelectedComponentHistoryArgs(componentId, title)
+        _selectedEvent.value = Event(args)
     }
 
     private fun callActionDeleteVisibilityEvent() {

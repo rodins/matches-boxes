@@ -54,14 +54,14 @@ class HistoryAllFragment : Fragment() {
     }
 
     private fun createHistoryPresentationClickListener(): HistoryPresentationClickListener {
-        return HistoryPresentationClickListener { presentation ->
-            viewModel.presentationClick(presentation)
+        return HistoryPresentationClickListener { position ->
+            viewModel.presentationClick(position)
         }
     }
 
-    private fun createHistoryPresentationLongClickListener(): HistoryPresentationLongClickListener {
-        return HistoryPresentationLongClickListener { id ->
-            viewModel.presentationLongClick(id)
+    private fun createHistoryPresentationLongClickListener(): HistoryPresentationClickListener {
+        return HistoryPresentationClickListener { position ->
+            viewModel.presentationLongClick(position)
         }
     }
 

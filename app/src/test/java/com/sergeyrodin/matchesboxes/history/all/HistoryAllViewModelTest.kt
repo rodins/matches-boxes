@@ -3,10 +3,8 @@ package com.sergeyrodin.matchesboxes.history.all
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
-import com.sergeyrodin.matchesboxes.history.HistoryPresentation
-import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 import org.hamcrest.CoreMatchers.*
-import org.junit.Assert.*
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -168,19 +166,14 @@ class HistoryAllViewModelTest {
     @Test
     fun itemClick_notDeleteMode_selectedEventNotNull() {
         val boxId = 1
+        val position = 0
         val component = RadioComponent(1, "Component", 3, boxId)
         val history = History(1, component.id, component.quantity)
-        val presentation = HistoryPresentation(
-            history.id,
-            component.name,
-            history.quantity.toString(),
-            convertLongToDateString(history.date)
-        )
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         subject = HistoryAllViewModel(dataSource)
 
-        subject.presentationClick(presentation)
+        subject.presentationClick(position)
 
         val event = subject.selectedEvent.getOrAwaitValue()
         assertThat(event, `is`(not(nullValue())))
@@ -210,18 +203,12 @@ class HistoryAllViewModelTest {
         val position = 0
         val component = RadioComponent(1, "Component", 3, boxId)
         val history = History(1, component.id, component.quantity)
-        val presentation = HistoryPresentation(
-            history.id,
-            component.name,
-            history.quantity.toString(),
-            convertLongToDateString(history.date)
-        )
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         subject = HistoryAllViewModel(dataSource)
 
         subject.presentationLongClick(position)
-        subject.presentationClick(presentation)
+        subject.presentationClick(position)
 
         val items = subject.historyPresentationItems.getOrAwaitValue()
         assertThat(items[0].isHighlighted, `is`(false))
@@ -234,18 +221,12 @@ class HistoryAllViewModelTest {
         val component = RadioComponent(1, "Component", 3, boxId)
         val history1 = History(1, component.id, component.quantity)
         val history2 = History(2, component.id, component.quantity)
-        val presentation = HistoryPresentation(
-            history1.id,
-            component.name,
-            history1.quantity.toString(),
-            convertLongToDateString(history1.date)
-        )
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history1, history2)
         subject = HistoryAllViewModel(dataSource)
 
         subject.presentationLongClick(position)
-        subject.presentationClick(presentation)
+        subject.presentationClick(position)
 
         val items = subject.historyPresentationItems.getOrAwaitValue()
         assertThat(items[1].isHighlighted, `is`(false))
@@ -273,18 +254,12 @@ class HistoryAllViewModelTest {
         val position = 0
         val component = RadioComponent(1, "Component", 3, boxId)
         val history = History(1, component.id, component.quantity)
-        val presentation = HistoryPresentation(
-            history.id,
-            component.name,
-            history.quantity.toString(),
-            convertLongToDateString(history.date)
-        )
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         subject = HistoryAllViewModel(dataSource)
 
         subject.presentationLongClick(position)
-        subject.presentationClick(presentation)
+        subject.presentationClick(position)
 
         val deleteVisible = subject.actionDeleteVisibilityEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(deleteVisible, `is`(false))
@@ -312,12 +287,6 @@ class HistoryAllViewModelTest {
         val position = 0
         val component = RadioComponent(1, "Component", 3, boxId)
         val history = History(1, component.id, component.quantity)
-        val presentation = HistoryPresentation(
-            history.id,
-            component.name,
-            history.quantity.toString(),
-            convertLongToDateString(history.date)
-        )
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         subject = HistoryAllViewModel(dataSource)
@@ -327,7 +296,7 @@ class HistoryAllViewModelTest {
         val changedItemPosition1 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(changedItemPosition1, `is`(position))
 
-        subject.presentationClick(presentation)
+        subject.presentationClick(position)
 
         val changedItemPosition2 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(changedItemPosition2, `is`(position))

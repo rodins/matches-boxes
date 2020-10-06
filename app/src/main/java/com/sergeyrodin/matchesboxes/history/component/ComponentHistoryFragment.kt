@@ -9,7 +9,7 @@ import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentComponentHistoryBinding
-import com.sergeyrodin.matchesboxes.history.all.HistoryPresentationLongClickListener
+import com.sergeyrodin.matchesboxes.history.all.HistoryPresentationClickListener
 
 class ComponentHistoryFragment : Fragment() {
     private lateinit var binding: FragmentComponentHistoryBinding
@@ -54,8 +54,8 @@ class ComponentHistoryFragment : Fragment() {
         )
     }
 
-    private fun createLongClickListener(): HistoryPresentationLongClickListener {
-        return HistoryPresentationLongClickListener { position ->
+    private fun createLongClickListener(): HistoryPresentationClickListener {
+        return HistoryPresentationClickListener { position ->
             viewModel.presentationLongClick(position)
         }
     }
