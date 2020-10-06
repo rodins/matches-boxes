@@ -80,7 +80,7 @@ class MigrationsTest {
             ApplicationProvider.getApplicationContext(),
             RadioComponentsDatabase::class.java,
             TEST_DB_NAME)
-            .addMigrations(RadioComponentsDatabase.MIGRATION_1_2)
+            .addMigrations(RadioComponentsDatabase.MIGRATION_1_2, RadioComponentsDatabase.MIGRATION_2_3)
             .build()
         migrationTestHelper.closeWhenFinished(database)
         return database
