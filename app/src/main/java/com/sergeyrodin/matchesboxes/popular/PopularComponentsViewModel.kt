@@ -1,26 +1,28 @@
 package com.sergeyrodin.matchesboxes.popular
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.liveData
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import kotlinx.coroutines.launch
+import kotlin.collections.List
+import kotlin.collections.MutableList
+import kotlin.collections.MutableMap
+import kotlin.collections.forEach
+import kotlin.collections.map
+import kotlin.collections.mutableListOf
+import kotlin.collections.mutableMapOf
+import kotlin.collections.set
+import kotlin.collections.sortedByDescending
+import kotlin.collections.withIndex
 
 class PopularComponentsViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
-    private val _popularItems = MutableLiveData<List<PopularPresentation>>()
-    val popularItems: LiveData<List<PopularPresentation>>
-        get() = _popularItems
 
-    init {
-        viewModelScope.launch{
-            val historyItems = getHistoryItemsFromDb()
-            val componentIdCountItems = mapComponentIdToCount(historyItems)
-            val popularityItems = sortComponentIdByPopularity(componentIdCountItems)
-            val presentationItems = convertPopularityToPresentation(popularityItems)
-            updatePresentationItems(presentationItems)
-        }
+    val popularItems = liveData {
+        val historyItems = getHistoryItemsFromDb()
+        val componentIdCountItems = mapComponentIdToCount(historyItems)
+        val popularityItems = sortComponentIdByPopularity(componentIdCountItems)
+        val presentationItems = convertPopularityToPresentation(popularityItems)
+        emit(presentationItems)
     }
 
     private suspend fun getHistoryItemsFromDb(): List<History> {
@@ -87,10 +89,6 @@ class PopularComponentsViewModel(private val dataSource: RadioComponentsDataSour
     private suspend fun getName(id: Int): String {
         val component = dataSource.getRadioComponentById(id)
         return component?.name ?: ""
-    }
-
-    private fun updatePresentationItems(presentationItems: MutableList<PopularPresentation>) {
-        _popularItems.value = presentationItems
     }
 }
 
