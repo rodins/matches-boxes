@@ -3,6 +3,7 @@ package com.sergeyrodin.matchesboxes.popular
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
+import androidx.lifecycle.map
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import java.lang.IllegalArgumentException
@@ -25,6 +26,10 @@ class PopularComponentsViewModel(private val dataSource: RadioComponentsDataSour
         val popularityItems = sortComponentIdByPopularity(componentIdCountItems)
         val presentationItems = convertPopularityToPresentation(popularityItems)
         emit(presentationItems)
+    }
+
+    val noComponentsTextVisible = popularItems.map {
+        it.isEmpty()
     }
 
     private suspend fun getHistoryItemsFromDb(): List<History> {

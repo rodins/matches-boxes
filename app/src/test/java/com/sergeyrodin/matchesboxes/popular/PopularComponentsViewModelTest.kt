@@ -221,4 +221,25 @@ class PopularComponentsViewModelTest{
         val items = subject.popularItems.getOrAwaitValue()
         assertThat(items.size, `is`(20))
     }
+
+    @Test
+    fun noComponents_noComponentsTextVisibleTrue() {
+        subject = PopularComponentsViewModel(dataSource)
+
+        val visible = subject.noComponentsTextVisible.getOrAwaitValue()
+        assertThat(visible, `is`(true))
+    }
+
+    @Test
+    fun oneComponent_noComponentTextVisibleFalse() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject = PopularComponentsViewModel(dataSource)
+
+        val visible = subject.noComponentsTextVisible.getOrAwaitValue()
+        assertThat(visible, `is`(false))
+    }
 }
