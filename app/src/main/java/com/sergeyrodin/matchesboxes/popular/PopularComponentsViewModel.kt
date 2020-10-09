@@ -63,8 +63,10 @@ class PopularComponentsViewModel(private val dataSource: RadioComponentsDataSour
     }
 
     private suspend fun convertPopularityToPresentation(popularityItems: List<ComponentPopularity>): MutableList<PopularPresentation> {
+        val maxNumberOfItems = 20
         val presentationItems = mutableListOf<PopularPresentation>()
         for ((index, item) in popularityItems.withIndex()) {
+            if(index >= maxNumberOfItems) break
             val popularPresentation = createPresentation(index, item.id)
             presentationItems.add(popularPresentation)
         }
