@@ -1,9 +1,11 @@
 package com.sergeyrodin.matchesboxes.popular
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import java.lang.IllegalArgumentException
 import kotlin.collections.List
 import kotlin.collections.MutableList
 import kotlin.collections.MutableMap
@@ -101,3 +103,13 @@ data class ComponentPopularity(
     var id: Int,
     var count: Int
 )
+
+class PopularComponentsViewModelFactory(private val dataSource: RadioComponentsDataSource): ViewModelProvider.Factory{
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if(modelClass.isAssignableFrom(PopularComponentsViewModelFactory::class.java)) {
+            return PopularComponentsViewModel(dataSource) as T
+        }else {
+            throw IllegalArgumentException("No view model class found.")
+        }
+    }
+}

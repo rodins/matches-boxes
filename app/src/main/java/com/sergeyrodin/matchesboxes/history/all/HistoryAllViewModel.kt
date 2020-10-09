@@ -94,7 +94,7 @@ class HistoryAllViewModelFactory(private val dataSource: RadioComponentsDataSour
         if (modelClass.isAssignableFrom(HistoryAllViewModel::class.java)) {
             return HistoryAllViewModel(dataSource) as T
         } else {
-            throw IllegalArgumentException("No view mode class found.")
+            throw IllegalArgumentException("No view model class found.")
         }
     }
 }
