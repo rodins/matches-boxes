@@ -29,7 +29,7 @@ class PopularComponentsViewModel(private val dataSource: RadioComponentsDataSour
     }
 
     val noComponentsTextVisible = popularItems.map {
-        it.isEmpty()
+        it.isNullOrEmpty()
     }
 
     private suspend fun getHistoryItemsFromDb(): List<History> {
@@ -111,7 +111,7 @@ data class ComponentPopularity(
 
 class PopularComponentsViewModelFactory(private val dataSource: RadioComponentsDataSource): ViewModelProvider.Factory{
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(PopularComponentsViewModelFactory::class.java)) {
+        if(modelClass.isAssignableFrom(PopularComponentsViewModel::class.java)) {
             return PopularComponentsViewModel(dataSource) as T
         }else {
             throw IllegalArgumentException("No view model class found.")

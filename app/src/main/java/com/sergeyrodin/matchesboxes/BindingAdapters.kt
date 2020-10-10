@@ -12,6 +12,8 @@ import com.sergeyrodin.matchesboxes.data.ItemWithQuantityPresentation
 import com.sergeyrodin.matchesboxes.history.HistoryPresentation
 import com.sergeyrodin.matchesboxes.history.all.HistoryPresentationAdapter
 import com.sergeyrodin.matchesboxes.history.component.DisplayComponentHistoryAdapter
+import com.sergeyrodin.matchesboxes.popular.PopularPresentation
+import com.sergeyrodin.matchesboxes.popular.PopularPresentationAdapter
 
 @BindingAdapter("displayQuantityListData")
 fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<ItemWithQuantityPresentation>?) {
@@ -40,6 +42,12 @@ fun bindDisplayComponentHistoryListRecyclerView(
     list: List<HistoryPresentation>?
 ) {
     val adapter = recyclerView.adapter as DisplayComponentHistoryAdapter
+    adapter.submitList(list)
+}
+
+@BindingAdapter("popularPresentationListData")
+fun bindPopularPresentationListRecyclerView(recyclerView: RecyclerView, list: List<PopularPresentation>?) {
+    val adapter = recyclerView.adapter as PopularPresentationAdapter
     adapter.submitList(list)
 }
 

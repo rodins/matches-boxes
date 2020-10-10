@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="presentation"
+            type="com.sergeyrodin.matchesboxes.popular.PopularPresentation" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/list_margin"
+            android:textSize="@dimen/quantity_text_size"
+            android:text="@{presentation.place}"
+            tools:text="1" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/list_margin"
+            android:layout_weight="1"
+            android:textSize="@dimen/name_text_size"
+            android:text="@{presentation.name}"
+            tools:text="Radio Component Long Name" />
+
+    </LinearLayout>
+</layout>
