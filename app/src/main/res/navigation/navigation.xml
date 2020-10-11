@@ -44,6 +44,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_bagsListFragment_to_popularComponentsFragment"
+            app:destination="@id/popularComponentsFragment" />
     </fragment>
     <fragment
         android:id="@+id/addEditDeleteBagFragment"
@@ -372,4 +375,8 @@
             app:popEnterAnim="@anim/fade_in"
             app:popExitAnim="@anim/fade_out" />
     </fragment>
+    <fragment
+        android:id="@+id/popularComponentsFragment"
+        android:name="com.sergeyrodin.matchesboxes.popular.PopularComponentsFragment"
+        android:label="PopularComponentsFragment" />
 </navigation>

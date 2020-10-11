@@ -133,7 +133,17 @@ class BagsListFragment : Fragment() {
             navigateToHistoryFragment()
             return true
         }
+        if(item.itemId == R.id.action_popular) {
+            navigateToPopularFragment()
+            return true
+        }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun navigateToPopularFragment() {
+        findNavController().navigate(
+            BagsListFragmentDirections.actionBagsListFragmentToPopularComponentsFragment()
+        )
     }
 
     private fun navigateToHistoryFragment() {
