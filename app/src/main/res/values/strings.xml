@@ -54,8 +54,6 @@
     <string name="history_icon">History icon</string>
     <string name="info">Info</string>
     <string name="buy">Buy</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="no_popular_components">No popular components</string>
     <string name="popular">Popular</string>
     <string name="popular_components">Popular Components</string>

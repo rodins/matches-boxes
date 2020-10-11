@@ -52,4 +52,7 @@
     <string name="buy">Купить</string>
     <string name="box_updated">Коробка обновлена</string>
     <string name="box_deleted">Коробка удалена</string>
+    <string name="no_popular_components">Нет популярных компонентов</string>
+    <string name="popular">Популярные</string>
+    <string name="popular_components">Популярные компоненты</string>
 </resources>

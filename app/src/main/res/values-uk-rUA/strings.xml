@@ -52,4 +52,7 @@
     <string name="info">Інфо</string>
     <string name="buy">Придбати</string>
     <string name="buy_component">Придбати</string>
+    <string name="no_popular_components">Немає популярних компонентів</string>
+    <string name="popular">Популярні</string>
+    <string name="popular_components">Популярні компоненти</string>
 </resources>
