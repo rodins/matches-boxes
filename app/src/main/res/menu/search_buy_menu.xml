@@ -8,19 +8,19 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <item
-        android:id="@+id/action_buy"
+        android:id="@+id/neededComponentsFragment"
         android:icon="@drawable/ic_action_buy"
         android:title="@string/buy"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_history"
+        android:id="@+id/historyAllFragment"
         android:icon="@android:drawable/ic_menu_recent_history"
         android:title="@string/history"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_popular"
+        android:id="@+id/popularComponentsFragment"
         android:icon="@android:drawable/ic_menu_sort_by_size"
         android:title="@string/popular"
         app:showAsAction="ifRoom" />

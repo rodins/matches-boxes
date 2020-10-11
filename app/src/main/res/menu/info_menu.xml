@@ -9,7 +9,7 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_history"
+        android:id="@+id/historyAllFragment"
         android:icon="@android:drawable/ic_menu_recent_history"
         android:title="@string/history"
         app:showAsAction="ifRoom" />

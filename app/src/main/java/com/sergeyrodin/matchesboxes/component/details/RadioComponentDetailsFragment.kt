@@ -106,7 +106,7 @@ class RadioComponentDetailsFragment : Fragment() {
             showInfoInExternalActivity()
             return true
         }
-        if(item.itemId == R.id.action_history) {
+        if(item.itemId == R.id.historyAllFragment) {
             navigateToComponentHistoryFragment()
             return true
         }
