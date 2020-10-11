@@ -2081,4 +2081,26 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @Test
+    fun popularComponentsClick_titleDisplayed() = runBlocking {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        val history = History(1, component.id, component.quantity)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        dataSource.insertHistory(history)
+
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_popular)).perform(click())
+        onView(withText(R.string.popular_components)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
 }

@@ -378,5 +378,5 @@
     <fragment
         android:id="@+id/popularComponentsFragment"
         android:name="com.sergeyrodin.matchesboxes.popular.PopularComponentsFragment"
-        android:label="PopularComponentsFragment" />
+        android:label="@string/popular_components" />
 </navigation>
