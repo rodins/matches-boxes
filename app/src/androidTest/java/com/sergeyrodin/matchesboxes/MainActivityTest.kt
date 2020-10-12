@@ -1,5 +1,7 @@
 package com.sergeyrodin.matchesboxes
 
+import android.app.Activity
+import android.view.Gravity
 import android.widget.AutoCompleteTextView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
@@ -9,6 +11,9 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.DrawerActions
+import androidx.test.espresso.contrib.DrawerMatchers.isClosed
+import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -592,7 +597,7 @@ class MainActivityTest {
         onView(withText(box.name)).check(matches(isDisplayed()))
         onView(withText(component.name)).check(matches(isDisplayed()))
         onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
-        onView(withText(R.string.buy_component)).check(matches(isChecked()))
+        onView(withId(R.id.buy_checkbox)).check(matches(isChecked()))
 
         activityScenario.close()
     }
@@ -612,7 +617,6 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
@@ -625,7 +629,7 @@ class MainActivityTest {
         onView(withText(box.name)).check(matches(isDisplayed()))
         onView(withText(component.name)).check(matches(isDisplayed()))
         onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
-        onView(withText(R.string.buy_component)).check(matches(isChecked()))
+        onView(withId(R.id.buy_checkbox)).check(matches(isChecked()))
 
         activityScenario.close()
     }
@@ -1305,7 +1309,7 @@ class MainActivityTest {
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-
+        openDrawerLayout()
         onView(withId(R.id.neededComponentsFragment)).perform(click())
         onView(withText(component3.name)).check(matches(isDisplayed()))
 
@@ -1325,7 +1329,7 @@ class MainActivityTest {
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-
+        openDrawerLayout()
         onView(withId(R.id.neededComponentsFragment)).perform(click())
         onView(withText(R.string.buy_components)).check(matches(isDisplayed()))
 
@@ -1345,7 +1349,7 @@ class MainActivityTest {
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-
+        openDrawerLayout()
         onView(withId(R.id.neededComponentsFragment)).perform(click())
         onView(withText(component1.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
@@ -1369,7 +1373,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-
+        openDrawerLayout()
         onView(withId(R.id.neededComponentsFragment)).perform(click())
         onView(withText(component.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
@@ -1393,7 +1397,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-
+        openDrawerLayout()
         onView(withId(R.id.neededComponentsFragment)).perform(click())
         onView(withText(component.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
@@ -1551,7 +1555,7 @@ class MainActivityTest {
     fun noHistory_historyActionClick_noHistoryTextDisplayed() = runBlocking{
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-
+        openDrawerLayout()
         onView(withId(R.id.historyAllFragment)).perform(click())
 
         onView(withText(R.string.no_history)).check(matches(isDisplayed()))
@@ -1581,7 +1585,7 @@ class MainActivityTest {
         onView(withId(R.id.save_component_fab)).perform(click())
 
         Espresso.pressBack()
-
+        openDrawerLayout()
         onView(withId(R.id.historyAllFragment)).perform(click())
 
         onView(withText(component.name)).check(matches(isDisplayed()))
@@ -1600,11 +1604,13 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
+        openDrawerLayout()
         onView(withId(R.id.neededComponentsFragment)).perform(click())
         onView(withId(R.id.add_needed_component_fab)).perform(click())
         onView(withId(R.id.component_edit)).perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
         Espresso.pressBack()
+        openDrawerLayout()
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText("Component")).check(matches(isDisplayed()))
 
@@ -1629,7 +1635,7 @@ class MainActivityTest {
         dataSource.insertHistory(history2)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-
+        openDrawerLayout()
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component1.name)).perform(click())
 
@@ -1652,7 +1658,7 @@ class MainActivityTest {
         dataSource.insertHistory(history)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-
+        openDrawerLayout()
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(click())
 
@@ -1680,7 +1686,8 @@ class MainActivityTest {
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
         onView(withText(component.name)).perform(click())
-        onView(withId(R.id.historyAllFragment)).perform(click())
+
+        onView(withId(R.id.action_history)).perform(click())
 
         onView(withText(convertLongToDateString(history.date))).check(matches(isDisplayed()))
 
@@ -1790,7 +1797,7 @@ class MainActivityTest {
         dataSource.insertHistory(history)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-
+        openDrawerLayout()
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(longClick())
 
@@ -1814,7 +1821,8 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.historyAllFragment)).perform(click())
+        openDrawerLayout()
+        onView(withText(R.string.history)).perform(click())
 
         onView(withId(R.id.action_delete)).check(doesNotExist())
 
@@ -1835,7 +1843,7 @@ class MainActivityTest {
         dataSource.insertHistory(history)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-
+        openDrawerLayout()
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(longClick())
         onView(withText(component.name)).perform(click())
@@ -1863,7 +1871,7 @@ class MainActivityTest {
         dataSource.insertHistory(history2)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-
+        openDrawerLayout()
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component1.name)).perform(longClick())
         onView(withText(component2.name)).perform(click())
@@ -1891,7 +1899,7 @@ class MainActivityTest {
         dataSource.insertHistory(history2)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-
+        openDrawerLayout()
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component1.name)).perform(longClick())
         onView(withId(R.id.action_delete)).perform(click())
@@ -1918,7 +1926,7 @@ class MainActivityTest {
         dataSource.insertHistory(history2)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-
+        openDrawerLayout()
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component1.name)).perform(longClick())
         onView(withId(R.id.action_delete)).perform(click())
@@ -1943,6 +1951,7 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
+        openDrawerLayout()
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(click())
         onView(withText(convertLongToDateString(history.date))).perform(longClick())
@@ -1966,7 +1975,7 @@ class MainActivityTest {
         dataSource.insertHistory(history)
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
-
+        openDrawerLayout()
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(click())
         onView(withText(convertLongToDateString(history.date))).perform(longClick())
@@ -1992,6 +2001,7 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
+        openDrawerLayout()
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(click())
         onView(withText(convertLongToDateString(history.date))).perform(longClick())
@@ -2017,6 +2027,7 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
+        openDrawerLayout()
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(click())
         onView(withText(convertLongToDateString(history.date))).perform(longClick())
@@ -2028,7 +2039,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun deleteOneOfTwoComponentHistoryPresentations_deletedItemNotVisisble() = runBlocking {
+    fun deleteOneOfTwoComponentHistoryPresentations_deletedItemNotVisible() = runBlocking {
         val date = 123456789L
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
@@ -2049,7 +2060,9 @@ class MainActivityTest {
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
-        onView(withId(R.id.historyAllFragment)).perform(click())
+
+        openDrawerLayout()
+        onView(withText(R.string.history)).perform(click())
         onView(withText(convertLongToDateString(history1.date))).perform(longClick())
         onView(withId(R.id.action_delete)).perform(click())
 
@@ -2059,7 +2072,18 @@ class MainActivityTest {
     }
 
     @Test
-    fun popularComponentsClick_nameDisplayed() = runBlocking {
+    fun openNavigationDrawer() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        openDrawerLayout()
+        onView(withId(R.id.drawer_layout)).check(matches(isOpen()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun navdrawerPopularClick_componentNameDisplayed() = runBlocking {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
@@ -2074,14 +2098,16 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.popularComponentsFragment)).perform(click())
+        openDrawerLayout()
+        onView(withText(R.string.popular)).perform(click())
+
         onView(withText(component.name)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
 
     @Test
-    fun popularComponentsClick_titleDisplayed() = runBlocking {
+    fun navdrawerPopularClick_titleDisplayed() = runBlocking{
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
@@ -2096,8 +2122,28 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.popularComponentsFragment)).perform(click())
+        openDrawerLayout()
+        onView(withText(R.string.popular)).perform(click())
+
         onView(withText(R.string.popular_components)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    private fun openDrawerLayout() {
+        onView(withId(R.id.drawer_layout))
+            .check(matches(isClosed(Gravity.START)))
+            .perform(DrawerActions.open())
+    }
+
+    @Test
+    fun openNavigationWithButton_navDrawerOpened() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withContentDescription(R.string.nav_app_bar_open_drawer_description)).perform(click())
+
+        onView(withId(R.id.drawer_layout)).check(matches(isOpen()))
 
         activityScenario.close()
     }
