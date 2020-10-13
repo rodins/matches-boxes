@@ -18,11 +18,13 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.sergeyrodin.matchesboxes.data.*
+import com.sergeyrodin.matchesboxes.history.hasBackgroundColor
 import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 import com.sergeyrodin.matchesboxes.util.monitorActivity
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -1848,7 +1850,7 @@ class MainActivityTest {
         onView(withText(component.name)).perform(longClick())
         onView(withText(component.name)).perform(click())
 
-        onView(withId(R.id.action_delete)).check(doesNotExist())
+        onView(withId(R.id.action_delete)).check(matches(not(isDisplayed())))
 
         activityScenario.close()
     }
@@ -1876,7 +1878,7 @@ class MainActivityTest {
         onView(withText(component1.name)).perform(longClick())
         onView(withText(component2.name)).perform(click())
 
-        onView(withId(R.id.action_delete)).check(doesNotExist())
+        onView(withId(R.id.action_delete)).check(matches(not(isDisplayed())))
 
         activityScenario.close()
     }
@@ -1931,7 +1933,7 @@ class MainActivityTest {
         onView(withText(component1.name)).perform(longClick())
         onView(withId(R.id.action_delete)).perform(click())
 
-        onView(withId(R.id.action_delete)).check(doesNotExist())
+        onView(withId(R.id.action_delete)).check(matches(not(isDisplayed())))
 
         activityScenario.close()
     }

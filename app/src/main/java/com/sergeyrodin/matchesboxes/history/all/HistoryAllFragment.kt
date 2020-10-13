@@ -11,7 +11,33 @@ import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentHistoryAllBinding
 
 class HistoryAllFragment : Fragment() {
-    private lateinit var binding: FragmentHistoryAllBinding
+    private var actionMode: ActionMode? = null
+    private val actionModeCallback = object : ActionMode.Callback {
+        override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+            val inflater: MenuInflater = mode.menuInflater
+            inflater.inflate(R.menu.delete_menu, menu)
+            return true
+        }
+
+        override fun onPrepareActionMode(p0: ActionMode?, p1: Menu?): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+            if(item.itemId == R.id.action_delete) {
+                viewModel.deleteHighlightedPresentation()
+                return true
+            }
+            return false
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            actionMode = null
+        }
+
+    }
+
+        private lateinit var binding: FragmentHistoryAllBinding
     private val viewModel by viewModels<HistoryAllViewModel> {
         getViewModelFactory()
     }
@@ -87,8 +113,16 @@ class HistoryAllFragment : Fragment() {
     }
 
     private fun observeActionDeleteVisibilityEvent() {
-        viewModel.actionDeleteVisibilityEvent.observe(viewLifecycleOwner, EventObserver { visible ->
-            setHasOptionsMenu(visible)
+        viewModel.actionDeleteVisibilityEvent.observe(viewLifecycleOwner, EventObserver { actionModeEnabled ->
+            if(actionModeEnabled) {
+                if(actionMode == null) {
+                    actionMode = activity?.startActionMode(actionModeCallback)
+                }
+            }else {
+                actionMode?.let {
+                    it.finish()
+                }
+            }
         })
     }
 
@@ -96,11 +130,6 @@ class HistoryAllFragment : Fragment() {
         viewModel.itemChangedEvent.observe(viewLifecycleOwner, EventObserver { position ->
             binding.displayHistoryList.adapter?.notifyItemChanged(position)
         })
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.delete_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
