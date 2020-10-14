@@ -12,32 +12,39 @@ import com.sergeyrodin.matchesboxes.databinding.FragmentHistoryAllBinding
 
 class HistoryAllFragment : Fragment() {
     private var actionMode: ActionMode? = null
-    private val actionModeCallback = object : ActionMode.Callback {
-        override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-            val inflater: MenuInflater = mode.menuInflater
-            inflater.inflate(R.menu.delete_menu, menu)
-            return true
-        }
+    private val actionModeCallback = createActionModeCallback()
 
-        override fun onPrepareActionMode(p0: ActionMode?, p1: Menu?): Boolean {
-            return false
-        }
-
-        override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-            if(item.itemId == R.id.action_delete) {
-                viewModel.deleteHighlightedPresentation()
+    private fun createActionModeCallback(): ActionMode.Callback {
+        return object : ActionMode.Callback {
+            override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+                inflateMenu(mode, menu)
                 return true
             }
-            return false
-        }
 
-        override fun onDestroyActionMode(mode: ActionMode?) {
-            actionMode = null
-        }
+            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                return false
+            }
 
+            override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+                if (item.itemId == R.id.action_delete) {
+                    viewModel.deleteHighlightedPresentation()
+                    return true
+                }
+                return false
+            }
+
+            override fun onDestroyActionMode(mode: ActionMode?) {
+                actionMode = null
+            }
+        }
     }
 
-        private lateinit var binding: FragmentHistoryAllBinding
+    private fun inflateMenu(mode: ActionMode, menu: Menu) {
+        val inflater: MenuInflater = mode.menuInflater
+        inflater.inflate(R.menu.delete_menu, menu)
+    }
+
+    private lateinit var binding: FragmentHistoryAllBinding
     private val viewModel by viewModels<HistoryAllViewModel> {
         getViewModelFactory()
     }
@@ -115,28 +122,26 @@ class HistoryAllFragment : Fragment() {
     private fun observeActionDeleteVisibilityEvent() {
         viewModel.actionDeleteVisibilityEvent.observe(viewLifecycleOwner, EventObserver { actionModeEnabled ->
             if(actionModeEnabled) {
-                if(actionMode == null) {
-                    actionMode = activity?.startActionMode(actionModeCallback)
-                }
+                startActionMode()
             }else {
-                actionMode?.let {
-                    it.finish()
-                }
+                finishActionMode()
             }
         })
+    }
+
+    private fun startActionMode() {
+        if (actionMode == null) {
+            actionMode = activity?.startActionMode(actionModeCallback)
+        }
+    }
+
+    private fun finishActionMode() {
+        actionMode?.finish()
     }
 
     private fun observeItemChangedEvent() {
         viewModel.itemChangedEvent.observe(viewLifecycleOwner, EventObserver { position ->
             binding.displayHistoryList.adapter?.notifyItemChanged(position)
         })
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.action_delete) {
-            viewModel.deleteHighlightedPresentation()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
     }
 }
