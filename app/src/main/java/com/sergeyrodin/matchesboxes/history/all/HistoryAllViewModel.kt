@@ -53,6 +53,13 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel() {
         }
     }
 
+    fun actionModeClosed() {
+        if(highlightedPositionSaver.isHighlightMode()) {
+            highlighter.unhighlight()
+            highlightedPositionSaver.notifyChangedAndResetHighlightedPosition()
+        }
+    }
+
     private fun getPresentationByPosition(position: Int): HistoryPresentation? {
         return historyPresentationItems.value?.get(position)
     }

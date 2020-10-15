@@ -34,6 +34,7 @@ class HistoryAllFragment : Fragment() {
             }
 
             override fun onDestroyActionMode(mode: ActionMode?) {
+                viewModel.actionModeClosed()
                 actionMode = null
             }
         }

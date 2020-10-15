@@ -19,6 +19,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.history.hasBackgroundColor
+import com.sergeyrodin.matchesboxes.history.hasBackgroundColorAndText
 import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
@@ -1856,6 +1857,31 @@ class MainActivityTest {
     }
 
     @Test
+    fun contextualUpClicked_itemNotHighlighted() = runBlocking {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        val history = History(1, component.id, component.quantity)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        dataSource.insertHistory(history)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+        openDrawerLayout()
+        onView(withId(R.id.historyAllFragment)).perform(click())
+        onView(withText(component.name)).perform(longClick())
+        Espresso.pressBack()
+
+        onView(withId(R.id.display_history_list))
+            .check(matches(hasDescendant(hasBackgroundColor(R.color.design_default_color_background))))
+
+        activityScenario.close()
+    }
+
+    @Test
     fun notHighlightedItemClick_actionDeleteNotDisplayed() = runBlocking {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
@@ -2139,7 +2165,7 @@ class MainActivityTest {
     }
 
     @Test
-    fun openNavigationWithButton_navDrawerOpened() {
+    fun openNavigationWithButton_navDrawerOpenned() {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 

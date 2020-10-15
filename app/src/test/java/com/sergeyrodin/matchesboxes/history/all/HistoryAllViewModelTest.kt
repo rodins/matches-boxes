@@ -399,4 +399,21 @@ class HistoryAllViewModelTest {
         assertThat(items[0].delta, `is`(""))
         assertThat(items[1].delta, `is`(""))
     }
+
+    @Test
+    fun actionModeClosed_itemNotHighlighted() {
+        val boxId = 1
+        val position = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject = HistoryAllViewModel(dataSource)
+
+        subject.presentationLongClick(position)
+        subject.actionModeClosed()
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items[0].isHighlighted, `is`(false))
+    }
 }
