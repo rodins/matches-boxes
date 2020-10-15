@@ -39,24 +39,19 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel() {
 
     fun presentationClick(position: Int) {
         if (highlightedPositionSaver.isNotHighlightMode()) {
-            val presentation = getPresentationByPosition(position)
-            presentation?.let {
-                val componentId = getComponentIdByPresentationId(presentation.id)
-                componentId?.let {
-                    callSelectedEvent(componentId, presentation.title)
-                }
-            }
+            navigateToComponentHistory(position)
         } else {
-            highlighter.unhighlight()
-            highlightedPositionSaver.notifyChangedAndResetHighlightedPosition()
-            callActionModeEvent()
+            unhighlightItem()
         }
     }
 
-    fun actionModeClosed() {
-        if(highlightedPositionSaver.isHighlightMode()) {
-            highlighter.unhighlight()
-            highlightedPositionSaver.notifyChangedAndResetHighlightedPosition()
+    private fun navigateToComponentHistory(position: Int) {
+        val presentation = getPresentationByPosition(position)
+        presentation?.let {
+            val componentId = getComponentIdByPresentationId(presentation.id)
+            componentId?.let {
+                callSelectedEvent(componentId, presentation.title)
+            }
         }
     }
 
@@ -74,16 +69,33 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel() {
         _selectedEvent.value = Event(args)
     }
 
+    private fun unhighlightItem() {
+        highlighter.unhighlight()
+        highlightedPositionSaver.notifyChangedAndResetHighlightedPosition()
+        callActionModeEvent()
+    }
+
     private fun callActionModeEvent() {
         _actionModeEvent.value = highlightedPositionSaver.isHighlightMode()
     }
 
+    fun actionModeClosed() {
+        if(highlightedPositionSaver.isHighlightMode()) {
+            highlighter.unhighlight()
+            highlightedPositionSaver.notifyChangedAndResetHighlightedPosition()
+        }
+    }
+
     fun presentationLongClick(position: Int) {
         if (highlightedPositionSaver.isNotHighlightMode()) {
-            highlighter.highlight(position)
-            highlightedPositionSaver.saveHighlightedPositionAndNotifyItChanged(position)
-            callActionModeEvent()
+            highlightItemAndSetActionMode(position)
         }
+    }
+
+    private fun highlightItemAndSetActionMode(position: Int) {
+        highlighter.highlight(position)
+        highlightedPositionSaver.saveHighlightedPositionAndNotifyItChanged(position)
+        callActionModeEvent()
     }
 
     fun deleteHighlightedPresentation() {
