@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
@@ -101,7 +102,7 @@ class HistoryAllFragment : Fragment() {
 
     private fun setupObservers() {
         observeSelectedEvent()
-        observeActionDeleteVisibilityEvent()
+        observeActionModeEvent()
         observeItemChangedEvent()
     }
 
@@ -120,8 +121,8 @@ class HistoryAllFragment : Fragment() {
         )
     }
 
-    private fun observeActionDeleteVisibilityEvent() {
-        viewModel.actionDeleteVisibilityEvent.observe(viewLifecycleOwner, EventObserver { actionModeEnabled ->
+    private fun observeActionModeEvent() {
+        viewModel.actionModeEvent.observe(viewLifecycleOwner, Observer { actionModeEnabled ->
             if(actionModeEnabled) {
                 startActionMode()
             }else {

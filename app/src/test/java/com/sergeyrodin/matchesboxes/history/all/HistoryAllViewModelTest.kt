@@ -159,7 +159,7 @@ class HistoryAllViewModelTest {
         subject.presentationLongClick(position)
         subject.deleteHighlightedPresentation()
 
-        val actionDeleteVisibility = subject.actionDeleteVisibilityEvent.getOrAwaitValue().getContentIfNotHandled()
+        val actionDeleteVisibility = subject.actionModeEvent.getOrAwaitValue()
         assertThat(actionDeleteVisibility, `is`(false))
     }
 
@@ -244,7 +244,7 @@ class HistoryAllViewModelTest {
 
         subject.presentationLongClick(position)
 
-        val deleteVisible = subject.actionDeleteVisibilityEvent.getOrAwaitValue().getContentIfNotHandled()
+        val deleteVisible = subject.actionModeEvent.getOrAwaitValue()
         assertThat(deleteVisible, `is`(true))
     }
 
@@ -261,7 +261,7 @@ class HistoryAllViewModelTest {
         subject.presentationLongClick(position)
         subject.presentationClick(position)
 
-        val deleteVisible = subject.actionDeleteVisibilityEvent.getOrAwaitValue().getContentIfNotHandled()
+        val deleteVisible = subject.actionModeEvent.getOrAwaitValue()
         assertThat(deleteVisible, `is`(false))
     }
 

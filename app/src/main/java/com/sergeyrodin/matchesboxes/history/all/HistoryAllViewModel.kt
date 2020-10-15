@@ -25,9 +25,9 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel() {
     val selectedEvent: LiveData<Event<SelectedComponentHistoryArgs>>
         get() = _selectedEvent
 
-    private val _actionDeleteVisibilityEvent = MutableLiveData<Event<Boolean>>()
-    val actionDeleteVisibilityEvent: LiveData<Event<Boolean>>
-        get() = _actionDeleteVisibilityEvent
+    private val _actionModeEvent = MutableLiveData<Boolean>()
+    val actionModeEvent: LiveData<Boolean>
+        get() = _actionModeEvent
 
     val itemChangedEvent = highlightedPositionSaver.itemChangedEvent
 
@@ -49,7 +49,7 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel() {
         } else {
             highlighter.unhighlight()
             highlightedPositionSaver.notifyChangedAndResetHighlightedPosition()
-            callActionDeleteVisibilityEvent()
+            callActionModeEvent()
         }
     }
 
@@ -74,22 +74,22 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel() {
         _selectedEvent.value = Event(args)
     }
 
-    private fun callActionDeleteVisibilityEvent() {
-        _actionDeleteVisibilityEvent.value = Event(highlightedPositionSaver.isHighlightMode())
+    private fun callActionModeEvent() {
+        _actionModeEvent.value = highlightedPositionSaver.isHighlightMode()
     }
 
     fun presentationLongClick(position: Int) {
         if (highlightedPositionSaver.isNotHighlightMode()) {
             highlighter.highlight(position)
             highlightedPositionSaver.saveHighlightedPositionAndNotifyItChanged(position)
-            callActionDeleteVisibilityEvent()
+            callActionModeEvent()
         }
     }
 
     fun deleteHighlightedPresentation() {
         viewModelScope.launch {
             deleter.deleteHighlightedPresentation()
-            callActionDeleteVisibilityEvent()
+            callActionModeEvent()
         }
     }
 }

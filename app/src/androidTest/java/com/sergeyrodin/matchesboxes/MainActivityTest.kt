@@ -1,6 +1,7 @@
 package com.sergeyrodin.matchesboxes
 
 import android.app.Activity
+import android.content.pm.ActivityInfo
 import android.view.Gravity
 import android.widget.AutoCompleteTextView
 import androidx.test.core.app.ActivityScenario
@@ -1877,6 +1878,36 @@ class MainActivityTest {
 
         onView(withId(R.id.display_history_list))
             .check(matches(hasDescendant(hasBackgroundColor(R.color.design_default_color_background))))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun actionMode_rotateDevice_actionDeleteDisplayed() = runBlocking {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        val history = History(1, component.id, component.quantity)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        dataSource.insertHistory(history)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+        var activity: Activity? = null
+        activityScenario.onActivity {
+            activity = it
+        }
+        openDrawerLayout()
+        onView(withId(R.id.historyAllFragment)).perform(click())
+        onView(withText(component.name)).perform(longClick())
+
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_delete)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
