@@ -3,8 +3,10 @@ package com.sergeyrodin.matchesboxes.history.component
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.longClick
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -206,6 +208,87 @@ class ComponentHistoryFragmentTest {
         launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         onView(withText("+5")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun itemHighlighted_actionModeEnabled_actionDeleteDisplayed() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
+        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+
+        presentationLongClick(history)
+
+        onView(withId(R.id.action_delete)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun itemNotHighlighted_actionModeDisabled_actionDeleteNotDisplayed() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
+        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+
+        presentationLongClick(history)
+
+        presentationClick(history)
+
+        onView(withId(R.id.action_delete)).check(doesNotExist())
+    }
+
+    @Test
+    fun exitActionMode_presentationNotHighlighted() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
+        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+
+        presentationLongClick(history)
+
+        pressBack()
+
+        checkIfItemIsNotHighlighted(history)
+    }
+
+    @Test
+    fun actionDeleteClick_itemDeleted() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
+        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+
+        presentationLongClick(history)
+        onView(withId(R.id.action_delete)).perform(click())
+
+        onView(withText(convertLongToDateString(history.date))).check(doesNotExist())
+    }
+
+    @Test
+    fun actionDeleteClick_itemDeleted_actionDeleteNotDisplayed() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
+        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+
+        presentationLongClick(history)
+        onView(withId(R.id.action_delete)).perform(click())
+
+        onView(withId(R.id.action_delete)).check(doesNotExist())
     }
 
 }

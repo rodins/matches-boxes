@@ -1,7 +1,6 @@
 package com.sergeyrodin.matchesboxes.history.component
 
 import androidx.lifecycle.*
-import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.history.HighlightedPositionSaverAndNotifier
 import com.sergeyrodin.matchesboxes.history.HistoryDeleter
@@ -20,9 +19,9 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
         list.isEmpty()
     }
 
-    private val _actionDeleteVisibleEvent = MutableLiveData<Event<Boolean>>()
-    val actionDeleteVisibleEvent: LiveData<Event<Boolean>>
-        get() = _actionDeleteVisibleEvent
+    private val _actionModeEvent = MutableLiveData<Boolean>()
+    val actionModeEvent: LiveData<Boolean>
+        get() = _actionModeEvent
 
     fun start(id: Int) {
         viewModelScope.launch {
@@ -34,31 +33,35 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
         if(positionSaverAndNotifier.isNotHighlightMode()) {
             highlighter.highlight(position)
             positionSaverAndNotifier.saveHighlightedPositionAndNotifyItChanged(position)
-            setActionDeleteVisible()
+            activateActionMode()
         }
     }
 
-    private fun setActionDeleteVisible() {
-        _actionDeleteVisibleEvent.value = Event(true)
+    private fun activateActionMode() {
+        _actionModeEvent.value = true
     }
 
     fun presentationClick() {
         if(positionSaverAndNotifier.isHighlightMode()) {
             highlighter.unhighlight()
             positionSaverAndNotifier.notifyChangedAndResetHighlightedPosition()
-            setActionDeleteNotVisible()
+            closeActionMode()
         }
     }
 
-    private fun setActionDeleteNotVisible() {
-        _actionDeleteVisibleEvent.value = Event(false)
+    private fun closeActionMode() {
+        _actionModeEvent.value = false
     }
 
     fun deleteHighlightedPresentation() {
         viewModelScope.launch {
             deleter.deleteHighlightedPresentation()
-            setActionDeleteNotVisible()
+            closeActionMode()
         }
+    }
+
+    fun actionModeClosed() {
+        presentationClick()
     }
 }
 

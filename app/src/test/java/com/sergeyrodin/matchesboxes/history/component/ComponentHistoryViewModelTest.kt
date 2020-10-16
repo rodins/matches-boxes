@@ -1,11 +1,9 @@
 package com.sergeyrodin.matchesboxes.history.component
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.sergeyrodin.matchesboxes.MainCoroutineRule
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
 import org.junit.Before
@@ -321,7 +319,7 @@ class ComponentHistoryViewModelTest {
 
         subject.presentationLongClick(position)
 
-        val visible = subject.actionDeleteVisibleEvent.getOrAwaitValue().getContentIfNotHandled()
+        val visible = subject.actionModeEvent.getOrAwaitValue()
         assertThat(visible, `is`(true))
     }
 
@@ -341,7 +339,7 @@ class ComponentHistoryViewModelTest {
         subject.presentationLongClick(position)
         subject.presentationClick()
 
-        val visible = subject.actionDeleteVisibleEvent.getOrAwaitValue().getContentIfNotHandled()
+        val visible = subject.actionModeEvent.getOrAwaitValue()
         assertThat(visible, `is`(false))
     }
 
@@ -361,7 +359,7 @@ class ComponentHistoryViewModelTest {
         subject.presentationLongClick(position)
         subject.deleteHighlightedPresentation()
 
-        val visible = subject.actionDeleteVisibleEvent.getOrAwaitValue().getContentIfNotHandled()
+        val visible = subject.actionModeEvent.getOrAwaitValue()
         assertThat(visible, `is`(false))
     }
 
@@ -448,5 +446,26 @@ class ComponentHistoryViewModelTest {
 
         val items = subject.historyPresentationItems.getOrAwaitValue()
         assertThat(items[0].delta, `is`(""))
+    }
+
+    @Test
+    fun actionModeClosed_itemIsNotHighlighted() {
+        val boxId = 1
+        val position = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject.start(component.id)
+
+        val items = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items.size, `is`(1))
+
+        subject.presentationLongClick(position)
+
+        subject.actionModeClosed()
+
+        val item = subject.historyPresentationItems.getOrAwaitValue()[position]
+        assertThat(item.isHighlighted, `is`(false))
     }
 }
