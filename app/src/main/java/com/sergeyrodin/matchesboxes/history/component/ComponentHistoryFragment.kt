@@ -68,15 +68,7 @@ class ComponentHistoryFragment : Fragment() {
         createAdapter()
         setupBinding()
         observeItemChangedEvent()
-        viewModel.actionModeEvent.observe(viewLifecycleOwner, Observer{ activateActionMode ->
-            if(activateActionMode) {
-                if(actionMode == null) {
-                    actionMode = activity?.startActionMode(actionModeCallback)
-                }
-            }else {
-                actionMode?.finish()
-            }
-        })
+        observeActionModeEvent()
         return binding.root
     }
 
@@ -116,5 +108,25 @@ class ComponentHistoryFragment : Fragment() {
         viewModel.itemChangedEvent.observe(viewLifecycleOwner, EventObserver { position ->
             binding.displayComponentHistoryList.adapter?.notifyItemChanged(position)
         })
+    }
+
+    private fun observeActionModeEvent() {
+        viewModel.actionModeEvent.observe(viewLifecycleOwner, Observer { activateActionMode ->
+            if (activateActionMode) {
+                startActionMode()
+            } else {
+                finishActionMode()
+            }
+        })
+    }
+
+    private fun startActionMode() {
+        if (actionMode == null) {
+            actionMode = activity?.startActionMode(actionModeCallback)
+        }
+    }
+
+    private fun finishActionMode() {
+        actionMode?.finish()
     }
 }
