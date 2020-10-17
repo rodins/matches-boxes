@@ -3,14 +3,12 @@ package com.sergeyrodin.matchesboxes.history.all
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.history.HighlightedPositionSaverAndNotifier
-import com.sergeyrodin.matchesboxes.history.HistoryDeleter
-import com.sergeyrodin.matchesboxes.history.HistoryPresentation
-import com.sergeyrodin.matchesboxes.history.HistoryPresentationHighlighter
+import com.sergeyrodin.matchesboxes.history.*
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
-class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel() {
+class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel(),
+    HistoryActionModeModel {
     private val highlightedPositionSaver = HighlightedPositionSaverAndNotifier()
     private val converter = HistoryPresentationConverter(dataSource)
     private val deleter = HistoryDeleter(dataSource, converter, highlightedPositionSaver)
@@ -79,7 +77,7 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel() {
         _actionModeEvent.value = highlightedPositionSaver.isHighlightMode()
     }
 
-    fun actionModeClosed() {
+    override fun actionModeClosed() {
         if(highlightedPositionSaver.isHighlightMode()) {
             unhighlightItem()
         }
@@ -97,7 +95,7 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel() {
         callActionModeEvent()
     }
 
-    fun deleteHighlightedPresentation() {
+    override fun deleteHighlightedPresentation() {
         viewModelScope.launch {
             deleter.deleteHighlightedPresentation()
             callActionModeEvent()

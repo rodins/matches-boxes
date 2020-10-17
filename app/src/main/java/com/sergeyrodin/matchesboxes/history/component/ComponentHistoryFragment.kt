@@ -1,19 +1,21 @@
 package com.sergeyrodin.matchesboxes.history.component
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
-import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentComponentHistoryBinding
+import com.sergeyrodin.matchesboxes.history.HistoryActionModeController
 import com.sergeyrodin.matchesboxes.history.all.HistoryPresentationClickListener
 
 class ComponentHistoryFragment : Fragment() {
-    private lateinit var actionModeController: ComponentHistoryActionModeController
+    private lateinit var actionModeController: HistoryActionModeController
     private lateinit var binding: FragmentComponentHistoryBinding
     private val args by navArgs<ComponentHistoryFragmentArgs>()
     private val viewModel by viewModels<ComponentHistoryViewModel> {
@@ -45,7 +47,7 @@ class ComponentHistoryFragment : Fragment() {
     }
 
     private fun createActionModeController() {
-        actionModeController = ComponentHistoryActionModeController(requireActivity(), viewModel)
+        actionModeController = HistoryActionModeController(requireActivity(), viewModel)
     }
 
     private fun startViewModel() {

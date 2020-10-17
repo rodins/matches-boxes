@@ -1,4 +1,4 @@
-package com.sergeyrodin.matchesboxes.history.all
+package com.sergeyrodin.matchesboxes.history
 
 import android.app.Activity
 import android.view.ActionMode
@@ -7,9 +7,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import com.sergeyrodin.matchesboxes.R
 
-class HistoryAllActionModeController(
+class HistoryActionModeController(
     private val activity: Activity,
-    private val viewModel: HistoryAllViewModel
+    private val viewModel: HistoryActionModeModel
 ) {
     private var actionMode: ActionMode? = null
     private val actionModeCallback = createActionModeCallback()

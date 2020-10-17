@@ -11,9 +11,10 @@ import androidx.navigation.fragment.findNavController
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.databinding.FragmentHistoryAllBinding
+import com.sergeyrodin.matchesboxes.history.HistoryActionModeController
 
 class HistoryAllFragment : Fragment() {
-    private lateinit var actionModeController: HistoryAllActionModeController
+    private lateinit var actionModeController: HistoryActionModeController
     private lateinit var binding: FragmentHistoryAllBinding
     private val viewModel by viewModels<HistoryAllViewModel> {
         getViewModelFactory()
@@ -44,7 +45,7 @@ class HistoryAllFragment : Fragment() {
     }
 
     private fun createActionModeController() {
-        actionModeController = HistoryAllActionModeController(requireActivity(), viewModel)
+        actionModeController = HistoryActionModeController(requireActivity(), viewModel)
     }
 
     private fun setupBinding() {

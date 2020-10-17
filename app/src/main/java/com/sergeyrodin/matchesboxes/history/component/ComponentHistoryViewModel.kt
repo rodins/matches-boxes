@@ -3,11 +3,13 @@ package com.sergeyrodin.matchesboxes.history.component
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.history.HighlightedPositionSaverAndNotifier
+import com.sergeyrodin.matchesboxes.history.HistoryActionModeModel
 import com.sergeyrodin.matchesboxes.history.HistoryDeleter
 import com.sergeyrodin.matchesboxes.history.HistoryPresentationHighlighter
 import kotlinx.coroutines.launch
 
-class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
+class ComponentHistoryViewModel(dataSource: RadioComponentsDataSource): ViewModel(),
+    HistoryActionModeModel {
     private val positionSaverAndNotifier = HighlightedPositionSaverAndNotifier()
     private val converter = ConverterToComponentHistoryPresentation(dataSource)
     private val deleter = HistoryDeleter(dataSource, converter, positionSaverAndNotifier)
@@ -53,14 +55,14 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
         _actionModeEvent.value = false
     }
 
-    fun deleteHighlightedPresentation() {
+    override fun deleteHighlightedPresentation() {
         viewModelScope.launch {
             deleter.deleteHighlightedPresentation()
             closeActionMode()
         }
     }
 
-    fun actionModeClosed() {
+    override fun actionModeClosed() {
         presentationClick()
     }
 }
