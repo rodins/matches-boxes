@@ -81,8 +81,7 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel() {
 
     fun actionModeClosed() {
         if(highlightedPositionSaver.isHighlightMode()) {
-            highlighter.unhighlight()
-            highlightedPositionSaver.notifyChangedAndResetHighlightedPosition()
+            unhighlightItem()
         }
     }
 

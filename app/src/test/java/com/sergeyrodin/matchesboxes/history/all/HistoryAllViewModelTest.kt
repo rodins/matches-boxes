@@ -416,4 +416,38 @@ class HistoryAllViewModelTest {
         val items = subject.historyPresentationItems.getOrAwaitValue()
         assertThat(items[0].isHighlighted, `is`(false))
     }
+
+    @Test
+    fun actionModeClosedByItemClick_actionModeEventFalse() {
+        val boxId = 1
+        val position = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject = HistoryAllViewModel(dataSource)
+
+        subject.presentationLongClick(position)
+        subject.presentationClick(position)
+
+        val active = subject.actionModeEvent.getOrAwaitValue()
+        assertThat(active, `is`(false))
+    }
+
+    @Test
+    fun actionModeClosedByActionModeClosed_actionModeEventFalse() {
+        val boxId = 1
+        val position = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        subject = HistoryAllViewModel(dataSource)
+
+        subject.presentationLongClick(position)
+        subject.actionModeClosed()
+
+        val active = subject.actionModeEvent.getOrAwaitValue()
+        assertThat(active, `is`(false))
+    }
 }
