@@ -289,6 +289,20 @@ class HistoryAllFragmentTest {
     }
 
     @Test
+    fun actionMode_deleteTextDisplayed() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+
+        performLongClick(component)
+
+        onView(withText(R.string.delete)).check(matches(isDisplayed()))
+    }
+
+    @Test
     fun oneComponent_twoHistories_positiveDeltaDisplayed() {
         val boxId = 1
         val component = RadioComponent(1, "Component", 3, boxId)
