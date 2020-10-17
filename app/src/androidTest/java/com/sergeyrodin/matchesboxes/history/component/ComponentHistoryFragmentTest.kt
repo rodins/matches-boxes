@@ -226,6 +226,21 @@ class ComponentHistoryFragmentTest {
     }
 
     @Test
+    fun actionModeActive_deleteTitleDisplayed() {
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+        val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
+        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+
+        presentationLongClick(history)
+
+        onView(withText(R.string.delete)).check(matches(isDisplayed()))
+    }
+
+    @Test
     fun itemNotHighlighted_actionModeDisabled_actionDeleteNotDisplayed() {
         val boxId = 1
         val component = RadioComponent(1, "Component", 3, boxId)

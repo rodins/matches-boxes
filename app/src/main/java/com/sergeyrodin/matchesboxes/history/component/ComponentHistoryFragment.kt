@@ -20,6 +20,7 @@ class ComponentHistoryFragment : Fragment() {
         return object : ActionMode.Callback {
             override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
                 inflateMenu(mode, menu)
+                mode.title = getString(R.string.delete)
                 return true
             }
 
