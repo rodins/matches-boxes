@@ -1,52 +1,19 @@
 package com.sergeyrodin.matchesboxes.history.all
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
-import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.FragmentHistoryAllBinding
 
 class HistoryAllFragment : Fragment() {
-    private var actionMode: ActionMode? = null
-    private val actionModeCallback = createActionModeCallback()
-
-    private fun createActionModeCallback(): ActionMode.Callback {
-        return object : ActionMode.Callback {
-            override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-                inflateMenu(mode, menu)
-                mode.title = getString(R.string.delete)
-                return true
-            }
-
-            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-                return false
-            }
-
-            override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-                if (item.itemId == R.id.action_delete) {
-                    viewModel.deleteHighlightedPresentation()
-                    return true
-                }
-                return false
-            }
-
-            override fun onDestroyActionMode(mode: ActionMode?) {
-                viewModel.actionModeClosed()
-                actionMode = null
-            }
-        }
-    }
-
-    private fun inflateMenu(mode: ActionMode, menu: Menu) {
-        val inflater: MenuInflater = mode.menuInflater
-        inflater.inflate(R.menu.delete_menu, menu)
-    }
-
+    private lateinit var actionModeController: HistoryAllActionModeController
     private lateinit var binding: FragmentHistoryAllBinding
     private val viewModel by viewModels<HistoryAllViewModel> {
         getViewModelFactory()
@@ -63,9 +30,9 @@ class HistoryAllFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         createBinding(inflater, container)
+        createActionModeController()
         setupBinding()
         setupObservers()
-        setHasOptionsMenu(false)
         return binding.root
     }
 
@@ -74,6 +41,10 @@ class HistoryAllFragment : Fragment() {
         container: ViewGroup?
     ) {
         binding = FragmentHistoryAllBinding.inflate(inflater, container, false)
+    }
+
+    private fun createActionModeController() {
+        actionModeController = HistoryAllActionModeController(requireActivity(), viewModel)
     }
 
     private fun setupBinding() {
@@ -125,21 +96,11 @@ class HistoryAllFragment : Fragment() {
     private fun observeActionModeEvent() {
         viewModel.actionModeEvent.observe(viewLifecycleOwner, Observer { actionModeEnabled ->
             if(actionModeEnabled) {
-                startActionMode()
+                actionModeController.startActionMode()
             }else {
-                finishActionMode()
+                actionModeController.finishActionMode()
             }
         })
-    }
-
-    private fun startActionMode() {
-        if (actionMode == null) {
-            actionMode = activity?.startActionMode(actionModeCallback)
-        }
-    }
-
-    private fun finishActionMode() {
-        actionMode?.finish()
     }
 
     private fun observeItemChangedEvent() {
