@@ -105,7 +105,7 @@ class HistoryAllFragment : Fragment() {
     }
 
     private fun observeItemChangedEvent() {
-        viewModel.itemChangedEvent.observe(viewLifecycleOwner, EventObserver { position ->
+        viewModel.itemChangedEvent.observe(viewLifecycleOwner, Observer { position ->
             binding.displayHistoryList.adapter?.notifyItemChanged(position)
         })
     }

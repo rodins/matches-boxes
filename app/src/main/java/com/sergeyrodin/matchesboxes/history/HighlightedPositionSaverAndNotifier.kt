@@ -8,8 +8,8 @@ import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 class HighlightedPositionSaverAndNotifier {
     var highlightedPosition: Int = NO_ID_SET
         private set
-    private val _itemChangedEvent = MutableLiveData<Event<Int>>()
-    val itemChangedEvent: LiveData<Event<Int>>
+    private val _itemChangedEvent = MutableLiveData<Int>()
+    val itemChangedEvent: LiveData<Int>
         get() = _itemChangedEvent
 
     fun isHighlightMode(): Boolean {
@@ -30,7 +30,7 @@ class HighlightedPositionSaverAndNotifier {
     }
 
     private fun notifyItemChanged(position: Int) {
-        _itemChangedEvent.value = Event(position)
+        _itemChangedEvent.value = position
     }
 
     fun notifyChangedAndResetHighlightedPosition() {
@@ -39,7 +39,7 @@ class HighlightedPositionSaverAndNotifier {
     }
 
     private fun notifyHighlightedItemChanged() {
-        _itemChangedEvent.value = Event(highlightedPosition)
+        _itemChangedEvent.value = highlightedPosition
     }
 
     private fun resetHighlightedPosition() {

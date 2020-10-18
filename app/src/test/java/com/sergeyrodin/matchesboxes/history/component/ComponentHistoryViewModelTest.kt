@@ -159,7 +159,7 @@ class ComponentHistoryViewModelTest {
 
         subject.presentationLongClick(position)
 
-        val changedPosition = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        val changedPosition = subject.itemChangedEvent.getOrAwaitValue()
         assertThat(changedPosition, `is`(position))
     }
 
@@ -221,12 +221,12 @@ class ComponentHistoryViewModelTest {
 
         subject.presentationLongClick(position)
 
-        val changedPosition1 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        val changedPosition1 = subject.itemChangedEvent.getOrAwaitValue()
         assertThat(changedPosition1, `is`(position))
 
         subject.presentationClick()
 
-        val changedPosition2 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        val changedPosition2 = subject.itemChangedEvent.getOrAwaitValue()
         assertThat(changedPosition2, `is`(position))
     }
 
@@ -253,7 +253,7 @@ class ComponentHistoryViewModelTest {
     }
 
     @Test
-    fun twoPresentationClicks_secondItemChangedEventIsNull() {
+    fun twoPresentationClicks_secondItemChangedEventEqualsPosition() {
         val boxId = 1
         val position = 0
         val component = RadioComponent(1, "Component", 3, boxId)
@@ -267,18 +267,18 @@ class ComponentHistoryViewModelTest {
 
         subject.presentationLongClick(position)
 
-        val changedPosition1 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        val changedPosition1 = subject.itemChangedEvent.getOrAwaitValue()
         assertThat(changedPosition1, `is`(position))
 
         subject.presentationClick()
 
-        val changedPosition2 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        val changedPosition2 = subject.itemChangedEvent.getOrAwaitValue()
         assertThat(changedPosition2, `is`(position))
 
         subject.presentationClick()
 
-        val changedPosition3 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(changedPosition3, `is`(nullValue()))
+        val changedPosition3 = subject.itemChangedEvent.getOrAwaitValue()
+        assertThat(changedPosition3, `is`(position))
     }
 
     @Test
@@ -467,5 +467,28 @@ class ComponentHistoryViewModelTest {
 
         val item = subject.historyPresentationItems.getOrAwaitValue()[position]
         assertThat(item.isHighlighted, `is`(false))
+    }
+
+    @Test
+    fun rotateDevice_itemHighlighted() {
+        val boxId = 1
+        val position = 0
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history = History(1, component.id, component.quantity)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history)
+
+        subject.start(component.id)
+        val items1 = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items1.size, `is`(1))
+
+        subject.presentationLongClick(position)
+
+        subject.start(component.id)
+        val items2 = subject.historyPresentationItems.getOrAwaitValue()
+        assertThat(items2.size, `is`(1))
+
+        val item = subject.historyPresentationItems.getOrAwaitValue()[position]
+        assertThat(item.isHighlighted, `is`(true))
     }
 }

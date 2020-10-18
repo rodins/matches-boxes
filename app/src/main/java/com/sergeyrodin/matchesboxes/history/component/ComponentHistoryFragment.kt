@@ -79,7 +79,7 @@ class ComponentHistoryFragment : Fragment() {
     }
 
     private fun observeItemChangedEvent() {
-        viewModel.itemChangedEvent.observe(viewLifecycleOwner, EventObserver { position ->
+        viewModel.itemChangedEvent.observe(viewLifecycleOwner, Observer { position ->
             binding.displayComponentHistoryList.adapter?.notifyItemChanged(position)
         })
     }

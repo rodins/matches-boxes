@@ -277,7 +277,7 @@ class HistoryAllViewModelTest {
 
         subject.presentationLongClick(position)
 
-        val changedItemPosition = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        val changedItemPosition = subject.itemChangedEvent.getOrAwaitValue()
         assertThat(changedItemPosition, `is`(position))
     }
 
@@ -293,12 +293,12 @@ class HistoryAllViewModelTest {
 
         subject.presentationLongClick(position)
 
-        val changedItemPosition1 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        val changedItemPosition1 = subject.itemChangedEvent.getOrAwaitValue()
         assertThat(changedItemPosition1, `is`(position))
 
         subject.presentationClick(position)
 
-        val changedItemPosition2 = subject.itemChangedEvent.getOrAwaitValue().getContentIfNotHandled()
+        val changedItemPosition2 = subject.itemChangedEvent.getOrAwaitValue()
         assertThat(changedItemPosition2, `is`(position))
     }
 

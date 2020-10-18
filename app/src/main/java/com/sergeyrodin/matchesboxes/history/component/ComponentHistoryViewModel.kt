@@ -27,7 +27,8 @@ class ComponentHistoryViewModel(dataSource: RadioComponentsDataSource): ViewMode
 
     fun start(id: Int) {
         viewModelScope.launch {
-            converter.convert(id)
+            if(historyPresentationItems.value == null)
+                converter.convert(id)
         }
     }
 

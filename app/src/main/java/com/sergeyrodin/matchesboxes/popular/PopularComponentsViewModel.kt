@@ -111,6 +111,7 @@ data class ComponentPopularity(
 
 class PopularComponentsViewModelFactory(private val dataSource: RadioComponentsDataSource): ViewModelProvider.Factory{
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        @Suppress("unchecked_cast")
         if(modelClass.isAssignableFrom(PopularComponentsViewModel::class.java)) {
             return PopularComponentsViewModel(dataSource) as T
         }else {
