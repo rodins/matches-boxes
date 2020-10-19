@@ -320,7 +320,7 @@
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.sergeyrodin.matchesboxes.search.SearchFragment"
-        android:label="@string/search_components">
+        android:label="@string/search">
         <argument
             android:name="query"
             app:argType="string" />

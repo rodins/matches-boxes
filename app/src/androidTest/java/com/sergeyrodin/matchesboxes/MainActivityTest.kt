@@ -1042,7 +1042,7 @@ class MainActivityTest {
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("BUH\n"))
-        onView(withText(R.string.search_components)).check(matches(isDisplayed()))
+        onView(withText(R.string.search)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -1218,7 +1218,7 @@ class MainActivityTest {
         onView(withText(R.string.button_plus)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
 
-        onView(withText(R.string.search_components)).check(matches(isDisplayed()))
+        onView(withText(R.string.search)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -1243,7 +1243,82 @@ class MainActivityTest {
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.action_delete)).perform(click())
 
-        onView(withText(R.string.search_components)).check(matches(isDisplayed()))
+        onView(withText(R.string.search)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun navigateToSearchFragment_actionSearchIsDisplayed() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_search)).perform(click())
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(typeText("78041\n"))
+
+        onView(withText(component.name)).check(matches(isDisplayed()))
+        onView(withId(R.id.app_bar_search)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun searchInSearchFragment_nameDisplayed() = runBlocking {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component1 = RadioComponent(1, "LA78041", 1, box.id)
+        val component2 = RadioComponent(2, "BUH1015", 1, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component1)
+        dataSource.insertRadioComponent(component2)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_search)).perform(click())
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(typeText("78041\n"))
+
+        onView(withText(component1.name)).check(matches(isDisplayed()))
+
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(clearText(), typeText("15\n"))
+
+        onView(withText(component2.name)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun startSearchFragment_queryDisplayed() = runBlocking{
+        val query = "78041"
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.action_search)).perform(click())
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(typeText("$query\n"))
+
+        onView(withText(query)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }

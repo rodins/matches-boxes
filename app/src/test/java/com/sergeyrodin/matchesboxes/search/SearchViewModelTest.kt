@@ -78,4 +78,20 @@ class SearchViewModelTest{
         val isVisible = subject.noComponentsTextVisible.getOrAwaitValue()
         assertThat(isVisible, `is`(false))
     }
+
+    @Test
+    fun twoSearches_nameEquals() {
+        val boxId = 1
+        val component1 = RadioComponent(1, "LA78040", 3, boxId)
+        val component2 = RadioComponent(2, "BUH1015", 3, boxId)
+        dataSource.addRadioComponents(component1, component2)
+
+        subject.start("78")
+        val items1 = subject.items.getOrAwaitValue()
+        assertThat(items1[0].name, `is`(component1.name))
+
+        subject.start("15")
+        val items2 = subject.items.getOrAwaitValue()
+        assertThat(items2[0].name, `is`(component2.name))
+    }
 }
