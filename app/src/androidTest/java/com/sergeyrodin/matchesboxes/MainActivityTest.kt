@@ -1027,6 +1027,7 @@ class MainActivityTest {
 
     @Test
     fun searchMode_titleEquals() = runBlocking {
+        val query = "BUH"
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
@@ -1041,8 +1042,8 @@ class MainActivityTest {
 
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("BUH\n"))
-        onView(withText(R.string.search)).check(matches(isDisplayed()))
+            .perform(typeText("$query\n"))
+        onView(withText(R.string.empty_search_label)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -1218,7 +1219,7 @@ class MainActivityTest {
         onView(withText(R.string.button_plus)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
 
-        onView(withText(R.string.search)).check(matches(isDisplayed()))
+        onView(withText(R.string.empty_search_label)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -1243,7 +1244,7 @@ class MainActivityTest {
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.action_delete)).perform(click())
 
-        onView(withText(R.string.search)).check(matches(isDisplayed()))
+        onView(withText(R.string.empty_search_label)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }

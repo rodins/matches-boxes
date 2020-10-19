@@ -57,4 +57,5 @@
     <string name="no_popular_components">No popular components</string>
     <string name="popular">Popular</string>
     <string name="popular_components">Popular Components</string>
+    <string name="empty_search_label">" "</string>
 </resources>
