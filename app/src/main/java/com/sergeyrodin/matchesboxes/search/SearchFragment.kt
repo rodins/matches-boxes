@@ -18,52 +18,95 @@ import com.sergeyrodin.matchesboxes.databinding.FragmentSearchBinding
 
 class SearchFragment : Fragment() {
     private val viewModel by viewModels<SearchViewModel> {
-        SearchViewModelFactory(
+        createViewModelFactory()
+    }
+
+    private fun createViewModelFactory(): SearchViewModelFactory {
+        return SearchViewModelFactory(
             (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
         )
     }
+
+    private val args by navArgs<SearchFragmentArgs>()
+    private val isBuyComponentMode = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentSearchBinding.inflate(inflater, container, false)
+        val binding = createBinding(inflater, container)
+        startViewModel()
+        setupBinding(binding)
+        observeAddComponentEvent()
+        setHasOptionsMenu(true)
+        return binding.root
+    }
 
-        val args by navArgs<SearchFragmentArgs>()
+    private fun createBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ) = FragmentSearchBinding.inflate(inflater, container, false)
 
+    private fun startViewModel() {
         viewModel.start(args.query)
+    }
 
+    private fun setupBinding(binding: FragmentSearchBinding) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
-        binding.items.adapter = RadioComponentAdapter(RadioComponentListener { componentId ->
-            findNavController().navigate(
-                SearchFragmentDirections.actionSearchFragmentToRadioComponentDetailsFragment(componentId, args.query, false)
-            )
+        binding.items.adapter = createAdapter()
+    }
+
+    private fun createAdapter(): RadioComponentAdapter {
+        return RadioComponentAdapter(RadioComponentListener { componentId ->
+            navigateToRadioComponentDetailsFragment(componentId)
         })
+    }
 
-        viewModel.addComponentEvent.observe(viewLifecycleOwner, EventObserver{
-            findNavController().navigate(
-                SearchFragmentDirections.actionSearchFragmentToAddEditDeleteRadioComponentFragment(
-                    ADD_NEW_ITEM_ID, NO_ID_SET, getString(R.string.add_component), args.query, false
-                )
+    private fun navigateToRadioComponentDetailsFragment(componentId: Int) {
+        findNavController().navigate(
+            SearchFragmentDirections.actionSearchFragmentToRadioComponentDetailsFragment(
+                componentId,
+                args.query,
+                isBuyComponentMode
             )
+        )
+    }
+
+    private fun observeAddComponentEvent() {
+        viewModel.addComponentEvent.observe(viewLifecycleOwner, EventObserver {
+            navigateToAddComponentFragment()
         })
+    }
 
-        setHasOptionsMenu(true)
-
-        return binding.root
+    private fun navigateToAddComponentFragment() {
+        findNavController().navigate(
+            SearchFragmentDirections.actionSearchFragmentToAddEditDeleteRadioComponentFragment(
+                ADD_NEW_ITEM_ID, NO_ID_SET, getString(R.string.add_component), args.query, isBuyComponentMode
+            )
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.search_menu, menu)
         val item = menu.findItem(R.id.app_bar_search)
+        setupSearchView(item)
+    }
+
+    private fun setupSearchView(item: MenuItem) {
         val searchView = item.actionView as SearchView
-        searchView.setIconifiedByDefault(false)
-        searchView.isSubmitButtonEnabled = true
-        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+        searchView.apply {
+            setIconifiedByDefault(false)
+            isSubmitButtonEnabled = true
+            setOnQueryTextListener(createOnQueryTextListener(searchView))
+        }
+    }
+
+    private fun createOnQueryTextListener(searchView: SearchView): SearchView.OnQueryTextListener {
+        return object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let{
+                query?.let {
                     viewModel.start(it)
                 }
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
@@ -75,7 +118,6 @@ class SearchFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 return false
             }
-
-        })
+        }
     }
 }
