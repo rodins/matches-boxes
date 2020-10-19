@@ -15,9 +15,6 @@ import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.databinding.FragmentBagsListBinding
 
-/**
- * A simple [Fragment] subclass.
- */
 class BagsListFragment : Fragment() {
     private lateinit var viewModel: BagsListViewModel
 
@@ -32,7 +29,6 @@ class BagsListFragment : Fragment() {
         observeSelectBagEvent()
 
         setHasOptionsMenu(true)
-
         return binding.root
     }
 
@@ -96,13 +92,20 @@ class BagsListFragment : Fragment() {
         )
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.search_buy_menu, menu)
         val item = menu.findItem(R.id.action_search)
+        setupSearchView(item)
+    }
+
+    private fun setupSearchView(item: MenuItem) {
         val searchView = item.actionView as SearchView
-        searchView.setOnQueryTextListener(object: OnQueryTextListener{
+        searchView.setOnQueryTextListener(createOnQueryTextListener(searchView))
+    }
+
+    private fun createOnQueryTextListener(searchView: SearchView): OnQueryTextListener {
+        return object : OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 navigateToSearchFragment(query)
 
@@ -116,17 +119,12 @@ class BagsListFragment : Fragment() {
                 return false
             }
 
-        })
+        }
     }
 
     private fun navigateToSearchFragment(query: String?) {
         findNavController().navigate(
             BagsListFragmentDirections.actionBagsListFragmentToSearchFragment(query!!)
         )
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return NavigationUI.onNavDestinationSelected(item, findNavController())
-                || super.onOptionsItemSelected(item)
     }
 }
