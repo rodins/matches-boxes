@@ -55,4 +55,5 @@
     <string name="no_popular_components">Нет популярных компонентов</string>
     <string name="popular">Популярные</string>
     <string name="popular_components">Популярные компоненты</string>
+    <string name="components">Компоненты</string>
 </resources>

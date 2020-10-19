@@ -1043,7 +1043,7 @@ class MainActivityTest {
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("$query\n"))
-        onView(withText(R.string.empty_search_label)).check(matches(isDisplayed()))
+        onView(withText(R.string.components)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -1219,7 +1219,7 @@ class MainActivityTest {
         onView(withText(R.string.button_plus)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
 
-        onView(withText(R.string.empty_search_label)).check(matches(isDisplayed()))
+        onView(withText(R.string.components)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -1244,7 +1244,7 @@ class MainActivityTest {
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.action_delete)).perform(click())
 
-        onView(withText(R.string.empty_search_label)).check(matches(isDisplayed()))
+        onView(withText(R.string.components)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
