@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/bagsListFragment"
+        android:icon="@drawable/ic_bag"
+        android:title="@string/buy" />
+
+    <item
         android:id="@+id/neededComponentsFragment"
         android:icon="@drawable/ic_action_buy"
         android:title="@string/buy" />
