@@ -323,7 +323,8 @@
         android:label="@string/components">
         <argument
             android:name="query"
-            app:argType="string" />
+            app:argType="string"
+            android:defaultValue='""' />
         <action
             android:id="@+id/action_searchFragment_to_radioComponentDetailsFragment"
             app:destination="@id/radioComponentDetailsFragment"

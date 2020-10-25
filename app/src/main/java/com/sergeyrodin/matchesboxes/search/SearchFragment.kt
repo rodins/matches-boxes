@@ -16,6 +16,8 @@ import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentListener
 import com.sergeyrodin.matchesboxes.databinding.FragmentSearchBinding
 
+const val KEY_QUERY = "query_key"
+
 class SearchFragment : Fragment() {
     private val viewModel by viewModels<SearchViewModel> {
         createViewModelFactory()
@@ -30,16 +32,27 @@ class SearchFragment : Fragment() {
     private val args by navArgs<SearchFragmentArgs>()
     private val isBuyComponentMode = false
 
+    private var searchQuery = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setupSearchQuery(savedInstanceState)
         val binding = createBinding(inflater, container)
-        startViewModel()
+        startSearch()
         setupBinding(binding)
         observeAddComponentEvent()
         setHasOptionsMenu(true)
         return binding.root
+    }
+
+    private fun setupSearchQuery(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            searchQuery = savedInstanceState.getString(KEY_QUERY) ?: ""
+        } else {
+            searchQuery = args.query
+        }
     }
 
     private fun createBinding(
@@ -47,8 +60,8 @@ class SearchFragment : Fragment() {
         container: ViewGroup?
     ) = FragmentSearchBinding.inflate(inflater, container, false)
 
-    private fun startViewModel() {
-        viewModel.start(args.query)
+    private fun startSearch() {
+        viewModel.start(searchQuery)
     }
 
     private fun setupBinding(binding: FragmentSearchBinding) {
@@ -67,7 +80,7 @@ class SearchFragment : Fragment() {
         findNavController().navigate(
             SearchFragmentDirections.actionSearchFragmentToRadioComponentDetailsFragment(
                 componentId,
-                args.query,
+                searchQuery,
                 isBuyComponentMode
             )
         )
@@ -82,9 +95,18 @@ class SearchFragment : Fragment() {
     private fun navigateToAddComponentFragment() {
         findNavController().navigate(
             SearchFragmentDirections.actionSearchFragmentToAddEditDeleteRadioComponentFragment(
-                ADD_NEW_ITEM_ID, NO_ID_SET, getString(R.string.add_component), args.query, isBuyComponentMode
+                ADD_NEW_ITEM_ID,
+                NO_ID_SET,
+                getString(R.string.add_component),
+                searchQuery,
+                isBuyComponentMode
             )
         )
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(KEY_QUERY, searchQuery)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -96,6 +118,17 @@ class SearchFragment : Fragment() {
 
     private fun setupSearchView(item: MenuItem) {
         val searchView = item.actionView as SearchView
+        setSearchViewQuery(searchView)
+        setSearchViewParamsAndListener(searchView)
+    }
+
+    private fun setSearchViewQuery(searchView: SearchView) {
+        if (searchView.query.isEmpty()) {
+            searchView.setQuery(searchQuery, false)
+        }
+    }
+
+    private fun setSearchViewParamsAndListener(searchView: SearchView) {
         searchView.apply {
             setIconifiedByDefault(false)
             isSubmitButtonEnabled = true
@@ -107,7 +140,8 @@ class SearchFragment : Fragment() {
         return object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
-                    viewModel.start(it)
+                    searchQuery = it
+                    startSearch()
                 }
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
                 // see https://code.google.com/p/android/issues/detail?id=24599

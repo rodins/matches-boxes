@@ -46,7 +46,7 @@ class SearchFragmentTest {
     fun nothingFound_textEquals() {
         dataSource.addRadioComponents()
         val query = "compo"
-        val bundle = SearchFragmentArgs.Builder(query).build().toBundle()
+        val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
         launchFragmentInContainer<SearchFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_components_found)).check(matches(isDisplayed()))
@@ -58,7 +58,7 @@ class SearchFragmentTest {
         val component = RadioComponent(1, "Component", 3, bagId)
         dataSource.addRadioComponents(component)
         val query = "compo"
-        val bundle = SearchFragmentArgs.Builder(query).build().toBundle()
+        val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
         launchFragmentInContainer<SearchFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_components_found)).check(matches(CoreMatchers.not(isDisplayed())))
@@ -72,7 +72,7 @@ class SearchFragmentTest {
         val component3 = RadioComponent(3, "Component3", 3, bagId)
         dataSource.addRadioComponents(component1, component2, component3)
         val query = "compo"
-        val bundle = SearchFragmentArgs.Builder(query).build().toBundle()
+        val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
         launchFragmentInContainer<SearchFragment>(bundle, R.style.AppTheme)
 
         onView(withText(component1.name)).check(matches(isDisplayed()))
@@ -88,7 +88,7 @@ class SearchFragmentTest {
         val component3 = RadioComponent(3, "Component3", 3, bagId)
         dataSource.addRadioComponents(component1, component2, component3)
         val query = "compo"
-        val bundle = SearchFragmentArgs.Builder(query).build().toBundle()
+        val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
         val scenario = launchFragmentInContainer<SearchFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment {
@@ -107,7 +107,7 @@ class SearchFragmentTest {
         val component = RadioComponent(1, "Component", 12, bagId)
         dataSource.addRadioComponents(component)
         val query = "compo"
-        val bundle = SearchFragmentArgs.Builder(query).build().toBundle()
+        val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
         launchFragmentInContainer<SearchFragment>(bundle, R.style.AppTheme)
 
         onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
@@ -124,7 +124,7 @@ class SearchFragmentTest {
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
         val query = "compo"
-        val bundle = SearchFragmentArgs.Builder(query).build().toBundle()
+        val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
         val scenario = launchFragmentInContainer<SearchFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         var title = ""

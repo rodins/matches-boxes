@@ -3,6 +3,7 @@ package com.sergeyrodin.matchesboxes
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.view.Gravity
+import android.view.KeyEvent
 import android.widget.AutoCompleteTextView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
@@ -32,6 +33,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
+
+annotation class SearchTest
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -999,6 +1002,28 @@ class MainActivityTest {
     }
 
     // Search
+    @SearchTest
+    @Test
+    fun searchFragmentBottomNavigation_isDisplayed() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.searchFragment)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+    @SearchTest
+    @Test
+    fun navigateToSearchFragment_titleDisplayed() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        moveToSearch()
+        onView(withText(R.string.components)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+    @SearchTest
     @Test
     fun searchQuery_nameMatches() = runBlocking{
         val bag = Bag(1, "Bag")
@@ -1013,41 +1038,28 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component1)
         dataSource.insertRadioComponent(component2)
         dataSource.insertRadioComponent(component3)
+        val query = "78041"
 
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.action_search)).perform(click())
-        onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("78041\n"))//.perform(pressKey(KeyEvent.KEYCODE_ENTER))
+        moveToSearch()
+        typeQuery(query)
         onView(withText(component3.name)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
 
-    @Test
-    fun searchMode_titleEquals() = runBlocking {
-        val query = "BUH"
-        val bag = Bag(1, "Bag")
-        val set = MatchesBoxSet(1, "Set", bag.id)
-        val box = MatchesBox(1, "Box", set.id)
-        val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
-
-        onView(withId(R.id.action_search)).perform(click())
+    private fun typeQuery(query: String) {
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("$query\n"))
-        onView(withText(R.string.components)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+            .perform(typeText(query))
+            .perform(pressKey(KeyEvent.KEYCODE_ENTER))
     }
 
+    private fun moveToSearch() {
+        onView(withId(R.id.searchFragment)).perform(click())
+    }
+    @SearchTest
     @Test
     fun searchQuery_selectComponent_nameEquals() = runBlocking{
         val bag = Bag(1, "Bag")
@@ -1066,15 +1078,14 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.action_search)).perform(click())
-        onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("78041\n"))
+        moveToSearch()
+        typeQuery("78041")
         onView(withText(component3.name)).perform(click())
         onView(withId(R.id.component_name)).check(matches(withText(component3.name)))
 
         activityScenario.close()
     }
-
+    @SearchTest
     @Test
     fun searchQuery_quantityPlus_quantityEquals() = runBlocking{
         val bag = Bag(1, "Bag")
@@ -1093,9 +1104,8 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.action_search)).perform(click())
-        onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("78041\n"))
+        moveToSearch()
+        typeQuery("78041")
         onView(withText(component3.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(R.string.button_plus)).perform(click())
@@ -1106,7 +1116,7 @@ class MainActivityTest {
 
         activityScenario.close()
     }
-
+    @SearchTest
     @Test
     fun searchQuery_typeQuantity_quantityEquals() = runBlocking{
         val bag = Bag(1, "Bag")
@@ -1125,9 +1135,8 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.action_search)).perform(click())
-        onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("78041\n"))
+        moveToSearch()
+        typeQuery("78041")
         onView(withText(component3.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.quantity_edit)).perform(replaceText("6"))
@@ -1137,7 +1146,7 @@ class MainActivityTest {
 
         activityScenario.close()
     }
-
+    @SearchTest
     @Test
     fun searchQuery_typeSameQuantity_quantityEquals() = runBlocking{
         val bag = Bag(1, "Bag")
@@ -1156,9 +1165,8 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.action_search)).perform(click())
-        onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("78041\n"))
+        moveToSearch()
+        typeQuery("78041")
         onView(withText(component3.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.quantity_edit)).perform(replaceText("3"))
@@ -1169,7 +1177,7 @@ class MainActivityTest {
 
         activityScenario.close()
     }
-
+    @SearchTest
     @Test
     fun searchComponent_titleEquals() = runBlocking{
         val bag = Bag(1, "Bag")
@@ -1188,16 +1196,15 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.action_search)).perform(click())
-        onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("78041\n"))
+        moveToSearch()
+        typeQuery("78041")
         onView(withText(component3.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(R.string.update_component)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
-
+    @SearchTest
     @Test
     fun searchComponent_changeQuantity_navigateToSearchComponents() = runBlocking {
         val bag = Bag(1, "Bag")
@@ -1211,9 +1218,8 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.action_search)).perform(click())
-        onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("78041\n"))
+        moveToSearch()
+        typeQuery("78041")
         onView(withText(component.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(R.string.button_plus)).perform(click())
@@ -1223,7 +1229,7 @@ class MainActivityTest {
 
         activityScenario.close()
     }
-
+    @SearchTest
     @Test
     fun searchMode_deleteComponent_navigateToSearchComponents() = runBlocking {
         val bag = Bag(1, "Bag")
@@ -1237,9 +1243,8 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.action_search)).perform(click())
-        onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("78041\n"))
+        moveToSearch()
+        typeQuery("78041")
         onView(withText(component.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.action_delete)).perform(click())
@@ -1248,7 +1253,7 @@ class MainActivityTest {
 
         activityScenario.close()
     }
-
+    @SearchTest
     @Test
     fun navigateToSearchFragment_actionSearchIsDisplayed() = runBlocking{
         val bag = Bag(1, "Bag")
@@ -1262,16 +1267,15 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.action_search)).perform(click())
-        onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("78041\n"))
+        moveToSearch()
+        typeQuery("78041")
 
         onView(withText(component.name)).check(matches(isDisplayed()))
         onView(withId(R.id.app_bar_search)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
-
+    @SearchTest
     @Test
     fun searchInSearchFragment_nameDisplayed() = runBlocking {
         val bag = Bag(1, "Bag")
@@ -1287,9 +1291,8 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.action_search)).perform(click())
-        onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("78041\n"))
+        moveToSearch()
+        typeQuery("78041")
 
         onView(withText(component1.name)).check(matches(isDisplayed()))
 
@@ -1300,7 +1303,7 @@ class MainActivityTest {
 
         activityScenario.close()
     }
-
+    @SearchTest
     @Test
     fun startSearchFragment_queryDisplayed() = runBlocking{
         val query = "78041"
@@ -1315,15 +1318,69 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.action_search)).perform(click())
-        onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("$query\n"))
+        moveToSearch()
+        typeQuery(query)
 
         onView(withText(query)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
+    @SearchTest
+    @Test
+    fun navigateBackToSearchFragment_queryDisplayed() = runBlocking{
+        val query = "78041"
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
 
+        moveToSearch()
+        typeQuery(query)
+
+        onView(withText(component.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withText(R.string.button_plus)).perform(click())
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        onView(withText(query)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+    @SearchTest
+    @Test
+    fun searchFragmentRotation_queryIsDisplayed() = runBlocking{
+        val query = "78041"
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+        var activity: Activity? = null
+        activityScenario.onActivity {
+            activity = it
+        }
+
+        moveToSearch()
+        typeQuery(query)
+
+        rotateDevice(activity, activityScenario)
+
+        onView(withText(query)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+    @SearchTest
     @Test
     fun searchMode_addComponent_nameEquals() = runBlocking{
         val bag1 = Bag(1, "Bag1")
@@ -1359,9 +1416,8 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.action_search)).perform(click())
-        onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("78\n"))
+        moveToSearch()
+        typeQuery("78")
         onView(withId(R.id.add_search_buy_component_fab)).perform(click())
         onView(withId(R.id.component_edit)).perform(typeText("KIA7805"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
@@ -1762,9 +1818,8 @@ class MainActivityTest {
         val activityScenario = ActivityScenario.launch(MainActivity::class.java)
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
-        onView(withId(R.id.action_search)).perform(click())
-        onView(isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(typeText("78041\n"))
+        moveToSearch()
+        typeQuery("78041")
         onView(withText(component.name)).perform(click())
 
         onView(withId(R.id.action_history)).perform(click())
@@ -2061,13 +2116,20 @@ class MainActivityTest {
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(click())
         onView(withText(convertLongToDateString(history.date))).perform(longClick())
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        rotateDevice(activity, activityScenario)
 
         onView(withId(R.id.display_component_history_list))
             .check(matches(hasDescendant(hasBackgroundColor(R.color.secondaryLightColor))))
 
         activityScenario.close()
+    }
+
+    private fun rotateDevice(
+        activity: Activity?,
+        activityScenario: ActivityScenario<MainActivity>
+    ) {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        dataBindingIdlingResource.monitorActivity(activityScenario)
     }
 
     @Test

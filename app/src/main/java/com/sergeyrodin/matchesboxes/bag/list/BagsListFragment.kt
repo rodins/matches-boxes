@@ -124,7 +124,8 @@ class BagsListFragment : Fragment() {
 
     private fun navigateToSearchFragment(query: String?) {
         findNavController().navigate(
-            BagsListFragmentDirections.actionBagsListFragmentToSearchFragment(query!!)
+            BagsListFragmentDirections
+                .actionBagsListFragmentToSearchFragment().setQuery(query!!)
         )
     }
 }

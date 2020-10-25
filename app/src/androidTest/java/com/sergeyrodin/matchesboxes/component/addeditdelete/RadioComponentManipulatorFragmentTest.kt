@@ -527,7 +527,8 @@ class RadioComponentManipulatorFragmentTest {
         onView(withId(R.id.save_component_fab)).perform(click())
 
         verify(navController).navigate(
-            RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(query)
+            RadioComponentManipulatorFragmentDirections
+                .actionAddEditDeleteRadioComponentFragmentToSearchFragment().setQuery(query)
         )
     }
 
@@ -580,7 +581,8 @@ class RadioComponentManipulatorFragmentTest {
         clickDeleteAction(scenario)
 
         verify(navController).navigate(
-            RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(query)
+            RadioComponentManipulatorFragmentDirections
+                .actionAddEditDeleteRadioComponentFragmentToSearchFragment().setQuery(query)
         )
     }
 
@@ -607,7 +609,9 @@ class RadioComponentManipulatorFragmentTest {
         onView(withId(R.id.save_component_fab)).perform(click())
 
         verify(navController).navigate(
-            RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(query)
+            RadioComponentManipulatorFragmentDirections
+                .actionAddEditDeleteRadioComponentFragmentToSearchFragment()
+                .setQuery(query)
         )
     }
 

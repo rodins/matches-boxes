@@ -236,9 +236,8 @@ class RadioComponentManipulatorFragment : Fragment() {
 
     private fun navigateToSearchFragment() {
         findNavController().navigate(
-            RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToSearchFragment(
-                args.query
-            )
+            RadioComponentManipulatorFragmentDirections
+                .actionAddEditDeleteRadioComponentFragmentToSearchFragment().setQuery(args.query)
         )
     }
 
