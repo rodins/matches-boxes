@@ -12,6 +12,7 @@ import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
+import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentListener
 import com.sergeyrodin.matchesboxes.databinding.FragmentSearchBinding
@@ -30,7 +31,6 @@ class SearchFragment : Fragment() {
     }
 
     private val args by navArgs<SearchFragmentArgs>()
-    private val isBuyComponentMode = false
 
     private var searchQuery = ""
 
@@ -48,10 +48,10 @@ class SearchFragment : Fragment() {
     }
 
     private fun setupSearchQuery(savedInstanceState: Bundle?) {
-        if (savedInstanceState != null) {
-            searchQuery = savedInstanceState.getString(KEY_QUERY) ?: ""
+        searchQuery = if (savedInstanceState != null) {
+            savedInstanceState.getString(KEY_QUERY) ?: ""
         } else {
-            searchQuery = args.query
+            args.query
         }
     }
 
@@ -81,7 +81,7 @@ class SearchFragment : Fragment() {
             SearchFragmentDirections.actionSearchFragmentToRadioComponentDetailsFragment(
                 componentId,
                 searchQuery,
-                isBuyComponentMode
+                RadioComponentManipulatorReturns.TO_SEARCH_LIST
             )
         )
     }
@@ -99,7 +99,7 @@ class SearchFragment : Fragment() {
                 NO_ID_SET,
                 getString(R.string.add_component),
                 searchQuery,
-                isBuyComponentMode
+                RadioComponentManipulatorReturns.TO_SEARCH_LIST
             )
         )
     }

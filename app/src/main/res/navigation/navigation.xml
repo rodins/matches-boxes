@@ -245,8 +245,8 @@
             android:name="query"
             app:argType="string" />
         <argument
-            android:name="isBuy"
-            app:argType="boolean" />
+            android:name="returns"
+            app:argType="com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns" />
         <action
             android:id="@+id/action_addEditDeleteRadioComponentFragment_to_searchFragment"
             app:destination="@id/searchFragment"
@@ -283,8 +283,8 @@
             android:name="query"
             app:argType="string" />
         <argument
-            android:name="isBuy"
-            app:argType="boolean" />
+            android:name="returns"
+            app:argType="com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns" />
         <action
             android:id="@+id/action_radioComponentDetailsFragment_to_componentHistoryFragment"
             app:destination="@id/componentHistoryFragment"

@@ -208,11 +208,7 @@ class RadioComponentManipulatorFragment : Fragment() {
         viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver { box ->
             hideKeyboard(activity)
             makeToastForAddEvent()
-            if (args.isBuy || args.query.isNotEmpty()) {
-                navigateInSearchBuyMode()
-            } else {
-                navigateToRadioComponentsListFragment(box)
-            }
+            returnToList(box)
         })
     }
 
@@ -220,12 +216,26 @@ class RadioComponentManipulatorFragment : Fragment() {
         Toast.makeText(context, R.string.component_added, Toast.LENGTH_SHORT).show()
     }
 
-    private fun navigateInSearchBuyMode() {
-        if (args.isBuy) {
-            navigateToNeededComponentsFragment()
-        } else {
-            navigateToSearchFragment()
+    private fun returnToList(
+        box: MatchesBox
+    ) {
+        when (args.returns) {
+            RadioComponentManipulatorReturns.TO_COMPONENTS_LIST -> navigateToRadioComponentsListFragment(
+                box
+            )
+            RadioComponentManipulatorReturns.TO_NEEDED_LIST -> navigateToNeededComponentsFragment()
+            RadioComponentManipulatorReturns.TO_SEARCH_LIST -> navigateToSearchFragment()
         }
+    }
+
+    private fun navigateToRadioComponentsListFragment(box: MatchesBox) {
+        findNavController().navigate(
+            RadioComponentManipulatorFragmentDirections
+                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(
+                    box.id,
+                    box.name
+                )
+        )
     }
 
     private fun navigateToNeededComponentsFragment() {
@@ -241,25 +251,13 @@ class RadioComponentManipulatorFragment : Fragment() {
         )
     }
 
-    private fun navigateToRadioComponentsListFragment(box: MatchesBox) {
-        findNavController().navigate(
-            RadioComponentManipulatorFragmentDirections
-                .actionAddEditDeleteRadioComponentFragmentToRadioComponentsListFragment(
-                    box.id,
-                    box.name
-                )
-        )
-    }
+
 
     private fun observeUpdateEvent() {
         viewModel.updateItemEvent.observe(viewLifecycleOwner, EventObserver { box ->
             hideKeyboard(activity)
             makeToastForUpdatedEvent()
-            if (args.isBuy || args.query.isNotEmpty()) {
-                navigateInSearchBuyMode()
-            } else {
-                navigateToRadioComponentsListFragment(box)
-            }
+            returnToList(box)
         })
     }
 
@@ -271,16 +269,24 @@ class RadioComponentManipulatorFragment : Fragment() {
     private fun observeDeleteEvent() {
         viewModel.deleteItemEvent.observe(viewLifecycleOwner, EventObserver { title ->
             makeToastForDeleteEvent()
-            if (args.isBuy || args.query.isNotEmpty()) {
-                navigateInSearchBuyMode()
-            } else {
-                navigateToRadioComponentsListFragment(title)
-            }
+            returnToList(title)
         })
     }
 
     private fun makeToastForDeleteEvent() {
         Toast.makeText(context, R.string.component_deleted, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun returnToList(
+        title: String
+    ) {
+        when (args.returns) {
+            RadioComponentManipulatorReturns.TO_COMPONENTS_LIST -> navigateToRadioComponentsListFragment(
+                title
+            )
+            RadioComponentManipulatorReturns.TO_NEEDED_LIST -> navigateToNeededComponentsFragment()
+            RadioComponentManipulatorReturns.TO_SEARCH_LIST -> navigateToSearchFragment()
+        }
     }
 
     private fun navigateToRadioComponentsListFragment(title: String) {

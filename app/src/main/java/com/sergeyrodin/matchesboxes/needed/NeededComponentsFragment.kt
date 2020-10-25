@@ -12,6 +12,7 @@ import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
+import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentListener
 import com.sergeyrodin.matchesboxes.databinding.FragmentNeededComponentsBinding
@@ -33,14 +34,23 @@ class NeededComponentsFragment : Fragment() {
         binding.viewModel = viewModel
         binding.items.adapter = RadioComponentAdapter(RadioComponentListener { componentId ->
             findNavController().navigate(
-                NeededComponentsFragmentDirections.actionNeededComponentsFragmentToRadioComponentDetailsFragment(componentId, "", true)
+                NeededComponentsFragmentDirections
+                    .actionNeededComponentsFragmentToRadioComponentDetailsFragment(
+                        componentId,
+                        "",
+                        RadioComponentManipulatorReturns.TO_NEEDED_LIST)
             )
         })
 
         viewModel.addComponentEvent.observe(viewLifecycleOwner, EventObserver{
             findNavController().navigate(
-                NeededComponentsFragmentDirections.actionNeededComponentsFragmentToAddEditDeleteRadioComponentFragment(
-                    ADD_NEW_ITEM_ID, NO_ID_SET, getString(R.string.add_component), "", true
+                NeededComponentsFragmentDirections
+                    .actionNeededComponentsFragmentToAddEditDeleteRadioComponentFragment(
+                    ADD_NEW_ITEM_ID,
+                        NO_ID_SET,
+                        getString(R.string.add_component),
+                        "",
+                        RadioComponentManipulatorReturns.TO_NEEDED_LIST
                 )
             )
         })

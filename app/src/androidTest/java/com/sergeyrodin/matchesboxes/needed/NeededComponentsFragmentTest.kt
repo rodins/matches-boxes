@@ -15,6 +15,7 @@ import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
+import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns
 import com.sergeyrodin.matchesboxes.data.*
 import org.hamcrest.CoreMatchers
 import org.junit.After
@@ -89,7 +90,7 @@ class NeededComponentsFragmentTest {
         onView(withText(component2.name)).perform(ViewActions.click())
         verify(navController).navigate(
             NeededComponentsFragmentDirections.actionNeededComponentsFragmentToRadioComponentDetailsFragment(
-                component2.id, "", true
+                component2.id, "", RadioComponentManipulatorReturns.TO_NEEDED_LIST
             )
         )
     }
@@ -126,7 +127,11 @@ class NeededComponentsFragmentTest {
 
         verify(navController).navigate(
             NeededComponentsFragmentDirections.actionNeededComponentsFragmentToAddEditDeleteRadioComponentFragment(
-                ADD_NEW_ITEM_ID, NO_ID_SET, title, "", true
+                ADD_NEW_ITEM_ID,
+                NO_ID_SET,
+                title,
+                "",
+                RadioComponentManipulatorReturns.TO_NEEDED_LIST
             )
         )
     }

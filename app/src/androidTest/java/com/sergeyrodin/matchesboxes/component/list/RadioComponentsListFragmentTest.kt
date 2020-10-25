@@ -18,6 +18,7 @@ import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.DO_NOT_NEED_THIS_VARIABLE
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
+import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns
 import com.sergeyrodin.matchesboxes.data.*
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
@@ -115,7 +116,8 @@ class RadioComponentsListFragmentTest {
         val box = MatchesBox(1, "Box", set.id)
         dataSource.addRadioComponents()
         val bundle = RadioComponentsListFragmentArgs.Builder(box.id, "Title").build().toBundle()
-        val scenario = launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
+        val scenario =
+            launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
         scenario.onFragment {
@@ -127,7 +129,13 @@ class RadioComponentsListFragmentTest {
 
         verify(navController).navigate(
             RadioComponentsListFragmentDirections
-                .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(ADD_NEW_ITEM_ID, box.id, title, "", false)
+                .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(
+                    ADD_NEW_ITEM_ID,
+                    box.id,
+                    title,
+                    "",
+                    RadioComponentManipulatorReturns.TO_COMPONENTS_LIST
+                )
         )
     }
 
@@ -140,7 +148,8 @@ class RadioComponentsListFragmentTest {
         dataSource.addRadioComponents(component)
 
         val bundle = RadioComponentsListFragmentArgs.Builder(box.id, "Title").build().toBundle()
-        val scenario = launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
+        val scenario =
+            launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
@@ -150,7 +159,11 @@ class RadioComponentsListFragmentTest {
 
         verify(navController).navigate(
             RadioComponentsListFragmentDirections
-                .actionRadioComponentsListFragmentToRadioComponentDetailsFragment(component.id, "", false)
+                .actionRadioComponentsListFragmentToRadioComponentDetailsFragment(
+                    component.id,
+                    "",
+                    RadioComponentManipulatorReturns.TO_COMPONENTS_LIST
+                )
         )
     }
 
@@ -161,7 +174,8 @@ class RadioComponentsListFragmentTest {
         dataSource.addRadioComponents()
 
         val bundle = RadioComponentsListFragmentArgs.Builder(box.id, "Title").build().toBundle()
-        val scenario = launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
+        val scenario =
+            launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
         scenario.onFragment {
@@ -174,7 +188,8 @@ class RadioComponentsListFragmentTest {
         verify(navController).navigate(
             RadioComponentsListFragmentDirections
                 .actionRadioComponentsListFragmentToAddEditDeleteMatchesBoxFragment(
-                    DO_NOT_NEED_THIS_VARIABLE, box.id, title)
+                    DO_NOT_NEED_THIS_VARIABLE, box.id, title
+                )
         )
     }
 
@@ -182,7 +197,7 @@ class RadioComponentsListFragmentTest {
         // Create dummy menu item with the desired item id
         val context = ApplicationProvider.getApplicationContext<Context>()
         val editMenuItem = ActionMenuItem(context, 0, R.id.action_edit, 0, 0, null)
-        scenario.onFragment{
+        scenario.onFragment {
             it.onOptionsItemSelected(editMenuItem)
         }
     }

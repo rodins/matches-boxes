@@ -74,7 +74,7 @@ class RadioComponentDetailsFragment : Fragment() {
                     component.matchesBoxId,
                     getString(R.string.update_component),
                     args.query,
-                    args.isBuy
+                    args.returns
                 )
         )
     }

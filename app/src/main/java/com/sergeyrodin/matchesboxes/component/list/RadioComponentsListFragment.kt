@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.*
+import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns
 import com.sergeyrodin.matchesboxes.databinding.FragmentRadioComponentsListBinding
 
 class RadioComponentsListFragment : Fragment() {
@@ -30,7 +31,11 @@ class RadioComponentsListFragment : Fragment() {
         binding.items.adapter = RadioComponentAdapter(RadioComponentListener { id ->
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
-                    .actionRadioComponentsListFragmentToRadioComponentDetailsFragment(id, "", false)
+                    .actionRadioComponentsListFragmentToRadioComponentDetailsFragment(
+                        id,
+                        "",
+                        RadioComponentManipulatorReturns.TO_COMPONENTS_LIST
+                    )
             )
         })
 
@@ -38,7 +43,12 @@ class RadioComponentsListFragment : Fragment() {
             findNavController().navigate(
                 RadioComponentsListFragmentDirections
                     .actionRadioComponentsListFragmentToAddEditDeleteRadioComponentFragment(
-                        ADD_NEW_ITEM_ID, args.boxId, getString(R.string.add_component), "", false)
+                        ADD_NEW_ITEM_ID,
+                        args.boxId,
+                        getString(R.string.add_component),
+                        "",
+                        RadioComponentManipulatorReturns.TO_COMPONENTS_LIST
+                    )
             )
         })
 

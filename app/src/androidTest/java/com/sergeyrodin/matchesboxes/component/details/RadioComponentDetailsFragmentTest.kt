@@ -11,6 +11,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.ServiceLocator
+import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns
 import com.sergeyrodin.matchesboxes.data.*
 import org.junit.After
 import org.junit.Assert.*
@@ -23,7 +24,7 @@ import org.mockito.Mockito.verify
 @MediumTest
 @RunWith(AndroidJUnit4::class)
 class RadioComponentDetailsFragmentTest {
-    private  lateinit var  dataSource: FakeDataSource
+    private lateinit var dataSource: FakeDataSource
 
     @Before
     fun init() {
@@ -47,7 +48,11 @@ class RadioComponentDetailsFragmentTest {
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
 
-        val bundle = RadioComponentDetailsFragmentArgs.Builder(component.id, "", false).build().toBundle()
+        val bundle = RadioComponentDetailsFragmentArgs.Builder(
+            component.id,
+            "",
+            RadioComponentManipulatorReturns.TO_COMPONENTS_LIST
+        ).build().toBundle()
         launchFragmentInContainer<RadioComponentDetailsFragment>(bundle, R.style.AppTheme)
 
         onView(withText(bag.name)).check(matches(isDisplayed()))
@@ -69,8 +74,13 @@ class RadioComponentDetailsFragmentTest {
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
 
-        val bundle = RadioComponentDetailsFragmentArgs.Builder(component.id, "", false).build().toBundle()
-        val scenario = launchFragmentInContainer<RadioComponentDetailsFragment>(bundle, R.style.AppTheme)
+        val bundle = RadioComponentDetailsFragmentArgs.Builder(
+            component.id,
+            "",
+            RadioComponentManipulatorReturns.TO_COMPONENTS_LIST
+        ).build().toBundle()
+        val scenario =
+            launchFragmentInContainer<RadioComponentDetailsFragment>(bundle, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
         scenario.onFragment {
@@ -80,8 +90,15 @@ class RadioComponentDetailsFragmentTest {
 
         onView(withId(R.id.edit_component_fab)).perform(click())
 
-        verify(navController).navigate(RadioComponentDetailsFragmentDirections
-            .actionRadioComponentDetailsFragmentToAddEditDeleteRadioComponentFragment(
-                component.id, component.matchesBoxId, title, "", false))
+        verify(navController).navigate(
+            RadioComponentDetailsFragmentDirections
+                .actionRadioComponentDetailsFragmentToAddEditDeleteRadioComponentFragment(
+                    component.id,
+                    component.matchesBoxId,
+                    title,
+                    "",
+                    RadioComponentManipulatorReturns.TO_COMPONENTS_LIST
+                )
+        )
     }
 }
