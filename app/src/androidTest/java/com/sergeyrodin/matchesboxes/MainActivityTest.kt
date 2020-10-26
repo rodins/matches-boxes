@@ -1426,6 +1426,38 @@ class MainActivityTest {
         activityScenario.close()
     }
 
+    @SearchTest
+    @Test
+    fun switchFromSearchToPopularAndBack_quotesNotDisplayed() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        moveToSearch()
+        onView(withId(R.id.popularComponentsFragment)).perform(click())
+        moveToSearch()
+
+        onView(withText("\"\"")).check(doesNotExist())
+
+        activityScenario.close()
+    }
+    @SearchTest
+    @Test
+    fun serchModeHintDisplayed_rotateDevice_quetesNotDisplayed() {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+        var activity: Activity? = null
+        activityScenario.onActivity {
+            activity = it
+        }
+
+        moveToSearch()
+        rotateDevice(activity, activityScenario)
+
+        onView(withText("\"\"")).check(doesNotExist())
+
+        activityScenario.close()
+    }
+
     // Buy
 
     @Test
