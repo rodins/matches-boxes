@@ -18,9 +18,12 @@ class RadioComponentsListFragment : Fragment() {
 
     private fun createViewModelFactory(): RadioComponentsListViewModelFactory {
         return RadioComponentsListViewModelFactory(
-            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
+            getDataSourceFromApplication()
         )
     }
+
+    private fun getDataSourceFromApplication() =
+        (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

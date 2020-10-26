@@ -22,9 +22,12 @@ class RadioComponentDetailsFragment : Fragment() {
 
     private fun getViewModelFactory(): RadioComponentDetailsViewModelFactory {
         return RadioComponentDetailsViewModelFactory(
-            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
+            getDataSurceFromApplication()
         )
     }
+
+    private fun getDataSurceFromApplication() =
+        (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
 
     private lateinit var binding: FragmentRadioComponentDetailsBinding
 

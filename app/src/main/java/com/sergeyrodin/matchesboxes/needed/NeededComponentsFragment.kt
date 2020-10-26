@@ -24,9 +24,12 @@ class NeededComponentsFragment : Fragment() {
 
     private fun createViewModelFactory(): NeededComponentsViewModelFactory {
         return NeededComponentsViewModelFactory(
-            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
+            getDataSourceFromApplication()
         )
     }
+
+    private fun getDataSourceFromApplication() =
+        (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
