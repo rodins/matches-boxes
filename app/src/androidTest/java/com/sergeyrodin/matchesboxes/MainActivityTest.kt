@@ -69,8 +69,7 @@ class MainActivityTest {
 
     @Test
     fun addBag_bagNameDisplayed() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.add_bag_fab)).perform(click())
         onView(withId(R.id.bag_edit)).perform(typeText("New bag"))
@@ -81,8 +80,7 @@ class MainActivityTest {
 
     @Test
     fun addBag_deleteButtonIsNotDisplayed() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.add_bag_fab)).perform(click())
 
@@ -93,8 +91,7 @@ class MainActivityTest {
 
     @Test
     fun noBags_addBagClick_textEquals() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.no_bags_added_text)).check(matches(isDisplayed()))
         onView(withId(R.id.add_bag_fab)).perform(click())
@@ -107,8 +104,7 @@ class MainActivityTest {
     fun editBagClick_editBag_nameEquals() = runBlocking{
         val bag = Bag(1, "Bag")
         dataSource.insertBag(bag)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
@@ -125,8 +121,7 @@ class MainActivityTest {
     fun updateBag_nameInListUpdated() = runBlocking{
         val bag = Bag(1, "Bag")
         dataSource.insertBag(bag)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
@@ -144,8 +139,7 @@ class MainActivityTest {
     fun editBagClick_nameEquals() = runBlocking{
         val bag = Bag(1, "Bag")
         dataSource.insertBag(bag)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
@@ -158,8 +152,7 @@ class MainActivityTest {
     @Test
     fun editBagClick_deleteBag() = runBlocking{
         dataSource.insertBag(Bag(1, "Bag"))
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText("Bag")).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
@@ -174,8 +167,7 @@ class MainActivityTest {
         val bag = Bag(1, "Bag")
         dataSource.insertBag(bag)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(bag.name)).check(matches(isDisplayed()))
@@ -185,8 +177,7 @@ class MainActivityTest {
 
     @Test
     fun addBag_titleEquals() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.add_bag_fab)).perform(click())
         onView(withText(R.string.add_bag)).check(matches(isDisplayed()))
@@ -198,8 +189,7 @@ class MainActivityTest {
     fun editBag_titleEquals() = runBlocking{
         val bag = Bag(1, "Bag")
         dataSource.insertBag(bag)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
@@ -212,8 +202,7 @@ class MainActivityTest {
     fun editBag_nameEquals() = runBlocking{
         val bag = Bag(1, "Bag")
         dataSource.insertBag(bag)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
@@ -227,8 +216,7 @@ class MainActivityTest {
     @Test
     fun addMatchesBoxSet_nameMatches() = runBlocking{
         dataSource.insertBag(Bag(1, "Bag"))
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText("Bag")).perform(click())
 
@@ -247,8 +235,7 @@ class MainActivityTest {
     @Test
     fun addTwoSets_namesEqual() = runBlocking {
         dataSource.insertBag(Bag(1, "Bag"))
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText("Bag")).perform(click())
 
@@ -272,8 +259,7 @@ class MainActivityTest {
     @Test
     fun addSet_deleteButtonNotDisplayed() = runBlocking{
         dataSource.insertBag(Bag(1, "Bag"))
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText("Bag")).perform(click())
         onView(withId(R.id.add_set_fab)).perform(click())
@@ -288,8 +274,7 @@ class MainActivityTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -309,8 +294,7 @@ class MainActivityTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -330,8 +314,7 @@ class MainActivityTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -344,8 +327,7 @@ class MainActivityTest {
     fun addSet_titleEquals() = runBlocking {
         val bag = Bag(1, "Bag")
         dataSource.insertBag(bag)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withId(R.id.add_set_fab)).perform(click())
@@ -360,8 +342,7 @@ class MainActivityTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -377,8 +358,7 @@ class MainActivityTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -396,8 +376,7 @@ class MainActivityTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -416,8 +395,7 @@ class MainActivityTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -442,8 +420,7 @@ class MainActivityTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -462,8 +439,7 @@ class MainActivityTest {
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -486,8 +462,7 @@ class MainActivityTest {
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -503,8 +478,7 @@ class MainActivityTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -522,8 +496,7 @@ class MainActivityTest {
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -542,8 +515,7 @@ class MainActivityTest {
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -562,8 +534,7 @@ class MainActivityTest {
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -591,8 +562,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -621,8 +591,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -673,8 +642,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box7)
         dataSource.insertMatchesBox(box8)
         dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag1.name)).perform(click())
         onView(withText(set1.name)).perform(click())
@@ -725,8 +693,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box6)
         dataSource.insertMatchesBox(box7)
         dataSource.insertMatchesBox(box8)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag1.name)).perform(click())
         onView(withText(set1.name)).perform(click())
@@ -749,8 +716,7 @@ class MainActivityTest {
 
     @Test
     fun addComponent_nameEquals() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         // Add bag
         onView(withId(R.id.add_bag_fab)).perform(click())
@@ -790,8 +756,7 @@ class MainActivityTest {
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -820,8 +785,7 @@ class MainActivityTest {
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -843,8 +807,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -864,8 +827,7 @@ class MainActivityTest {
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -884,8 +846,7 @@ class MainActivityTest {
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -912,8 +873,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -936,8 +896,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -963,8 +922,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -984,8 +942,7 @@ class MainActivityTest {
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -1005,8 +962,7 @@ class MainActivityTest {
     @SearchTest
     @Test
     fun searchFragmentBottomNavigation_isDisplayed() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.searchFragment)).check(matches(isDisplayed()))
 
@@ -1015,8 +971,7 @@ class MainActivityTest {
     @SearchTest
     @Test
     fun navigateToSearchFragment_titleDisplayed() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         onView(withText(R.string.components)).check(matches(isDisplayed()))
@@ -1040,8 +995,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component3)
         val query = "78041"
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         typeQuery(query)
@@ -1067,8 +1021,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component3)
         val query = "78041"
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.action_search)).perform(click())
         typeQuery(query)
@@ -1102,8 +1055,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component2)
         dataSource.insertRadioComponent(component3)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         typeQuery("78041")
@@ -1128,8 +1080,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component2)
         dataSource.insertRadioComponent(component3)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         typeQuery("78041")
@@ -1159,8 +1110,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component2)
         dataSource.insertRadioComponent(component3)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         typeQuery("78041")
@@ -1189,8 +1139,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component2)
         dataSource.insertRadioComponent(component3)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         typeQuery("78041")
@@ -1220,8 +1169,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component2)
         dataSource.insertRadioComponent(component3)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         typeQuery("78041")
@@ -1242,8 +1190,7 @@ class MainActivityTest {
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         typeQuery("78041")
@@ -1267,8 +1214,7 @@ class MainActivityTest {
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         typeQuery("78041")
@@ -1291,8 +1237,7 @@ class MainActivityTest {
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         typeQuery("78041")
@@ -1315,8 +1260,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component1)
         dataSource.insertRadioComponent(component2)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         typeQuery("78041")
@@ -1342,8 +1286,7 @@ class MainActivityTest {
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         typeQuery(query)
@@ -1364,8 +1307,7 @@ class MainActivityTest {
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         typeQuery(query)
@@ -1391,8 +1333,7 @@ class MainActivityTest {
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
         var activity: Activity? = null
         activityScenario.onActivity {
             activity = it
@@ -1440,8 +1381,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box7)
         dataSource.insertMatchesBox(box8)
         dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         typeQuery("78")
@@ -1456,8 +1396,7 @@ class MainActivityTest {
     @SearchTest
     @Test
     fun switchFromSearchToPopularAndBack_quotesNotDisplayed() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         onView(withId(R.id.popularComponentsFragment)).perform(click())
@@ -1470,8 +1409,7 @@ class MainActivityTest {
     @SearchTest
     @Test
     fun serchModeHintDisplayed_rotateDevice_quetesNotDisplayed() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
         var activity: Activity? = null
         activityScenario.onActivity {
             activity = it
@@ -1502,8 +1440,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component2)
         dataSource.insertRadioComponent(component3)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.neededComponentsFragment)).perform(click())
         onView(withText(component3.name)).check(matches(isDisplayed()))
@@ -1522,8 +1459,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component1)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.neededComponentsFragment)).perform(click())
         onView(withText(R.string.buy_components)).check(matches(isDisplayed()))
@@ -1542,8 +1478,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component1)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.neededComponentsFragment)).perform(click())
         onView(withText(component1.name)).perform(click())
@@ -1566,8 +1501,7 @@ class MainActivityTest {
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.neededComponentsFragment)).perform(click())
         onView(withText(component.name)).perform(click())
@@ -1590,8 +1524,7 @@ class MainActivityTest {
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.neededComponentsFragment)).perform(click())
         onView(withText(component.name)).perform(click())
@@ -1668,8 +1601,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component15)
         dataSource.insertRadioComponent(component16)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag1.name)).perform(click())
         onView(withText(set1.name)).perform(click())
@@ -1709,8 +1641,7 @@ class MainActivityTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -1730,8 +1661,7 @@ class MainActivityTest {
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -1748,8 +1678,7 @@ class MainActivityTest {
 
     @Test
     fun noHistory_historyActionClick_noHistoryTextDisplayed() = runBlocking{
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
 
@@ -1768,8 +1697,7 @@ class MainActivityTest {
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
@@ -1796,8 +1724,7 @@ class MainActivityTest {
         dataSource.insertBag(bag)
         dataSource.insertMatchesBoxSet(set)
         dataSource.insertMatchesBox(box)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
 
         onView(withId(R.id.neededComponentsFragment)).perform(click())
@@ -1828,8 +1755,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component2)
         dataSource.insertHistory(history1)
         dataSource.insertHistory(history2)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component1.name)).perform(click())
@@ -1851,8 +1777,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(click())
@@ -1874,8 +1799,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
         typeQuery("78041")
@@ -1951,8 +1875,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component15)
         dataSource.insertRadioComponent(component16)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag1.name)).perform(click())
         onView(withText(set2.name)).perform(click())
@@ -1989,8 +1912,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(longClick())
@@ -2012,8 +1934,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
 
@@ -2034,8 +1955,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(longClick())
@@ -2058,8 +1978,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(longClick())
@@ -2084,8 +2003,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(longClick())
@@ -2110,8 +2028,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(longClick())
@@ -2135,8 +2052,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
         var activity: Activity? = null
         activityScenario.onActivity {
             activity = it
@@ -2165,8 +2081,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
         var activity: Activity? = null
         activityScenario.onActivity {
             activity = it
@@ -2203,8 +2118,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
         var activity: Activity? = null
         activityScenario.onActivity {
             activity = it
@@ -2233,8 +2147,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
         var activity: Activity? = null
         activityScenario.onActivity {
             activity = it
@@ -2268,8 +2181,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component2)
         dataSource.insertHistory(history1)
         dataSource.insertHistory(history2)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component1.name)).perform(longClick())
@@ -2296,8 +2208,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component2)
         dataSource.insertHistory(history1)
         dataSource.insertHistory(history2)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component1.name)).perform(longClick())
@@ -2323,8 +2234,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component2)
         dataSource.insertHistory(history1)
         dataSource.insertHistory(history2)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component1.name)).perform(longClick())
@@ -2347,8 +2257,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(click())
@@ -2371,8 +2280,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(click())
@@ -2396,8 +2304,7 @@ class MainActivityTest {
         dataSource.insertMatchesBox(box)
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(click())
@@ -2424,8 +2331,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history1)
         dataSource.insertHistory(history2)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
@@ -2454,8 +2360,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.popularComponentsFragment)).perform(click())
 
@@ -2477,8 +2382,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.popularComponentsFragment)).perform(click())
 
@@ -2489,8 +2393,7 @@ class MainActivityTest {
 
     @Test
     fun bottomNavigationDisplayed() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.bottom_nav)).check(matches(isDisplayed()))
 
@@ -2499,8 +2402,7 @@ class MainActivityTest {
 
     @Test
     fun bottomNavigationBagsListFragmentDisplayed() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.bagsListFragment)).check(matches(isDisplayed()))
 
@@ -2520,8 +2422,7 @@ class MainActivityTest {
         dataSource.insertRadioComponent(component)
         dataSource.insertHistory(history)
 
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.popularComponentsFragment)).perform(click())
         onView(withId(R.id.bagsListFragment)).perform(click())
@@ -2529,6 +2430,12 @@ class MainActivityTest {
         onView(withText(bag.name)).check(matches(isDisplayed()))
 
         activityScenario.close()
+    }
+
+    private fun launchAndMonitorMainActivity(): ActivityScenario<MainActivity> {
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+        return activityScenario
     }
 
 
