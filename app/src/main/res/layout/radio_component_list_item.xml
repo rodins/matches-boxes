@@ -18,6 +18,8 @@
         android:layout_height="wrap_content"
         android:onClick="@{() -> clickListener.onClick(radioComponent.id)}"
         android:gravity="center_vertical"
+        android:background="@color/design_default_color_background"
+        android:layout_marginBottom="@dimen/small_margin"
         android:orientation="horizontal">
 
         <ImageView

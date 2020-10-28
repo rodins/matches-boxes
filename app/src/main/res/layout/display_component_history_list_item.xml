@@ -19,7 +19,8 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:onClick="@{ () -> clickListener.onClick() }"
-        app:highlightView="@{displayComponentHistory.isHighlighted}">
+        app:highlightView="@{displayComponentHistory.isHighlighted}"
+        android:layout_marginBottom="@dimen/small_margin">
 
         <ImageView
             android:id="@+id/imageView"
