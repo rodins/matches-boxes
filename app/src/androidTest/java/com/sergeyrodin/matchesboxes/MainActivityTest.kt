@@ -1399,13 +1399,14 @@ class MainActivityTest {
         val activityScenario = launchAndMonitorMainActivity()
 
         moveToSearch()
-        onView(withId(R.id.popularComponentsFragment)).perform(click())
+        moveToPopular()
         moveToSearch()
 
         onView(withText("\"\"")).check(doesNotExist())
 
         activityScenario.close()
     }
+
     @SearchTest
     @Test
     fun serchModeHintDisplayed_rotateDevice_quetesNotDisplayed() {
@@ -2362,7 +2363,7 @@ class MainActivityTest {
 
         val activityScenario = launchAndMonitorMainActivity()
 
-        onView(withId(R.id.popularComponentsFragment)).perform(click())
+        moveToPopular()
 
         onView(withText(component.name)).check(matches(isDisplayed()))
 
@@ -2384,7 +2385,7 @@ class MainActivityTest {
 
         val activityScenario = launchAndMonitorMainActivity()
 
-        onView(withId(R.id.popularComponentsFragment)).perform(click())
+        moveToPopular()
 
         onView(withText(R.string.popular_components)).check(matches(isDisplayed()))
 
@@ -2424,12 +2425,16 @@ class MainActivityTest {
 
         val activityScenario = launchAndMonitorMainActivity()
 
-        onView(withId(R.id.popularComponentsFragment)).perform(click())
+        moveToPopular()
         onView(withId(R.id.bagsListFragment)).perform(click())
 
         onView(withText(bag.name)).check(matches(isDisplayed()))
 
         activityScenario.close()
+    }
+
+    private fun moveToPopular() {
+        onView(withId(R.id.popularComponentsFragment)).perform(click())
     }
 
     private fun launchAndMonitorMainActivity(): ActivityScenario<MainActivity> {

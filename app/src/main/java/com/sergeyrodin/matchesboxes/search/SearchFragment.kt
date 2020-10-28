@@ -6,7 +6,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
@@ -17,7 +16,7 @@ import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentListener
 import com.sergeyrodin.matchesboxes.databinding.FragmentSearchBinding
 
-const val KEY_QUERY = "query_key"
+const val KEY_QUERY = "query"
 
 class SearchFragment : Fragment() {
     private val viewModel by viewModels<SearchViewModel> {
@@ -30,15 +29,13 @@ class SearchFragment : Fragment() {
         )
     }
 
-    private val args by navArgs<SearchFragmentArgs>()
-
     private var searchQuery = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setupSearchQuery(savedInstanceState)
+        getSearchQueryFromArgs()
         val binding = createBinding(inflater, container)
         startSearch()
         setupBinding(binding)
@@ -47,12 +44,8 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
-    private fun setupSearchQuery(savedInstanceState: Bundle?) {
-        searchQuery = if (savedInstanceState != null) {
-            savedInstanceState.getString(KEY_QUERY) ?: ""
-        } else {
-            args.query
-        }
+    private fun getSearchQueryFromArgs() {
+        searchQuery = requireArguments().getString(KEY_QUERY, "")
     }
 
     private fun createBinding(
@@ -104,11 +97,6 @@ class SearchFragment : Fragment() {
         )
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString(KEY_QUERY, searchQuery)
-        super.onSaveInstanceState(outState)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.search_menu, menu)
@@ -141,6 +129,7 @@ class SearchFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 query?.let {
                     searchQuery = it
+                    saveQueryToArgs()
                     startSearch()
                 }
                 // workaround to avoid issues with some emulators and keyboard devices firing twice if a keyboard enter is used
@@ -153,5 +142,11 @@ class SearchFragment : Fragment() {
                 return false
             }
         }
+    }
+
+    private fun saveQueryToArgs() {
+        val bundle = requireArguments()
+        bundle.putString(KEY_QUERY, searchQuery)
+        arguments = bundle
     }
 }

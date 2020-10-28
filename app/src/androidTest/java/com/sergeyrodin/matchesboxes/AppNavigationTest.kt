@@ -1,5 +1,6 @@
 package com.sergeyrodin.matchesboxes
 
+import android.view.KeyEvent
 import android.widget.AutoCompleteTextView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
@@ -588,7 +589,7 @@ class AppNavigationTest {
     }
 
     @Test
-    fun editComponentSaved_navigatUp() = runBlocking{
+    fun editComponentSaved_navigateUp() = runBlocking{
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
@@ -671,6 +672,7 @@ class AppNavigationTest {
 
     // Search
 
+    @SearchTest
     @Test
     fun searchEdit_navigationBack() = runBlocking{
         val bag = Bag(1, "Bag")
@@ -706,6 +708,7 @@ class AppNavigationTest {
         activityScenario.close()
     }
 
+    @SearchTest
     @Test
     fun searchEdit_navigationUp() = runBlocking{
         val bag = Bag(1, "Bag")
@@ -741,6 +744,7 @@ class AppNavigationTest {
         activityScenario.close()
     }
 
+    @SearchTest
     @Test
     fun searchMode_addComponent_navigationUp() = runBlocking{
         val bag = Bag(1, "Bag")
@@ -775,6 +779,7 @@ class AppNavigationTest {
         activityScenario.close()
     }
 
+    @SearchTest
     @Test
     fun searchMode_addComponent_navigationBack() = runBlocking{
         val bag = Bag(1, "Bag")
@@ -805,6 +810,60 @@ class AppNavigationTest {
         pressBack()
 
         onView(withText(bag2.name)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @SearchTest
+    @Test
+    fun typeQueryInSearchFragment_navigateToDetailsAndBack_nameDisplayed() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 3, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.searchFragment)).perform(click())
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(typeText("78"))
+            .perform(ViewActions.pressKey(KeyEvent.KEYCODE_ENTER))
+        onView(withText(component.name)).perform(click())
+
+        pressBack()
+
+        onView(withText(component.name)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @SearchTest
+    @Test
+    fun typeQueryInSearchFragment_navigateToDetailsAndUp_nameDisplayed() = runBlocking{
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 3, box.id)
+        dataSource.insertBag(bag)
+        dataSource.insertMatchesBoxSet(set)
+        dataSource.insertMatchesBox(box)
+        dataSource.insertRadioComponent(component)
+        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        onView(withId(R.id.searchFragment)).perform(click())
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(typeText("78"))
+            .perform(ViewActions.pressKey(KeyEvent.KEYCODE_ENTER))
+        onView(withText(component.name)).perform(click())
+
+        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
+
+        onView(withText(component.name)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
