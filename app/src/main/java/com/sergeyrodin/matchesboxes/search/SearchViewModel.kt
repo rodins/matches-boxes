@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.search
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
+import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 
 class SearchViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel() {
@@ -11,7 +12,7 @@ class SearchViewModel(private val dataSource: RadioComponentsDataSource) : ViewM
             if (query.trim() != "") {
                 emit(dataSource.getRadioComponentsByQuery(query))
             } else {
-                emit(listOf())
+                emit(listOf<RadioComponent>())
             }
         }
     }
