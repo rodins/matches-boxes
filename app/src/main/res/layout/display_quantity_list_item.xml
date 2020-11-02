@@ -43,6 +43,7 @@
             android:layout_height="wrap_content"
             android:text="@{displayQuantity.componentsQuantity}"
             android:textSize="@dimen/quantity_text_size"
+            android:layout_marginVertical="@dimen/list_margin"
             tools:text="34" />
     </LinearLayout>
 </layout>
