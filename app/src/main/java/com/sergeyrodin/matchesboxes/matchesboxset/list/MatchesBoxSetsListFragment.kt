@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.matchesboxset.list
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -63,8 +64,16 @@ class MatchesBoxSetsListFragment : Fragment() {
 
     private fun observeAddEvent() {
         viewModel.addSetEvent.observe(viewLifecycleOwner, EventObserver {
-            navigateToMatchesBoxSetManipulatorFragment()
+            navigateToSetManipulatorFragmentNoException()
         })
+    }
+
+    private fun navigateToSetManipulatorFragmentNoException() {
+        try {
+            navigateToMatchesBoxSetManipulatorFragment()
+        } catch (e: IllegalArgumentException) {
+            showAddItemErrorToast()
+        }
     }
 
     private fun navigateToMatchesBoxSetManipulatorFragment() {
@@ -74,6 +83,10 @@ class MatchesBoxSetsListFragment : Fragment() {
                     args.bagId, ADD_NEW_ITEM_ID, getString(R.string.add_set)
                 )
         )
+    }
+
+    private fun showAddItemErrorToast() {
+        Toast.makeText(requireContext(), R.string.add_item_error, Toast.LENGTH_SHORT).show()
     }
 
     private fun observeSelectEvent() {

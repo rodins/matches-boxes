@@ -56,4 +56,5 @@
     <string name="popular">Популярні</string>
     <string name="popular_components">Популярні компоненти</string>
     <string name="components">Компоненти</string>
+    <string name="add_item_error">Помилка додавання елементу</string>
 </resources>

@@ -59,4 +59,5 @@
     <string name="popular_components">Popular Components</string>
     <string name="empty_search_label" translatable="false">" "</string>
     <string name="components">Components</string>
+    <string name="add_item_error">Add item error</string>
 </resources>

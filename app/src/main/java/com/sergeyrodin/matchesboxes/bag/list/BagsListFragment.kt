@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.bag.list
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.Fragment
@@ -17,14 +18,15 @@ import com.sergeyrodin.matchesboxes.databinding.FragmentBagsListBinding
 
 class BagsListFragment : Fragment() {
     private lateinit var viewModel: BagsListViewModel
+    private lateinit var binding: FragmentBagsListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = createBinding(inflater)
+        binding = createBinding(inflater)
         viewModel = createViewModel()
-        setupBinding(binding)
+        setupBinding()
         observeAddBagEvent()
         observeSelectBagEvent()
 
@@ -45,9 +47,7 @@ class BagsListFragment : Fragment() {
         return viewModel
     }
 
-    private fun setupBinding(
-        binding: FragmentBagsListBinding
-    ) {
+    private fun setupBinding() {
         binding.bagsList.adapter = createAdapter()
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
@@ -80,8 +80,16 @@ class BagsListFragment : Fragment() {
 
     private fun observeAddBagEvent() {
         viewModel.addBagEvent.observe(viewLifecycleOwner, EventObserver {
-            navigateToAddBagFragment()
+            navigateToAddBagFragmentNoException()
         })
+    }
+
+    private fun navigateToAddBagFragmentNoException() {
+        try {
+            navigateToAddBagFragment()
+        } catch (e: IllegalArgumentException) {
+            showAddItemErrorToast()
+        }
     }
 
     private fun navigateToAddBagFragment() {
@@ -90,6 +98,10 @@ class BagsListFragment : Fragment() {
                 ADD_NEW_ITEM_ID, getString(R.string.add_bag)
             )
         )
+    }
+
+    private fun showAddItemErrorToast() {
+        Toast.makeText(requireContext(), R.string.add_item_error, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
