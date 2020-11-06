@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.search
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,6 +16,7 @@ import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipu
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentListener
 import com.sergeyrodin.matchesboxes.databinding.FragmentSearchBinding
+import java.lang.IllegalArgumentException
 
 const val KEY_QUERY = "query"
 
@@ -81,8 +83,16 @@ class SearchFragment : Fragment() {
 
     private fun observeAddComponentEvent() {
         viewModel.addComponentEvent.observe(viewLifecycleOwner, EventObserver {
-            navigateToAddComponentFragment()
+            navigateToAddComponentNoException()
         })
+    }
+
+    private fun navigateToAddComponentNoException() {
+        try {
+            navigateToAddComponentFragment()
+        } catch (e: IllegalArgumentException) {
+            showNavigationErrorToast()
+        }
     }
 
     private fun navigateToAddComponentFragment() {
@@ -95,6 +105,10 @@ class SearchFragment : Fragment() {
                 RadioComponentManipulatorReturns.TO_SEARCH_LIST
             )
         )
+    }
+
+    private fun showNavigationErrorToast() {
+        Toast.makeText(requireContext(), R.string.navigation_error, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

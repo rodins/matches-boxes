@@ -56,5 +56,5 @@
     <string name="popular">Популярные</string>
     <string name="popular_components">Популярные компоненты</string>
     <string name="components">Компоненты</string>
-    <string name="add_item_error">Ошибка добавления элемента</string>
+    <string name="navigation_error">Ошибка навигации</string>
 </resources>

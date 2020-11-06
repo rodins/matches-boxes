@@ -85,7 +85,7 @@ class MatchesBoxListFragment : Fragment() {
         try {
             navigateToMatchesBoxManipulatorFragment()
         } catch (e: IllegalArgumentException) {
-            showAddItemErrorToast()
+            showNavigationErrorToast()
         }
     }
 
@@ -100,8 +100,8 @@ class MatchesBoxListFragment : Fragment() {
         )
     }
 
-    private fun showAddItemErrorToast() {
-        Toast.makeText(requireContext(), R.string.add_item_error, Toast.LENGTH_SHORT).show()
+    private fun showNavigationErrorToast() {
+        Toast.makeText(requireContext(), R.string.navigation_error, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

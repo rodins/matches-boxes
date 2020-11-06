@@ -72,7 +72,7 @@ class MatchesBoxSetsListFragment : Fragment() {
         try {
             navigateToMatchesBoxSetManipulatorFragment()
         } catch (e: IllegalArgumentException) {
-            showAddItemErrorToast()
+            showNavigationErrorToast()
         }
     }
 
@@ -85,8 +85,8 @@ class MatchesBoxSetsListFragment : Fragment() {
         )
     }
 
-    private fun showAddItemErrorToast() {
-        Toast.makeText(requireContext(), R.string.add_item_error, Toast.LENGTH_SHORT).show()
+    private fun showNavigationErrorToast() {
+        Toast.makeText(requireContext(), R.string.navigation_error, Toast.LENGTH_SHORT).show()
     }
 
     private fun observeSelectEvent() {

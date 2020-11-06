@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes.component.list
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -70,8 +71,16 @@ class RadioComponentsListFragment : Fragment() {
 
     private fun observeAddComponentEvent() {
         viewModel.addComponentEvent.observe(viewLifecycleOwner, EventObserver {
-            navigateToAddFragment()
+            navigateToAddComponentNoException()
         })
+    }
+
+    private fun navigateToAddComponentNoException() {
+        try {
+            navigateToAddFragment()
+        } catch (e: IllegalArgumentException) {
+            showNavigationErrorToast()
+        }
     }
 
     private fun navigateToAddFragment() {
@@ -85,6 +94,10 @@ class RadioComponentsListFragment : Fragment() {
                     RadioComponentManipulatorReturns.TO_COMPONENTS_LIST
                 )
         )
+    }
+
+    private fun showNavigationErrorToast() {
+        Toast.makeText(requireContext(), R.string.navigation_error, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

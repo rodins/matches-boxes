@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
@@ -16,6 +17,7 @@ import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipu
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentListener
 import com.sergeyrodin.matchesboxes.databinding.FragmentNeededComponentsBinding
+import java.lang.IllegalArgumentException
 
 class NeededComponentsFragment : Fragment() {
     private val viewModel by viewModels<NeededComponentsViewModel> {
@@ -71,8 +73,16 @@ class NeededComponentsFragment : Fragment() {
 
     private fun observeAddComponentEvent() {
         viewModel.addComponentEvent.observe(viewLifecycleOwner, EventObserver {
-            navigateToAddComponentFragment()
+            navigateToAddComponentNoException()
         })
+    }
+
+    private fun navigateToAddComponentNoException() {
+        try {
+            navigateToAddComponentFragment()
+        } catch (e: IllegalArgumentException) {
+            showNavigationErrorToast()
+        }
     }
 
     private fun navigateToAddComponentFragment() {
@@ -86,5 +96,9 @@ class NeededComponentsFragment : Fragment() {
                     RadioComponentManipulatorReturns.TO_NEEDED_LIST
                 )
         )
+    }
+
+    private fun showNavigationErrorToast() {
+        Toast.makeText(requireContext(), R.string.navigation_error, Toast.LENGTH_SHORT).show()
     }
 }

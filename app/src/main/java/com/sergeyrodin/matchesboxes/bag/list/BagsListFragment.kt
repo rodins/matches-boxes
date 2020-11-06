@@ -8,7 +8,6 @@ import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
@@ -88,7 +87,7 @@ class BagsListFragment : Fragment() {
         try {
             navigateToAddBagFragment()
         } catch (e: IllegalArgumentException) {
-            showAddItemErrorToast()
+            showNavigationErrorToast()
         }
     }
 
@@ -100,8 +99,8 @@ class BagsListFragment : Fragment() {
         )
     }
 
-    private fun showAddItemErrorToast() {
-        Toast.makeText(requireContext(), R.string.add_item_error, Toast.LENGTH_SHORT).show()
+    private fun showNavigationErrorToast() {
+        Toast.makeText(requireContext(), R.string.navigation_error, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
