@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MatchesBoxes</string>
+    <string name="app_name">Matches Boxes</string>
     <string name="no_bags_added">No bags added</string>
     <string name="enter_bag_name">Enter bag name</string>
     <string name="bag_added">Bag added</string>
