@@ -208,12 +208,22 @@ class RadioComponentManipulatorFragment : Fragment() {
         viewModel.addItemEvent.observe(viewLifecycleOwner, EventObserver { box ->
             hideKeyboard(activity)
             makeToastForAddEvent()
-            returnToList(box)
+            returnToListSuppressException(box)
         })
     }
 
     private fun makeToastForAddEvent() {
         Toast.makeText(context, R.string.component_added, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun returnToListSuppressException(
+        box: MatchesBox
+    ) {
+        try{
+            returnToList(box)
+        }catch(e: IllegalArgumentException) {
+            showNavigationErrorToast()
+        }
     }
 
     private fun returnToList(
@@ -251,13 +261,15 @@ class RadioComponentManipulatorFragment : Fragment() {
         )
     }
 
-
+    private fun showNavigationErrorToast() {
+        Toast.makeText(requireContext(), R.string.navigation_error, Toast.LENGTH_SHORT).show()
+    }
 
     private fun observeUpdateEvent() {
         viewModel.updateItemEvent.observe(viewLifecycleOwner, EventObserver { box ->
             hideKeyboard(activity)
             makeToastForUpdatedEvent()
-            returnToList(box)
+            returnToListSuppressException(box)
         })
     }
 
