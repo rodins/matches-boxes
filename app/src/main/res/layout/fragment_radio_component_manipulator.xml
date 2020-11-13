@@ -156,7 +156,8 @@
             android:onClick="@{() -> viewModel.saveItem()}"
             app:fabSize="normal"
             app:layout_anchor="@id/layout"
-            app:layout_anchorGravity="bottom|right|end" />
+            app:layout_anchorGravity="bottom|right|end"
+            android:contentDescription="@string/save_component" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

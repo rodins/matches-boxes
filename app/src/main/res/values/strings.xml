@@ -60,4 +60,9 @@
     <string name="empty_search_label" translatable="false">" "</string>
     <string name="components">Components</string>
     <string name="navigation_error">Navigation error</string>
+    <string name="edit_component">Edit radio component</string>
+    <string name="save_component">Save radio component</string>
+    <string name="save_bag">Save bag</string>
+    <string name="save_set">Save matches box set</string>
+    <string name="save_box">Save matches box</string>
 </resources>
