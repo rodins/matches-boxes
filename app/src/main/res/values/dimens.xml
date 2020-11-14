@@ -16,4 +16,5 @@
     <dimen name="no_spinner_items_text_size">18sp</dimen>
     <dimen name="delta_text_size">22sp</dimen>
     <dimen name="image_margin_top">4dp</dimen>
+    <dimen name="edit_text_height">48dp</dimen>
 </resources>
