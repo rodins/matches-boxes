@@ -24,7 +24,7 @@
             <EditText
                 android:id="@+id/component_edit"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/edit_text_height"
                 android:layout_marginStart="@dimen/edit_text_margin"
                 android:layout_marginEnd="@dimen/edit_text_margin"
                 android:hint="@string/enter_component_name"
@@ -37,7 +37,7 @@
             <EditText
                 android:id="@+id/quantity_edit"
                 android:layout_width="@dimen/quantity_width"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/edit_text_height"
                 android:layout_marginStart="@dimen/quantity_margin"
                 android:layout_marginEnd="@dimen/quantity_margin"
                 android:hint="@string/quantity_hint"
@@ -76,7 +76,7 @@
             <CheckBox
                 android:id="@+id/buy_checkbox"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/edit_text_height"
                 android:checked="@={ viewModel.isBuy() }"
                 android:text="@string/buy_component"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -87,7 +87,7 @@
             <Spinner
                 android:id="@+id/boxes_spinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/edit_text_height"
                 android:spinnerMode="dropdown"
                 app:layout_constraintBottom_toTopOf="@+id/component_edit"
                 app:layout_constraintStart_toStartOf="@+id/component_edit"
@@ -98,7 +98,7 @@
             <Spinner
                 android:id="@+id/sets_spinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/edit_text_height"
                 app:layout_constraintBottom_toTopOf="@+id/boxes_spinner"
                 app:layout_constraintStart_toStartOf="@+id/boxes_spinner"
                 app:layout_constraintTop_toBottomOf="@+id/bags_spinner"
@@ -107,7 +107,7 @@
             <Spinner
                 android:id="@+id/bags_spinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/edit_text_height"
                 app:layout_constraintBottom_toTopOf="@+id/sets_spinner"
                 app:layout_constraintStart_toStartOf="@+id/boxes_spinner"
                 app:layout_constraintTop_toTopOf="parent"
@@ -156,7 +156,8 @@
             android:onClick="@{() -> viewModel.saveItem()}"
             app:fabSize="normal"
             app:layout_anchor="@id/layout"
-            app:layout_anchorGravity="bottom|right|end" />
+            app:layout_anchorGravity="bottom|right|end"
+            android:contentDescription="@string/save_component" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

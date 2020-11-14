@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorViewModel" />
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:orientation="vertical"
+                tools:context=".component.addeditdelete.RadioComponentManipulatorFragment">
+
+                <EditText
+                    android:id="@+id/component_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/edit_text_margin"
+                    android:layout_marginEnd="@dimen/edit_text_margin"
+                    android:hint="@string/enter_component_name"
+                    android:text="@={viewModel.name}"
+                    app:layout_constraintBottom_toTopOf="@+id/quantity_edit"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/sets_spinner" />
+
+                <EditText
+                    android:id="@+id/quantity_edit"
+                    android:layout_width="@dimen/quantity_width"
+                    android:layout_height="@dimen/edit_text_height"
+                    android:layout_marginStart="@dimen/quantity_margin"
+                    android:layout_marginEnd="@dimen/quantity_margin"
+                    android:hint="@string/quantity_hint"
+                    android:inputType="numberDecimal"
+                    android:text="@={viewModel.quantity}"
+                    android:textAlignment="center"
+                    app:layout_constraintBottom_toTopOf="@+id/buy_checkbox"
+                    app:layout_constraintEnd_toStartOf="@+id/buttonPlus"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/buttonMinus"
+                    app:layout_constraintTop_toBottomOf="@+id/component_edit" />
+
+                <Button
+                    android:id="@+id/buttonMinus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{viewModel.minusEnabled}"
+                    android:onClick="@{() -> viewModel.quantityMinus()}"
+                    android:text="@string/button_minus"
+                    android:textSize="@dimen/plus_minus_text_size"
+                    app:layout_constraintBottom_toBottomOf="@+id/quantity_edit"
+                    app:layout_constraintEnd_toStartOf="@+id/quantity_edit"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <Button
+                    android:id="@+id/buttonPlus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{() -> viewModel.quantityPlus()}"
+                    android:text="@string/button_plus"
+                    android:textSize="@dimen/plus_minus_text_size"
+                    app:layout_constraintBottom_toBottomOf="@+id/quantity_edit"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/quantity_edit" />
+
+                <CheckBox
+                    android:id="@+id/buy_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/edit_text_height"
+                    android:checked="@={ viewModel.isBuy() }"
+                    android:text="@string/buy_component"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/quantity_edit" />
+
+                <Spinner
+                    android:id="@+id/boxes_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/edit_text_height"
+                    android:layout_marginEnd="16dp"
+                    android:spinnerMode="dropdown"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/sets_spinner"
+                    app:layout_constraintTop_toTopOf="@+id/sets_spinner"
+                    app:noDataViewHidden="@{viewModel.noBoxesTextVisible}" />
+
+                <Spinner
+                    android:id="@+id/sets_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/edit_text_height"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintBottom_toTopOf="@+id/component_edit"
+                    app:layout_constraintEnd_toStartOf="@+id/boxes_spinner"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/bags_spinner"
+                    app:noDataViewHidden="@{viewModel.noSetsTextVisible}" />
+
+                <Spinner
+                    android:id="@+id/bags_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/edit_text_height"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintBottom_toTopOf="@+id/sets_spinner"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintHorizontal_chainStyle="spread"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:noDataViewHidden="@{viewModel.noBagsTextVisible}" />
+
+                <TextView
+                    android:id="@+id/no_sets_visible_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_sets"
+                    android:textSize="@dimen/no_spinner_items_text_size"
+                    app:layout_constraintBottom_toBottomOf="@+id/sets_spinner"
+                    app:layout_constraintEnd_toEndOf="@+id/sets_spinner"
+                    app:layout_constraintStart_toStartOf="@+id/sets_spinner"
+                    app:layout_constraintTop_toTopOf="@+id/sets_spinner"
+                    app:layout_constraintVertical_bias="0.608"
+                    app:noDataTextVisible="@{viewModel.noSetsTextVisible}" />
+
+                <TextView
+                    android:id="@+id/no_boxes_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_boxes"
+                    android:textSize="@dimen/no_spinner_items_text_size"
+                    app:layout_constraintBottom_toBottomOf="@+id/boxes_spinner"
+                    app:layout_constraintEnd_toEndOf="@+id/boxes_spinner"
+                    app:layout_constraintStart_toStartOf="@+id/boxes_spinner"
+                    app:layout_constraintTop_toTopOf="@+id/boxes_spinner"
+                    app:layout_constraintVertical_bias="0.565"
+                    app:noDataTextVisible="@{viewModel.noBoxesTextVisible}" />
+
+                <TextView
+                    android:id="@+id/no_bags_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_bags"
+                    android:textSize="@dimen/no_spinner_items_text_size"
+                    app:layout_constraintBottom_toBottomOf="@+id/bags_spinner"
+                    app:layout_constraintEnd_toEndOf="@+id/bags_spinner"
+                    app:layout_constraintStart_toStartOf="@+id/bags_spinner"
+                    app:layout_constraintTop_toTopOf="@+id/bags_spinner"
+                    app:noDataTextVisible="@{viewModel.noBagsTextVisible}" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/save_component_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            app:srcCompat="@drawable/ic_done"
+            android:onClick="@{() -> viewModel.saveItem()}"
+            app:fabSize="normal"
+            app:layout_anchor="@id/layout"
+            app:layout_anchorGravity="bottom|right|end"
+            android:contentDescription="@string/save_component" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</layout>

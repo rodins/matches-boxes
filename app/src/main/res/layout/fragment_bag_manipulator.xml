@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.sergeyrodin.matchesboxes.bag.addeditdelete.BagManipulatorViewModel" />
@@ -21,12 +22,11 @@
             <EditText
                 android:id="@+id/bag_edit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/edit_text_height"
                 android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/edit_text_margin"
                 android:hint="@string/enter_bag_name"
-                android:text="@={viewModel.name}"
-                android:layout_margin="@dimen/edit_text_margin" />
-
+                android:text="@={viewModel.name}" />
         </FrameLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -34,11 +34,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/fab_margin"
+            android:contentDescription="@string/save_bag"
             android:onClick="@{() -> viewModel.saveBag()}"
-            app:srcCompat="@drawable/ic_done"
             app:fabSize="normal"
             app:layout_anchor="@id/layout"
-            app:layout_anchorGravity="bottom|right|end" />
+            app:layout_anchorGravity="bottom|right|end"
+            app:srcCompat="@drawable/ic_done" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>
