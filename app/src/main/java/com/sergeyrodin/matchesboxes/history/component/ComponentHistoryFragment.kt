@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
-import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.databinding.FragmentComponentHistoryBinding
 import com.sergeyrodin.matchesboxes.history.HistoryActionModeController
@@ -17,7 +16,9 @@ import com.sergeyrodin.matchesboxes.history.all.HistoryPresentationClickListener
 class ComponentHistoryFragment : Fragment() {
     private lateinit var actionModeController: HistoryActionModeController
     private lateinit var binding: FragmentComponentHistoryBinding
+    private lateinit var adapter: DisplayComponentHistoryAdapter
     private val args by navArgs<ComponentHistoryFragmentArgs>()
+
     private val viewModel by viewModels<ComponentHistoryViewModel> {
         getViewModelFactory()
     }
@@ -37,7 +38,7 @@ class ComponentHistoryFragment : Fragment() {
         startViewModel()
         createAdapter()
         setupBinding()
-        observeItemChangedEvent()
+        observeHighlightedItemIdEvent()
         observeActionModeEvent()
         return binding.root
     }
@@ -55,10 +56,11 @@ class ComponentHistoryFragment : Fragment() {
     }
 
     private fun createAdapter() {
-        binding.displayComponentHistoryList.adapter = DisplayComponentHistoryAdapter(
+         adapter = DisplayComponentHistoryAdapter(
             createLongClickListener(),
             createClickListener()
         )
+        binding.displayComponentHistoryList.adapter = adapter
     }
 
     private fun createLongClickListener(): HistoryPresentationClickListener {
@@ -78,9 +80,9 @@ class ComponentHistoryFragment : Fragment() {
         binding.viewModel = viewModel
     }
 
-    private fun observeItemChangedEvent() {
-        viewModel.itemChangedEvent.observe(viewLifecycleOwner, Observer { position ->
-            binding.displayComponentHistoryList.adapter?.notifyItemChanged(position)
+    private fun observeHighlightedItemIdEvent() {
+        viewModel.highlightedItemIdEvent.observe(viewLifecycleOwner, Observer { id ->
+            adapter.highlightedItemId = id
         })
     }
 

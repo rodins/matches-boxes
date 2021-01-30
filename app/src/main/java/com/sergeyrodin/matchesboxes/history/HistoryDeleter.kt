@@ -6,12 +6,12 @@ import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 class HistoryDeleter(
     private val dataSource: RadioComponentsDataSource,
     private val converter: HistoryConverter,
-    private val highlightedPositionSaver: HighlightedPositionSaverAndNotifier
+    private val highlightedItemIdSaver: HighlightedItemIdSaverAndNotifier
     ) {
     suspend fun deleteHighlightedPresentation() {
             val history = findHistoryByHighlightedPresentationId()
             deleteHistory(history)
-            highlightedPositionSaver.resetHighlightedPositionAfterDelete()
+            highlightedItemIdSaver.resetHighlightedIdAfterDelete()
     }
 
     private fun findHistoryByHighlightedPresentationId(): History? {
@@ -20,11 +20,13 @@ class HistoryDeleter(
     }
 
     private fun findHighlightedPresentation(): HistoryPresentation? {
-        return getPresentationByPosition(highlightedPositionSaver.highlightedPosition)
+        return getPresentationById(highlightedItemIdSaver.highlightedId)
     }
 
-    private fun getPresentationByPosition(position: Int): HistoryPresentation? {
-        return converter.historyPresentationItems.value?.get(position)
+    private fun getPresentationById(id: Int): HistoryPresentation? {
+        return converter.historyPresentationItems.value?.find {
+            it.id == id
+        }
     }
 
     private suspend fun deleteHistory(history: History?) {

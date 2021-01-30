@@ -340,4 +340,31 @@ class HistoryAllFragmentTest {
         onView(withId(R.id.delta_text)).check(matches(withText("")))
     }
 
+    @Test
+    fun componentDeleted_highlightedComponentEquals() {
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component1 = RadioComponent(1, "Component1", 3, box.id)
+        val component2 = RadioComponent(2, "Component2", 4, box.id)
+        val component3 = RadioComponent(3, "Component3", 5, box.id)
+        val component4 = RadioComponent(4, "Component4", 6, box.id)
+        val history1 = History(1, component1.id, component1.quantity)
+        val history2 = History(2, component2.id, component2.quantity)
+        val history3 = History(3, component3.id, component3.quantity)
+        val history4 = History(4, component4.id, component4.quantity)
+        dataSource.addBags(bag)
+        dataSource.addMatchesBoxSets(set)
+        dataSource.addMatchesBoxes(box)
+        dataSource.addRadioComponents(component1, component2, component3, component4)
+        dataSource.addHistory(history1, history2, history3, history4)
+
+        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+
+        performLongClick(component1)
+        onView(withId(R.id.action_delete)).perform(click())
+        performLongClick(component2)
+        checkIfHighlighted(component2)
+    }
+
 }

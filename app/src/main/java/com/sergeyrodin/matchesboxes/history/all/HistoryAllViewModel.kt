@@ -9,10 +9,9 @@ import java.lang.IllegalArgumentException
 
 class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel(),
     HistoryActionModeModel {
-    private val highlightedPositionSaver = HighlightedPositionSaverAndNotifier()
+    private val highlightedPositionSaver = HighlightedItemIdSaverAndNotifier()
     private val converter = HistoryPresentationConverter(dataSource)
     private val deleter = HistoryDeleter(dataSource, converter, highlightedPositionSaver)
-    private val highlighter = HistoryPresentationHighlighter(converter, highlightedPositionSaver)
 
     val historyPresentationItems = converter.historyPresentationItems
     val noHistoryTextVisible = historyPresentationItems.map {
@@ -27,7 +26,7 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel(),
     val actionModeEvent: LiveData<Boolean>
         get() = _actionModeEvent
 
-    val itemChangedEvent = highlightedPositionSaver.itemChangedEvent
+    val highlightedIdEvent = highlightedPositionSaver.highlightedItemIdEvent
 
     init {
         viewModelScope.launch {
@@ -35,26 +34,28 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel(),
         }
     }
 
-    fun presentationClick(position: Int) {
+    fun presentationClick(id: Int) {
         if (highlightedPositionSaver.isNotHighlightMode()) {
-            navigateToComponentHistory(position)
+            navigateToComponentHistory(id)
         } else {
             unhighlightItem()
         }
     }
 
-    private fun navigateToComponentHistory(position: Int) {
-        val presentation = getPresentationByPosition(position)
+    private fun navigateToComponentHistory(id: Int) {
+        val presentation = getPresentationById(id)
         presentation?.let {
-            val componentId = getComponentIdByPresentationId(presentation.id)
+            val componentId = getComponentIdByPresentationId(id)
             componentId?.let {
                 callSelectedEvent(componentId, presentation.title)
             }
         }
     }
 
-    private fun getPresentationByPosition(position: Int): HistoryPresentation? {
-        return historyPresentationItems.value?.get(position)
+    private fun getPresentationById(id: Int): HistoryPresentation? {
+        return historyPresentationItems.value?.find {
+            it.id == id
+        }
     }
 
     private fun getComponentIdByPresentationId(id: Int): Int? {
@@ -68,8 +69,7 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel(),
     }
 
     private fun unhighlightItem() {
-        highlighter.unhighlight()
-        highlightedPositionSaver.notifyChangedAndResetHighlightedPosition()
+        highlightedPositionSaver.notifyChangedAndResetHighlightedId()
         callActionModeEvent()
     }
 
@@ -83,15 +83,14 @@ class HistoryAllViewModel(dataSource: RadioComponentsDataSource) : ViewModel(),
         }
     }
 
-    fun presentationLongClick(position: Int) {
+    fun presentationLongClick(id: Int) {
         if (highlightedPositionSaver.isNotHighlightMode()) {
-            highlightItemAndSetActionMode(position)
+            highlightItemAndSetActionMode(id)
         }
     }
 
-    private fun highlightItemAndSetActionMode(position: Int) {
-        highlighter.highlight(position)
-        highlightedPositionSaver.saveHighlightedPositionAndNotifyItChanged(position)
+    private fun highlightItemAndSetActionMode(id: Int) {
+        highlightedPositionSaver.saveHighlightedItemIdAndNotifyItChanged(id)
         callActionModeEvent()
     }
 

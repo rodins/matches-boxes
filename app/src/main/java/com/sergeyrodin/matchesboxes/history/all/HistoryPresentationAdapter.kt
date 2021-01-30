@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.DisplayHistoryListItemBinding
 import com.sergeyrodin.matchesboxes.history.HistoryPresentation
 
@@ -13,12 +14,32 @@ class HistoryPresentationAdapter(
     private val longClickListener: HistoryPresentationClickListener
 ) : ListAdapter<HistoryPresentation, HistoryPresentationAdapter.ViewHolder>(HistoryPresentationDiffCallback()) {
 
+    var highlightedItemId = -1
+        set(value) {
+            if(value != -1) {
+                field = value
+                val position = getPositionById(value)
+                notifyItemChanged(position)
+            }else {
+                val position = getPositionById(field)
+                field = value
+                notifyItemChanged(position)
+            }
+        }
+
+    private fun getPositionById(id: Int): Int {
+        val item = currentList.find {
+            it.id == id
+        }
+        return currentList.indexOf(item)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent, clickListener, longClickListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position), position)
+        holder.bind(getItem(position), highlightedItemId)
     }
 
     class ViewHolder private constructor(private val binding: DisplayHistoryListItemBinding,
@@ -26,33 +47,35 @@ class HistoryPresentationAdapter(
                                          private val longClickListener: HistoryPresentationClickListener) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(presentation: HistoryPresentation, position: Int
-        ) {
-            setupClickListener(position)
-            setupLongClickListener(position)
+        fun bind(presentation: HistoryPresentation, highlightedItemId: Int) {
+            setupClickListener(presentation.id)
+            setupLongClickListener(presentation.id)
             setHistoryPresentation(presentation)
-            executePendingBindings()
+
+            if(highlightedItemId != presentation.id) {
+                binding.historyItemLayout.setBackgroundResource(R.color.design_default_color_background)
+            }else {
+                binding.historyItemLayout.setBackgroundResource(R.color.secondaryLightColor)
+            }
+
+            binding.executePendingBindings()
         }
 
-        private fun setupClickListener(position: Int) {
+        private fun setupClickListener(id: Int) {
             binding.historyItemLayout.setOnClickListener {
-                presentationClickListener.onClick(position)
+                presentationClickListener.onClick(id)
             }
         }
 
-        private fun setupLongClickListener(position: Int) {
+        private fun setupLongClickListener(id: Int) {
             binding.historyItemLayout.setOnLongClickListener {
-                longClickListener.onClick(position)
+                longClickListener.onClick(id)
                 true
             }
         }
 
         private fun setHistoryPresentation(presentation: HistoryPresentation) {
             binding.displayHistory = presentation
-        }
-
-        private fun executePendingBindings() {
-            binding.executePendingBindings()
         }
 
         companion object {
@@ -67,8 +90,8 @@ class HistoryPresentationAdapter(
     }
 }
 
-class HistoryPresentationClickListener(val clickListener: (position: Int) -> Unit) {
-    fun onClick(position: Int) = clickListener(position)
+class HistoryPresentationClickListener(val clickListener: (id: Int) -> Unit) {
+    fun onClick(id: Int) = clickListener(id)
 }
 
 class HistoryPresentationDiffCallback : DiffUtil.ItemCallback<HistoryPresentation>() {

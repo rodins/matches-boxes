@@ -306,4 +306,40 @@ class ComponentHistoryFragmentTest {
         onView(withId(R.id.action_delete)).check(doesNotExist())
     }
 
+    @Test
+    fun itemDeleted_newHighlightedItemEquals() {
+        val date1 = 1602219377796
+        val date2 = 1604123777809
+        val date3 = 1606715777809
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history1 = History(1, component.id, component.quantity+5, date1)
+        val history2 = History(2, component.id, component.quantity+2, date2)
+        val history3 = History(3, component.id, component.quantity-3, date3)
+        val history4 = History(4, component.id, component.quantity-1)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history1, history2, history3, history4)
+        val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
+        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+
+        presentationLongClick(history1)
+        onView(withId(R.id.action_delete)).perform(click())
+        presentationLongClick(history2)
+        checkIfItemIsHighlighted(history2)
+    }
+
+    private fun checkIfItemIsHighlighted(history: History) {
+        onView(withId(R.id.display_component_history_list))
+            .check(
+                matches(
+                    hasDescendant(
+                        hasBackgroundColorAndText(
+                            R.color.secondaryLightColor,
+                            convertLongToDateString(history.date)
+                        )
+                    )
+                )
+            )
+    }
+
 }

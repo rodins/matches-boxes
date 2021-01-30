@@ -2,20 +2,18 @@ package com.sergeyrodin.matchesboxes.history.component
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.history.HighlightedPositionSaverAndNotifier
+import com.sergeyrodin.matchesboxes.history.HighlightedItemIdSaverAndNotifier
 import com.sergeyrodin.matchesboxes.history.HistoryActionModeModel
 import com.sergeyrodin.matchesboxes.history.HistoryDeleter
-import com.sergeyrodin.matchesboxes.history.HistoryPresentationHighlighter
 import kotlinx.coroutines.launch
 
 class ComponentHistoryViewModel(dataSource: RadioComponentsDataSource): ViewModel(),
     HistoryActionModeModel {
-    private val positionSaverAndNotifier = HighlightedPositionSaverAndNotifier()
+    private val itemIdSaverAndNotifier = HighlightedItemIdSaverAndNotifier()
     private val converter = ConverterToComponentHistoryPresentation(dataSource)
-    private val deleter = HistoryDeleter(dataSource, converter, positionSaverAndNotifier)
-    private val highlighter = HistoryPresentationHighlighter(converter, positionSaverAndNotifier)
+    private val deleter = HistoryDeleter(dataSource, converter, itemIdSaverAndNotifier)
 
-    val itemChangedEvent = positionSaverAndNotifier.itemChangedEvent
+    val highlightedItemIdEvent = itemIdSaverAndNotifier.highlightedItemIdEvent
     val historyPresentationItems = converter.historyPresentationItems
     val noItemsTextVisible = historyPresentationItems.map { list ->
         list.isEmpty()
@@ -32,10 +30,9 @@ class ComponentHistoryViewModel(dataSource: RadioComponentsDataSource): ViewMode
         }
     }
 
-    fun presentationLongClick(position: Int) {
-        if(positionSaverAndNotifier.isNotHighlightMode()) {
-            highlighter.highlight(position)
-            positionSaverAndNotifier.saveHighlightedPositionAndNotifyItChanged(position)
+    fun presentationLongClick(id: Int) {
+        if(itemIdSaverAndNotifier.isNotHighlightMode()) {
+            itemIdSaverAndNotifier.saveHighlightedItemIdAndNotifyItChanged(id)
             activateActionMode()
         }
     }
@@ -45,9 +42,8 @@ class ComponentHistoryViewModel(dataSource: RadioComponentsDataSource): ViewMode
     }
 
     fun presentationClick() {
-        if(positionSaverAndNotifier.isHighlightMode()) {
-            highlighter.unhighlight()
-            positionSaverAndNotifier.notifyChangedAndResetHighlightedPosition()
+        if(itemIdSaverAndNotifier.isHighlightMode()) {
+            itemIdSaverAndNotifier.notifyChangedAndResetHighlightedId()
             closeActionMode()
         }
     }

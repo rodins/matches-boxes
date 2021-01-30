@@ -16,6 +16,8 @@ import com.sergeyrodin.matchesboxes.history.HistoryActionModeController
 class HistoryAllFragment : Fragment() {
     private lateinit var actionModeController: HistoryActionModeController
     private lateinit var binding: FragmentHistoryAllBinding
+    private lateinit var adapter: HistoryPresentationAdapter
+
     private val viewModel by viewModels<HistoryAllViewModel> {
         getViewModelFactory()
     }
@@ -51,7 +53,8 @@ class HistoryAllFragment : Fragment() {
     private fun setupBinding() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
-        binding.displayHistoryList.adapter = createDisplayHistoryAdapter()
+        adapter = createDisplayHistoryAdapter()
+        binding.displayHistoryList.adapter = adapter
     }
 
     private fun createDisplayHistoryAdapter(): HistoryPresentationAdapter {
@@ -62,21 +65,21 @@ class HistoryAllFragment : Fragment() {
     }
 
     private fun createHistoryPresentationClickListener(): HistoryPresentationClickListener {
-        return HistoryPresentationClickListener { position ->
-            viewModel.presentationClick(position)
+        return HistoryPresentationClickListener { id ->
+            viewModel.presentationClick(id)
         }
     }
 
     private fun createHistoryPresentationLongClickListener(): HistoryPresentationClickListener {
-        return HistoryPresentationClickListener { position ->
-            viewModel.presentationLongClick(position)
+        return HistoryPresentationClickListener { id ->
+            viewModel.presentationLongClick(id)
         }
     }
 
     private fun setupObservers() {
         observeSelectedEvent()
         observeActionModeEvent()
-        observeItemChangedEvent()
+        observeHighlightedIdEvent()
     }
 
     private fun observeSelectedEvent() {
@@ -104,9 +107,9 @@ class HistoryAllFragment : Fragment() {
         })
     }
 
-    private fun observeItemChangedEvent() {
-        viewModel.itemChangedEvent.observe(viewLifecycleOwner, Observer { position ->
-            binding.displayHistoryList.adapter?.notifyItemChanged(position)
+    private fun observeHighlightedIdEvent() {
+        viewModel.highlightedIdEvent.observe(viewLifecycleOwner, Observer { id ->
+            adapter.highlightedItemId = id
         })
     }
 }

@@ -2,7 +2,6 @@ package com.sergeyrodin.matchesboxes
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
-import android.view.Gravity
 import android.view.KeyEvent
 import android.widget.AutoCompleteTextView
 import androidx.test.core.app.ActivityScenario
@@ -13,15 +12,11 @@ import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.DrawerActions
-import androidx.test.espresso.contrib.DrawerMatchers.isClosed
-import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.history.hasBackgroundColor
-import com.sergeyrodin.matchesboxes.history.hasBackgroundColorAndText
 import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
@@ -72,7 +67,7 @@ class MainActivityTest {
         val activityScenario = launchAndMonitorMainActivity()
 
         onView(withId(R.id.add_bag_fab)).perform(click())
-        onView(withId(R.id.bag_edit)).perform(typeText("New bag"))
+        onView(withId(R.id.bag_edit)).perform(typeText("New bag"), closeSoftKeyboard())
         onView(withId(R.id.save_bag_fab)).perform(click())
         onView(withText("New bag")).check(matches(isDisplayed()))
         activityScenario.close()
@@ -242,13 +237,13 @@ class MainActivityTest {
         onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
 
         onView(withId(R.id.add_set_fab)).perform(click())
-        onView(withId(R.id.set_edit)).perform(typeText("Set"))
+        onView(withId(R.id.set_edit)).perform(typeText("Set"), closeSoftKeyboard())
         onView(withId(R.id.save_set_fab)).perform(click())
 
         onView(withText("Set")).check(matches(isDisplayed()))
 
         onView(withId(R.id.add_set_fab)).perform(click())
-        onView(withId(R.id.set_edit)).perform(typeText("Set2"))
+        onView(withId(R.id.set_edit)).perform(typeText("Set2"), closeSoftKeyboard())
         onView(withId(R.id.save_set_fab)).perform(click())
 
         onView(withText("Set2")).check(matches(isDisplayed()))
@@ -400,13 +395,13 @@ class MainActivityTest {
         onView(withText(bag.name)).perform(click())
         onView(withText(set.name)).perform(click())
         onView(withId(R.id.add_box_fab)).perform(click())
-        onView(withId(R.id.box_edit)).perform(typeText("Box"))
+        onView(withId(R.id.box_edit)).perform(typeText("Box"), closeSoftKeyboard())
         onView(withId(R.id.save_box_fab)).perform(click())
 
         onView(withText("Box")).check(matches(isDisplayed()))
 
         onView(withId(R.id.add_box_fab)).perform(click())
-        onView(withId(R.id.box_edit)).perform(typeText("Box2"))
+        onView(withId(R.id.box_edit)).perform(typeText("Box2"), closeSoftKeyboard())
         onView(withId(R.id.save_box_fab)).perform(click())
 
         onView(withText("Box2")).check(matches(isDisplayed()))
@@ -1153,6 +1148,7 @@ class MainActivityTest {
 
         activityScenario.close()
     }
+
     @SearchTest
     @Test
     fun searchComponent_titleEquals() = runBlocking{
@@ -1342,7 +1338,11 @@ class MainActivityTest {
         moveToSearch()
         typeQuery(query)
 
-        rotateDevice(activity, activityScenario)
+        rotateDeviceToLandscape(activity, activityScenario)
+
+        onView(withText(query)).check(matches(isDisplayed()))
+
+        rotateDeviceToPortrait(activity, activityScenario)
 
         onView(withText(query)).check(matches(isDisplayed()))
 
@@ -1417,7 +1417,11 @@ class MainActivityTest {
         }
 
         moveToSearch()
-        rotateDevice(activity, activityScenario)
+        rotateDeviceToLandscape(activity, activityScenario)
+
+        onView(withText("\"\"")).check(doesNotExist())
+
+        rotateDeviceToPortrait(activity, activityScenario)
 
         onView(withText("\"\"")).check(doesNotExist())
 
@@ -2062,8 +2066,11 @@ class MainActivityTest {
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(longClick())
 
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        rotateDeviceToLandscape(activity, activityScenario)
+
+        onView(withId(R.id.action_delete)).check(matches(isDisplayed()))
+
+        rotateDeviceToPortrait(activity, activityScenario)
 
         onView(withId(R.id.action_delete)).check(matches(isDisplayed()))
 
@@ -2091,7 +2098,13 @@ class MainActivityTest {
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(click())
         onView(withText(convertLongToDateString(history.date))).perform(longClick())
-        rotateDevice(activity, activityScenario)
+
+        rotateDeviceToLandscape(activity, activityScenario)
+
+        onView(withId(R.id.display_component_history_list))
+            .check(matches(hasDescendant(hasBackgroundColor(R.color.secondaryLightColor))))
+
+        rotateDeviceToPortrait(activity, activityScenario)
 
         onView(withId(R.id.display_component_history_list))
             .check(matches(hasDescendant(hasBackgroundColor(R.color.secondaryLightColor))))
@@ -2099,11 +2112,20 @@ class MainActivityTest {
         activityScenario.close()
     }
 
-    private fun rotateDevice(
+    private fun rotateDeviceToLandscape(
         activity: Activity?,
         activityScenario: ActivityScenario<MainActivity>
     ) {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        dataBindingIdlingResource.monitorActivity(activityScenario)
+    }
+
+
+    private fun rotateDeviceToPortrait(
+        activity: Activity?,
+        activityScenario: ActivityScenario<MainActivity>
+    ) {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         dataBindingIdlingResource.monitorActivity(activityScenario)
     }
 
@@ -2127,8 +2149,13 @@ class MainActivityTest {
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(longClick())
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+
+        rotateDeviceToLandscape(activity, activityScenario)
+
+        onView(withId(R.id.display_history_list))
+            .check(matches(hasDescendant(hasBackgroundColor(R.color.secondaryLightColor))))
+
+        rotateDeviceToPortrait(activity, activityScenario)
 
         onView(withId(R.id.display_history_list))
             .check(matches(hasDescendant(hasBackgroundColor(R.color.secondaryLightColor))))
@@ -2158,8 +2185,11 @@ class MainActivityTest {
         onView(withText(component.name)).perform(click())
         onView(withText(convertLongToDateString(history.date))).perform(longClick())
 
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        rotateDeviceToLandscape(activity, activityScenario)
+
+        onView(withId(R.id.action_delete)).check(matches(isDisplayed()))
+
+        rotateDeviceToPortrait(activity, activityScenario)
 
         onView(withId(R.id.action_delete)).check(matches(isDisplayed()))
 

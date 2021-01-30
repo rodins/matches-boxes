@@ -2,13 +2,12 @@ package com.sergeyrodin.matchesboxes
 
 import android.view.View
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
-import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.data.ItemWithQuantityPresentation
+import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.history.HistoryPresentation
 import com.sergeyrodin.matchesboxes.history.all.HistoryPresentationAdapter
 import com.sergeyrodin.matchesboxes.history.component.DisplayComponentHistoryAdapter
@@ -64,31 +63,4 @@ fun bindNoDataViewHidden(view: View, hidden: Boolean) {
 @BindingAdapter("quantityInteger")
 fun bindQuantityTextView(textView: TextView, quantity: Int) {
     textView.text = quantity.toString()
-}
-
-@BindingAdapter("highlightView")
-fun bindViewBackgroundChange(view: View, isHighlighted: Boolean) {
-    if (isHighlighted) {
-        highlightView(view)
-    }else {
-        makeViewNotHighlighted(view)
-    }
-}
-
-private fun highlightView(view: View) {
-    view.setBackgroundColor(
-        ContextCompat.getColor(
-            view.context,
-            R.color.secondaryLightColor
-        )
-    )
-}
-
-private fun makeViewNotHighlighted(view: View) {
-    view.setBackgroundColor(
-        ContextCompat.getColor(
-            view.context,
-            R.color.design_default_color_background
-        )
-    )
 }
