@@ -198,4 +198,22 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
             radioComponentsDatabaseDao.deleteHistory(history)
         }
     }
+
+    override fun observeHistoryModel(): LiveData<List<HistoryModel>> {
+        wrapEspressoIdlingResource {
+            return radioComponentsDatabaseDao.observeHistoryModel()
+        }
+    }
+
+    override suspend fun getHistoryById(id: Int): History? {
+        wrapEspressoIdlingResource {
+            return radioComponentsDatabaseDao.getHistoryById(id)
+        }
+    }
+
+    override fun observeHistoryListByComponentId(id: Int): LiveData<List<History>> {
+        wrapEspressoIdlingResource {
+            return radioComponentsDatabaseDao.observeHistoryListByComponentId(id)
+        }
+    }
 }

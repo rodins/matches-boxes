@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="displayHistory"
-            type="com.sergeyrodin.matchesboxes.history.HistoryPresentation" />
+            name="historyModel"
+            type="com.sergeyrodin.matchesboxes.data.HistoryModel" />
 
     </data>
 
@@ -33,7 +33,7 @@
             android:id="@+id/name_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{displayHistory.title}"
+            android:text="@{historyModel.name}"
             android:textSize="@dimen/name_text_size"
             app:layout_constraintBottom_toTopOf="@+id/date_text"
             app:layout_constraintEnd_toStartOf="@+id/quantity_text"
@@ -47,7 +47,6 @@
             android:id="@+id/delta_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{displayHistory.delta}"
             android:textSize="@dimen/delta_text_size"
             app:layout_constraintBaseline_toBaselineOf="@+id/quantity_text"
             app:layout_constraintEnd_toEndOf="parent"
@@ -60,11 +59,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="@{displayHistory.quantity}"
             android:textSize="@dimen/quantity_text_size"
+            app:quantityInteger="@{historyModel.quantity}"
             app:layout_constraintBottom_toBottomOf="@+id/date_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/name_text"
             app:layout_constraintTop_toTopOf="@+id/name_text"
             tools:text="18" />
@@ -73,8 +71,8 @@
             android:id="@+id/date_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{displayHistory.subTitle}"
             android:textSize="@dimen/date_text_size"
+            app:dateText="@{historyModel.date}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/name_text"
             app:layout_constraintTop_toBottomOf="@+id/name_text"

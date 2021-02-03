@@ -43,8 +43,4 @@ class HighlightedItemIdSaverAndNotifier {
     private fun resetHighlightedId() {
         highlightedId = -1
     }
-
-    fun resetHighlightedIdAfterDelete() {
-        resetHighlightedId()
-    }
 }

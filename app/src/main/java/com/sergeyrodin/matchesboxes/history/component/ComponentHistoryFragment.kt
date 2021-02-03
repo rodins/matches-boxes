@@ -11,12 +11,12 @@ import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.databinding.FragmentComponentHistoryBinding
 import com.sergeyrodin.matchesboxes.history.HistoryActionModeController
-import com.sergeyrodin.matchesboxes.history.all.HistoryPresentationClickListener
+import com.sergeyrodin.matchesboxes.history.all.HistoryLongClickListener
 
 class ComponentHistoryFragment : Fragment() {
     private lateinit var actionModeController: HistoryActionModeController
     private lateinit var binding: FragmentComponentHistoryBinding
-    private lateinit var adapter: DisplayComponentHistoryAdapter
+    private lateinit var adapter: HistoryAdapter
     private val args by navArgs<ComponentHistoryFragmentArgs>()
 
     private val viewModel by viewModels<ComponentHistoryViewModel> {
@@ -40,6 +40,11 @@ class ComponentHistoryFragment : Fragment() {
         setupBinding()
         observeHighlightedItemIdEvent()
         observeActionModeEvent()
+
+        viewModel.deltas.observe(viewLifecycleOwner, {
+            adapter.deltas = it
+        })
+
         return binding.root
     }
 
@@ -56,21 +61,21 @@ class ComponentHistoryFragment : Fragment() {
     }
 
     private fun createAdapter() {
-         adapter = DisplayComponentHistoryAdapter(
+         adapter = HistoryAdapter(
             createLongClickListener(),
             createClickListener()
         )
         binding.displayComponentHistoryList.adapter = adapter
     }
 
-    private fun createLongClickListener(): HistoryPresentationClickListener {
-        return HistoryPresentationClickListener { position ->
-            viewModel.presentationLongClick(position)
+    private fun createLongClickListener(): HistoryLongClickListener {
+        return HistoryLongClickListener { id ->
+            viewModel.presentationLongClick(id)
         }
     }
 
-    private fun createClickListener(): ComponentHistoryPresentationClickListener {
-        return ComponentHistoryPresentationClickListener {
+    private fun createClickListener(): HistoryClickListener {
+        return HistoryClickListener {
             viewModel.presentationClick()
         }
     }

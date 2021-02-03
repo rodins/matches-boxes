@@ -75,4 +75,10 @@ interface RadioComponentsDataSource {
     suspend fun getHistoryListByComponentId(id: Int): List<History>
 
     suspend fun deleteHistory(history: History)
+
+    fun observeHistoryModel(): LiveData<List<HistoryModel>>
+
+    suspend fun getHistoryById(id: Int): History?
+
+    fun observeHistoryListByComponentId(id: Int): LiveData<List<History>>
 }

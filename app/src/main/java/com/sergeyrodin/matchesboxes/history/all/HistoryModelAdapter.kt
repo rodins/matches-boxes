@@ -6,13 +6,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sergeyrodin.matchesboxes.R
+import com.sergeyrodin.matchesboxes.data.HistoryModel
 import com.sergeyrodin.matchesboxes.databinding.DisplayHistoryListItemBinding
-import com.sergeyrodin.matchesboxes.history.HistoryPresentation
 
-class HistoryPresentationAdapter(
-    private val clickListener: HistoryPresentationClickListener,
-    private val longClickListener: HistoryPresentationClickListener
-) : ListAdapter<HistoryPresentation, HistoryPresentationAdapter.ViewHolder>(HistoryPresentationDiffCallback()) {
+class HistoryModelAdapter(
+    private val clickListener: HistoryModelClickListener,
+    private val longClickListener: HistoryLongClickListener
+) : ListAdapter<HistoryModel, HistoryModelAdapter.ViewHolder>(HistoryModelDiffCallback()) {
 
     var highlightedItemId = -1
         set(value) {
@@ -27,6 +27,8 @@ class HistoryPresentationAdapter(
             }
         }
 
+    lateinit var deltas: Map<Int, String>
+
     private fun getPositionById(id: Int): Int {
         val item = currentList.find {
             it.id == id
@@ -39,31 +41,35 @@ class HistoryPresentationAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position), highlightedItemId)
+        val item = getItem(position)
+        val delta = deltas[item.id] ?: ""
+        holder.bind(item, delta, highlightedItemId)
     }
 
     class ViewHolder private constructor(private val binding: DisplayHistoryListItemBinding,
-                                         private val presentationClickListener: HistoryPresentationClickListener,
-                                         private val longClickListener: HistoryPresentationClickListener) :
+                                         private val modelClickListener: HistoryModelClickListener,
+                                         private val longClickListener: HistoryLongClickListener) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(presentation: HistoryPresentation, highlightedItemId: Int) {
-            setupClickListener(presentation.id)
-            setupLongClickListener(presentation.id)
-            setHistoryPresentation(presentation)
+        fun bind(history: HistoryModel, delta: String, highlightedItemId: Int) {
+            setupClickListener(history.componentId, history.name)
+            setupLongClickListener(history.id)
+            setHistoryModel(history)
 
-            if(highlightedItemId != presentation.id) {
+            if(highlightedItemId != history.id) {
                 binding.historyItemLayout.setBackgroundResource(R.color.design_default_color_background)
             }else {
                 binding.historyItemLayout.setBackgroundResource(R.color.secondaryLightColor)
             }
 
+            binding.deltaText.text = delta
+
             binding.executePendingBindings()
         }
 
-        private fun setupClickListener(id: Int) {
+        private fun setupClickListener(componentId: Int, name: String) {
             binding.historyItemLayout.setOnClickListener {
-                presentationClickListener.onClick(id)
+                modelClickListener.onClick(componentId, name)
             }
         }
 
@@ -74,14 +80,14 @@ class HistoryPresentationAdapter(
             }
         }
 
-        private fun setHistoryPresentation(presentation: HistoryPresentation) {
-            binding.displayHistory = presentation
+        private fun setHistoryModel(history: HistoryModel) {
+            binding.historyModel = history
         }
 
         companion object {
             fun from(parent: ViewGroup,
-                     clickListener: HistoryPresentationClickListener,
-                     longClickListener: HistoryPresentationClickListener): ViewHolder {
+                     clickListener: HistoryModelClickListener,
+                     longClickListener: HistoryLongClickListener): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
                 val binding = DisplayHistoryListItemBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding, clickListener, longClickListener)
@@ -90,21 +96,25 @@ class HistoryPresentationAdapter(
     }
 }
 
-class HistoryPresentationClickListener(val clickListener: (id: Int) -> Unit) {
+class HistoryModelClickListener(val clickListener: (componentId: Int, name: String) -> Unit) {
+    fun onClick(componentId: Int, name: String) = clickListener(componentId, name)
+}
+
+class HistoryLongClickListener(val clickListener: (id: Int) -> Unit) {
     fun onClick(id: Int) = clickListener(id)
 }
 
-class HistoryPresentationDiffCallback : DiffUtil.ItemCallback<HistoryPresentation>() {
+class HistoryModelDiffCallback : DiffUtil.ItemCallback<HistoryModel>() {
     override fun areItemsTheSame(
-        oldItem: HistoryPresentation,
-        newItem: HistoryPresentation
+        oldItem: HistoryModel,
+        newItem: HistoryModel
     ): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(
-        oldItem: HistoryPresentation,
-        newItem: HistoryPresentation
+        oldItem: HistoryModel,
+        newItem: HistoryModel
     ): Boolean {
         return oldItem == newItem
     }

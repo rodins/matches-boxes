@@ -111,7 +111,7 @@ class ComponentHistoryFragmentTest {
         onView(withId(R.id.display_component_history_list))
             .perform(
                 RecyclerViewActions
-                    .actionOnItem<DisplayComponentHistoryAdapter.ViewHolder>(
+                    .actionOnItem<HistoryAdapter.ViewHolder>(
                         hasDescendant(
                             withText(
                                 convertLongToDateString(history.date)
@@ -154,7 +154,7 @@ class ComponentHistoryFragmentTest {
         onView(withId(R.id.display_component_history_list))
             .perform(
                 RecyclerViewActions
-                    .actionOnItem<DisplayComponentHistoryAdapter.ViewHolder>(
+                    .actionOnItem<HistoryAdapter.ViewHolder>(
                         hasDescendant(
                             withText(
                                 convertLongToDateString(history.date)

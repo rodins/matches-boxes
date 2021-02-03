@@ -250,7 +250,7 @@ class HistoryAllFragmentTest {
         onView(withId(R.id.display_history_list))
             .perform(
                 RecyclerViewActions
-                    .actionOnItem<HistoryPresentationAdapter.ViewHolder>(
+                    .actionOnItem<HistoryModelAdapter.ViewHolder>(
                         hasDescendant(
                             withText(
                                 component.name
@@ -278,7 +278,7 @@ class HistoryAllFragmentTest {
         onView(withId(R.id.display_history_list))
             .perform(
                 RecyclerViewActions
-                    .actionOnItem<HistoryPresentationAdapter.ViewHolder>(
+                    .actionOnItem<HistoryModelAdapter.ViewHolder>(
                         hasDescendant(
                             withText(
                                 component.name

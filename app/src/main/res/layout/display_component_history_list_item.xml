@@ -5,12 +5,12 @@
 
     <data>
         <variable
-            name="displayComponentHistory"
-            type="com.sergeyrodin.matchesboxes.history.HistoryPresentation" />
+            name="history"
+            type="com.sergeyrodin.matchesboxes.data.History" />
 
         <variable
             name="clickListener"
-            type="com.sergeyrodin.matchesboxes.history.component.ComponentHistoryPresentationClickListener" />
+            type="com.sergeyrodin.matchesboxes.history.component.HistoryClickListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,8 +37,8 @@
             android:id="@+id/name_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{displayComponentHistory.title}"
             android:textSize="@dimen/name_text_size"
+            app:dateText="@{history.date}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/delta_text"
             app:layout_constraintStart_toEndOf="@+id/imageView"
@@ -50,7 +50,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:text="@{displayComponentHistory.delta}"
             android:textSize="@dimen/delta_text_size"
             app:layout_constraintBaseline_toBaselineOf="@+id/textView3"
             app:layout_constraintEnd_toStartOf="@+id/textView3"
@@ -63,8 +62,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@{displayComponentHistory.quantity}"
             android:textSize="@dimen/quantity_text_size"
+            app:quantityInteger="@{history.quantity}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/delta_text"

@@ -109,7 +109,7 @@ interface RadioComponentsDatabaseDao {
     suspend fun deleteHistory(history: History)
 
     @Query("SELECT * FROM history WHERE id = :id")
-    suspend fun getHistoryById(id: Int): History
+    suspend fun getHistoryById(id: Int): History?
 
     @Query("SELECT * FROM history ORDER BY id DESC")
     fun observeHistoryList(): LiveData<List<History>>
@@ -119,4 +119,10 @@ interface RadioComponentsDatabaseDao {
 
     @Query("SELECT * FROM history WHERE component_id = :id ORDER BY id DESC")
     suspend fun getHistoryListByComponentId(id: Int): List<History>
+
+    @Query("SELECT h.id as id, r.id as componentId, r.name as name, h.quantity as quantity, h.date as date  FROM history h LEFT JOIN radio_components r ON h.component_id == r.id GROUP BY h.id")
+    fun observeHistoryModel(): LiveData<List<HistoryModel>>
+
+    @Query("SELECT * FROM history WHERE component_id = :id ORDER BY id DESC")
+    fun observeHistoryListByComponentId(id: Int): LiveData<List<History>>
 }

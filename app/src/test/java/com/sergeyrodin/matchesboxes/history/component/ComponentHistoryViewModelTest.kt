@@ -3,9 +3,9 @@ package com.sergeyrodin.matchesboxes.history.component
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
-import com.sergeyrodin.matchesboxes.util.convertLongToDateString
-import org.hamcrest.CoreMatchers.*
-import org.junit.Assert.*
+import org.hamcrest.CoreMatchers.`is`
+import org.junit.Assert.assertThat
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -43,7 +43,7 @@ class ComponentHistoryViewModelTest {
 
         subject.start(component1.id)
 
-        val list = subject.historyPresentationItems.getOrAwaitValue()
+        val list = subject.historyItems.getOrAwaitValue()
         assertThat(list.size, `is`(3))
     }
 
@@ -61,7 +61,7 @@ class ComponentHistoryViewModelTest {
 
         subject.start(component.id)
 
-        val list = subject.historyPresentationItems.getOrAwaitValue()
+        val list = subject.historyItems.getOrAwaitValue()
         assertThat(list.size, `is`(0))
     }
 
@@ -121,8 +121,8 @@ class ComponentHistoryViewModelTest {
 
         subject.start(component.id)
 
-        val item = subject.historyPresentationItems.getOrAwaitValue()[0]
-        assertThat(item.title, `is`(convertLongToDateString(history.date)))
+        val items = subject.historyItems.getOrAwaitValue()
+        assertThat(items[0].date, `is`(history.date))
     }
 
     @Test
@@ -135,7 +135,7 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history)
         subject.start(component.id)
 
-        val items = subject.historyPresentationItems.getOrAwaitValue()
+        val items = subject.historyItems.getOrAwaitValue()
         assertThat(items.size, `is`(1))
 
         subject.presentationLongClick(position)
@@ -153,7 +153,7 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history)
         subject.start(component.id)
 
-        val items = subject.historyPresentationItems.getOrAwaitValue()
+        val items = subject.historyItems.getOrAwaitValue()
         assertThat(items.size, `is`(1))
 
         subject.presentationLongClick(history.id)
@@ -176,7 +176,7 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history)
         subject.start(component.id)
 
-        val items = subject.historyPresentationItems.getOrAwaitValue()
+        val items = subject.historyItems.getOrAwaitValue()
         assertThat(items.size, `is`(1))
 
         subject.presentationClick()
@@ -198,7 +198,7 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history)
         subject.start(component.id)
 
-        val items = subject.historyPresentationItems.getOrAwaitValue()
+        val items = subject.historyItems.getOrAwaitValue()
         assertThat(items.size, `is`(1))
 
         subject.presentationLongClick(history.id)
@@ -227,14 +227,14 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history1, history2)
         subject.start(component.id)
 
-        val items = subject.historyPresentationItems.getOrAwaitValue()
+        val items = subject.historyItems.getOrAwaitValue()
         assertThat(items.size, `is`(2))
 
         subject.presentationLongClick(history1.id)
 
         subject.deleteHighlightedPresentation()
 
-        val items2 = subject.historyPresentationItems.getOrAwaitValue()
+        val items2 = subject.historyItems.getOrAwaitValue()
         assertThat(items2.size, `is`(1))
         assertThat(items2[0].id, `is`(history2.id))
     }
@@ -249,7 +249,7 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history)
         subject.start(component.id)
 
-        val items = subject.historyPresentationItems.getOrAwaitValue()
+        val items = subject.historyItems.getOrAwaitValue()
         assertThat(items.size, `is`(1))
 
         subject.presentationLongClick(position)
@@ -268,7 +268,7 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history)
         subject.start(component.id)
 
-        val items = subject.historyPresentationItems.getOrAwaitValue()
+        val items = subject.historyItems.getOrAwaitValue()
         assertThat(items.size, `is`(1))
 
         subject.presentationLongClick(position)
@@ -288,7 +288,7 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history)
         subject.start(component.id)
 
-        val items = subject.historyPresentationItems.getOrAwaitValue()
+        val items = subject.historyItems.getOrAwaitValue()
         assertThat(items.size, `is`(1))
 
         subject.presentationLongClick(position)
@@ -308,9 +308,9 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history1, history2)
         subject.start(component.id)
 
-        val items = subject.historyPresentationItems.getOrAwaitValue()
-        assertThat(items[0].delta, `is`("+5"))
-        assertThat(items[1].delta, `is`(""))
+        val deltas = subject.deltas.getOrAwaitValue()
+        assertThat(deltas[history1.id], `is`("+5"))
+        assertThat(deltas[history2.id], `is`(""))
     }
 
     @Test
@@ -323,9 +323,9 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history1, history2)
         subject.start(component.id)
 
-        val items = subject.historyPresentationItems.getOrAwaitValue()
-        assertThat(items[0].delta, `is`("-5"))
-        assertThat(items[1].delta, `is`(""))
+        val deltas = subject.deltas.getOrAwaitValue()
+        assertThat(deltas[history1.id], `is`("-5"))
+        assertThat(deltas[history2.id], `is`(""))
     }
 
     @Test
@@ -338,9 +338,9 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history1, history2)
         subject.start(component.id)
 
-        val items = subject.historyPresentationItems.getOrAwaitValue()
-        assertThat(items[0].delta, `is`(""))
-        assertThat(items[1].delta, `is`(""))
+        val deltas = subject.deltas.getOrAwaitValue()
+        assertThat(deltas[history1.id], `is`(""))
+        assertThat(deltas[history2.id], `is`(""))
     }
 
     @Test
@@ -352,7 +352,7 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history1)
         subject.start(component.id)
 
-        val items = subject.historyPresentationItems.getOrAwaitValue()
-        assertThat(items[0].delta, `is`(""))
+        val deltas = subject.deltas.getOrAwaitValue()
+        assertThat(deltas[history1.id], `is`(""))
     }
 }
