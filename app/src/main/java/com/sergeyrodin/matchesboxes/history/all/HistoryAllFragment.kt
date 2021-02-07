@@ -113,7 +113,9 @@ class HistoryAllFragment : Fragment() {
 
     private fun observeHighlightedIdEvent() {
         viewModel.highlightedIdEvent.observe(viewLifecycleOwner, { id ->
-            adapter.highlightedItemId = id
+            if(adapter.highlightedItemId != id) {
+                adapter.highlightedItemId = id
+            }
         })
     }
 }

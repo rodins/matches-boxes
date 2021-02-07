@@ -416,4 +416,23 @@ class RealDataSourceTest{
         assertThat(items[0], `is`(history4))
         assertThat(items[1], `is`(history3))
     }
+
+    @Test
+    fun historyModelDescendingOrder() = runBlockingTest {
+        subject.insertBag(BAG)
+        subject.insertMatchesBoxSet(MATCHES_BOX_SET)
+        subject.insertMatchesBox(MATCHES_BOX)
+        val component1 = RadioComponent(1, "RC1", 4, MATCHES_BOX.id)
+        val component2 = RadioComponent(2, "RC2", 6, MATCHES_BOX.id)
+        subject.insertRadioComponent(component1)
+        subject.insertRadioComponent(component2)
+        val history1 = History(1, component1.id, component1.quantity)
+        val history2 = History(2, component2.id, component2.quantity)
+        subject.insertHistory(history1)
+        subject.insertHistory(history2)
+
+        val items = subject.observeHistoryModel().getOrAwaitValue()
+        assertThat(items[0].id, `is`(history2.id))
+        assertThat(items[1].id, `is`(history1.id))
+    }
 }

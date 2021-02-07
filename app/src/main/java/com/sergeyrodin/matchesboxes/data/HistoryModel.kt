@@ -1,6 +1,6 @@
 package com.sergeyrodin.matchesboxes.data
 
-data class HistoryModel(
+data class HistoryModel (
     val id: Int,
     val componentId: Int,
     val name: String,

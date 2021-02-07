@@ -120,7 +120,7 @@ interface RadioComponentsDatabaseDao {
     @Query("SELECT * FROM history WHERE component_id = :id ORDER BY id DESC")
     suspend fun getHistoryListByComponentId(id: Int): List<History>
 
-    @Query("SELECT h.id as id, r.id as componentId, r.name as name, h.quantity as quantity, h.date as date  FROM history h LEFT JOIN radio_components r ON h.component_id == r.id GROUP BY h.id")
+    @Query("SELECT h.id as id, r.id as componentId, r.name as name, h.quantity as quantity, h.date as date  FROM history h LEFT JOIN radio_components r ON h.component_id == r.id GROUP BY h.id ORDER BY h.id DESC")
     fun observeHistoryModel(): LiveData<List<HistoryModel>>
 
     @Query("SELECT * FROM history WHERE component_id = :id ORDER BY id DESC")

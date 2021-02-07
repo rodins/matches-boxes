@@ -270,12 +270,12 @@ class FakeDataSource : RadioComponentsDataSource{
         for(history in histories) {
             historyList.add(history)
         }
-        observableHistoryList.value = historyList
+        observableHistoryList.value = historyList.reversed()
     }
 
     override suspend fun insertHistory(history: History) {
         historyList.add(history)
-        observableHistoryList.value = historyList
+        observableHistoryList.value = historyList.reversed()
     }
 
     override fun observeHistoryList(): LiveData<List<History>> {
@@ -283,18 +283,18 @@ class FakeDataSource : RadioComponentsDataSource{
     }
 
     override suspend fun getHistoryList(): List<History> {
-        return historyList
+        return historyList.reversed()
     }
 
     override suspend fun getHistoryListByComponentId(id: Int): List<History> {
-        return historyList.filter {
+        return historyList.reversed().filter {
             it.componentId == id
         }
     }
 
     override suspend fun deleteHistory(history: History) {
         historyList.remove(history)
-        observableHistoryList.value = historyList
+        observableHistoryList.value = historyList.reversed()
     }
 
     override fun observeHistoryModel(): LiveData<List<HistoryModel>> {
@@ -308,7 +308,7 @@ class FakeDataSource : RadioComponentsDataSource{
     }
 
     override fun observeHistoryListByComponentId(id: Int): LiveData<List<History>> {
-        observableHistoryList.value = historyList.filter {
+        observableHistoryList.value = historyList.reversed().filter {
             it.componentId == id
         }
         return observableHistoryList

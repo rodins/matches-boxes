@@ -1,5 +1,6 @@
 package com.sergeyrodin.matchesboxes.history.all
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -41,6 +42,7 @@ class HistoryModelAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        Log.d("HistoryModelAdapter", "Count: $itemCount, Position: $position, HighlightedId: $highlightedItemId")
         val item = getItem(position)
         val delta = deltas[item.id] ?: ""
         holder.bind(item, delta, highlightedItemId)

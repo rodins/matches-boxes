@@ -868,4 +868,22 @@ class AppNavigationTest {
         activityScenario.close()
     }
 
+    @Test
+    fun bottomNavigationDisplayed() {
+        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+
+        onView(withId(R.id.bottom_nav)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
+    @Test
+    fun bottomNavigationBagsListFragmentDisplayed() {
+        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+
+        onView(withId(R.id.bagsListFragment)).check(matches(isDisplayed()))
+
+        activityScenario.close()
+    }
+
 }

@@ -676,7 +676,7 @@ class RadioComponentsDaoTest {
     }
 
     @Test
-    fun obsereHistoryListByComponentId() = runBlockingTest {
+    fun obsereveHistoryListByComponentId() = runBlockingTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
@@ -697,5 +697,24 @@ class RadioComponentsDaoTest {
             .observeHistoryListByComponentId(component2.id).getOrAwaitValue()
         assertThat(items.size, `is`(1))
         assertThat(items[0], `is`(history4))
+    }
+
+    @Test
+    fun historyModelDescendingOrder() = runBlockingTest {
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
+        val component1 = RadioComponent(1, "Component1", 4, MATCHES_BOX.id)
+        val component2 = RadioComponent(2, "Component2", 4, MATCHES_BOX.id)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component1)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component2)
+        val history1 = History(1, component1.id, component1.quantity)
+        val history2 = History(2, component2.id, component2.quantity)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertHistory(history1)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertHistory(history2)
+
+        val items = radioComponentsDatabase.radioComponentsDatabaseDao.observeHistoryModel().getOrAwaitValue()
+        assertThat(items[0].id, `is`(history2.id))
+        assertThat(items[1].id, `is`(history1.id))
     }
 }

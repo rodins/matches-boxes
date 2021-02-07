@@ -250,28 +250,28 @@ class HistoryAllViewModelTest {
     fun oneComponent_twoHistories_positiveDeltaEquals() {
         val boxId = 1
         val component = RadioComponent(1, "Component", 3, boxId)
-        val history1 = History(1, component.id, component.quantity+5)
-        val history2 = History(2, component.id, component.quantity)
+        val history1 = History(1, component.id, component.quantity)
+        val history2 = History(2, component.id, component.quantity+5)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history1, history2)
 
         val deltas = subject.deltas.getOrAwaitValue()
-        assertThat(deltas[history1.id], `is`("+5"))
-        assertThat(deltas[history2.id], `is`(""))
+        assertThat(deltas[history1.id], `is`(""))
+        assertThat(deltas[history2.id], `is`("+5"))
     }
 
     @Test
     fun oneComponent_twoHistories_negativeDeltaEquals() {
         val boxId = 1
         val component = RadioComponent(1, "Component", 3, boxId)
-        val history1 = History(1, component.id, component.quantity-3)
-        val history2 = History(2, component.id, component.quantity)
+        val history1 = History(1, component.id, component.quantity)
+        val history2 = History(2, component.id, component.quantity-3)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history1, history2)
 
         val deltas = subject.deltas.getOrAwaitValue()
-        assertThat(deltas[history1.id], `is`("-3"))
-        assertThat(deltas[history2.id], `is`(""))
+        assertThat(deltas[history1.id], `is`(""))
+        assertThat(deltas[history2.id], `is`("-3"))
     }
 
     @Test
@@ -279,18 +279,18 @@ class HistoryAllViewModelTest {
         val boxId = 1
         val component1 = RadioComponent(1,"Component1", 3, boxId)
         val component2 = RadioComponent(2, "Component2", 7, boxId)
-        val history1 = History(1, component1.id, component1.quantity+3)
-        val history2 = History(2, component1.id, component1.quantity)
-        val history3 = History(3, component2.id, component2.quantity+5)
-        val history4 = History(4, component2.id, component2.quantity)
+        val history1 = History(1, component1.id, component1.quantity)
+        val history2 = History(2, component1.id, component1.quantity+3)
+        val history3 = History(3, component2.id, component2.quantity)
+        val history4 = History(4, component2.id, component2.quantity+5)
         dataSource.addRadioComponents(component1, component2)
         dataSource.addHistory(history1, history2, history3, history4)
 
         val deltas = subject.deltas.getOrAwaitValue()
-        assertThat(deltas[history1.id], `is`("+3"))
-        assertThat(deltas[history2.id], `is`(""))
-        assertThat(deltas[history3.id], `is`("+5"))
-        assertThat(deltas[history4.id], `is`(""))
+        assertThat(deltas[history1.id], `is`(""))
+        assertThat(deltas[history2.id], `is`("+3"))
+        assertThat(deltas[history3.id], `is`(""))
+        assertThat(deltas[history4.id], `is`("+5"))
     }
 
     @Test
@@ -298,18 +298,18 @@ class HistoryAllViewModelTest {
         val boxId = 1
         val component1 = RadioComponent(1,"Component1", 3, boxId)
         val component2 = RadioComponent(2, "Component2", 7, boxId)
-        val history1 = History(1, component1.id, component1.quantity-3)
-        val history2 = History(2, component1.id, component1.quantity)
-        val history3 = History(3, component2.id, component2.quantity-5)
-        val history4 = History(4, component2.id, component2.quantity)
+        val history1 = History(1, component1.id, component1.quantity)
+        val history2 = History(2, component1.id, component1.quantity-3)
+        val history3 = History(3, component2.id, component2.quantity)
+        val history4 = History(4, component2.id, component2.quantity-5)
         dataSource.addRadioComponents(component1, component2)
         dataSource.addHistory(history1, history2, history3, history4)
 
         val deltas = subject.deltas.getOrAwaitValue()
-        assertThat(deltas[history1.id], `is`("-3"))
-        assertThat(deltas[history2.id], `is`(""))
-        assertThat(deltas[history3.id], `is`("-5"))
-        assertThat(deltas[history4.id], `is`(""))
+        assertThat(deltas[history1.id], `is`(""))
+        assertThat(deltas[history2.id], `is`("-3"))
+        assertThat(deltas[history3.id], `is`(""))
+        assertThat(deltas[history4.id], `is`("-5"))
     }
 
     @Test
