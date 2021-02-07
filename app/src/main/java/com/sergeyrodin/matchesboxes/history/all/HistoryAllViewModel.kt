@@ -2,25 +2,21 @@ package com.sergeyrodin.matchesboxes.history.all
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
-import com.sergeyrodin.matchesboxes.data.HistoryModel
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.history.*
-import com.sergeyrodin.matchesboxes.util.convertLongToDateString
+import com.sergeyrodin.matchesboxes.history.HighlightedItemIdSaverAndNotifier
+import com.sergeyrodin.matchesboxes.history.HistoryActionModeModel
+import com.sergeyrodin.matchesboxes.util.calculateDeltasForHistoryModelItems
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
 
 class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel(),
     HistoryActionModeModel {
+
     private val highlightedIdSaver = HighlightedItemIdSaverAndNotifier()
-    private val deltaCalculator = DeltaCalculator()
 
-    var historyItems = dataSource.observeHistoryModel()
-
-    val deltas = historyItems.map {
-        deltaCalculator.calculateDeltasForHistoryModelItems(it)
-    }
+    val historyItems = dataSource.observeHistoryModel()
 
     val noHistoryTextVisible = historyItems.map {
+        calculateDeltasForHistoryModelItems(it)
         it.isEmpty()
     }
 

@@ -30,8 +30,6 @@ class HistoryAdapter(
             }
         }
 
-    lateinit var deltas: Map<Int, String>
-
     private fun getPositionById(id: Int): Int {
         val item = currentList.find {
             it.id == id
@@ -45,8 +43,7 @@ class HistoryAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        val delta = deltas[item.id] ?: ""
-        holder.bind(item, delta, highlightedItemId)
+        holder.bind(item, highlightedItemId)
     }
 
     class ViewHolder private constructor(
@@ -57,7 +54,6 @@ class HistoryAdapter(
 
         fun bind(
             history: History,
-            delta: String,
             highlightedItemId: Int
         ) {
             setupLongClickListener(history.id)
@@ -69,8 +65,6 @@ class HistoryAdapter(
             }else {
                 binding.layout.setBackgroundResource(R.color.design_default_color_background)
             }
-
-            binding.deltaText.text = delta
 
             executePendingBindings()
         }

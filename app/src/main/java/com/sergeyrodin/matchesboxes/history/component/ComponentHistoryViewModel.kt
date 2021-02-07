@@ -3,15 +3,14 @@ package com.sergeyrodin.matchesboxes.history.component
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.history.DeltaCalculator
 import com.sergeyrodin.matchesboxes.history.HighlightedItemIdSaverAndNotifier
 import com.sergeyrodin.matchesboxes.history.HistoryActionModeModel
+import com.sergeyrodin.matchesboxes.util.calculateDeltasForHistoryItems
 import kotlinx.coroutines.launch
 
 class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSource): ViewModel(),
     HistoryActionModeModel {
     private val highlightedIdSaver = HighlightedItemIdSaverAndNotifier()
-    private val deltaCalculator = DeltaCalculator()
 
     private val inputId = MutableLiveData<Int>()
 
@@ -19,13 +18,10 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
         dataSource.observeHistoryListByComponentId(id)
     }
 
-    val deltas = historyItems.map {
-        deltaCalculator.calculateDeltasForHistoryItems(it)
-    }
-
     val highlightedItemIdEvent = highlightedIdSaver.highlightedItemIdEvent
 
     val noItemsTextVisible = historyItems.map { list ->
+        calculateDeltasForHistoryItems(list)
         list.isEmpty()
     }
 

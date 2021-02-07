@@ -36,10 +36,6 @@ class HistoryAllFragment : Fragment() {
         setupBinding()
         setupObservers()
 
-        viewModel.deltas.observe(viewLifecycleOwner, {
-            adapter.deltas = it
-        })
-
         return binding.root
     }
 

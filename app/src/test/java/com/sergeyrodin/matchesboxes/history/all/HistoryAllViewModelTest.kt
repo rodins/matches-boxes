@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
+import com.sergeyrodin.matchesboxes.util.getDeltaById
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -242,8 +243,8 @@ class HistoryAllViewModelTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
 
-        val deltas = subject.deltas.getOrAwaitValue()
-        assertThat(deltas[history.id], `is`(""))
+        subject.noHistoryTextVisible.getOrAwaitValue()
+        assertThat(getDeltaById(history.id), `is`(""))
     }
 
     @Test
@@ -255,9 +256,9 @@ class HistoryAllViewModelTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history1, history2)
 
-        val deltas = subject.deltas.getOrAwaitValue()
-        assertThat(deltas[history1.id], `is`(""))
-        assertThat(deltas[history2.id], `is`("+5"))
+        subject.noHistoryTextVisible.getOrAwaitValue()
+        assertThat(getDeltaById(history1.id), `is`(""))
+        assertThat(getDeltaById(history2.id), `is`("+5"))
     }
 
     @Test
@@ -269,9 +270,9 @@ class HistoryAllViewModelTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history1, history2)
 
-        val deltas = subject.deltas.getOrAwaitValue()
-        assertThat(deltas[history1.id], `is`(""))
-        assertThat(deltas[history2.id], `is`("-3"))
+        subject.noHistoryTextVisible.getOrAwaitValue()
+        assertThat(getDeltaById(history1.id), `is`(""))
+        assertThat(getDeltaById(history2.id), `is`("-3"))
     }
 
     @Test
@@ -286,11 +287,11 @@ class HistoryAllViewModelTest {
         dataSource.addRadioComponents(component1, component2)
         dataSource.addHistory(history1, history2, history3, history4)
 
-        val deltas = subject.deltas.getOrAwaitValue()
-        assertThat(deltas[history1.id], `is`(""))
-        assertThat(deltas[history2.id], `is`("+3"))
-        assertThat(deltas[history3.id], `is`(""))
-        assertThat(deltas[history4.id], `is`("+5"))
+        subject.noHistoryTextVisible.getOrAwaitValue()
+        assertThat(getDeltaById(history1.id), `is`(""))
+        assertThat(getDeltaById(history2.id), `is`("+3"))
+        assertThat(getDeltaById(history3.id), `is`(""))
+        assertThat(getDeltaById(history4.id), `is`("+5"))
     }
 
     @Test
@@ -305,11 +306,11 @@ class HistoryAllViewModelTest {
         dataSource.addRadioComponents(component1, component2)
         dataSource.addHistory(history1, history2, history3, history4)
 
-        val deltas = subject.deltas.getOrAwaitValue()
-        assertThat(deltas[history1.id], `is`(""))
-        assertThat(deltas[history2.id], `is`("-3"))
-        assertThat(deltas[history3.id], `is`(""))
-        assertThat(deltas[history4.id], `is`("-5"))
+        subject.noHistoryTextVisible.getOrAwaitValue()
+        assertThat(getDeltaById(history1.id), `is`(""))
+        assertThat(getDeltaById(history2.id), `is`("-3"))
+        assertThat(getDeltaById(history3.id), `is`(""))
+        assertThat(getDeltaById(history4.id), `is`("-5"))
     }
 
     @Test
@@ -321,9 +322,9 @@ class HistoryAllViewModelTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history1, history2)
 
-        val deltas = subject.deltas.getOrAwaitValue()
-        assertThat(deltas[history1.id], `is`(""))
-        assertThat(deltas[history2.id], `is`(""))
+        subject.noHistoryTextVisible.getOrAwaitValue()
+        assertThat(getDeltaById(history1.id), `is`(""))
+        assertThat(getDeltaById(history2.id), `is`(""))
     }
 
     @Test

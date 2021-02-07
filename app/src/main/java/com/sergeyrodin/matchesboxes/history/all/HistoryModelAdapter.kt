@@ -28,8 +28,6 @@ class HistoryModelAdapter(
             }
         }
 
-    lateinit var deltas: Map<Int, String>
-
     private fun getPositionById(id: Int): Int {
         val item = currentList.find {
             it.id == id
@@ -42,10 +40,7 @@ class HistoryModelAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Log.d("HistoryModelAdapter", "Count: $itemCount, Position: $position, HighlightedId: $highlightedItemId")
-        val item = getItem(position)
-        val delta = deltas[item.id] ?: ""
-        holder.bind(item, delta, highlightedItemId)
+        holder.bind(getItem(position), highlightedItemId)
     }
 
     class ViewHolder private constructor(private val binding: DisplayHistoryListItemBinding,
@@ -53,7 +48,7 @@ class HistoryModelAdapter(
                                          private val longClickListener: HistoryLongClickListener) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(history: HistoryModel, delta: String, highlightedItemId: Int) {
+        fun bind(history: HistoryModel, highlightedItemId: Int) {
             setupClickListener(history.componentId, history.name)
             setupLongClickListener(history.id)
             setHistoryModel(history)
@@ -63,8 +58,6 @@ class HistoryModelAdapter(
             }else {
                 binding.historyItemLayout.setBackgroundResource(R.color.secondaryLightColor)
             }
-
-            binding.deltaText.text = delta
 
             binding.executePendingBindings()
         }

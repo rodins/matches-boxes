@@ -15,6 +15,7 @@ import com.sergeyrodin.matchesboxes.history.component.HistoryAdapter
 import com.sergeyrodin.matchesboxes.popular.PopularPresentation
 import com.sergeyrodin.matchesboxes.popular.PopularPresentationAdapter
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
+import com.sergeyrodin.matchesboxes.util.getDeltaById
 
 @BindingAdapter("displayQuantityListData")
 fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<ItemWithQuantityPresentation>?) {
@@ -70,4 +71,9 @@ fun bindQuantityTextView(textView: TextView, quantity: Int) {
 @BindingAdapter("dateText")
 fun bindDateToTextView(textView: TextView, date: Long) {
     textView.text = convertLongToDateString(date)
+}
+
+@BindingAdapter("delta")
+fun bindDeltaToTextView(textView: TextView, id: Int) {
+    textView.text = getDeltaById(id)
 }

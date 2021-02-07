@@ -41,10 +41,6 @@ class ComponentHistoryFragment : Fragment() {
         observeHighlightedItemIdEvent()
         observeActionModeEvent()
 
-        viewModel.deltas.observe(viewLifecycleOwner, {
-            adapter.deltas = it
-        })
-
         return binding.root
     }
 

@@ -3,6 +3,7 @@ package com.sergeyrodin.matchesboxes.history.component
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
+import com.sergeyrodin.matchesboxes.util.getDeltaById
 import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.assertThat
 import org.junit.Assert.fail
@@ -308,9 +309,9 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history1, history2)
         subject.start(component.id)
 
-        val deltas = subject.deltas.getOrAwaitValue()
-        assertThat(deltas[history1.id], `is`(""))
-        assertThat(deltas[history2.id], `is`("+5"))
+        subject.noItemsTextVisible.getOrAwaitValue()
+        assertThat(getDeltaById(history1.id), `is`(""))
+        assertThat(getDeltaById(history2.id), `is`("+5"))
     }
 
     @Test
@@ -323,9 +324,9 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history1, history2)
         subject.start(component.id)
 
-        val deltas = subject.deltas.getOrAwaitValue()
-        assertThat(deltas[history1.id], `is`(""))
-        assertThat(deltas[history2.id], `is`("-5"))
+        subject.noItemsTextVisible.getOrAwaitValue()
+        assertThat(getDeltaById(history1.id), `is`(""))
+        assertThat(getDeltaById(history2.id), `is`("-5"))
     }
 
     @Test
@@ -338,9 +339,9 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history1, history2)
         subject.start(component.id)
 
-        val deltas = subject.deltas.getOrAwaitValue()
-        assertThat(deltas[history1.id], `is`(""))
-        assertThat(deltas[history2.id], `is`(""))
+        subject.noItemsTextVisible.getOrAwaitValue()
+        assertThat(getDeltaById(history1.id), `is`(""))
+        assertThat(getDeltaById(history2.id), `is`(""))
     }
 
     @Test
@@ -352,8 +353,8 @@ class ComponentHistoryViewModelTest {
         dataSource.addHistory(history1)
         subject.start(component.id)
 
-        val deltas = subject.deltas.getOrAwaitValue()
-        assertThat(deltas[history1.id], `is`(""))
+        subject.noItemsTextVisible.getOrAwaitValue()
+        assertThat(getDeltaById(history1.id), `is`(""))
     }
 
     @Test
@@ -371,16 +372,16 @@ class ComponentHistoryViewModelTest {
 
         subject.start(component.id)
 
-        val deltas1 = subject.deltas.getOrAwaitValue()
-        assertThat(deltas1[history1.id], `is`(""))
-        assertThat(deltas1[history2.id], `is`("+11"))
-        assertThat(deltas1[history3.id], `is`("-3"))
+        subject.noItemsTextVisible.getOrAwaitValue()
+        assertThat(getDeltaById(history1.id), `is`(""))
+        assertThat(getDeltaById(history2.id), `is`("+11"))
+        assertThat(getDeltaById(history3.id), `is`("-3"))
 
         subject.start(component.id)
 
-        val deltas2 = subject.deltas.getOrAwaitValue()
-        assertThat(deltas2[history1.id], `is`(""))
-        assertThat(deltas2[history2.id], `is`("+11"))
-        assertThat(deltas2[history3.id], `is`("-3"))
+        subject.noItemsTextVisible.getOrAwaitValue()
+        assertThat(getDeltaById(history1.id), `is`(""))
+        assertThat(getDeltaById(history2.id), `is`("+11"))
+        assertThat(getDeltaById(history3.id), `is`("-3"))
     }
 }
