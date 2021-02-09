@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.databinding.DisplayComponentHistoryListItemBinding
 import com.sergeyrodin.matchesboxes.history.all.HistoryLongClickListener
@@ -17,33 +16,12 @@ class HistoryAdapter(
     HistoryDiffCallback()
 ) {
 
-    var highlightedItemId = -1
-        set(value) {
-            if(value != -1) {
-                field = value
-                val position = getPositionById(value)
-                notifyItemChanged(position)
-            }else {
-                val position = getPositionById(field)
-                field = value
-                notifyItemChanged(position)
-            }
-        }
-
-    private fun getPositionById(id: Int): Int {
-        val item = currentList.find {
-            it.id == id
-        }
-        return currentList.indexOf(item)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent, clickListener, longClickListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = getItem(position)
-        holder.bind(item, highlightedItemId)
+        holder.bind(getItem(position))
     }
 
     class ViewHolder private constructor(
@@ -53,18 +31,11 @@ class HistoryAdapter(
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(
-            history: History,
-            highlightedItemId: Int
+            history: History
         ) {
             setupLongClickListener(history.id)
             setupClickListener()
             setupHistory(history)
-
-            if(highlightedItemId == history.id) {
-                binding.layout.setBackgroundResource(R.color.secondaryLightColor)
-            }else {
-                binding.layout.setBackgroundResource(R.color.design_default_color_background)
-            }
 
             executePendingBindings()
         }

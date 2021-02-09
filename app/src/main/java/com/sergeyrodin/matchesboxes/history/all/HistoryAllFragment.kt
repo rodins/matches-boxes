@@ -79,7 +79,7 @@ class HistoryAllFragment : Fragment() {
     private fun setupObservers() {
         observeSelectedEvent()
         observeActionModeEvent()
-        observeHighlightedIdEvent()
+        observeHighlightedPositionEvent()
     }
 
     private fun observeSelectedEvent() {
@@ -107,11 +107,9 @@ class HistoryAllFragment : Fragment() {
         })
     }
 
-    private fun observeHighlightedIdEvent() {
-        viewModel.highlightedIdEvent.observe(viewLifecycleOwner, { id ->
-            if(adapter.highlightedItemId != id) {
-                adapter.highlightedItemId = id
-            }
+    private fun observeHighlightedPositionEvent() {
+        viewModel.highlightedPositionEvent.observe(viewLifecycleOwner, {
+            adapter.notifyItemChanged(it)
         })
     }
 }

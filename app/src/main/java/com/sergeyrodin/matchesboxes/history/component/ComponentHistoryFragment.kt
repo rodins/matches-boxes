@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.databinding.FragmentComponentHistoryBinding
@@ -32,7 +31,7 @@ class ComponentHistoryFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         createBinding(inflater)
         createActionModeController()
         startViewModel()
@@ -82,13 +81,13 @@ class ComponentHistoryFragment : Fragment() {
     }
 
     private fun observeHighlightedItemIdEvent() {
-        viewModel.highlightedItemIdEvent.observe(viewLifecycleOwner, Observer { id ->
-            adapter.highlightedItemId = id
+        viewModel.highlightedPositionEvent.observe(viewLifecycleOwner, { position ->
+            adapter.notifyItemChanged(position)
         })
     }
 
     private fun observeActionModeEvent() {
-        viewModel.actionModeEvent.observe(viewLifecycleOwner, Observer { activateActionMode ->
+        viewModel.actionModeEvent.observe(viewLifecycleOwner, { activateActionMode ->
             if (activateActionMode) {
                 actionModeController.startActionMode()
             } else {

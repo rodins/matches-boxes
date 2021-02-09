@@ -3,15 +3,14 @@ package com.sergeyrodin.matchesboxes.history.all
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.history.HighlightedItemIdSaverAndNotifier
 import com.sergeyrodin.matchesboxes.history.HistoryActionModeModel
-import com.sergeyrodin.matchesboxes.util.calculateDeltasForHistoryModelItems
+import com.sergeyrodin.matchesboxes.util.*
 import kotlinx.coroutines.launch
 
 class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel(),
     HistoryActionModeModel {
 
-    private val highlightedIdSaver = HighlightedItemIdSaverAndNotifier()
+    private var deleteItemId = -1
 
     val historyItems = dataSource.observeHistoryModel()
 
@@ -28,10 +27,12 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
     val actionModeEvent: LiveData<Boolean>
         get() = _actionModeEvent
 
-    val highlightedIdEvent = highlightedIdSaver.highlightedItemIdEvent
+    private val _highlightedPositionEvent = MutableLiveData<Int>()
+    val highlightedPositionEvent: LiveData<Int>
+        get() = _highlightedPositionEvent
 
     fun presentationClick(componentId: Int, name: String) {
-        if (highlightedIdSaver.isNotHighlightMode()) {
+        if (isNotHighlighted()) {
             callSelectedEvent(componentId, name)
         } else {
             unhighlightItem()
@@ -44,40 +45,61 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
     }
 
     private fun unhighlightItem() {
-        highlightedIdSaver.notifyChangedAndResetHighlightedId()
+        val prevId = resetAndReturnHighlightedId()
+        callHighlightedPositionEvent(prevId)
         callActionModeEvent()
     }
 
     private fun callActionModeEvent() {
-        _actionModeEvent.value = highlightedIdSaver.isHighlightMode()
+        _actionModeEvent.value = isHighlighted()
+    }
+
+    init {
+        resetAndReturnHighlightedId()
     }
 
     override fun actionModeClosed() {
-        if(highlightedIdSaver.isHighlightMode()) {
+        if(isHighlighted()) {
             unhighlightItem()
         }
     }
 
     fun presentationLongClick(id: Int) {
-        if (highlightedIdSaver.isNotHighlightMode()) {
-            highlightItemAndSetActionMode(id)
+        if (isNotHighlighted()) {
+            setDeleteItemId(id)
+            setHighlightedId(id)
+            callHighlightedPositionEvent(id)
+            callActionModeEvent()
         }
     }
 
-    private fun highlightItemAndSetActionMode(id: Int) {
-        highlightedIdSaver.saveHighlightedItemIdAndNotifyItChanged(id)
-        callActionModeEvent()
+    private fun setDeleteItemId(id: Int) {
+        deleteItemId = id
+    }
+
+    private fun callHighlightedPositionEvent(id: Int) {
+        _highlightedPositionEvent.value = getPositionById(id)
+    }
+
+    private fun getPositionById(id: Int): Int {
+        return historyItems.value?.indexOfFirst {
+            it.id == id
+        } ?: -1
     }
 
     override fun deleteHighlightedPresentation() {
-        val id = highlightedIdSaver.highlightedId
         viewModelScope.launch {
-            val history = dataSource.getHistoryById(id)
+            val history = dataSource.getHistoryById(deleteItemId)
             history?.let{
                 dataSource.deleteHistory(history)
             }
+            resetDeleteItemId()
             unhighlightItem()
         }
+    }
+
+    private fun resetDeleteItemId() {
+        deleteItemId = -1
     }
 }
 

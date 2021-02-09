@@ -15,32 +15,12 @@ class HistoryModelAdapter(
     private val longClickListener: HistoryLongClickListener
 ) : ListAdapter<HistoryModel, HistoryModelAdapter.ViewHolder>(HistoryModelDiffCallback()) {
 
-    var highlightedItemId = -1
-        set(value) {
-            if(value != -1) {
-                field = value
-                val position = getPositionById(value)
-                notifyItemChanged(position)
-            }else {
-                val position = getPositionById(field)
-                field = value
-                notifyItemChanged(position)
-            }
-        }
-
-    private fun getPositionById(id: Int): Int {
-        val item = currentList.find {
-            it.id == id
-        }
-        return currentList.indexOf(item)
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent, clickListener, longClickListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position), highlightedItemId)
+        holder.bind(getItem(position))
     }
 
     class ViewHolder private constructor(private val binding: DisplayHistoryListItemBinding,
@@ -48,16 +28,10 @@ class HistoryModelAdapter(
                                          private val longClickListener: HistoryLongClickListener) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(history: HistoryModel, highlightedItemId: Int) {
+        fun bind(history: HistoryModel) {
             setupClickListener(history.componentId, history.name)
             setupLongClickListener(history.id)
             setHistoryModel(history)
-
-            if(highlightedItemId != history.id) {
-                binding.historyItemLayout.setBackgroundResource(R.color.design_default_color_background)
-            }else {
-                binding.historyItemLayout.setBackgroundResource(R.color.secondaryLightColor)
-            }
 
             binding.executePendingBindings()
         }
