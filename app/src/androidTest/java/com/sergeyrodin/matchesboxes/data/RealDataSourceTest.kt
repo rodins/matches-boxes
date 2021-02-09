@@ -367,8 +367,8 @@ class RealDataSourceTest{
         subject.insertHistory(history4)
 
         val items = subject.observeHistoryModel().getOrAwaitValue()
-        assertThat(items[0].name, `is`(component1.name))
-        assertThat(items[2].name, `is`(component2.name))
+        assertThat(items[0].name, `is`(component2.name))
+        assertThat(items[2].name, `is`(component1.name))
     }
 
     @Test

@@ -647,10 +647,10 @@ class RadioComponentsDaoTest {
 
         val list = radioComponentsDatabase.radioComponentsDatabaseDao.observeHistoryModel().getOrAwaitValue()
         assertThat(list.size, `is`(4))
-        assertThat(list[0].name, `is`(component1.name))
-        assertThat(list[0].componentId, `is`(component1.id))
-        assertThat(list[3].name, `is`(component2.name))
-        assertThat(list[3].componentId, `is`(component2.id))
+        assertThat(list[0].name, `is`(component2.name))
+        assertThat(list[0].componentId, `is`(component2.id))
+        assertThat(list[3].name, `is`(component1.name))
+        assertThat(list[3].componentId, `is`(component1.id))
     }
 
     @Test

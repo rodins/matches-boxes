@@ -48,8 +48,8 @@ class PopularComponentsViewModelTest{
         subject = PopularComponentsViewModel(dataSource)
 
         val items = subject.popularItems.getOrAwaitValue()
-        assertThat(items[0].name, `is`(component1.name))
-        assertThat(items[1].name, `is`(component2.name))
+        assertThat(items[0].name, `is`(component2.name))
+        assertThat(items[1].name, `is`(component1.name))
     }
 
     @Test
