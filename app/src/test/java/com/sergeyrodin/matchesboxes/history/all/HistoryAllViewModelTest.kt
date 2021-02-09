@@ -365,4 +365,44 @@ class HistoryAllViewModelTest {
         val active = subject.actionModeEvent.getOrAwaitValue()
         assertThat(active, `is`(false))
     }
+
+    @Test
+    fun historyDeleted_deltaEquals() {
+        var quantity1 = 3
+        var quantity2 = 7
+        val boxId = 1
+        val component1 = RadioComponent(1,"Component1", quantity1, boxId)
+        val component2 = RadioComponent(2, "Component2", quantity2, boxId)
+
+        val history1 = History(1, component1.id, quantity1)
+        quantity1 -= 2
+        val history2 = History(2, component1.id, quantity1)
+        quantity1 += 5
+        val history3 = History(3, component1.id, quantity1)
+
+        val history4 = History(4, component2.id, quantity2)
+        quantity2 -= 5
+        val history5 = History(5, component2.id, quantity2)
+        quantity2 += 2
+        val history6 = History(6, component2.id, quantity2)
+        dataSource.addRadioComponents(component1, component2)
+        dataSource.addHistory(history1, history2, history3, history4, history5, history6)
+
+        subject.noHistoryTextVisible.getOrAwaitValue()
+
+        subject.presentationLongClick(history2.id)
+        subject.deleteHighlightedPresentation()
+
+        subject.presentationLongClick(history5.id)
+        subject.deleteHighlightedPresentation()
+
+        subject.noHistoryTextVisible.getOrAwaitValue()
+
+        assertThat(getDeltaById(history1.id), `is`(""))
+        assertThat(getDeltaById(history2.id), `is`(""))
+        assertThat(getDeltaById(history3.id), `is`("+3"))
+        assertThat(getDeltaById(history4.id), `is`(""))
+        assertThat(getDeltaById(history5.id), `is`(""))
+        assertThat(getDeltaById(history6.id), `is`("-3"))
+    }
 }

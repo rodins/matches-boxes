@@ -22,6 +22,7 @@ fun calculateDeltasForHistoryModelItems(historyItems: List<HistoryModel>) {
 
 private fun calculateDeltasForDeltaItems(deltaItems: List<DeltaItem>) {
     previousHistoryQuantity.clear()
+    deltas.clear()
     deltaItems.reversed().forEach { deltaItem ->
         val delta = getHistoryDelta(deltaItem)
         deltas[deltaItem.id] = delta
