@@ -9,34 +9,26 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
-import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentListener
 import com.sergeyrodin.matchesboxes.databinding.FragmentSearchBinding
-import java.lang.IllegalArgumentException
+import dagger.hilt.android.AndroidEntryPoint
 
 const val KEY_QUERY = "query"
 
+@AndroidEntryPoint
 class SearchFragment : Fragment() {
-    private val viewModel by viewModels<SearchViewModel> {
-        createViewModelFactory()
-    }
-
-    private fun createViewModelFactory(): SearchViewModelFactory {
-        return SearchViewModelFactory(
-            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-        )
-    }
+    private val viewModel by viewModels<SearchViewModel>()
 
     private var searchQuery = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         getSearchQueryFromArgs()
         val binding = createBinding(inflater, container)
         startSearch()

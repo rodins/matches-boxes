@@ -4,9 +4,14 @@ import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class BagsListViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
+@HiltViewModel
+class BagsListViewModel @Inject constructor(
+    private val dataSource: RadioComponentsDataSource
+) : ViewModel() {
     val bagsList = dataSource.getBagsQuantityPresentationList()
 
     val isNoBagsTextVisible = Transformations.map(bagsList) { list ->
@@ -45,16 +50,4 @@ class BagsListViewModel(private val dataSource: RadioComponentsDataSource): View
             _selectBagEvent.value = Event(bag)
         }
     }
-}
-
-class BagsListViewModelFactory(private val dataSource: RadioComponentsDataSource): ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        @Suppress("unchecked_cast")
-        if(modelClass.isAssignableFrom(BagsListViewModel::class.java)) {
-            return BagsListViewModel(dataSource) as T
-        }else {
-            throw IllegalArgumentException("No ViewModel class found.")
-        }
-    }
-
 }

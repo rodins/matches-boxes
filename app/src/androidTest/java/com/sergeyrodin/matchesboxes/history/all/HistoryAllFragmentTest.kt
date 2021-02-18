@@ -1,7 +1,6 @@
 package com.sergeyrodin.matchesboxes.history.all
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso
@@ -14,36 +13,41 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.R
-import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.*
+import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
 import com.sergeyrodin.matchesboxes.history.hasBackgroundColor
 import com.sergeyrodin.matchesboxes.history.hasBackgroundColorAndText
+import com.sergeyrodin.matchesboxes.launchFragmentInHiltContainer
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.CoreMatchers.not
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
+@HiltAndroidTest
+@UninstallModules(RadioComponentsDataSourceModule::class)
 class HistoryAllFragmentTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var dataSource: FakeDataSource
+    @Inject
+    lateinit var dataSource: FakeDataSource
 
     @Before
     fun initDataSource() {
-        dataSource = FakeDataSource()
-        ServiceLocator.radioComponentsDataSource = dataSource
-    }
-
-    @After
-    fun clearDataSource() {
-        ServiceLocator.resetDataSource()
+        hiltRule.inject()
     }
 
     @Test
@@ -54,7 +58,7 @@ class HistoryAllFragmentTest {
         dataSource.addRadioComponents()
         dataSource.addHistory()
 
-        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
         onView(withText(R.string.no_history)).check(matches(isDisplayed()))
     }
@@ -75,7 +79,7 @@ class HistoryAllFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history1, history2, history3, history4)
 
-        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
         onView(withText(R.string.no_history)).check(matches(not(isDisplayed())))
     }
@@ -99,7 +103,7 @@ class HistoryAllFragmentTest {
         dataSource.addRadioComponents(component1, component2, component3, component4)
         dataSource.addHistory(history1, history2, history3, history4)
 
-        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
         onView(withText(component1.name)).check(matches(isDisplayed()))
         onView(withText(component2.name)).check(matches(isDisplayed()))
@@ -126,7 +130,7 @@ class HistoryAllFragmentTest {
         dataSource.addRadioComponents(component1, component2, component3, component4)
         dataSource.addHistory(history1, history2, history3, history4)
 
-        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
         onView(withText(component1.name)).check(matches(isDisplayed()))
         onView(withText(component2.name)).check(matches(isDisplayed()))
@@ -146,10 +150,11 @@ class HistoryAllFragmentTest {
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
-        val scenario = launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
+
+        launchFragmentInHiltContainer<HistoryAllFragment>(null, R.style.AppTheme) {
+            Navigation.setViewNavController(view!!, navController)
         }
 
         onView(withText(component.name)).perform(click())
@@ -166,7 +171,7 @@ class HistoryAllFragmentTest {
         val history = History(1, component.id, component.quantity)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
-        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
         checkIfNotHighlighted()
         performLongClick(component)
@@ -184,7 +189,7 @@ class HistoryAllFragmentTest {
         val history = History(1, component.id, component.quantity)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
-        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
         performLongClick(component)
         checkIfHighlighted(component)
@@ -205,7 +210,7 @@ class HistoryAllFragmentTest {
         val history2 = History(2, component2.id, component2.quantity)
         dataSource.addRadioComponents(component1, component2)
         dataSource.addHistory(history1, history2)
-        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
         performLongClick(component1)
         performLongClick(component2)
@@ -225,7 +230,7 @@ class HistoryAllFragmentTest {
         val history2 = History(2, component2.id, component2.quantity)
         dataSource.addRadioComponents(component1, component2)
         dataSource.addHistory(history1, history2)
-        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
         performLongClick(component1)
         checkIfHighlighted(component1)
@@ -296,7 +301,7 @@ class HistoryAllFragmentTest {
         val history = History(1, component.id, component.quantity)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
-        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
         performLongClick(component)
 
@@ -311,7 +316,7 @@ class HistoryAllFragmentTest {
         val history2 = History(2, component.id, component.quantity+4)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history1, history2)
-        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
         onView(withText("+4")).check(matches(isDisplayed()))
     }
@@ -324,7 +329,7 @@ class HistoryAllFragmentTest {
         val history2 = History(2, component.id, component.quantity-5)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history1, history2)
-        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
         onView(withText("-5")).check(matches(isDisplayed()))
     }
@@ -336,7 +341,7 @@ class HistoryAllFragmentTest {
         val history = History(1, component.id, component.quantity)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
-        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
         onView(withId(R.id.delta_text)).check(matches(withText("")))
     }
@@ -360,7 +365,7 @@ class HistoryAllFragmentTest {
         dataSource.addRadioComponents(component1, component2, component3, component4)
         dataSource.addHistory(history1, history2, history3, history4)
 
-        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
         performLongClick(component1)
         onView(withId(R.id.action_delete)).perform(click())
@@ -375,7 +380,7 @@ class HistoryAllFragmentTest {
         val history = History(1, component.id, component.quantity)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
-        launchFragmentInContainer<HistoryAllFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<HistoryAllFragment>(null, R.style.AppTheme)
 
         performLongClick(component)
 

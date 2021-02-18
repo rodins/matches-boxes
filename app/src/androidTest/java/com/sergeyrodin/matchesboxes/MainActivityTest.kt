@@ -1,43 +1,49 @@
 package com.sergeyrodin.matchesboxes
 
-import android.app.Activity
-import android.content.pm.ActivityInfo
-import android.view.KeyEvent
-import android.widget.AutoCompleteTextView
-import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.sergeyrodin.matchesboxes.data.*
-import com.sergeyrodin.matchesboxes.history.hasBackgroundColor
+import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
+import com.sergeyrodin.matchesboxes.di.TestModule
 import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
-import com.sergeyrodin.matchesboxes.util.convertLongToDateString
-import com.sergeyrodin.matchesboxes.util.monitorActivity
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
+@HiltAndroidTest
+@UninstallModules(TestModule::class)
 class MainActivityTest {
 
-    private lateinit var dataSource: RadioComponentsDataSource
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
+    @Inject
+    lateinit var dataSource: RadioComponentsDataSource
 
     private val dataBindingIdlingResource = DataBindingIdlingResource()
+
+    @Before
+    fun initDataSource() {
+        hiltRule.inject()
+        runBlocking {
+            dataSource.clearDatabase()
+        }
+    }
 
     @Before
     fun registerIdlingResource() {
@@ -49,16 +55,6 @@ class MainActivityTest {
     fun unregisterIdlingResource() {
         IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
-    }
-
-    @Before
-    fun init() {
-        dataSource = ServiceLocator.provideRadioComponentsDataSource(getApplicationContext())
-    }
-
-    @After
-    fun reset() {
-        ServiceLocator.resetDataSource()
     }
 
     @Test

@@ -1,7 +1,6 @@
 package com.sergeyrodin.matchesboxes.bag.list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
@@ -12,35 +11,39 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.R
-import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.*
-import org.hamcrest.CoreMatchers
+import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
+import com.sergeyrodin.matchesboxes.launchFragmentInHiltContainer
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.CoreMatchers.not
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
+import javax.inject.Inject
 
 @MediumTest
 @RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
+@UninstallModules(RadioComponentsDataSourceModule::class)
 class BagsListFragmentTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
-    private lateinit var dataSource: FakeDataSource
+
+    @Inject
+    lateinit var dataSource: FakeDataSource
 
     @Before
     fun initDataSource() {
-        dataSource = FakeDataSource()
-        ServiceLocator.radioComponentsDataSource = dataSource
-    }
-
-    @After
-    fun clearDataSource() {
-        ServiceLocator.resetDataSource()
+        hiltRule.inject()
     }
 
     @Test
@@ -50,7 +53,7 @@ class BagsListFragmentTest {
         )
         dataSource.addRadioComponents()
 
-        launchFragmentInContainer<BagsListFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<BagsListFragment>(null, R.style.AppTheme)
 
         onView(withText("New bag")).check(matches(isDisplayed()))
     }
@@ -60,7 +63,7 @@ class BagsListFragmentTest {
         dataSource.addBags()
         dataSource.addRadioComponents()
 
-        launchFragmentInContainer<BagsListFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<BagsListFragment>(null, R.style.AppTheme)
 
         onView(withText(R.string.no_bags_added)).check(matches(isDisplayed()))
     }
@@ -69,13 +72,14 @@ class BagsListFragmentTest {
     fun noBags_addButtonClicked() {
         dataSource.addBags()
 
-        val scenario = launchFragmentInContainer<BagsListFragment>(null, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-            title = it.getString(R.string.add_bag)
+
+        launchFragmentInHiltContainer<BagsListFragment>(null, R.style.AppTheme) {
+            Navigation.setViewNavController(view!!, navController)
+            title = getString(R.string.add_bag)
         }
+
         onView(withId(R.id.add_bag_fab)).perform(click())
         verify(navController).navigate(
             BagsListFragmentDirections.actionBagsListFragmentToAddEditDeleteBagFragment(
@@ -90,11 +94,12 @@ class BagsListFragmentTest {
         dataSource.addBags(bag1, bag2)
         dataSource.addRadioComponents()
 
-        val scenario = launchFragmentInContainer<BagsListFragment>(null, R.style.AppTheme)
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
+
+        launchFragmentInHiltContainer<BagsListFragment>(null, R.style.AppTheme) {
+            Navigation.setViewNavController(view!!, navController)
         }
+
         onView(withText("Bag2")).perform(click())
         verify(navController).navigate(
             BagsListFragmentDirections.actionBagsListFragmentToMatchesBoxSetsListFragment(bag2.id, bag2.name)
@@ -139,7 +144,7 @@ class BagsListFragmentTest {
         dataSource.addRadioComponents(component1, component2, component3, component4, component5,
             component6, component7, component8, component9, component10, component11, component12,
             component13, component14, component15, component16)
-        launchFragmentInContainer<BagsListFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<BagsListFragment>(null, R.style.AppTheme)
 
         onView(withText("36")).check(matches(isDisplayed()))
         onView(withText("100")).check(matches(isDisplayed()))
@@ -149,7 +154,7 @@ class BagsListFragmentTest {
     fun bagListIconIsDisplayed() {
         val bag = Bag(1, "Bag")
         dataSource.addBags(bag)
-        launchFragmentInContainer<BagsListFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<BagsListFragment>(null, R.style.AppTheme)
 
         onView(withId(R.id.bags_list)).check(matches(hasDescendant(withTagValue(equalTo(R.drawable.ic_bag)))))
     }

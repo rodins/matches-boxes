@@ -10,18 +10,19 @@ import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.*
 import com.sergeyrodin.matchesboxes.databinding.FragmentBagManipulatorBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class BagManipulatorFragment : Fragment() {
-    private lateinit var viewModel: BagManipulatorViewModel
+    private val viewModel: BagManipulatorViewModel by viewModels()
     private val args by navArgs<BagManipulatorFragmentArgs>()
     private var isActionDeleteVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = createBinding(inflater)
-        viewModel = createViewModel()
         setupBinding(binding)
         setupIsActionDeleteVisible()
         startViewModel()
@@ -34,15 +35,6 @@ class BagManipulatorFragment : Fragment() {
 
     private fun createBinding(inflater: LayoutInflater): FragmentBagManipulatorBinding {
         return FragmentBagManipulatorBinding.inflate(inflater)
-    }
-
-    private fun createViewModel(): BagManipulatorViewModel {
-        val viewModel by viewModels<BagManipulatorViewModel> {
-            BagManipulatorViewModelFactory(
-                (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-            )
-        }
-        return viewModel
     }
 
     private fun setupBinding(binding: FragmentBagManipulatorBinding) {

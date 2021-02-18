@@ -5,9 +5,13 @@ import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.history.HistoryActionModeModel
 import com.sergeyrodin.matchesboxes.util.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel(),
+@HiltViewModel
+class HistoryAllViewModel @Inject constructor(
+    private val dataSource: RadioComponentsDataSource) : ViewModel(),
     HistoryActionModeModel {
 
     private var deleteItemId = -1
@@ -100,18 +104,6 @@ class HistoryAllViewModel(private val dataSource: RadioComponentsDataSource) : V
 
     private fun resetDeleteItemId() {
         deleteItemId = -1
-    }
-}
-
-class HistoryAllViewModelFactory(private val dataSource: RadioComponentsDataSource) :
-    ViewModelProvider.Factory {
-    @Suppress("unchecked_cast")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(HistoryAllViewModel::class.java)) {
-            return HistoryAllViewModel(dataSource) as T
-        } else {
-            throw IllegalArgumentException("No view model class found.")
-        }
     }
 }
 

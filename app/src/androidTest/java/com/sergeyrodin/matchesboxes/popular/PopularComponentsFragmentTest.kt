@@ -1,7 +1,6 @@
 package com.sergeyrodin.matchesboxes.popular
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -9,42 +8,46 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.R
-import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponent
+import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
+import com.sergeyrodin.matchesboxes.launchFragmentInHiltContainer
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.CoreMatchers.not
-import org.junit.After
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
+@HiltAndroidTest
+@UninstallModules(RadioComponentsDataSourceModule::class)
 class PopularComponentsFragmentTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var dataSource: FakeDataSource
+    @Inject
+    lateinit var dataSource: FakeDataSource
 
     @Before
     fun initDataSource() {
-        dataSource = FakeDataSource()
-        ServiceLocator.radioComponentsDataSource = dataSource
-    }
-
-    @After
-    fun clearDataSource() {
-        ServiceLocator.resetDataSource()
+        hiltRule.inject()
     }
 
     @Test
     fun noComponents_noComponentsTextDisplayed() {
         dataSource.addRadioComponents()
         dataSource.addHistory()
-        launchFragmentInContainer<PopularComponentsFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<PopularComponentsFragment>(null, R.style.AppTheme)
 
         onView(withText(R.string.no_popular_components)).check(matches(isDisplayed()))
     }
@@ -57,7 +60,7 @@ class PopularComponentsFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
 
-        launchFragmentInContainer<PopularComponentsFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<PopularComponentsFragment>(null, R.style.AppTheme)
 
         onView(withText(R.string.no_popular_components)).check(matches(not(isDisplayed())))
     }
@@ -70,7 +73,7 @@ class PopularComponentsFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
 
-        launchFragmentInContainer<PopularComponentsFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<PopularComponentsFragment>(null, R.style.AppTheme)
 
         onView(withText(component.name)).check(matches(isDisplayed()))
     }
@@ -83,7 +86,7 @@ class PopularComponentsFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
 
-        launchFragmentInContainer<PopularComponentsFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<PopularComponentsFragment>(null, R.style.AppTheme)
 
         onView(withText("1")).check(matches(isDisplayed()))
     }
@@ -100,7 +103,7 @@ class PopularComponentsFragmentTest {
         dataSource.addRadioComponents(component1, component2, component3)
         dataSource.addHistory(history1, history2, history3)
 
-        launchFragmentInContainer<PopularComponentsFragment>(null, R.style.AppTheme)
+        launchFragmentInHiltContainer<PopularComponentsFragment>(null, R.style.AppTheme)
 
         onView(withText("1")).check(matches(isDisplayed()))
         onView(withText("2")).check(matches(isDisplayed()))

@@ -1,7 +1,6 @@
 package com.sergeyrodin.matchesboxes.search
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
@@ -11,36 +10,44 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.R
-import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns
 import com.sergeyrodin.matchesboxes.data.*
+import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
+import com.sergeyrodin.matchesboxes.launchFragmentInHiltContainer
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.CoreMatchers
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
+@MediumTest
+@HiltAndroidTest
+@UninstallModules(RadioComponentsDataSourceModule::class)
 class SearchFragmentTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private lateinit var dataSource: FakeDataSource
+
+    @Inject
+    lateinit var dataSource: FakeDataSource
 
     @Before
     fun initDataSource() {
-        dataSource = FakeDataSource()
-        ServiceLocator.radioComponentsDataSource = dataSource
-    }
-
-    @After
-    fun clearDataSource() {
-        ServiceLocator.resetDataSource()
+        hiltRule.inject()
     }
 
     @Test
@@ -48,7 +55,7 @@ class SearchFragmentTest {
         dataSource.addRadioComponents()
         val query = "compo"
         val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
-        launchFragmentInContainer<SearchFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<SearchFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_components_found)).check(matches(isDisplayed()))
     }
@@ -60,7 +67,7 @@ class SearchFragmentTest {
         dataSource.addRadioComponents(component)
         val query = "compo"
         val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
-        launchFragmentInContainer<SearchFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<SearchFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_components_found)).check(matches(CoreMatchers.not(isDisplayed())))
     }
@@ -74,7 +81,7 @@ class SearchFragmentTest {
         dataSource.addRadioComponents(component1, component2, component3)
         val query = "compo"
         val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
-        launchFragmentInContainer<SearchFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<SearchFragment>(bundle, R.style.AppTheme)
 
         onView(withText(component1.name)).check(matches(isDisplayed()))
         onView(withText(component2.name)).check(matches(isDisplayed()))
@@ -89,11 +96,12 @@ class SearchFragmentTest {
         val component3 = RadioComponent(3, "Component3", 3, bagId)
         dataSource.addRadioComponents(component1, component2, component3)
         val query = "compo"
-        val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
-        val scenario = launchFragmentInContainer<SearchFragment>(bundle, R.style.AppTheme)
+
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
+
+        val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
+        launchFragmentInHiltContainer<SearchFragment>(bundle, R.style.AppTheme) {
+            Navigation.setViewNavController(requireView(), navController)
         }
 
         onView(withText(component2.name)).perform(ViewActions.click())
@@ -113,7 +121,7 @@ class SearchFragmentTest {
         dataSource.addRadioComponents(component)
         val query = "compo"
         val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
-        launchFragmentInContainer<SearchFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<SearchFragment>(bundle, R.style.AppTheme)
 
         onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
     }
@@ -129,13 +137,14 @@ class SearchFragmentTest {
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
         val query = "compo"
-        val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
-        val scenario = launchFragmentInContainer<SearchFragment>(bundle, R.style.AppTheme)
+
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-            title = it.getString(R.string.add_component)
+
+        val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
+        launchFragmentInHiltContainer<SearchFragment>(bundle, R.style.AppTheme) {
+            Navigation.setViewNavController(requireView(), navController)
+            title = getString(R.string.add_component)
         }
 
         onView(ViewMatchers.withId(R.id.add_search_buy_component_fab)).perform(ViewActions.click())

@@ -3,8 +3,12 @@ package com.sergeyrodin.matchesboxes.needed
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class NeededComponentsViewModel(private val dataSource: RadioComponentsDataSource): ViewModel()  {
+@HiltViewModel
+class NeededComponentsViewModel @Inject constructor(
+    private val dataSource: RadioComponentsDataSource): ViewModel()  {
     val items = liveData {
         emit(dataSource.getRadioComponentsToBuy())
     }

@@ -125,4 +125,19 @@ interface RadioComponentsDatabaseDao {
 
     @Query("SELECT * FROM history WHERE component_id = :id ORDER BY id DESC")
     fun observeHistoryListByComponentId(id: Int): LiveData<List<History>>
+
+    @Query("DELETE FROM bags")
+    suspend fun deleteAllBags()
+
+    @Query("DELETE FROM matches_box_sets")
+    suspend fun deleteAllSets()
+
+    @Query("DELETE FROM matches_boxes")
+    suspend fun deleteAllBoxes()
+
+    @Query("DELETE FROM radio_components")
+    suspend fun deleteAllComponents()
+
+    @Query("DELETE FROM history")
+    suspend fun deleteAllHistory()
 }

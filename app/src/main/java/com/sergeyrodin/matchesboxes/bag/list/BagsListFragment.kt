@@ -10,21 +10,21 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
-import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.databinding.FragmentBagsListBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class BagsListFragment : Fragment() {
-    private lateinit var viewModel: BagsListViewModel
+    private val viewModel: BagsListViewModel by viewModels()
     private lateinit var binding: FragmentBagsListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = createBinding(inflater)
-        viewModel = createViewModel()
         setupBinding()
         observeAddBagEvent()
         observeSelectBagEvent()
@@ -35,15 +35,6 @@ class BagsListFragment : Fragment() {
 
     private fun createBinding(inflater: LayoutInflater): FragmentBagsListBinding {
         return FragmentBagsListBinding.inflate(inflater)
-    }
-
-    private fun createViewModel(): BagsListViewModel {
-        val viewModel by viewModels<BagsListViewModel> {
-            BagsListViewModelFactory(
-                (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-            )
-        }
-        return viewModel
     }
 
     private fun setupBinding() {

@@ -11,22 +11,16 @@ import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.databinding.FragmentComponentHistoryBinding
 import com.sergeyrodin.matchesboxes.history.HistoryActionModeController
 import com.sergeyrodin.matchesboxes.history.all.HistoryLongClickListener
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ComponentHistoryFragment : Fragment() {
     private lateinit var actionModeController: HistoryActionModeController
     private lateinit var binding: FragmentComponentHistoryBinding
     private lateinit var adapter: HistoryAdapter
     private val args by navArgs<ComponentHistoryFragmentArgs>()
 
-    private val viewModel by viewModels<ComponentHistoryViewModel> {
-        getViewModelFactory()
-    }
-
-    private fun getViewModelFactory(): ComponentHistoryViewModelFactory {
-        return ComponentHistoryViewModelFactory(
-            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-        )
-    }
+    private val viewModel by viewModels<ComponentHistoryViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

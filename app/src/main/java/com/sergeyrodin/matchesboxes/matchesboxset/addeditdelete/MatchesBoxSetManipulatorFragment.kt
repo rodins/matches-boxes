@@ -9,24 +9,24 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
-import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxSetManipulatorBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MatchesBoxSetManipulatorFragment : Fragment() {
 
-    private lateinit var viewModel: MatchesBoxSetManipulatorViewModel
+    private val viewModel: MatchesBoxSetManipulatorViewModel by viewModels()
     private val args by navArgs<MatchesBoxSetManipulatorFragmentArgs>()
     private var isDeleteVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        viewModel = createViewModel()
+    ): View {
         val binding = createBinding(inflater)
         setupBinding(binding)
         setupIsDeleteVisible()
@@ -36,15 +36,6 @@ class MatchesBoxSetManipulatorFragment : Fragment() {
         observeDeleteEvent()
         setHasOptionsMenu(true)
         return binding.root
-    }
-
-    private fun createViewModel(): MatchesBoxSetManipulatorViewModel {
-        val viewModel by viewModels<MatchesBoxSetManipulatorViewModel> {
-            MatchBoxSetManipulatorViewModelFactory(
-                (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-            )
-        }
-        return viewModel
     }
 
     private fun createBinding(inflater: LayoutInflater) =

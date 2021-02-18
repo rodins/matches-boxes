@@ -5,9 +5,13 @@ import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.history.HistoryActionModeModel
 import com.sergeyrodin.matchesboxes.util.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSource): ViewModel(),
+@HiltViewModel
+class ComponentHistoryViewModel @Inject constructor(
+    private val dataSource: RadioComponentsDataSource): ViewModel(),
     HistoryActionModeModel {
 
     private val inputId = MutableLiveData<Int>()
@@ -96,16 +100,5 @@ class ComponentHistoryViewModel(private val dataSource: RadioComponentsDataSourc
 
     override fun actionModeClosed() {
         presentationClick()
-    }
-}
-
-class ComponentHistoryViewModelFactory(private var dataSource: RadioComponentsDataSource): ViewModelProvider.Factory {
-    @Suppress("unchecked_cast")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(ComponentHistoryViewModel::class.java)) {
-            return ComponentHistoryViewModel(dataSource) as T
-        }else{
-            throw IllegalArgumentException("No ViewModel class found.")
-        }
     }
 }

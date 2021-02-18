@@ -3,18 +3,21 @@ package com.sergeyrodin.matchesboxes.component.addeditdelete
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 const val NO_ID_SET = -1
 const val NO_INDEX_SET = -1
 const val FIRST_INDEX = 0
 
-class RadioComponentManipulatorViewModel(private val dataSource: RadioComponentsDataSource) :
-    ViewModel() {
-    private val tag = javaClass.simpleName
+@HiltViewModel
+class RadioComponentManipulatorViewModel @Inject constructor(
+    private val dataSource: RadioComponentsDataSource
+) : ViewModel() {
     val name = MutableLiveData<String>()
     val quantity = MutableLiveData<String>()
-    var quantityFromDatabase = NO_ID_SET
+    private var quantityFromDatabase = NO_ID_SET
     val isBuy = MutableLiveData<Boolean>()
 
     private val _addItemEvent = MutableLiveData<Event<MatchesBox>>()
@@ -66,7 +69,7 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
         radioComponent = dataSource.getRadioComponentById(componentId)
         name.value = radioComponent?.name ?: ""
         quantity.value = (radioComponent?.quantity ?: "").toString()
-        quantityFromDatabase = radioComponent?.quantity?: NO_ID_SET
+        quantityFromDatabase = radioComponent?.quantity ?: NO_ID_SET
         isBuy.value = radioComponent?.isBuy ?: false
     }
 
@@ -216,7 +219,7 @@ class RadioComponentManipulatorViewModel(private val dataSource: RadioComponents
         quantity.value = numberOfComponents.minus(1).toString()
     }
 
-    fun boxSelected(newIndex: Int){
+    fun boxSelected(newIndex: Int) {
         spinnersUpdater.boxSelected(newIndex)
     }
 

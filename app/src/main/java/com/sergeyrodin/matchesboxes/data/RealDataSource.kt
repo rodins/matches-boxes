@@ -2,8 +2,10 @@ package com.sergeyrodin.matchesboxes.data
 
 import androidx.lifecycle.LiveData
 import com.sergeyrodin.matchesboxes.util.wrapEspressoIdlingResource
+import javax.inject.Inject
 
-class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsDatabaseDao) : RadioComponentsDataSource {
+class RealDataSource @Inject constructor(
+    private val radioComponentsDatabaseDao: RadioComponentsDatabaseDao) : RadioComponentsDataSource {
     override suspend fun insertBag(bag: Bag) {
         wrapEspressoIdlingResource {
             radioComponentsDatabaseDao.insertBag(bag)
@@ -215,5 +217,13 @@ class RealDataSource(private val radioComponentsDatabaseDao: RadioComponentsData
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.observeHistoryListByComponentId(id)
         }
+    }
+
+    override suspend fun clearDatabase() {
+        radioComponentsDatabaseDao.deleteAllHistory()
+        radioComponentsDatabaseDao.deleteAllComponents()
+        radioComponentsDatabaseDao.deleteAllBoxes()
+        radioComponentsDatabaseDao.deleteAllSets()
+        radioComponentsDatabaseDao.deleteAllBags()
     }
 }

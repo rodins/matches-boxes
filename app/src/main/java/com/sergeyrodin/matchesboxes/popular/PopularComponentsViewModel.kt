@@ -6,7 +6,9 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.map
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.lang.IllegalArgumentException
+import javax.inject.Inject
 import kotlin.collections.List
 import kotlin.collections.MutableList
 import kotlin.collections.MutableMap
@@ -18,7 +20,9 @@ import kotlin.collections.set
 import kotlin.collections.sortedByDescending
 import kotlin.collections.withIndex
 
-class PopularComponentsViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
+@HiltViewModel
+class PopularComponentsViewModel @Inject constructor(
+    private val dataSource: RadioComponentsDataSource): ViewModel() {
 
     val popularItems = liveData {
         val historyItems = getHistoryItemsFromDb()
@@ -108,14 +112,3 @@ data class ComponentPopularity(
     var id: Int,
     var count: Int
 )
-
-class PopularComponentsViewModelFactory(private val dataSource: RadioComponentsDataSource): ViewModelProvider.Factory{
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        @Suppress("unchecked_cast")
-        if(modelClass.isAssignableFrom(PopularComponentsViewModel::class.java)) {
-            return PopularComponentsViewModel(dataSource) as T
-        }else {
-            throw IllegalArgumentException("No view model class found.")
-        }
-    }
-}

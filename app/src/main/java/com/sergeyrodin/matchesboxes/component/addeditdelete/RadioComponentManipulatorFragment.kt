@@ -7,35 +7,28 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
-import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.databinding.FragmentRadioComponentManipulatorBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RadioComponentManipulatorFragment : Fragment() {
-    private val viewModel by viewModels<RadioComponentManipulatorViewModel> {
-        getViewModelFactory()
-    }
-    private val args by navArgs<RadioComponentManipulatorFragmentArgs>()
 
-    private fun getViewModelFactory(): RadioComponentManipulatorViewModelFactory {
-        return RadioComponentManipulatorViewModelFactory(
-            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-        )
-    }
+    private val viewModel by viewModels<RadioComponentManipulatorViewModel>()
+    private val args by navArgs<RadioComponentManipulatorFragmentArgs>()
 
     private lateinit var binding: FragmentRadioComponentManipulatorBinding
     private var isDeleteVisible = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = createBinding(inflater)
         setupIsDeleteVisible()
         startViewModel()
@@ -76,7 +69,7 @@ class RadioComponentManipulatorFragment : Fragment() {
     }
 
     private fun observeBoxNames() {
-        viewModel.boxNames.observe(viewLifecycleOwner, Observer { boxNames ->
+        viewModel.boxNames.observe(viewLifecycleOwner, { boxNames ->
             setAdapterForBoxes(createArrayAdapter(boxNames))
             setItemSelectedListenerForBoxes()
         })
@@ -123,7 +116,7 @@ class RadioComponentManipulatorFragment : Fragment() {
     }
 
     private fun observeBoxSelectedIndex() {
-        viewModel.boxSelectedIndex.observe(viewLifecycleOwner, Observer { index ->
+        viewModel.boxSelectedIndex.observe(viewLifecycleOwner, { index ->
             setBoxesSpinnerSelection(index)
         })
     }
@@ -138,7 +131,7 @@ class RadioComponentManipulatorFragment : Fragment() {
     }
 
     private fun observeSetNames() {
-        viewModel.setNames.observe(viewLifecycleOwner, Observer { setNames ->
+        viewModel.setNames.observe(viewLifecycleOwner, { setNames ->
             setAdapterForSets(createArrayAdapter(setNames))
             setItemSelectedListenerForSets()
         })
@@ -155,7 +148,7 @@ class RadioComponentManipulatorFragment : Fragment() {
     }
 
     private fun observeSetSelectedIndex() {
-        viewModel.setSelectedIndex.observe(viewLifecycleOwner, Observer { index ->
+        viewModel.setSelectedIndex.observe(viewLifecycleOwner, { index ->
             setSetsSpinnerSelection(index)
         })
     }
@@ -170,7 +163,7 @@ class RadioComponentManipulatorFragment : Fragment() {
     }
 
     private fun observeBagNames() {
-        viewModel.bagNames.observe(viewLifecycleOwner, Observer { bagNames ->
+        viewModel.bagNames.observe(viewLifecycleOwner, { bagNames ->
             setBagsAdapter(createArrayAdapter(bagNames))
             setItemSelectedListenerForBags()
         })
@@ -187,7 +180,7 @@ class RadioComponentManipulatorFragment : Fragment() {
     }
 
     private fun observeBagSelectedIndex() {
-        viewModel.bagSelectedIndex.observe(viewLifecycleOwner, Observer { index ->
+        viewModel.bagSelectedIndex.observe(viewLifecycleOwner, { index ->
             setSelectionForBagsSpinner(index)
         })
     }

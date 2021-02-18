@@ -3,8 +3,7 @@ package com.sergeyrodin.matchesboxes.matchesbox.list
 import android.content.Context
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.FragmentScenario
-import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
@@ -18,35 +17,40 @@ import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.DO_NOT_NEED_THIS_VARIABLE
 import com.sergeyrodin.matchesboxes.R
-import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.*
+import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
+import com.sergeyrodin.matchesboxes.launchFragmentInHiltContainer
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.not
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
+@HiltAndroidTest
+@UninstallModules(RadioComponentsDataSourceModule::class)
 class MatchesBoxListFragmentTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var dataSource: FakeDataSource
+    @Inject
+    lateinit var dataSource: FakeDataSource
 
     @Before
     fun initDataSource() {
-        dataSource = FakeDataSource()
-        ServiceLocator.radioComponentsDataSource = dataSource
-    }
-
-    @After
-    fun resetDataSource() {
-        ServiceLocator.resetDataSource()
+        hiltRule.inject()
     }
 
     @Test
@@ -55,7 +59,7 @@ class MatchesBoxListFragmentTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.addMatchesBoxes()
         val bundle = MatchesBoxListFragmentArgs.Builder(set.id, "Title").build().toBundle()
-        launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_matches_boxes_added)).check(matches(isDisplayed()))
     }
@@ -66,7 +70,7 @@ class MatchesBoxListFragmentTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.addMatchesBoxes(MatchesBox(1, "Box", set.id))
         val bundle = MatchesBoxListFragmentArgs.Builder(set.id, "Title").build().toBundle()
-        launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_matches_boxes_added)).check(matches(not(isDisplayed())))
     }
@@ -83,7 +87,7 @@ class MatchesBoxListFragmentTest {
             MatchesBox(4, "Box4", set2.id)
         )
         val bundle = MatchesBoxListFragmentArgs.Builder(set.id, "Title").build().toBundle()
-        launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
 
         onView(withText("Box1")).check(matches(isDisplayed()))
         onView(withText("Box2")).check(matches(isDisplayed()))
@@ -96,13 +100,14 @@ class MatchesBoxListFragmentTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.addMatchesBoxes()
-        val bundle = MatchesBoxListFragmentArgs.Builder(set.id, "Title").build().toBundle()
-        val scenario = launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
+
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-            title = it.getString(R.string.add_box)
+
+        val bundle = MatchesBoxListFragmentArgs.Builder(set.id, "Title").build().toBundle()
+        launchFragmentInHiltContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme) {
+            Navigation.setViewNavController(requireView(), navController)
+            title = getString(R.string.add_box)
         }
 
         onView(withId(R.id.add_box_fab)).perform(click())
@@ -119,11 +124,12 @@ class MatchesBoxListFragmentTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box1", set.id)
         dataSource.addMatchesBoxes(box)
-        val bundle = MatchesBoxListFragmentArgs.Builder(set.id, "Title").build().toBundle()
-        val scenario = launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
+
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
+
+        val bundle = MatchesBoxListFragmentArgs.Builder(set.id, "Title").build().toBundle()
+        launchFragmentInHiltContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme) {
+            Navigation.setViewNavController(requireView(), navController)
         }
 
         onView(withText(box.name)).perform(click())
@@ -137,16 +143,16 @@ class MatchesBoxListFragmentTest {
     fun editAction_navigationCalled() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
-        val bundle = MatchesBoxListFragmentArgs.Builder(set.id, "Title").build().toBundle()
-        val scenario = launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
+
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-            title = it.getString(R.string.update_set)
-        }
 
-        clickEditAction(scenario)
+        val bundle = MatchesBoxListFragmentArgs.Builder(set.id, "Title").build().toBundle()
+        launchFragmentInHiltContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme) {
+            Navigation.setViewNavController(requireView(), navController)
+            title = getString(R.string.update_set)
+            clickEditAction(this)
+        }
 
         verify(navController).navigate(
             MatchesBoxListFragmentDirections
@@ -155,13 +161,10 @@ class MatchesBoxListFragmentTest {
         )
     }
 
-    private fun clickEditAction(scenario: FragmentScenario<MatchesBoxListFragment>) {
-        // Create dummy menu item with the desired item id
+    private fun clickEditAction(fragment: Fragment) {
         val context = ApplicationProvider.getApplicationContext<Context>()
         val editMenuItem = ActionMenuItem(context, 0, R.id.action_edit, 0, 0, null)
-        scenario.onFragment{
-            it.onOptionsItemSelected(editMenuItem)
-        }
+        fragment.onOptionsItemSelected(editMenuItem)
     }
 
     @Test
@@ -174,7 +177,7 @@ class MatchesBoxListFragmentTest {
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component1, component2)
         val bundle = MatchesBoxListFragmentArgs.Builder(set.id, "Title").build().toBundle()
-        launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
 
         onView(withText("10")).check(matches(isDisplayed())) // sum of components quantities 3+7=10
     }
@@ -185,7 +188,7 @@ class MatchesBoxListFragmentTest {
         val box = MatchesBox(1, "Box", setId)
         dataSource.addMatchesBoxes(box)
         val bundle = MatchesBoxListFragmentArgs.Builder(setId, "Title").build().toBundle()
-        launchFragmentInContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<MatchesBoxListFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.items)).check(matches(hasDescendant(withTagValue(CoreMatchers.equalTo(R.drawable.ic_matchesbox)))))
     }

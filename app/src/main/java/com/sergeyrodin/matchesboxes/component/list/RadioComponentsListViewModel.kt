@@ -3,8 +3,12 @@ package com.sergeyrodin.matchesboxes.component.list
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class RadioComponentsListViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
+@HiltViewModel
+class RadioComponentsListViewModel @Inject constructor(
+    private val dataSource: RadioComponentsDataSource): ViewModel() {
     private val boxId = MutableLiveData<Int>()
     val componentsList = boxId.switchMap{
         liveData{
@@ -28,16 +32,4 @@ class RadioComponentsListViewModel(private val dataSource: RadioComponentsDataSo
     fun addComponent() {
         _addComponentEvent.value = Event(Unit)
     }
-}
-
-class RadioComponentsListViewModelFactory(private val dataSource: RadioComponentsDataSource): ViewModelProvider.Factory {
-    @Suppress("unchecked_cast")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(RadioComponentsListViewModel::class.java)) {
-            return RadioComponentsListViewModel(dataSource) as T
-        }else {
-            throw IllegalArgumentException("No ViewModel class found")
-        }
-    }
-
 }

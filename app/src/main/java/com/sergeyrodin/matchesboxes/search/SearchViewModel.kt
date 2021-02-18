@@ -4,8 +4,13 @@ import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SearchViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel() {
+@HiltViewModel
+class SearchViewModel @Inject constructor(
+    private val dataSource: RadioComponentsDataSource) : ViewModel() {
+
     private val searchQuery = MutableLiveData<String>()
     val items = searchQuery.switchMap{ query ->
         liveData {

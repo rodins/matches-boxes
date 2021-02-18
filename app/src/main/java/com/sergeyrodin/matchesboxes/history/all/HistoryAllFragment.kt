@@ -8,24 +8,17 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.sergeyrodin.matchesboxes.EventObserver
-import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.databinding.FragmentHistoryAllBinding
 import com.sergeyrodin.matchesboxes.history.HistoryActionModeController
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HistoryAllFragment : Fragment() {
     private lateinit var actionModeController: HistoryActionModeController
     private lateinit var binding: FragmentHistoryAllBinding
     private lateinit var adapter: HistoryModelAdapter
 
-    private val viewModel by viewModels<HistoryAllViewModel> {
-        getViewModelFactory()
-    }
-
-    private fun getViewModelFactory(): HistoryAllViewModelFactory {
-        return HistoryAllViewModelFactory(
-            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-        )
-    }
+    private val viewModel by viewModels<HistoryAllViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

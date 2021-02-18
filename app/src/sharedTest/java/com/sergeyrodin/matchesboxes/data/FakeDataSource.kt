@@ -3,8 +3,11 @@ package com.sergeyrodin.matchesboxes.data
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class FakeDataSource : RadioComponentsDataSource{
+@Singleton
+class FakeDataSource @Inject constructor() : RadioComponentsDataSource{
     private val bagsList = mutableListOf<Bag>()
     private val observableBags = MutableLiveData<List<ItemWithQuantityPresentation>>(listOf())
     private val matchesBoxSetList = mutableListOf<MatchesBoxSet>()
@@ -312,5 +315,9 @@ class FakeDataSource : RadioComponentsDataSource{
             it.componentId == id
         }
         return observableHistoryList
+    }
+
+    override suspend fun clearDatabase() {
+        TODO("Not yet implemented")
     }
 }
