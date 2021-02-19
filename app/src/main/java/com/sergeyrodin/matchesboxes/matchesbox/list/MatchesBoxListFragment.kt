@@ -13,24 +13,18 @@ import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityListener
 import com.sergeyrodin.matchesboxes.data.MatchesBox
 
 import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxListBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MatchesBoxListFragment : Fragment() {
 
     private val args by navArgs<MatchesBoxListFragmentArgs>()
-    private val viewModel by viewModels<MatchesBoxListViewModel> {
-        getViewModelFactory()
-    }
-
-    private fun getViewModelFactory(): MatchesBoxListViewModelFactory {
-        return MatchesBoxListViewModelFactory(
-            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-        )
-    }
+    private val viewModel by viewModels<MatchesBoxListViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = createBinding(inflater)
         startViewModel()
         setupBinding(binding)

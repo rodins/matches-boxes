@@ -10,21 +10,12 @@ import androidx.navigation.fragment.navArgs
 import com.sergeyrodin.matchesboxes.*
 import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns
 import com.sergeyrodin.matchesboxes.databinding.FragmentRadioComponentsListBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RadioComponentsListFragment : Fragment() {
     private val args by navArgs<RadioComponentsListFragmentArgs>()
-    private val viewModel by viewModels<RadioComponentsListViewModel>{
-        createViewModelFactory()
-    }
-
-    private fun createViewModelFactory(): RadioComponentsListViewModelFactory {
-        return RadioComponentsListViewModelFactory(
-            getDataSourceFromApplication()
-        )
-    }
-
-    private fun getDataSourceFromApplication() =
-        (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
+    private val viewModel by viewModels<RadioComponentsListViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

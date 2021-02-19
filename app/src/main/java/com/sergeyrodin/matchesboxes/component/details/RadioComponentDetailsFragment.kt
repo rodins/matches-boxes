@@ -14,21 +14,12 @@ import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.databinding.FragmentRadioComponentDetailsBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RadioComponentDetailsFragment : Fragment() {
 
-    private val viewModel by viewModels<RadioComponentDetailsViewModel> {
-        getViewModelFactory()
-    }
-
-    private fun getViewModelFactory(): RadioComponentDetailsViewModelFactory {
-        return RadioComponentDetailsViewModelFactory(
-            getDataSurceFromApplication()
-        )
-    }
-
-    private fun getDataSurceFromApplication() =
-        (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
+    private val viewModel by viewModels<RadioComponentDetailsViewModel>()
 
     private lateinit var binding: FragmentRadioComponentDetailsBinding
 

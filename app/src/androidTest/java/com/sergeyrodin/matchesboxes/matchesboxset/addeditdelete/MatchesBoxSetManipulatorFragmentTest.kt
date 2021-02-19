@@ -3,8 +3,7 @@ package com.sergeyrodin.matchesboxes.matchesboxset.addeditdelete
 import android.content.Context
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.FragmentScenario
-import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
@@ -18,35 +17,41 @@ import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.DO_NOT_NEED_THIS_VARIABLE
 import com.sergeyrodin.matchesboxes.R
-import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
+import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
+import com.sergeyrodin.matchesboxes.launchFragmentInHiltContainer
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
+@HiltAndroidTest
+@UninstallModules(RadioComponentsDataSourceModule::class)
 class MatchesBoxSetManipulatorFragmentTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
-    private lateinit var dataSource: FakeDataSource
+
+    @Inject
+    lateinit var dataSource: FakeDataSource
 
     @Before
     fun initDataSource() {
-        dataSource = FakeDataSource()
-        ServiceLocator.radioComponentsDataSource = dataSource
-    }
-
-    @After
-    fun clearDataSource() {
-        ServiceLocator.resetDataSource()
+        hiltRule.inject()
     }
 
     @Test
@@ -55,7 +60,7 @@ class MatchesBoxSetManipulatorFragmentTest {
         val set = MatchesBoxSet(1, "MBS1", bag.id)
         dataSource.addMatchesBoxSets(set)
         val bundle = MatchesBoxSetManipulatorFragmentArgs.Builder(bag.id, ADD_NEW_ITEM_ID, "Title").build().toBundle()
-        launchFragmentInContainer<MatchesBoxSetManipulatorFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<MatchesBoxSetManipulatorFragment>(bundle, R.style.AppTheme)
 
         onView(withHint(R.string.enter_matches_box_set_name)).check(matches(isDisplayed()))
     }
@@ -66,7 +71,7 @@ class MatchesBoxSetManipulatorFragmentTest {
         val set = MatchesBoxSet(15, "MBS1", 2)
         dataSource.addMatchesBoxSets(set)
         val bundle = MatchesBoxSetManipulatorFragmentArgs.Builder(bag.id, set.id, "Title").build().toBundle()
-        launchFragmentInContainer<MatchesBoxSetManipulatorFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<MatchesBoxSetManipulatorFragment>(bundle, R.style.AppTheme)
 
         onView(withId(R.id.set_edit)).check(matches(withText(set.name)))
     }
@@ -77,11 +82,12 @@ class MatchesBoxSetManipulatorFragmentTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set)
-        val bundle = MatchesBoxSetManipulatorFragmentArgs.Builder(bag.id, ADD_NEW_ITEM_ID, "Title").build().toBundle()
-        val scenario = launchFragmentInContainer<MatchesBoxSetManipulatorFragment>(bundle, R.style.AppTheme)
+
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment{
-            Navigation.setViewNavController(it.view!!, navController)
+
+        val bundle = MatchesBoxSetManipulatorFragmentArgs.Builder(bag.id, ADD_NEW_ITEM_ID, "Title").build().toBundle()
+        launchFragmentInHiltContainer<MatchesBoxSetManipulatorFragment>(bundle, R.style.AppTheme) {
+            Navigation.setViewNavController(requireView(), navController)
         }
 
         onView(withId(R.id.set_edit)).perform(replaceText("New set"))
@@ -100,11 +106,12 @@ class MatchesBoxSetManipulatorFragmentTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         val setUpdated = MatchesBoxSet(1, "Set updated", bag.id)
         dataSource.addMatchesBoxSets(set.copy())
-        val bundle = MatchesBoxSetManipulatorFragmentArgs.Builder(bag.id, set.id, "Title").build().toBundle()
-        val scenario = launchFragmentInContainer<MatchesBoxSetManipulatorFragment>(bundle, R.style.AppTheme)
+
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
+
+        val bundle = MatchesBoxSetManipulatorFragmentArgs.Builder(bag.id, set.id, "Title").build().toBundle()
+        launchFragmentInHiltContainer<MatchesBoxSetManipulatorFragment>(bundle, R.style.AppTheme) {
+            Navigation.setViewNavController(requireView(), navController)
         }
 
         onView(withId(R.id.set_edit)).perform(replaceText(setUpdated.name))
@@ -122,13 +129,14 @@ class MatchesBoxSetManipulatorFragmentTest {
         val set = MatchesBoxSet(1, "MBS", bag.id)
         dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set)
-        val bundle = MatchesBoxSetManipulatorFragmentArgs.Builder(DO_NOT_NEED_THIS_VARIABLE, set.id, "Title").build().toBundle()
-        val scenario = launchFragmentInContainer<MatchesBoxSetManipulatorFragment>(bundle, R.style.AppTheme)
+
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment{
-            Navigation.setViewNavController(it.view!!, navController)
+
+        val bundle = MatchesBoxSetManipulatorFragmentArgs.Builder(DO_NOT_NEED_THIS_VARIABLE, set.id, "Title").build().toBundle()
+        launchFragmentInHiltContainer<MatchesBoxSetManipulatorFragment>(bundle, R.style.AppTheme) {
+            Navigation.setViewNavController(requireView(), navController)
+            clickDeleteAction(this)
         }
-        clickDeleteAction(scenario)
 
         verify(navController).navigate(
             MatchesBoxSetManipulatorFragmentDirections
@@ -137,13 +145,10 @@ class MatchesBoxSetManipulatorFragmentTest {
     }
 
     private fun clickDeleteAction(
-        scenario: FragmentScenario<MatchesBoxSetManipulatorFragment>
+        fragment: Fragment
     ) {
-        // Create dummy menu item with the desired item id
         val context = ApplicationProvider.getApplicationContext<Context>()
         val deleteMenuItem = ActionMenuItem(context, 0, R.id.action_delete, 0, 0, null)
-        scenario.onFragment{
-            it.onOptionsItemSelected(deleteMenuItem)
-        }
+        fragment.onOptionsItemSelected(deleteMenuItem)
     }
 }

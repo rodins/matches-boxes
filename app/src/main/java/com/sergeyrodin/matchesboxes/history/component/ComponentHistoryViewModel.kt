@@ -1,23 +1,31 @@
 package com.sergeyrodin.matchesboxes.history.component
 
 import androidx.lifecycle.*
+import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
-import com.sergeyrodin.matchesboxes.history.HighlightedPositionSaverAndNotifier
 import com.sergeyrodin.matchesboxes.history.HistoryActionModeModel
-import com.sergeyrodin.matchesboxes.history.HistoryDeleter
-import com.sergeyrodin.matchesboxes.history.HistoryPresentationHighlighter
+import com.sergeyrodin.matchesboxes.util.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ComponentHistoryViewModel(dataSource: RadioComponentsDataSource): ViewModel(),
+@HiltViewModel
+class ComponentHistoryViewModel @Inject constructor(
+    private val dataSource: RadioComponentsDataSource): ViewModel(),
     HistoryActionModeModel {
-    private val positionSaverAndNotifier = HighlightedPositionSaverAndNotifier()
-    private val converter = ConverterToComponentHistoryPresentation(dataSource)
-    private val deleter = HistoryDeleter(dataSource, converter, positionSaverAndNotifier)
-    private val highlighter = HistoryPresentationHighlighter(converter, positionSaverAndNotifier)
 
-    val itemChangedEvent = positionSaverAndNotifier.itemChangedEvent
-    val historyPresentationItems = converter.historyPresentationItems
-    val noItemsTextVisible = historyPresentationItems.map { list ->
+    private val inputId = MutableLiveData<Int>()
+
+    val historyItems: LiveData<List<History>> = inputId.switchMap { id ->
+        dataSource.observeHistoryListByComponentId(id)
+    }
+
+    private val _highlightedPositionEvent = MutableLiveData<Int>()
+    val highlightedPositionEvent: LiveData<Int>
+        get() = _highlightedPositionEvent
+
+    val noItemsTextVisible = historyItems.map { list ->
+        calculateDeltasForHistoryItems(list)
         list.isEmpty()
     }
 
@@ -25,19 +33,37 @@ class ComponentHistoryViewModel(dataSource: RadioComponentsDataSource): ViewMode
     val actionModeEvent: LiveData<Boolean>
         get() = _actionModeEvent
 
+    private var deleteItemId = -1
+
+    init {
+        resetAndReturnHighlightedId()
+    }
+
     fun start(id: Int) {
-        viewModelScope.launch {
-            if(historyPresentationItems.value == null)
-                converter.convert(id)
+        inputId.value = id
+    }
+
+    fun presentationLongClick(id: Int) {
+        if(isNotHighlighted()) {
+            setDeleteItemId(id)
+            setHighlightedId(id)
+            callHighlightedPositionEvent(id)
+            activateActionMode()
         }
     }
 
-    fun presentationLongClick(position: Int) {
-        if(positionSaverAndNotifier.isNotHighlightMode()) {
-            highlighter.highlight(position)
-            positionSaverAndNotifier.saveHighlightedPositionAndNotifyItChanged(position)
-            activateActionMode()
-        }
+    private fun setDeleteItemId(id: Int) {
+        deleteItemId = id
+    }
+
+    private fun callHighlightedPositionEvent(id: Int) {
+        _highlightedPositionEvent.value = getPositionById(id)
+    }
+
+    private fun getPositionById(id: Int): Int {
+        return historyItems.value?.indexOfFirst {
+            it.id == id
+        } ?: -1
     }
 
     private fun activateActionMode() {
@@ -45,9 +71,9 @@ class ComponentHistoryViewModel(dataSource: RadioComponentsDataSource): ViewMode
     }
 
     fun presentationClick() {
-        if(positionSaverAndNotifier.isHighlightMode()) {
-            highlighter.unhighlight()
-            positionSaverAndNotifier.notifyChangedAndResetHighlightedPosition()
+        if(isHighlighted()) {
+            val prevId = resetAndReturnHighlightedId()
+            callHighlightedPositionEvent(prevId)
             closeActionMode()
         }
     }
@@ -58,23 +84,21 @@ class ComponentHistoryViewModel(dataSource: RadioComponentsDataSource): ViewMode
 
     override fun deleteHighlightedPresentation() {
         viewModelScope.launch {
-            deleter.deleteHighlightedPresentation()
+            val history = dataSource.getHistoryById(deleteItemId)
+            history?.let{
+                dataSource.deleteHistory(history)
+            }
+            resetDeleteItemId()
+            resetAndReturnHighlightedId()
             closeActionMode()
         }
     }
 
+    private fun resetDeleteItemId() {
+        deleteItemId = -1
+    }
+
     override fun actionModeClosed() {
         presentationClick()
-    }
-}
-
-class ComponentHistoryViewModelFactory(private var dataSource: RadioComponentsDataSource): ViewModelProvider.Factory {
-    @Suppress("unchecked_cast")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(ComponentHistoryViewModel::class.java)) {
-            return ComponentHistoryViewModel(dataSource) as T
-        }else{
-            throw IllegalArgumentException("No ViewModel class found.")
-        }
     }
 }

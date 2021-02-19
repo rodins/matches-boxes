@@ -5,9 +5,13 @@ import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.data.RadioComponentDetails
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RadioComponentDetailsViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
+@HiltViewModel
+class RadioComponentDetailsViewModel @Inject constructor(
+    private val dataSource: RadioComponentsDataSource): ViewModel() {
     private val componentId = MutableLiveData<Int>()
     val details = componentId.switchMap{ id ->
         liveData{
@@ -30,18 +34,6 @@ class RadioComponentDetailsViewModel(private val dataSource: RadioComponentsData
                 val component = dataSource.getRadioComponentById(it)
                 _editEvent.value = Event(component!!)
             }
-        }
-    }
-
-}
-
-class RadioComponentDetailsViewModelFactory(private val dataSource: RadioComponentsDataSource): ViewModelProvider.Factory {
-    @Suppress("unchecked_cast")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(RadioComponentDetailsViewModel::class.java)) {
-            return RadioComponentDetailsViewModel(dataSource) as T
-        }else {
-            throw IllegalArgumentException("No ViewModel class found.")
         }
     }
 

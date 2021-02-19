@@ -7,9 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class BagManipulatorViewModel(private val dataSource: RadioComponentsDataSource) : ViewModel() {
+@HiltViewModel
+class BagManipulatorViewModel @Inject constructor(
+    private val dataSource: RadioComponentsDataSource) : ViewModel() {
 
     val name = MutableLiveData<String>()
 

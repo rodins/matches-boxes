@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
@@ -14,10 +15,15 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.R
-import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.*
+import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
+import com.sergeyrodin.matchesboxes.launchFragmentInHiltContainer
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
@@ -26,23 +32,26 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
+import javax.inject.Inject
 
+@MediumTest
 @RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
+@UninstallModules(RadioComponentsDataSourceModule::class)
 class RadioComponentManipulatorFragmentTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var dataSource: FakeDataSource
+    @Inject
+    lateinit var dataSource: FakeDataSource
 
     @Before
     fun initDataSource() {
-        dataSource = FakeDataSource()
-        ServiceLocator.radioComponentsDataSource = dataSource
-    }
-
-    @After
-    fun clearDataSource() {
-        ServiceLocator.resetDataSource()
+        hiltRule.inject()
     }
 
     @Test
@@ -108,12 +117,11 @@ class RadioComponentManipulatorFragmentTest {
         val box = MatchesBox(1, "Box", set.id)
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents()
-        val scenario =
-            launchFragmentWithArgs(box)
+
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-        }
+
+        val bundle = createBundle(box)
+        launchFragmentWithNavController(bundle, navController)
 
         onView(withId(R.id.component_edit)).perform(replaceText("New component"))
         onView(withId(R.id.save_component_fab)).perform(click())
@@ -146,12 +154,11 @@ class RadioComponentManipulatorFragmentTest {
         val component = RadioComponent(1, "Component", 3, box.id)
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
-        val scenario =
-            launchFragmentWithArgs(component, box)
+
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-        }
+
+        val bundle = createBundleComponentsList(component, box)
+        launchFragmentWithNavController(bundle, navController)
 
         onView(withId(R.id.component_edit)).perform(replaceText("Update component"))
         onView(withId(R.id.save_component_fab)).perform(click())
@@ -173,14 +180,14 @@ class RadioComponentManipulatorFragmentTest {
         val component = RadioComponent(1, "Component", 3, box.id)
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
-        val scenario =
-            launchFragmentWithArgs(component, box)
-        val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-        }
 
-        clickDeleteAction(scenario)
+        val navController = Mockito.mock(NavController::class.java)
+
+        val bundle = createBundleComponentsList(component, box)
+        launchFragmentInHiltContainer<RadioComponentManipulatorFragment>(bundle, R.style.AppTheme) {
+            Navigation.setViewNavController(view!!, navController)
+            clickDeleteAction(this)
+        }
 
         verify(navController).navigate(
             RadioComponentManipulatorFragmentDirections
@@ -376,12 +383,11 @@ class RadioComponentManipulatorFragmentTest {
         dataSource.addMatchesBoxSets(set1, set2, set3, set4)
         dataSource.addMatchesBoxes(box1, box2, box3, box4, box5, box6, box7, box8)
         dataSource.addRadioComponents(component)
-        val scenario =
-            launchFragmentWithArgs(component, box5)
+
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-        }
+
+        val bundle = createBundleComponentsList(component, box5)
+        launchFragmentWithNavController(bundle, navController)
 
         onView(withText(box5.name)).perform(click())
         onView(withText(box6.name)).perform(click())
@@ -415,12 +421,12 @@ class RadioComponentManipulatorFragmentTest {
         dataSource.addBags(bag1, bag2)
         dataSource.addMatchesBoxSets(set1, set2, set3, set4)
         dataSource.addMatchesBoxes(box1, box2, box3, box4, box5, box6, box7, box8)
-        val scenario =
-            launchFragmentWithArgs(box5)
+
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-        }
+
+        val bundle = createBundle(box5)
+        launchFragmentWithNavController(bundle, navController)
+
         onView(withText(box5.name)).perform(click())
         onView(withText(box6.name)).perform(click())
         onView(withId(R.id.component_edit)).perform(typeText("Component"), closeSoftKeyboard())
@@ -435,9 +441,9 @@ class RadioComponentManipulatorFragmentTest {
         )
     }
 
-    private fun launchFragmentWithArgs(box: MatchesBox): FragmentScenario<RadioComponentManipulatorFragment> {
+    private fun launchFragmentWithArgs(box: MatchesBox) {
         val bundle = createBundle(box)
-        return launchFragment(bundle)
+        launchFragment(bundle)
     }
 
     private fun createBundle(box: MatchesBox): Bundle {
@@ -520,9 +526,9 @@ class RadioComponentManipulatorFragmentTest {
     private fun launchFragmentWithArgs(
         component: RadioComponent,
         box: MatchesBox
-    ): FragmentScenario<RadioComponentManipulatorFragment> {
+    ) {
         val bundle = createBundleComponentsList(component, box)
-        return launchFragment(bundle)
+        launchFragment(bundle)
     }
 
     private fun createBundleComponentsList(
@@ -549,12 +555,11 @@ class RadioComponentManipulatorFragmentTest {
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
-        val bundle = createBundle(component, box, query)
-        val scenario = launchFragment(bundle)
+
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-        }
+
+        val bundle = createBundle(component, box, query)
+        launchFragmentWithNavController(bundle, navController)
 
         onView(withText(R.string.button_plus)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
@@ -575,12 +580,11 @@ class RadioComponentManipulatorFragmentTest {
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
-        val bundle = createBundleNeededComponents(component, box)
-        val scenario = launchFragment(bundle)
+
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-        }
+
+        val bundle = createBundleNeededComponents(component, box)
+        launchFragmentWithNavController(bundle, navController)
 
         onView(withText(R.string.button_plus)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
@@ -614,14 +618,14 @@ class RadioComponentManipulatorFragmentTest {
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
-        val bundle = createBundle(component, box, query)
-        val scenario = launchFragment(bundle)
-        val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-        }
 
-        clickDeleteAction(scenario)
+        val navController = Mockito.mock(NavController::class.java)
+
+        val bundle = createBundle(component, box, query)
+        launchFragmentInHiltContainer<RadioComponentManipulatorFragment>(bundle, R.style.AppTheme) {
+            Navigation.setViewNavController(view!!, navController)
+            clickDeleteAction(this)
+        }
 
         verify(navController).navigate(
             RadioComponentManipulatorFragmentDirections
@@ -654,12 +658,11 @@ class RadioComponentManipulatorFragmentTest {
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
-        val scenario =
-            launchFragmentWithArgs(query)
+
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-        }
+
+        val bundle = createBundle(query)
+        launchFragmentWithNavController(bundle, navController)
 
         onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
@@ -683,9 +686,9 @@ class RadioComponentManipulatorFragmentTest {
 
     private fun launchFragmentWithArgs(
         query: String
-    ): FragmentScenario<RadioComponentManipulatorFragment> {
+    ) {
         val bundle = createBundle(query)
-        return launchFragment(bundle)
+        launchFragment(bundle)
     }
 
     @Test
@@ -698,12 +701,11 @@ class RadioComponentManipulatorFragmentTest {
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component)
-        val scenario =
-            launchFragmentNewItemNeededComponents()
+
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-        }
+
+        val bundle = createBundleNewItemNeededComponents()
+        launchFragmentWithNavController(bundle, navController)
 
         onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
@@ -711,6 +713,15 @@ class RadioComponentManipulatorFragmentTest {
         verify(navController).navigate(
             RadioComponentManipulatorFragmentDirections.actionAddEditDeleteRadioComponentFragmentToNeededComponentsFragment()
         )
+    }
+
+    private fun launchFragmentWithNavController(
+        bundle: Bundle,
+        navController: NavController?
+    ) {
+        launchFragmentInHiltContainer<RadioComponentManipulatorFragment>(bundle, R.style.AppTheme) {
+            Navigation.setViewNavController(view!!, navController)
+        }
     }
 
     private fun createBundleNewItemNeededComponents(): Bundle {
@@ -721,11 +732,6 @@ class RadioComponentManipulatorFragmentTest {
             "",
             RadioComponentManipulatorReturns.TO_NEEDED_LIST
         ).build().toBundle()
-    }
-
-    private fun launchFragmentNewItemNeededComponents(): FragmentScenario<RadioComponentManipulatorFragment> {
-        val bundle = createBundleNewItemNeededComponents()
-        return launchFragment(bundle)
     }
 
     @Test
@@ -767,19 +773,17 @@ class RadioComponentManipulatorFragmentTest {
         onView(withText(R.string.no_bags)).check(matches(isDisplayed()))
     }
 
-    private fun launchFragment(bundle: Bundle): FragmentScenario<RadioComponentManipulatorFragment> {
-        return launchFragmentInContainer(bundle, R.style.AppTheme)
+    private fun launchFragment(bundle: Bundle) {
+        launchFragmentInHiltContainer<RadioComponentManipulatorFragment>(bundle, R.style.AppTheme)
     }
 
     private fun clickDeleteAction(
-        scenario: FragmentScenario<RadioComponentManipulatorFragment>
+        fragment: Fragment
     ) {
         // Create dummy menu item with the desired item id
         val context = ApplicationProvider.getApplicationContext<Context>()
         val deleteMenuItem = ActionMenuItem(context, 0, R.id.action_delete, 0, 0, null)
-        scenario.onFragment {
-            it.onOptionsItemSelected(deleteMenuItem)
-        }
+        fragment.onOptionsItemSelected(deleteMenuItem)
     }
 
 }

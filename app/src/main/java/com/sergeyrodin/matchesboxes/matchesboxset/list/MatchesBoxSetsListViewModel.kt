@@ -4,9 +4,13 @@ import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MatchesBoxSetsListViewModel(private val dataSource: RadioComponentsDataSource): ViewModel() {
+@HiltViewModel
+class MatchesBoxSetsListViewModel @Inject constructor(
+    private val dataSource: RadioComponentsDataSource): ViewModel() {
     private val bagId = MutableLiveData<Int>()
     val setsList = bagId.switchMap{ id ->
         liveData{
@@ -50,16 +54,4 @@ class MatchesBoxSetsListViewModel(private val dataSource: RadioComponentsDataSou
             _selectSetEvent.value = Event(it)
         }
     }
-}
-
-class MatchesBoxSetsListViewModelFactory(private val dataSource: RadioComponentsDataSource): ViewModelProvider.Factory {
-    @Suppress("unchecked_cast")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(MatchesBoxSetsListViewModel::class.java)) {
-            return MatchesBoxSetsListViewModel(dataSource) as T
-        }else {
-            throw IllegalArgumentException("No ViewModel class found.")
-        }
-    }
-
 }

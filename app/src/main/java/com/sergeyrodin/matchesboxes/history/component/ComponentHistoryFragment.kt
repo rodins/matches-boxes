@@ -6,39 +6,34 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
-import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.databinding.FragmentComponentHistoryBinding
 import com.sergeyrodin.matchesboxes.history.HistoryActionModeController
-import com.sergeyrodin.matchesboxes.history.all.HistoryPresentationClickListener
+import com.sergeyrodin.matchesboxes.history.all.HistoryLongClickListener
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ComponentHistoryFragment : Fragment() {
     private lateinit var actionModeController: HistoryActionModeController
     private lateinit var binding: FragmentComponentHistoryBinding
+    private lateinit var adapter: HistoryAdapter
     private val args by navArgs<ComponentHistoryFragmentArgs>()
-    private val viewModel by viewModels<ComponentHistoryViewModel> {
-        getViewModelFactory()
-    }
 
-    private fun getViewModelFactory(): ComponentHistoryViewModelFactory {
-        return ComponentHistoryViewModelFactory(
-            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-        )
-    }
+    private val viewModel by viewModels<ComponentHistoryViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         createBinding(inflater)
         createActionModeController()
         startViewModel()
         createAdapter()
         setupBinding()
-        observeItemChangedEvent()
+        observeHighlightedItemIdEvent()
         observeActionModeEvent()
+
         return binding.root
     }
 
@@ -55,20 +50,21 @@ class ComponentHistoryFragment : Fragment() {
     }
 
     private fun createAdapter() {
-        binding.displayComponentHistoryList.adapter = DisplayComponentHistoryAdapter(
+         adapter = HistoryAdapter(
             createLongClickListener(),
             createClickListener()
         )
+        binding.displayComponentHistoryList.adapter = adapter
     }
 
-    private fun createLongClickListener(): HistoryPresentationClickListener {
-        return HistoryPresentationClickListener { position ->
-            viewModel.presentationLongClick(position)
+    private fun createLongClickListener(): HistoryLongClickListener {
+        return HistoryLongClickListener { id ->
+            viewModel.presentationLongClick(id)
         }
     }
 
-    private fun createClickListener(): ComponentHistoryPresentationClickListener {
-        return ComponentHistoryPresentationClickListener {
+    private fun createClickListener(): HistoryClickListener {
+        return HistoryClickListener {
             viewModel.presentationClick()
         }
     }
@@ -78,14 +74,14 @@ class ComponentHistoryFragment : Fragment() {
         binding.viewModel = viewModel
     }
 
-    private fun observeItemChangedEvent() {
-        viewModel.itemChangedEvent.observe(viewLifecycleOwner, Observer { position ->
-            binding.displayComponentHistoryList.adapter?.notifyItemChanged(position)
+    private fun observeHighlightedItemIdEvent() {
+        viewModel.highlightedPositionEvent.observe(viewLifecycleOwner, { position ->
+            adapter.notifyItemChanged(position)
         })
     }
 
     private fun observeActionModeEvent() {
-        viewModel.actionModeEvent.observe(viewLifecycleOwner, Observer { activateActionMode ->
+        viewModel.actionModeEvent.observe(viewLifecycleOwner, { activateActionMode ->
             if (activateActionMode) {
                 actionModeController.startActionMode()
             } else {

@@ -2,16 +2,38 @@ package com.sergeyrodin.matchesboxes.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class FakeDataSource : RadioComponentsDataSource{
+@Singleton
+class FakeDataSource @Inject constructor() : RadioComponentsDataSource{
     private val bagsList = mutableListOf<Bag>()
-    private val bagsLiveData = MutableLiveData<List<ItemWithQuantityPresentation>>(listOf())
+    private val observableBags = MutableLiveData<List<ItemWithQuantityPresentation>>(listOf())
     private val matchesBoxSetList = mutableListOf<MatchesBoxSet>()
     private val matchesBoxList = mutableListOf<MatchesBox>()
     private val radioComponentsList = mutableListOf<RadioComponent>()
     private var radioComponentId = 0L
     private val historyList = mutableListOf<History>()
-    private val historyListLiveData = MutableLiveData<List<History>>()
+    private val observableHistoryList = MutableLiveData<List<History>>()
+
+    private val observableHistoryModelList = observableHistoryList.map {
+        it.map { history ->
+            HistoryModel(
+                history.id,
+                history.componentId,
+                getComponentName(history.componentId),
+                history.quantity,
+                history.date
+            )
+        }
+    }
+
+    private fun getComponentName(componentId: Int): String {
+        return radioComponentsList.find {
+            it.id == componentId
+        }?.name ?: ""
+    }
 
     // Bags
     fun addBags(vararg bags: Bag) {
@@ -210,7 +232,7 @@ class FakeDataSource : RadioComponentsDataSource{
 
     override fun getBagsQuantityPresentationList(): LiveData<List<ItemWithQuantityPresentation>> {
         initBagsLiveData()
-        return bagsLiveData
+        return observableBags
     }
 
     override suspend fun getRadioComponentDetailsById(componentId: Int): RadioComponentDetails {
@@ -242,7 +264,7 @@ class FakeDataSource : RadioComponentsDataSource{
             val displayQuantity = ItemWithQuantityPresentation(bag.id, bag.name, sum.toString())
             list.add(displayQuantity)
         }
-        bagsLiveData.value = list
+        observableBags.value = list
     }
 
     // History
@@ -251,30 +273,51 @@ class FakeDataSource : RadioComponentsDataSource{
         for(history in histories) {
             historyList.add(history)
         }
-        historyListLiveData.value = historyList
+        observableHistoryList.value = historyList.reversed()
     }
 
     override suspend fun insertHistory(history: History) {
         historyList.add(history)
-        historyListLiveData.value = historyList
+        observableHistoryList.value = historyList.reversed()
     }
 
     override fun observeHistoryList(): LiveData<List<History>> {
-        return historyListLiveData
+        return observableHistoryList
     }
 
     override suspend fun getHistoryList(): List<History> {
-        return historyList
+        return historyList.reversed()
     }
 
     override suspend fun getHistoryListByComponentId(id: Int): List<History> {
-        return historyList.filter {
+        return historyList.reversed().filter {
             it.componentId == id
         }
     }
 
     override suspend fun deleteHistory(history: History) {
         historyList.remove(history)
-        historyListLiveData.value = historyList
+        observableHistoryList.value = historyList.reversed()
+    }
+
+    override fun observeHistoryModel(): LiveData<List<HistoryModel>> {
+        return observableHistoryModelList
+    }
+
+    override suspend fun getHistoryById(id: Int): History? {
+        return historyList.find {
+            it.id == id
+        }
+    }
+
+    override fun observeHistoryListByComponentId(id: Int): LiveData<List<History>> {
+        observableHistoryList.value = historyList.reversed().filter {
+            it.componentId == id
+        }
+        return observableHistoryList
+    }
+
+    override suspend fun clearDatabase() {
+        TODO("Not yet implemented")
     }
 }

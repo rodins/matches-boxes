@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'androidx.navigation.safeargs'
 
 android {
@@ -18,12 +19,12 @@ android {
         versionCode 3
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.sergeyrodin.matchesboxes.CustomTestRunner"
         vectorDrawables.useSupportLibrary = true
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
     }
@@ -102,5 +103,17 @@ dependencies {
     // Mockito
     androidTestImplementation "org.mockito:mockito-core:2.23.0"
     androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:2.12.1"
+
+    // Hilt
+    def hiltAndroidXVersion = '1.0.0-alpha03'
+    implementation "com.google.dagger:hilt-android:$hiltVersion"
+    kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hiltAndroidXVersion"
+    kapt "androidx.hilt:hilt-compiler:$hiltAndroidXVersion"
+
+    // Hilt testing
+    androidTestImplementation "com.google.dagger:hilt-android-testing:$hiltVersion"
+    kaptAndroidTest "com.google.dagger:hilt-android-compiler:$hiltVersion"
+    kaptAndroidTest "androidx.hilt:hilt-compiler:$hiltAndroidXVersion"
 
 }

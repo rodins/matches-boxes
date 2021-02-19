@@ -2,7 +2,6 @@ package com.sergeyrodin.matchesboxes
 
 import android.view.View
 import androidx.test.core.app.ActivityScenario
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
@@ -14,23 +13,45 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.sergeyrodin.matchesboxes.data.*
+import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
+import com.sergeyrodin.matchesboxes.di.TestModule
 import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
 import com.sergeyrodin.matchesboxes.util.monitorActivity
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import javax.inject.Inject
 
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
+@HiltAndroidTest
+@UninstallModules(TestModule::class)
 class ToastsTest {
-    private lateinit var dataSource: RadioComponentsDataSource
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
+    @Inject
+    lateinit var dataSource: RadioComponentsDataSource
 
     private val dataBindingIdlingResource = DataBindingIdlingResource()
+
+    @Before
+    fun initDataSource() {
+        hiltRule.inject()
+        runBlocking {
+            dataSource.clearDatabase()
+        }
+    }
 
     @Before
     fun registerIdlingResource() {
@@ -42,16 +63,6 @@ class ToastsTest {
     fun unregisterIdlingResource() {
         IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
         IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
-    }
-
-    @Before
-    fun init() {
-        dataSource = ServiceLocator.provideRadioComponentsDataSource(ApplicationProvider.getApplicationContext())
-    }
-
-    @After
-    fun reset() {
-        ServiceLocator.resetDataSource()
     }
 
     // Bag
@@ -153,7 +164,7 @@ class ToastsTest {
         onView(withText(set.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.set_edit))
-            .perform(ViewActions.replaceText("Set updated"))
+            .perform(replaceText("Set updated"))
         onView(withId(R.id.save_set_fab)).perform(click())
 
         checkToastIsDisplayed(decorView, R.string.matches_box_set_updated)
@@ -219,7 +230,7 @@ class ToastsTest {
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.box_edit))
-            .perform(ViewActions.replaceText("Updated box"))
+            .perform(replaceText("Updated box"))
         onView(withId(R.id.save_box_fab)).perform(click())
 
         checkToastIsDisplayed(decorView, R.string.box_updated)

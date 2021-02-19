@@ -8,9 +8,13 @@ import com.sergeyrodin.matchesboxes.Event
 import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MatchesBoxManipulatorViewModel(private val dataSource: RadioComponentsDataSource) :
+@HiltViewModel
+class MatchesBoxManipulatorViewModel @Inject constructor(
+    private val dataSource: RadioComponentsDataSource) :
     ViewModel() {
     val name = MutableLiveData<String>()
 

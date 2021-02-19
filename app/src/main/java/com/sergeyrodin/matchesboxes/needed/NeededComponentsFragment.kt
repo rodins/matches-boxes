@@ -17,21 +17,12 @@ import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipu
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentListener
 import com.sergeyrodin.matchesboxes.databinding.FragmentNeededComponentsBinding
+import dagger.hilt.android.AndroidEntryPoint
 import java.lang.IllegalArgumentException
 
+@AndroidEntryPoint
 class NeededComponentsFragment : Fragment() {
-    private val viewModel by viewModels<NeededComponentsViewModel> {
-        createViewModelFactory()
-    }
-
-    private fun createViewModelFactory(): NeededComponentsViewModelFactory {
-        return NeededComponentsViewModelFactory(
-            getDataSourceFromApplication()
-        )
-    }
-
-    private fun getDataSourceFromApplication() =
-        (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
+    private val viewModel by viewModels<NeededComponentsViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

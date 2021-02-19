@@ -6,34 +6,29 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.sergeyrodin.matchesboxes.EventObserver
-import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.databinding.FragmentHistoryAllBinding
 import com.sergeyrodin.matchesboxes.history.HistoryActionModeController
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HistoryAllFragment : Fragment() {
     private lateinit var actionModeController: HistoryActionModeController
     private lateinit var binding: FragmentHistoryAllBinding
-    private val viewModel by viewModels<HistoryAllViewModel> {
-        getViewModelFactory()
-    }
+    private lateinit var adapter: HistoryModelAdapter
 
-    private fun getViewModelFactory(): HistoryAllViewModelFactory {
-        return HistoryAllViewModelFactory(
-            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-        )
-    }
+    private val viewModel by viewModels<HistoryAllViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         createBinding(inflater, container)
         createActionModeController()
         setupBinding()
         setupObservers()
+
         return binding.root
     }
 
@@ -51,32 +46,33 @@ class HistoryAllFragment : Fragment() {
     private fun setupBinding() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
-        binding.displayHistoryList.adapter = createDisplayHistoryAdapter()
+        adapter = createDisplayHistoryAdapter()
+        binding.displayHistoryList.adapter = adapter
     }
 
-    private fun createDisplayHistoryAdapter(): HistoryPresentationAdapter {
-        return HistoryPresentationAdapter(
+    private fun createDisplayHistoryAdapter(): HistoryModelAdapter {
+        return HistoryModelAdapter(
             createHistoryPresentationClickListener(),
             createHistoryPresentationLongClickListener()
         )
     }
 
-    private fun createHistoryPresentationClickListener(): HistoryPresentationClickListener {
-        return HistoryPresentationClickListener { position ->
-            viewModel.presentationClick(position)
+    private fun createHistoryPresentationClickListener(): HistoryModelClickListener {
+        return HistoryModelClickListener { componentId, name ->
+            viewModel.presentationClick(componentId, name)
         }
     }
 
-    private fun createHistoryPresentationLongClickListener(): HistoryPresentationClickListener {
-        return HistoryPresentationClickListener { position ->
-            viewModel.presentationLongClick(position)
+    private fun createHistoryPresentationLongClickListener(): HistoryLongClickListener {
+        return HistoryLongClickListener { id ->
+            viewModel.presentationLongClick(id)
         }
     }
 
     private fun setupObservers() {
         observeSelectedEvent()
         observeActionModeEvent()
-        observeItemChangedEvent()
+        observeHighlightedPositionEvent()
     }
 
     private fun observeSelectedEvent() {
@@ -95,7 +91,7 @@ class HistoryAllFragment : Fragment() {
     }
 
     private fun observeActionModeEvent() {
-        viewModel.actionModeEvent.observe(viewLifecycleOwner, Observer { actionModeEnabled ->
+        viewModel.actionModeEvent.observe(viewLifecycleOwner, { actionModeEnabled ->
             if(actionModeEnabled) {
                 actionModeController.startActionMode()
             }else {
@@ -104,9 +100,9 @@ class HistoryAllFragment : Fragment() {
         })
     }
 
-    private fun observeItemChangedEvent() {
-        viewModel.itemChangedEvent.observe(viewLifecycleOwner, Observer { position ->
-            binding.displayHistoryList.adapter?.notifyItemChanged(position)
+    private fun observeHighlightedPositionEvent() {
+        viewModel.highlightedPositionEvent.observe(viewLifecycleOwner, {
+            adapter.notifyItemChanged(it)
         })
     }
 }

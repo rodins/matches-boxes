@@ -1,6 +1,5 @@
 package com.sergeyrodin.matchesboxes.component.details
 
-import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
@@ -10,31 +9,36 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.R
-import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns
 import com.sergeyrodin.matchesboxes.data.*
-import org.junit.After
-import org.junit.Assert.*
+import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
+import com.sergeyrodin.matchesboxes.launchFragmentInHiltContainer
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
+import javax.inject.Inject
 
 @MediumTest
 @RunWith(AndroidJUnit4::class)
+@HiltAndroidTest
+@UninstallModules(RadioComponentsDataSourceModule::class)
 class RadioComponentDetailsFragmentTest {
-    private lateinit var dataSource: FakeDataSource
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
+    @Inject
+    lateinit var dataSource: FakeDataSource
 
     @Before
-    fun init() {
-        dataSource = FakeDataSource()
-        ServiceLocator.radioComponentsDataSource = dataSource
-    }
-
-    @After
-    fun reset() {
-        ServiceLocator.resetDataSource()
+    fun initDataSource() {
+        hiltRule.inject()
     }
 
     @Test
@@ -53,7 +57,7 @@ class RadioComponentDetailsFragmentTest {
             "",
             RadioComponentManipulatorReturns.TO_COMPONENTS_LIST
         ).build().toBundle()
-        launchFragmentInContainer<RadioComponentDetailsFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<RadioComponentDetailsFragment>(bundle, R.style.AppTheme)
 
         onView(withText(bag.name)).check(matches(isDisplayed()))
         onView(withText(set.name)).check(matches(isDisplayed()))
@@ -79,13 +83,13 @@ class RadioComponentDetailsFragmentTest {
             "",
             RadioComponentManipulatorReturns.TO_COMPONENTS_LIST
         ).build().toBundle()
-        val scenario =
-            launchFragmentInContainer<RadioComponentDetailsFragment>(bundle, R.style.AppTheme)
+
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-            title = it.getString(R.string.update_component)
+
+        launchFragmentInHiltContainer<RadioComponentDetailsFragment>(bundle, R.style.AppTheme) {
+            Navigation.setViewNavController(view!!, navController)
+            title = getString(R.string.update_component)
         }
 
         onView(withId(R.id.edit_component_fab)).perform(click())

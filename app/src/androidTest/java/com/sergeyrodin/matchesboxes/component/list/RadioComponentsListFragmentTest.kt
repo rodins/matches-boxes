@@ -4,8 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.FragmentScenario
-import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
@@ -16,38 +15,42 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
-import com.sergeyrodin.matchesboxes.DO_NOT_NEED_THIS_VARIABLE
 import com.sergeyrodin.matchesboxes.R
-import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns
 import com.sergeyrodin.matchesboxes.data.*
+import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
+import com.sergeyrodin.matchesboxes.launchFragmentInHiltContainer
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.CoreMatchers.not
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
+import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 @MediumTest
+@HiltAndroidTest
+@UninstallModules(RadioComponentsDataSourceModule::class)
 class RadioComponentsListFragmentTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var dataSource: FakeDataSource
+    @Inject
+    lateinit var dataSource: FakeDataSource
 
     @Before
     fun initDataSource() {
-        dataSource = FakeDataSource()
-        ServiceLocator.radioComponentsDataSource = dataSource
-    }
-
-    @After
-    fun clearDataSource() {
-        ServiceLocator.resetDataSource()
+        hiltRule.inject()
     }
 
     @Test
@@ -113,13 +116,13 @@ class RadioComponentsListFragmentTest {
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         dataSource.addRadioComponents()
-        val scenario =
-            launchFragment(box)
+
+        val bundle = createBundle(box)
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-            title = it.getString(R.string.add_component)
+        launchFragmentInHiltContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme) {
+            Navigation.setViewNavController(view!!, navController)
+            title = getString(R.string.add_component)
         }
 
         onView(withId(R.id.add_component_fab)).perform(click())
@@ -144,11 +147,11 @@ class RadioComponentsListFragmentTest {
         val component = RadioComponent(1, "Component", 3, box.id)
         dataSource.addRadioComponents(component)
 
-        val scenario =
-            launchFragment(box)
         val navController = Mockito.mock(NavController::class.java)
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
+        val bundle = createBundle(box)
+
+        launchFragmentInHiltContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme) {
+            Navigation.setViewNavController(requireView(), navController)
         }
 
         onView(withText(component.name)).perform(click())
@@ -169,16 +172,15 @@ class RadioComponentsListFragmentTest {
         val box = MatchesBox(1, "Box", setId)
         dataSource.addRadioComponents()
 
-        val scenario =
-            launchFragment(box)
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
-        scenario.onFragment {
-            Navigation.setViewNavController(it.view!!, navController)
-            title = it.getString(R.string.update_box)
-        }
 
-        clickEditAction(scenario)
+        val bundle = createBundle(box)
+        launchFragmentInHiltContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme) {
+            Navigation.setViewNavController(view!!, navController)
+            title = getString(R.string.update_box)
+            clickEditAction(this)
+        }
 
         verify(navController).navigate(
             RadioComponentsListFragmentDirections
@@ -188,26 +190,23 @@ class RadioComponentsListFragmentTest {
         )
     }
 
-    private fun launchFragment(box: MatchesBox): FragmentScenario<RadioComponentsListFragment> {
+    private fun launchFragment(box: MatchesBox) {
         val bundle = createBundle(box)
-        val scenario =
-            launchFragment(bundle)
-        return scenario
+        launchFragment(bundle)
     }
 
-    private fun launchFragment(bundle: Bundle) =
-        launchFragmentInContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
+    private fun launchFragment(bundle: Bundle){
+        launchFragmentInHiltContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
+    }
 
     private fun createBundle(box: MatchesBox): Bundle {
         return RadioComponentsListFragmentArgs.Builder(box.id, "Title").build().toBundle()
     }
 
-    private fun clickEditAction(scenario: FragmentScenario<RadioComponentsListFragment>) {
+    private fun clickEditAction(fragment: Fragment) {
         // Create dummy menu item with the desired item id
         val context = ApplicationProvider.getApplicationContext<Context>()
         val editMenuItem = ActionMenuItem(context, 0, R.id.action_edit, 0, 0, null)
-        scenario.onFragment {
-            it.onOptionsItemSelected(editMenuItem)
-        }
+        fragment.onOptionsItemSelected(editMenuItem)
     }
 }

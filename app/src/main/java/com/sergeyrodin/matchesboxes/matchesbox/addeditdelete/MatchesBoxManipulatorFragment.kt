@@ -11,25 +11,19 @@ import com.sergeyrodin.matchesboxes.*
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxManipulatorBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MatchesBoxManipulatorFragment : Fragment() {
-    private val viewModel by viewModels<MatchesBoxManipulatorViewModel> {
-        getViewModelFactory()
-    }
+    private val viewModel by viewModels<MatchesBoxManipulatorViewModel>()
     private val args by navArgs<MatchesBoxManipulatorFragmentArgs>()
-
-    private fun getViewModelFactory(): MatchesBoxManipulatorViewModelFactory {
-        return MatchesBoxManipulatorViewModelFactory(
-            (requireContext().applicationContext as MatchesBoxesApplication).radioComponentsDataSource
-        )
-    }
 
     private var hideDelete = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = createBinding(inflater)
         setupHideDeleteButton()
         startViewModel()
@@ -42,8 +36,7 @@ class MatchesBoxManipulatorFragment : Fragment() {
     }
 
     private fun createBinding(inflater: LayoutInflater): FragmentMatchesBoxManipulatorBinding {
-        val binding = FragmentMatchesBoxManipulatorBinding.inflate(inflater)
-        return binding
+        return FragmentMatchesBoxManipulatorBinding.inflate(inflater)
     }
 
     private fun setupHideDeleteButton() {

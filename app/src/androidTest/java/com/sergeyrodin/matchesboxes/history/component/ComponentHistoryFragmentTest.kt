@@ -1,7 +1,6 @@
 package com.sergeyrodin.matchesboxes.history.component
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
@@ -10,33 +9,43 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.R
-import com.sergeyrodin.matchesboxes.ServiceLocator
 import com.sergeyrodin.matchesboxes.data.*
+import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
 import com.sergeyrodin.matchesboxes.history.hasBackgroundColor
 import com.sergeyrodin.matchesboxes.history.hasBackgroundColorAndText
+import com.sergeyrodin.matchesboxes.launchFragmentInHiltContainer
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import dagger.hilt.android.testing.UninstallModules
 import org.hamcrest.CoreMatchers.not
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import javax.inject.Inject
 
+@RunWith(AndroidJUnit4::class)
+@MediumTest
+@HiltAndroidTest
+@UninstallModules(RadioComponentsDataSourceModule::class)
 class ComponentHistoryFragmentTest {
+
+    @get:Rule
+    val hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var dataSource: FakeDataSource
+    @Inject
+    lateinit var dataSource: FakeDataSource
 
     @Before
     fun initDataSource() {
-        dataSource = FakeDataSource()
-        ServiceLocator.radioComponentsDataSource = dataSource
-    }
-
-    @After
-    fun resetDataSource() {
-        ServiceLocator.resetDataSource()
+        hiltRule.inject()
     }
 
     @Test
@@ -51,7 +60,7 @@ class ComponentHistoryFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory()
         val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
-        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_history)).check(matches(isDisplayed()))
     }
@@ -69,7 +78,7 @@ class ComponentHistoryFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
-        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         onView(withText(R.string.no_history)).check(matches(not(isDisplayed())))
     }
@@ -87,7 +96,7 @@ class ComponentHistoryFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
-        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         onView(withText(convertLongToDateString(history.date))).check(matches(isDisplayed()))
     }
@@ -100,7 +109,7 @@ class ComponentHistoryFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
-        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         presentationLongClick(history)
 
@@ -111,7 +120,7 @@ class ComponentHistoryFragmentTest {
         onView(withId(R.id.display_component_history_list))
             .perform(
                 RecyclerViewActions
-                    .actionOnItem<DisplayComponentHistoryAdapter.ViewHolder>(
+                    .actionOnItem<HistoryAdapter.ViewHolder>(
                         hasDescendant(
                             withText(
                                 convertLongToDateString(history.date)
@@ -136,7 +145,7 @@ class ComponentHistoryFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
-        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         presentationLongClick(history)
 
@@ -154,7 +163,7 @@ class ComponentHistoryFragmentTest {
         onView(withId(R.id.display_component_history_list))
             .perform(
                 RecyclerViewActions
-                    .actionOnItem<DisplayComponentHistoryAdapter.ViewHolder>(
+                    .actionOnItem<HistoryAdapter.ViewHolder>(
                         hasDescendant(
                             withText(
                                 convertLongToDateString(history.date)
@@ -174,7 +183,7 @@ class ComponentHistoryFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(historyHighlighted, historyNotHighlighted)
         val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
-        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         presentationLongClick(historyHighlighted)
         presentationClick(historyNotHighlighted)
@@ -200,12 +209,12 @@ class ComponentHistoryFragmentTest {
     fun twoHistories_deltaDisplayed() {
         val boxId = 1
         val component = RadioComponent(1, "Component", 3, boxId)
-        val history1 = History(1, component.id, component.quantity+5)
-        val history2 = History(2, component.id, component.quantity)
+        val history1 = History(1, component.id, component.quantity)
+        val history2 = History(2, component.id, component.quantity+5)
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history1, history2)
         val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
-        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         onView(withText("+5")).check(matches(isDisplayed()))
     }
@@ -218,7 +227,7 @@ class ComponentHistoryFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
-        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         presentationLongClick(history)
 
@@ -233,7 +242,7 @@ class ComponentHistoryFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
-        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         presentationLongClick(history)
 
@@ -248,13 +257,13 @@ class ComponentHistoryFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
-        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         presentationLongClick(history)
 
         presentationClick(history)
 
-        onView(withId(R.id.action_delete)).check(doesNotExist())
+        onView(withId(R.id.action_delete)).check(matches(not(isDisplayed())))
     }
 
     @Test
@@ -265,7 +274,7 @@ class ComponentHistoryFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
-        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         presentationLongClick(history)
 
@@ -282,7 +291,7 @@ class ComponentHistoryFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
-        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         presentationLongClick(history)
         onView(withId(R.id.action_delete)).perform(click())
@@ -298,12 +307,48 @@ class ComponentHistoryFragmentTest {
         dataSource.addRadioComponents(component)
         dataSource.addHistory(history)
         val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
-        launchFragmentInContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+        launchFragmentInHiltContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
 
         presentationLongClick(history)
         onView(withId(R.id.action_delete)).perform(click())
 
-        onView(withId(R.id.action_delete)).check(doesNotExist())
+        onView(withId(R.id.action_delete)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun itemDeleted_newHighlightedItemEquals() {
+        val date1 = 1602219377796
+        val date2 = 1604123777809
+        val date3 = 1606715777809
+        val boxId = 1
+        val component = RadioComponent(1, "Component", 3, boxId)
+        val history1 = History(1, component.id, component.quantity+5, date1)
+        val history2 = History(2, component.id, component.quantity+2, date2)
+        val history3 = History(3, component.id, component.quantity-3, date3)
+        val history4 = History(4, component.id, component.quantity-1)
+        dataSource.addRadioComponents(component)
+        dataSource.addHistory(history1, history2, history3, history4)
+        val bundle = ComponentHistoryFragmentArgs.Builder(component.id, component.name).build().toBundle()
+        launchFragmentInHiltContainer<ComponentHistoryFragment>(bundle, R.style.AppTheme)
+
+        presentationLongClick(history1)
+        onView(withId(R.id.action_delete)).perform(click())
+        presentationLongClick(history2)
+        checkIfItemIsHighlighted(history2)
+    }
+
+    private fun checkIfItemIsHighlighted(history: History) {
+        onView(withId(R.id.display_component_history_list))
+            .check(
+                matches(
+                    hasDescendant(
+                        hasBackgroundColorAndText(
+                            R.color.secondaryLightColor,
+                            convertLongToDateString(history.date)
+                        )
+                    )
+                )
+            )
     }
 
 }
