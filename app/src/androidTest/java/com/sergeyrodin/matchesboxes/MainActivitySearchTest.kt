@@ -1,18 +1,16 @@
 package com.sergeyrodin.matchesboxes
 
 import android.app.Activity
-import android.view.KeyEvent
 import android.widget.AutoCompleteTextView
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.sergeyrodin.matchesboxes.data.*
-import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
 import com.sergeyrodin.matchesboxes.di.TestModule
 import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
@@ -68,8 +66,7 @@ class MainActivitySearchTest {
     fun searchFragmentBottomNavigation_isDisplayed() {
         val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
 
-        Espresso.onView(ViewMatchers.withId(R.id.searchFragment))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.searchFragment)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -79,8 +76,7 @@ class MainActivitySearchTest {
         val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
 
         moveToSearch()
-        Espresso.onView(ViewMatchers.withText(R.string.components))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(R.string.components)).check(matches(isEnabled()))
 
         activityScenario.close()
     }
@@ -105,8 +101,7 @@ class MainActivitySearchTest {
 
         moveToSearch()
         typeQuery(query)
-        Espresso.onView(ViewMatchers.withText(component3.name))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(component3.name)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -130,10 +125,9 @@ class MainActivitySearchTest {
 
         val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
 
-        Espresso.onView(ViewMatchers.withId(R.id.action_search)).perform(ViewActions.click())
+        onView(withId(R.id.action_search)).perform(click())
         typeQuery(query)
-        Espresso.onView(ViewMatchers.withText(component3.name))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(component3.name)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -158,9 +152,8 @@ class MainActivitySearchTest {
 
         moveToSearch()
         typeQuery("78041")
-        Espresso.onView(ViewMatchers.withText(component3.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.component_name))
-            .check(ViewAssertions.matches(ViewMatchers.withText(component3.name)))
+        onView(withText(component3.name)).perform(click())
+        onView(withId(R.id.component_name)).check(matches(withText(component3.name)))
 
         activityScenario.close()
     }
@@ -184,15 +177,13 @@ class MainActivitySearchTest {
 
         moveToSearch()
         typeQuery("78041")
-        Espresso.onView(ViewMatchers.withText(component3.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.edit_component_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(R.string.button_plus)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.save_component_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(component3.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText("4"))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.quantity_text))
-            .check(ViewAssertions.matches(ViewMatchers.withText("4")))
+        onView(withText(component3.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withText(R.string.button_plus)).perform(click())
+        onView(withId(R.id.save_component_fab)).perform(click())
+        onView(withText(component3.name)).perform(click())
+        onView(withText("4")).check(matches(isDisplayed()))
+        onView(withId(R.id.quantity_text)).check(matches(withText("4")))
 
         activityScenario.close()
     }
@@ -216,14 +207,12 @@ class MainActivitySearchTest {
 
         moveToSearch()
         typeQuery("78041")
-        Espresso.onView(ViewMatchers.withText(component3.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.edit_component_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.quantity_edit))
-            .perform(ViewActions.replaceText("6"))
-        Espresso.onView(ViewMatchers.withId(R.id.save_component_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(component3.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText("6"))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(component3.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withId(R.id.quantity_edit)).perform(replaceText("6"))
+        onView(withId(R.id.save_component_fab)).perform(click())
+        onView(withText(component3.name)).perform(click())
+        onView(withText("6")).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -247,15 +236,13 @@ class MainActivitySearchTest {
 
         moveToSearch()
         typeQuery("78041")
-        Espresso.onView(ViewMatchers.withText(component3.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.edit_component_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.quantity_edit))
-            .perform(ViewActions.replaceText("3"))
-        Espresso.onView(ViewMatchers.withId(R.id.save_component_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(component3.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.edit_component_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.quantity_edit))
-            .check(ViewAssertions.matches(ViewMatchers.withText("3")))
+        onView(withText(component3.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withId(R.id.quantity_edit)).perform(replaceText("3"))
+        onView(withId(R.id.save_component_fab)).perform(click())
+        onView(withText(component3.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withId(R.id.quantity_edit)).check(matches(withText("3")))
 
         activityScenario.close()
     }
@@ -280,10 +267,9 @@ class MainActivitySearchTest {
 
         moveToSearch()
         typeQuery("78041")
-        Espresso.onView(ViewMatchers.withText(component3.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.edit_component_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(R.string.update_component))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(component3.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withText(R.string.update_component)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -302,16 +288,16 @@ class MainActivitySearchTest {
 
         moveToSearch()
         typeQuery("78041")
-        Espresso.onView(ViewMatchers.withText(component.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.edit_component_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(R.string.button_plus)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.save_component_fab)).perform(ViewActions.click())
+        onView(withText(component.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withText(R.string.button_plus)).perform(click())
+        onView(withId(R.id.save_component_fab)).perform(click())
 
-        Espresso.onView(ViewMatchers.withText(R.string.components))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(R.string.components)).check(matches(isEnabled()))
 
         activityScenario.close()
     }
+
     @SearchTest
     @Test
     fun searchMode_deleteComponent_navigateToSearchComponents() = runBlocking {
@@ -327,12 +313,11 @@ class MainActivitySearchTest {
 
         moveToSearch()
         typeQuery("78041")
-        Espresso.onView(ViewMatchers.withText(component.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.edit_component_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.action_delete)).perform(ViewActions.click())
+        onView(withText(component.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withId(R.id.action_delete)).perform(click())
 
-        Espresso.onView(ViewMatchers.withText(R.string.components))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(R.string.components)).check(matches(isEnabled()))
 
         activityScenario.close()
     }
@@ -352,10 +337,8 @@ class MainActivitySearchTest {
         moveToSearch()
         typeQuery("78041")
 
-        Espresso.onView(ViewMatchers.withText(component.name))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.app_bar_search))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(component.name)).check(matches(isDisplayed()))
+        onView(withId(R.id.app_bar_search)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -377,14 +360,13 @@ class MainActivitySearchTest {
         moveToSearch()
         typeQuery("78041")
 
-        Espresso.onView(ViewMatchers.withText(component1.name))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(component1.name)).check(matches(isDisplayed()))
 
-        Espresso.onView(ViewMatchers.isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(ViewActions.clearText(), ViewActions.typeText("15\n"))
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(clearText(), typeText("15\n"))
 
-        Espresso.onView(ViewMatchers.withText(component2.name))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(component2.name))
+            .check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -405,8 +387,7 @@ class MainActivitySearchTest {
         moveToSearch()
         typeQuery(query)
 
-        Espresso.onView(ViewMatchers.withText(query))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(query)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -427,13 +408,12 @@ class MainActivitySearchTest {
         moveToSearch()
         typeQuery(query)
 
-        Espresso.onView(ViewMatchers.withText(component.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.edit_component_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(R.string.button_plus)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.save_component_fab)).perform(ViewActions.click())
+        onView(withText(component.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withText(R.string.button_plus)).perform(click())
+        onView(withId(R.id.save_component_fab)).perform(click())
 
-        Espresso.onView(ViewMatchers.withText(query))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(query)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -460,13 +440,12 @@ class MainActivitySearchTest {
 
         rotateDeviceToLandscape(activity, activityScenario, dataBindingIdlingResource)
 
-        Espresso.onView(ViewMatchers.withText(query))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(query))
+            .check(matches(isDisplayed()))
 
         rotateDeviceToPortrait(activity, activityScenario, dataBindingIdlingResource)
 
-        Espresso.onView(ViewMatchers.withText(query))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withText(query)).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -507,13 +486,12 @@ class MainActivitySearchTest {
 
         moveToSearch()
         typeQuery("78")
-        Espresso.onView(ViewMatchers.withId(R.id.add_search_buy_component_fab))
-            .perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.component_edit))
-            .perform(ViewActions.typeText("KIA7805"), ViewActions.closeSoftKeyboard())
-        Espresso.onView(ViewMatchers.withId(R.id.save_component_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText("KIA7805"))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.add_search_buy_component_fab))
+            .perform(click())
+        onView(withId(R.id.component_edit))
+            .perform(typeText("KIA7805"), closeSoftKeyboard())
+        onView(withId(R.id.save_component_fab)).perform(click())
+        onView(withText("KIA7805")).check(matches(isDisplayed()))
 
         activityScenario.close()
     }
@@ -527,14 +505,14 @@ class MainActivitySearchTest {
         moveToPopular()
         moveToSearch()
 
-        Espresso.onView(ViewMatchers.withText("\"\"")).check(ViewAssertions.doesNotExist())
+        onView(withText("\"\"")).check(ViewAssertions.doesNotExist())
 
         activityScenario.close()
     }
 
     @SearchTest
     @Test
-    fun serchModeHintDisplayed_rotateDevice_quetesNotDisplayed() {
+    fun searchModeHintDisplayed_rotateDevice_queriesNotDisplayed() {
         val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
         var activity: Activity? = null
         activityScenario.onActivity {
@@ -544,11 +522,11 @@ class MainActivitySearchTest {
         moveToSearch()
         rotateDeviceToLandscape(activity, activityScenario, dataBindingIdlingResource)
 
-        Espresso.onView(ViewMatchers.withText("\"\"")).check(ViewAssertions.doesNotExist())
+        onView(withText("\"\"")).check(ViewAssertions.doesNotExist())
 
         rotateDeviceToPortrait(activity, activityScenario, dataBindingIdlingResource)
 
-        Espresso.onView(ViewMatchers.withText("\"\"")).check(ViewAssertions.doesNotExist())
+        onView(withText("\"\"")).check(ViewAssertions.doesNotExist())
 
         activityScenario.close()
     }

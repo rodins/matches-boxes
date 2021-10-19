@@ -5,52 +5,37 @@ import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.data.Bag
-import com.sergeyrodin.matchesboxes.databinding.FragmentBagsListBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class BagsListFragment : Fragment() {
     private val viewModel: BagsListViewModel by viewModels()
-    private lateinit var binding: FragmentBagsListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = createBinding(inflater)
-        setupBinding()
+        val view = inflater.inflate(R.layout.fragment_bags_list, container, false)
+        view.findViewById<ComposeView>(R.id.compose_view).setContent {
+            AppCompatTheme {
+                BagsScreen(viewModel)
+            }
+        }
+
         observeAddBagEvent()
         observeSelectBagEvent()
 
         setHasOptionsMenu(true)
-        return binding.root
-    }
-
-    private fun createBinding(inflater: LayoutInflater): FragmentBagsListBinding {
-        return FragmentBagsListBinding.inflate(inflater)
-    }
-
-    private fun setupBinding() {
-        binding.bagsList.adapter = createAdapter()
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
-    }
-
-    private fun createAdapter(): DisplayQuantityAdapter {
-        return DisplayQuantityAdapter(DisplayQuantityListener { bagId ->
-            selectBagCallback(bagId)
-        }, R.drawable.ic_bag)
-    }
-
-    private fun selectBagCallback(bagId: Int) {
-        viewModel.selectBag(bagId)
+        return view
     }
 
     private fun observeSelectBagEvent() {

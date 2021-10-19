@@ -2,12 +2,10 @@ package com.sergeyrodin.matchesboxes
 
 import android.app.Activity
 import android.widget.AutoCompleteTextView
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -15,7 +13,6 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.sergeyrodin.matchesboxes.data.*
-import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
 import com.sergeyrodin.matchesboxes.di.TestModule
 import com.sergeyrodin.matchesboxes.history.all.HistoryModelAdapter
 import com.sergeyrodin.matchesboxes.history.hasBackgroundColor
@@ -157,7 +154,7 @@ class MainActivityHistoryTest {
         onView(withText(component1.name)).perform(click())
 
         onView(withText(convertLongToDateString(history2.date)))
-            .check(ViewAssertions.doesNotExist())
+            .check(doesNotExist())
 
         activityScenario.close()
     }
@@ -251,7 +248,7 @@ class MainActivityHistoryTest {
         onView(withId(R.id.historyAllFragment)).perform(click())
 
         onView(withId(R.id.action_delete))
-            .check(ViewAssertions.doesNotExist())
+            .check(doesNotExist())
 
         activityScenario.close()
     }
@@ -609,7 +606,7 @@ class MainActivityHistoryTest {
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component1.name)).perform(longClick())
         onView(withId(R.id.action_delete)).perform(click())
-        onView(withText(component1.name)).check(ViewAssertions.doesNotExist())
+        onView(withText(component1.name)).check(doesNotExist())
 
         activityScenario.close()
     }
@@ -715,7 +712,7 @@ class MainActivityHistoryTest {
         onView(withId(R.id.action_delete)).perform(click())
 
         onView(withText(convertLongToDateString(history.date)))
-            .check(ViewAssertions.doesNotExist())
+            .check(doesNotExist())
 
         activityScenario.close()
     }

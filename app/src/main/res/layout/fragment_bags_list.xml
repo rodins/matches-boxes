@@ -1,46 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <data>
-        <variable
-            name="viewModel"
-            type="com.sergeyrodin.matchesboxes.bag.list.BagsListViewModel" />
-    </data>
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/coordinator_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/bags_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="@dimen/list_margin"
-                app:displayQuantityListData="@{viewModel.bagsList}"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-            <TextView
-                android:id="@+id/no_bags_added_text"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textSize="@dimen/no_items_text_size"
-                android:text="@string/no_bags_added"
-                app:noDataTextVisible="@{viewModel.isNoBagsTextVisible}"/>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_bag_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@drawable/ic_add"
-            android:onClick="@{()->viewModel.addBag()}"
-            app:fabSize="normal"
-            app:layout_anchor="@id/bags_list"
-            app:layout_anchorGravity="bottom|right|end"
-            android:contentDescription="@string/add_bag" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</layout>
+<androidx.compose.ui.platform.ComposeView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/compose_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />

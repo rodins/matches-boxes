@@ -2,28 +2,24 @@ package com.sergeyrodin.matchesboxes
 
 import android.view.KeyEvent
 import android.widget.AutoCompleteTextView
-import androidx.test.core.app.ActivityScenario
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.sergeyrodin.matchesboxes.data.*
-import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
 import com.sergeyrodin.matchesboxes.di.TestModule
-import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
-import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
-import com.sergeyrodin.matchesboxes.util.monitorActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
@@ -38,71 +34,50 @@ import javax.inject.Inject
 @UninstallModules(TestModule::class)
 class AppNavigationTest {
 
-    @get:Rule
+    @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 2)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
     lateinit var dataSource: RadioComponentsDataSource
 
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
+    private var addBagDescription = ""
+    private var emptyText = ""
 
     @Before
     fun initDataSource() {
         hiltRule.inject()
+        addBagDescription = composeTestRule.activity.getString(R.string.add_bag)
+        emptyText = composeTestRule.activity.getString(R.string.no_bags_added)
         runBlocking {
             dataSource.clearDatabase()
         }
-    }
-
-    @Before
-    fun registerIdlingResource() {
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
-    }
-
-    @After
-    fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
     }
 
     // Bag
 
     @Test
     fun addBag_navigateBack() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
-
-        onView(withId(R.id.add_bag_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(addBagDescription).performClick()
         onView(withId(R.id.bag_edit)).check(matches(withHint(R.string.enter_bag_name)))
         pressBack()
-        onView(withId(R.id.no_bags_added_text)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText(emptyText).assertIsDisplayed()
     }
 
     @Test
     fun addBag_navigateUp() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
-
-        onView(withId(R.id.add_bag_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(addBagDescription).performClick()
         onView(withId(R.id.bag_edit)).check(matches(withHint(R.string.enter_bag_name)))
-
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
-
-        onView(withId(R.id.no_bags_added_text)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText(emptyText).assertIsDisplayed()
     }
 
     @Test
     fun addBagSaved_navigationBack() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
-
-        onView(withId(R.id.add_bag_fab)).perform(click())
-        onView(withId(R.id.bag_edit)).perform(typeText("New bag"))
+        composeTestRule.onNodeWithContentDescription(addBagDescription).performClick()
+        onView(withId(R.id.bag_edit)).perform(typeText("New bag"), closeSoftKeyboard())
         onView(withId(R.id.save_bag_fab)).perform(click())
 
         try {
@@ -111,56 +86,50 @@ class AppNavigationTest {
         } catch (exc: Exception) {
             // test successful
         }
-
-        activityScenario.close()
     }
 
     @Test
-    fun editBagSaved_navigationBack() = runBlocking{
+    fun editBagSaved_navigationBack() {
         val bag = Bag(1, "Bag")
-        dataSource.insertBag(bag)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.bag_edit)).perform(ViewActions.replaceText("Bag updated"))
+        onView(withId(R.id.bag_edit)).perform(replaceText("Bag updated"))
         onView(withId(R.id.save_bag_fab)).perform(click())
 
         pressBack()
 
-        onView(withId(R.id.add_bag_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithContentDescription(addBagDescription).assertIsDisplayed()
     }
 
     @Test
-    fun editBagSaved_navigationUp() = runBlocking{
+    fun editBagSaved_navigationUp() {
         val bag = Bag(1, "Bag")
-        dataSource.insertBag(bag)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.bag_edit)).perform(ViewActions.replaceText("Bag updated"))
+        onView(withId(R.id.bag_edit)).perform(replaceText("Bag updated"))
         onView(withId(R.id.save_bag_fab)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        onView(withId(R.id.add_bag_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithContentDescription(addBagDescription).assertIsDisplayed()
     }
 
     @Test
-    fun deleteBag_navigationBack() = runBlocking{
+    fun deleteBag_navigationBack() {
         val bag = Bag(1, "Bag")
-        dataSource.insertBag(bag)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.action_delete)).perform((click()))
 
@@ -170,192 +139,169 @@ class AppNavigationTest {
         } catch (exc: Exception) {
             // test successful
         }
-
-        activityScenario.close()
     }
 
     @Test
     fun mainScreen_navigateBack() {
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
-
         try {
             pressBack()
             fail()
         } catch (exc: Exception) {
             // test successful
         }
-
-        activityScenario.close()
     }
 
     // Set
 
     @Test
-    fun addSet_navigateBack() = runBlocking{
-        dataSource.insertBag(Bag(1, "Bag"))
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+    fun addSet_navigateBack() {
+        runBlocking {
+            dataSource.insertBag(Bag(1, "Bag"))
+        }
 
-        onView(withText("Bag")).perform(click())
+        composeTestRule.onNodeWithText("Bag").performClick()
         onView(withId(R.id.add_set_fab)).perform(click())
 
         pressBack()
 
         onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun addSet_navigateUp() = runBlocking{
-        dataSource.insertBag(Bag(1, "Bag"))
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+    fun addSet_navigateUp() {
+        runBlocking {
+            dataSource.insertBag(Bag(1, "Bag"))
+        }
 
-        onView(withText("Bag")).perform(click())
+        composeTestRule.onNodeWithText("Bag").performClick()
         onView(withId(R.id.add_set_fab)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
         onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun addSetSaved_navigateBack() = runBlocking{
-        dataSource.insertBag(Bag(1, "Bag"))
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+    fun addSetSaved_navigateBack() {
+        runBlocking {
+            dataSource.insertBag(Bag(1, "Bag"))
+        }
 
-        onView(withText("Bag")).perform(click())
+        composeTestRule.onNodeWithText("Bag").performClick()
         onView(withId(R.id.add_set_fab)).perform(click())
         onView(withId(R.id.set_edit)).perform(typeText("New set"))
         onView(withId(R.id.save_set_fab)).perform(click())
 
         pressBack()
 
-        onView(withId(R.id.add_bag_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithContentDescription(addBagDescription).assertIsDisplayed()
     }
 
     @Test
-    fun addSetSaved_navigateUp() = runBlocking{
-        dataSource.insertBag(Bag(1, "Bag"))
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+    fun addSetSaved_navigateUp() {
+        runBlocking {
+            dataSource.insertBag(Bag(1, "Bag"))
+        }
 
-        onView(withText("Bag")).perform(click())
+        composeTestRule.onNodeWithText("Bag").performClick()
         onView(withId(R.id.add_set_fab)).perform(click())
         onView(withId(R.id.set_edit)).perform(typeText("New set"))
         onView(withId(R.id.save_set_fab)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        onView(withId(R.id.add_bag_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithContentDescription(addBagDescription).assertIsDisplayed()
     }
 
     @Test
-    fun editSetSaved_navigationBack() = runBlocking{
+    fun editSetSaved_navigationBack() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.set_edit)).perform(ViewActions.replaceText("Set updated"))
+        onView(withId(R.id.set_edit)).perform(replaceText("Set updated"))
         onView(withId(R.id.save_set_fab)).perform(click())
 
         pressBack()
 
         onView(withId(R.id.add_set_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun editSetSaved_navigationUp() = runBlocking{
+    fun editSetSaved_navigationUp() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.set_edit)).perform(ViewActions.replaceText("Set updated"))
+        onView(withId(R.id.set_edit)).perform(replaceText("Set updated"))
         onView(withId(R.id.save_set_fab)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
         onView(withId(R.id.add_set_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun setDeleted_navigationBack() = runBlocking{
+    fun setDeleted_navigationBack() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.action_delete)).perform(click())
 
         pressBack()
 
-        onView(withId(R.id.add_bag_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithContentDescription(addBagDescription).assertIsDisplayed()
     }
 
     @Test
-    fun setDeleted_navigationUp() = runBlocking{
+    fun setDeleted_navigationUp() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.action_delete)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        onView(withId(R.id.add_bag_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithContentDescription(addBagDescription).assertIsDisplayed()
     }
 
     // Box
     @Test
-    fun addBoxSaved_navigateBack() = runBlocking{
+    fun addBoxSaved_navigateBack() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withId(R.id.add_box_fab)).perform(click())
         onView(withId(R.id.box_edit)).perform(typeText("New box"))
@@ -364,20 +310,18 @@ class AppNavigationTest {
         pressBack()
 
         onView(withId(R.id.add_set_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun addBoxSaved_navigateUp() = runBlocking{
+    fun addBoxSaved_navigateUp() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withId(R.id.add_box_fab)).perform(click())
         onView(withId(R.id.box_edit)).perform(typeText("New box"))
@@ -386,72 +330,66 @@ class AppNavigationTest {
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
         onView(withId(R.id.add_set_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun editBoxSaved_navigationBack() = runBlocking{
+    fun editBoxSaved_navigationBack() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.box_edit)).perform(ViewActions.replaceText("Box updated"))
+        onView(withId(R.id.box_edit)).perform(replaceText("Box updated"))
         onView(withId(R.id.save_box_fab)).perform(click())
 
         pressBack()
 
         onView(withId(R.id.add_box_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun editBoxSaved_navigationUp() = runBlocking{
+    fun editBoxSaved_navigationUp() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.box_edit)).perform(ViewActions.replaceText("Box updated"))
+        onView(withId(R.id.box_edit)).perform(replaceText("Box updated"))
         onView(withId(R.id.save_box_fab)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
         onView(withId(R.id.add_box_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun deleteBox_navigationBack() = runBlocking{
+    fun deleteBox_navigationBack() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
@@ -460,22 +398,20 @@ class AppNavigationTest {
         pressBack()
 
         onView(withId(R.id.add_set_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun deleteBox_navigationUp() = runBlocking{
+    fun deleteBox_navigationUp() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
@@ -484,109 +420,101 @@ class AppNavigationTest {
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
         onView(withId(R.id.add_set_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     // Component
 
     @Test
-    fun addComponentSaved_navigateBack() = runBlocking{
+    fun addComponentSaved_navigateBack() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withId(R.id.component_edit)).perform(typeText("New component"), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.component_edit)).perform(typeText("New component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
         pressBack()
 
         onView(withId(R.id.add_box_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun addComponentSaved_navigateUp() = runBlocking{
+    fun addComponentSaved_navigateUp() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.add_component_fab)).perform(click())
-        onView(withId(R.id.component_edit)).perform(typeText("New component"), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.component_edit)).perform(typeText("New component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
         onView(withId(R.id.add_box_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun editComponentSaved_navigateBack() = runBlocking{
+    fun editComponentSaved_navigateBack() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 2, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
-        onView(withId(R.id.component_edit)).perform(ViewActions.replaceText("Component update"))
+        onView(withId(R.id.component_edit)).perform(replaceText("Component update"))
         onView(withId(R.id.save_component_fab)).perform(click())
 
         pressBack()
 
         onView(withId(R.id.add_box_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun editComponentSaved_navigateBackAllLevels() = runBlocking{
+    fun editComponentSaved_navigateBackAllLevels() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 2, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
-        onView(withId(R.id.component_edit)).perform(ViewActions.replaceText("Component update"))
+        onView(withId(R.id.component_edit)).perform(replaceText("Component update"))
         onView(withId(R.id.save_component_fab)).perform(click())
 
         pressBack()
@@ -594,53 +522,49 @@ class AppNavigationTest {
         pressBack()
         onView(withId(R.id.add_set_fab)).check(matches(isDisplayed()))
         pressBack()
-        onView(withId(R.id.add_bag_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithContentDescription(addBagDescription).assertIsDisplayed()
     }
 
     @Test
-    fun editComponentSaved_navigateUp() = runBlocking{
+    fun editComponentSaved_navigateUp() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 2, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
-        onView(withId(R.id.component_edit)).perform(ViewActions.replaceText("Component update"))
+        onView(withId(R.id.component_edit)).perform(replaceText("Component update"))
         onView(withId(R.id.save_component_fab)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
         onView(withId(R.id.add_box_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun deleteComponent_navigationBack() = runBlocking{
+    fun deleteComponent_navigationBack() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 2, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
@@ -650,24 +574,22 @@ class AppNavigationTest {
         pressBack()
 
         onView(withId(R.id.add_box_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun deleteComponent_navigationUp() = runBlocking{
+    fun deleteComponent_navigationUp() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "Component", 2, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
@@ -677,15 +599,13 @@ class AppNavigationTest {
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
         onView(withId(R.id.add_box_fab)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     // Search
 
     @SearchTest
     @Test
-    fun searchEdit_navigationBack() = runBlocking{
+    fun searchEdit_navigationBack() {
         val bag = Bag(1, "Bag")
         val bag2 = Bag(2, "Bag2")
         val set = MatchesBoxSet(1, "Set", bag.id)
@@ -693,35 +613,32 @@ class AppNavigationTest {
         val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
         val component2 = RadioComponent(2, "D2499", 3, box.id)
         val component3 = RadioComponent(3, "LA78041", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertBag(bag2)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertRadioComponent(component3)
-
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertBag(bag2)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertRadioComponent(component3)
+        }
 
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
         onView(withText(component3.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
-        onView(withId(R.id.quantity_edit)).perform(ViewActions.replaceText("3"))
+        onView(withId(R.id.quantity_edit)).perform(replaceText("3"))
         onView(withId(R.id.save_component_fab)).perform(click())
 
         pressBack()
 
-        onView(withText(bag2.name)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText(bag2.name).assertIsDisplayed()
     }
 
     @SearchTest
     @Test
-    fun searchEdit_navigationUp() = runBlocking{
+    fun searchEdit_navigationUp() {
         val bag = Bag(1, "Bag")
         val bag2 = Bag(2, "Bag2")
         val set = MatchesBoxSet(1, "Set", bag.id)
@@ -729,35 +646,32 @@ class AppNavigationTest {
         val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
         val component2 = RadioComponent(2, "D2499", 3, box.id)
         val component3 = RadioComponent(3, "LA78041", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertBag(bag2)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertRadioComponent(component3)
-
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertBag(bag2)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertRadioComponent(component3)
+        }
 
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
         onView(withText(component3.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
-        onView(withId(R.id.quantity_edit)).perform(ViewActions.replaceText("3"))
+        onView(withId(R.id.quantity_edit)).perform(replaceText("3"))
         onView(withId(R.id.save_component_fab)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        onView(withText(bag2.name)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText(bag2.name).assertIsDisplayed()
     }
 
     @SearchTest
     @Test
-    fun searchMode_addComponent_navigationUp() = runBlocking{
+    fun searchMode_addComponent_navigationUp() {
         val bag = Bag(1, "Bag")
         val bag2 = Bag(2, "Bag2")
         val set = MatchesBoxSet(1, "Set", bag.id)
@@ -765,34 +679,31 @@ class AppNavigationTest {
         val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
         val component2 = RadioComponent(2, "D2499", 3, box.id)
         val component3 = RadioComponent(3, "LA78041", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertBag(bag2)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertRadioComponent(component3)
-
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertBag(bag2)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertRadioComponent(component3)
+        }
 
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
         onView(withId(R.id.add_search_buy_component_fab)).perform(click())
-        onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        onView(withText(bag2.name)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText(bag2.name).assertIsDisplayed()
     }
 
     @SearchTest
     @Test
-    fun searchMode_addComponent_navigationBack() = runBlocking{
+    fun searchMode_addComponent_navigationBack() {
         val bag = Bag(1, "Bag")
         val bag2 = Bag(2, "Bag2")
         val set = MatchesBoxSet(1, "Set", bag.id)
@@ -800,101 +711,85 @@ class AppNavigationTest {
         val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
         val component2 = RadioComponent(2, "D2499", 3, box.id)
         val component3 = RadioComponent(3, "LA78041", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertBag(bag2)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertRadioComponent(component3)
-
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertBag(bag2)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertRadioComponent(component3)
+        }
 
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
         onView(withId(R.id.add_search_buy_component_fab)).perform(click())
-        onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), ViewActions.closeSoftKeyboard())
+        onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
         pressBack()
 
-        onView(withText(bag2.name)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText(bag2.name).assertIsDisplayed()
     }
 
     @SearchTest
     @Test
-    fun typeQueryInSearchFragment_navigateToDetailsAndBack_nameDisplayed() = runBlocking{
+    fun typeQueryInSearchFragment_navigateToDetailsAndBack_nameDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+        }
 
         onView(withId(R.id.searchFragment)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78"))
-            .perform(ViewActions.pressKey(KeyEvent.KEYCODE_ENTER))
+            .perform(pressKey(KeyEvent.KEYCODE_ENTER))
         onView(withText(component.name)).perform(click())
 
         pressBack()
 
         onView(withText(component.name)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @SearchTest
     @Test
-    fun typeQueryInSearchFragment_navigateToDetailsAndUp_nameDisplayed() = runBlocking{
+    fun typeQueryInSearchFragment_navigateToDetailsAndUp_nameDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+        }
 
         onView(withId(R.id.searchFragment)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78"))
-            .perform(ViewActions.pressKey(KeyEvent.KEYCODE_ENTER))
+            .perform(pressKey(KeyEvent.KEYCODE_ENTER))
         onView(withText(component.name)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
         onView(withText(component.name)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
     fun bottomNavigationDisplayed() {
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-
         onView(withId(R.id.bottom_nav)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
     fun bottomNavigationBagsListFragmentDisplayed() {
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-
         onView(withId(R.id.bagsListFragment)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
-
 }

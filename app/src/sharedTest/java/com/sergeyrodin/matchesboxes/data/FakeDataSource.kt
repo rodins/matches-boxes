@@ -9,7 +9,7 @@ import javax.inject.Singleton
 @Singleton
 class FakeDataSource @Inject constructor() : RadioComponentsDataSource{
     private val bagsList = mutableListOf<Bag>()
-    private val observableBags = MutableLiveData<List<ItemWithQuantityPresentation>>(listOf())
+    private val observableBags = MutableLiveData<List<QuantityItemModel>>(listOf())
     private val matchesBoxSetList = mutableListOf<MatchesBoxSet>()
     private val matchesBoxList = mutableListOf<MatchesBox>()
     private val radioComponentsList = mutableListOf<RadioComponent>()
@@ -192,8 +192,8 @@ class FakeDataSource @Inject constructor() : RadioComponentsDataSource{
         }
     }
 
-    override suspend fun getDisplayQuantityListBySetId(setId: Int): List<ItemWithQuantityPresentation> {
-        val output = mutableListOf<ItemWithQuantityPresentation>()
+    override suspend fun getDisplayQuantityListBySetId(setId: Int): List<QuantityItemModel> {
+        val output = mutableListOf<QuantityItemModel>()
         matchesBoxList.filter { box ->
             box.matchesBoxSetId == setId
         }.forEach { box ->
@@ -203,14 +203,14 @@ class FakeDataSource @Inject constructor() : RadioComponentsDataSource{
             }.forEach { component ->
                 sum += component.quantity
             }
-            val displayQuantity = ItemWithQuantityPresentation(box.id, box.name, sum.toString())
+            val displayQuantity = QuantityItemModel(box.id, box.name, sum.toString())
             output.add(displayQuantity)
         }
         return output
     }
 
-    override suspend fun getDisplayQuantityListByBagId(bagId: Int): List<ItemWithQuantityPresentation> {
-        val output = mutableListOf<ItemWithQuantityPresentation>()
+    override suspend fun getDisplayQuantityListByBagId(bagId: Int): List<QuantityItemModel> {
+        val output = mutableListOf<QuantityItemModel>()
         matchesBoxSetList.filter { set ->
             set.bagId == bagId
         }.forEach { set ->
@@ -224,13 +224,13 @@ class FakeDataSource @Inject constructor() : RadioComponentsDataSource{
                     sum += component.quantity
                 }
             }
-            val displayQuantity = ItemWithQuantityPresentation(set.id, set.name, sum.toString())
+            val displayQuantity = QuantityItemModel(set.id, set.name, sum.toString())
             output.add(displayQuantity)
         }
         return output
     }
 
-    override fun getBagsQuantityPresentationList(): LiveData<List<ItemWithQuantityPresentation>> {
+    override fun getBagsQuantityPresentationList(): LiveData<List<QuantityItemModel>> {
         initBagsLiveData()
         return observableBags
     }
@@ -244,7 +244,7 @@ class FakeDataSource @Inject constructor() : RadioComponentsDataSource{
     }
 
     fun initBagsLiveData() {
-        val list = mutableListOf<ItemWithQuantityPresentation>()
+        val list = mutableListOf<QuantityItemModel>()
 
         bagsList.forEach { bag ->
             var sum = 0
@@ -261,7 +261,7 @@ class FakeDataSource @Inject constructor() : RadioComponentsDataSource{
                     }
                 }
             }
-            val displayQuantity = ItemWithQuantityPresentation(bag.id, bag.name, sum.toString())
+            val displayQuantity = QuantityItemModel(bag.id, bag.name, sum.toString())
             list.add(displayQuantity)
         }
         observableBags.value = list

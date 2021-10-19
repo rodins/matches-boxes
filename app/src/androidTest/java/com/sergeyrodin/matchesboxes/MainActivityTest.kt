@@ -1,22 +1,22 @@
 package com.sergeyrodin.matchesboxes
 
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.sergeyrodin.matchesboxes.data.*
-import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
 import com.sergeyrodin.matchesboxes.di.TestModule
-import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
-import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,13 +29,14 @@ import javax.inject.Inject
 @UninstallModules(TestModule::class)
 class MainActivityTest {
 
-    @get:Rule
+    @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 2)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
     lateinit var dataSource: RadioComponentsDataSource
-
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
 
     @Before
     fun initDataSource() {
@@ -45,20 +46,8 @@ class MainActivityTest {
         }
     }
 
-    @Before
-    fun registerIdlingResource() {
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
-    }
-
-    @After
-    fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
-    }
-
     @Test
-    fun componentsAdded_componentQuantityChanged_bagsQuantityEquals() = runBlocking {
+    fun componentsAdded_componentQuantityChanged_bagsQuantityEquals() {
         val bag1 = Bag(1, "Bag1")
         val bag2 = Bag(2, "Bag2")
         val set1 = MatchesBoxSet(1, "Set1", bag1.id)
@@ -89,69 +78,79 @@ class MainActivityTest {
         val component14 = RadioComponent(14, "Component14", 14, box7.id)
         val component15 = RadioComponent(15, "Component15", 15, box8.id)
         val component16 = RadioComponent(16, "Component16", 16, box8.id)
-        dataSource.insertBag(bag1)
-        dataSource.insertBag(bag2)
-        dataSource.insertMatchesBoxSet(set1)
-        dataSource.insertMatchesBoxSet(set2)
-        dataSource.insertMatchesBoxSet(set3)
-        dataSource.insertMatchesBoxSet(set4)
-        dataSource.insertMatchesBox(box1)
-        dataSource.insertMatchesBox(box2)
-        dataSource.insertMatchesBox(box3)
-        dataSource.insertMatchesBox(box4)
-        dataSource.insertMatchesBox(box5)
-        dataSource.insertMatchesBox(box6)
-        dataSource.insertMatchesBox(box7)
-        dataSource.insertMatchesBox(box8)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertRadioComponent(component3)
-        dataSource.insertRadioComponent(component4)
-        dataSource.insertRadioComponent(component5)
-        dataSource.insertRadioComponent(component6)
-        dataSource.insertRadioComponent(component7)
-        dataSource.insertRadioComponent(component8)
-        dataSource.insertRadioComponent(component9)
-        dataSource.insertRadioComponent(component10)
-        dataSource.insertRadioComponent(component11)
-        dataSource.insertRadioComponent(component12)
-        dataSource.insertRadioComponent(component13)
-        dataSource.insertRadioComponent(component14)
-        dataSource.insertRadioComponent(component15)
-        dataSource.insertRadioComponent(component16)
+        runBlocking {
+            dataSource.insertBag(bag1)
+            dataSource.insertBag(bag2)
+            dataSource.insertMatchesBoxSet(set1)
+            dataSource.insertMatchesBoxSet(set2)
+            dataSource.insertMatchesBoxSet(set3)
+            dataSource.insertMatchesBoxSet(set4)
+            dataSource.insertMatchesBox(box1)
+            dataSource.insertMatchesBox(box2)
+            dataSource.insertMatchesBox(box3)
+            dataSource.insertMatchesBox(box4)
+            dataSource.insertMatchesBox(box5)
+            dataSource.insertMatchesBox(box6)
+            dataSource.insertMatchesBox(box7)
+            dataSource.insertMatchesBox(box8)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertRadioComponent(component3)
+            dataSource.insertRadioComponent(component4)
+            dataSource.insertRadioComponent(component5)
+            dataSource.insertRadioComponent(component6)
+            dataSource.insertRadioComponent(component7)
+            dataSource.insertRadioComponent(component8)
+            dataSource.insertRadioComponent(component9)
+            dataSource.insertRadioComponent(component10)
+            dataSource.insertRadioComponent(component11)
+            dataSource.insertRadioComponent(component12)
+            dataSource.insertRadioComponent(component13)
+            dataSource.insertRadioComponent(component14)
+            dataSource.insertRadioComponent(component15)
+            dataSource.insertRadioComponent(component16)
+        }
 
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        composeTestRule.onNodeWithText(bag1.name).performClick()
+        onView(withText(set1.name)).perform(click())
+        onView(withText(box1.name)).perform(click())
+        onView(withText(component1.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withText(R.string.button_plus)).perform(click())
+        onView(withId(R.id.save_component_fab)).perform(click())
 
-        Espresso.onView(ViewMatchers.withText(bag1.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(set1.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(box1.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(component1.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.edit_component_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(R.string.button_plus)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.save_component_fab)).perform(ViewActions.click())
+        pressBack()
+        pressBack()
+        pressBack()
 
-        Espresso.pressBack()
-        Espresso.pressBack()
-        Espresso.pressBack()
+        composeTestRule.onNodeWithText(bag2.name).performClick()
+        onView(withText(set3.name)).perform(click())
+        onView(withText(box5.name)).perform(click())
+        onView(withText(component9.name)).perform(click())
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withText(R.string.button_plus)).perform(click())
+        onView(withId(R.id.save_component_fab)).perform(click())
 
-        Espresso.onView(ViewMatchers.withText(bag2.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(set3.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(box5.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(component9.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.edit_component_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(R.string.button_plus)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.save_component_fab)).perform(ViewActions.click())
+        pressBack()
+        pressBack()
+        pressBack()
 
-        Espresso.pressBack()
-        Espresso.pressBack()
-        Espresso.pressBack()
+        val quantity1 = "37"
+        val quantity2 = "101"
 
-        Espresso.onView(ViewMatchers.withText("37"))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withText("101"))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        val result1 = composeTestRule.activity.resources.getQuantityString(
+            R.plurals.components_quantity,
+            quantity1.toInt(),
+            quantity1
+        )
 
-        activityScenario.close()
+        val result2 = composeTestRule.activity.resources.getQuantityString(
+            R.plurals.components_quantity,
+            quantity2.toInt(),
+            quantity2
+        )
+
+        composeTestRule.onNodeWithText(result1).assertIsDisplayed()
+        composeTestRule.onNodeWithText(result2).assertIsDisplayed()
     }
-
 }

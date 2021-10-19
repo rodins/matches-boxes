@@ -1,6 +1,6 @@
 package com.sergeyrodin.matchesboxes.data
 
-data class ItemWithQuantityPresentation(
+data class QuantityItemModel(
     val id: Int,
     val name: String,
     val componentsQuantity: String

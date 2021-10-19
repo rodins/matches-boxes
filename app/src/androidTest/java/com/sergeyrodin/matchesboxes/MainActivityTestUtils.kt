@@ -6,8 +6,11 @@ import android.view.KeyEvent
 import android.widget.AutoCompleteTextView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
 import com.sergeyrodin.matchesboxes.util.monitorActivity
 
@@ -48,5 +51,5 @@ fun typeQuery(query: String) {
 }
 
 fun moveToSearch() {
-    Espresso.onView(ViewMatchers.withId(R.id.searchFragment)).perform(ViewActions.click())
+    onView(withId(R.id.searchFragment)).perform(click())
 }

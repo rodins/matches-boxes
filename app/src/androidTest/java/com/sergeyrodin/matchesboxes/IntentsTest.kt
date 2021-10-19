@@ -3,30 +3,26 @@ package com.sergeyrodin.matchesboxes
 import android.app.SearchManager
 import android.content.Intent
 import android.widget.AutoCompleteTextView
-import androidx.test.core.app.ActivityScenario
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasExtra
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.sergeyrodin.matchesboxes.data.*
-import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
 import com.sergeyrodin.matchesboxes.di.TestModule
-import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
-import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
-import com.sergeyrodin.matchesboxes.util.monitorActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -40,16 +36,14 @@ import javax.inject.Inject
 @UninstallModules(TestModule::class)
 class IntentsTest {
 
-    @get:Rule
+    @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
-    val intentsTestRule = IntentsTestRule(MainActivity::class.java)
+    @get:Rule(order = 2)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
     lateinit var dataSource: RadioComponentsDataSource
-
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
 
     @Before
     fun initDataSource() {
@@ -57,75 +51,65 @@ class IntentsTest {
         runBlocking {
             dataSource.clearDatabase()
         }
-    }
-
-    @Before
-    fun registerIdlingResource() {
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+        Intents.init()
     }
 
     @After
-    fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
+    fun intentRelease() {
+        Intents.release()
     }
 
     @Test
-    fun componentDetails_infoClick_intentCalled() = runBlocking {
+    fun componentDetails_infoClick_intentCalled() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+        }
 
-        onView(withText(bag.name)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withText(set.name)).perform(click())
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
         onView(withId(R.id.action_info)).perform(click())
 
         Intents.intended(
-            CoreMatchers.allOf(
-                IntentMatchers.hasAction(CoreMatchers.equalTo(Intent.ACTION_WEB_SEARCH)),
-                IntentMatchers.hasExtra(SearchManager.QUERY, component.name)
+            allOf(
+                hasAction(equalTo(Intent.ACTION_WEB_SEARCH)),
+                hasExtra(SearchManager.QUERY, component.name)
             )
         )
-
-        activityScenario.close()
     }
 
     @Test
-    fun searchItem_getItemInfo_intentCalled() = runBlocking{
+    fun searchItem_getItemInfo_intentCalled() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = ActivityScenario.launch(MainActivity::class.java)
-        dataBindingIdlingResource.monitorActivity(activityScenario)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+        }
 
         onView(withId(R.id.action_search)).perform(click())
-        onView(ViewMatchers.isAssignableFrom(AutoCompleteTextView::class.java))
-            .perform(ViewActions.typeText("78041\n"))
+        onView(isAssignableFrom(AutoCompleteTextView::class.java))
+            .perform(typeText("78041\n"))
         onView(withText(component.name)).perform(click())
         onView(withId(R.id.action_info)).perform(click())
 
         Intents.intended(
-            CoreMatchers.allOf(
-                IntentMatchers.hasAction(CoreMatchers.equalTo(Intent.ACTION_WEB_SEARCH)),
-                IntentMatchers.hasExtra(SearchManager.QUERY, component.name)
+            allOf(
+                hasAction(equalTo(Intent.ACTION_WEB_SEARCH)),
+                hasExtra(SearchManager.QUERY, component.name)
             )
         )
-
-        activityScenario.close()
     }
 }

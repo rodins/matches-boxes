@@ -62,4 +62,11 @@
     <string name="save_bag">Зберегти сумку</string>
     <string name="save_set">Зберегти набір коробок</string>
     <string name="save_box">Зберегти коробку</string>
+    <string name="bag_icon_description">Іконка сумки</string>
+    <plurals name="components_quantity">
+        <item quantity="one">%s компонент</item>
+        <item quantity="few">%s компонента</item>
+        <item quantity="many">%s компонентів</item>
+        <item quantity="other">%s компоненти</item>
+    </plurals>
 </resources>

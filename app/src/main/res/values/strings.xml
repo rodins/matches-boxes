@@ -65,4 +65,10 @@
     <string name="save_bag">Save bag</string>
     <string name="save_set">Save matches box set</string>
     <string name="save_box">Save matches box</string>
+    <string name="bag_icon_description">Bag icon</string>
+    <string name="loading_indicator">Loading indicator</string>
+    <plurals name="components_quantity">
+        <item quantity="one">%s component</item>
+        <item quantity="other">%s components</item>
+    </plurals>
 </resources>

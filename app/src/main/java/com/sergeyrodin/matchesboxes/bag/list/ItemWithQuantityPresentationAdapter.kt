@@ -6,13 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.databinding.DisplayQuantityListItemBinding
-import com.sergeyrodin.matchesboxes.data.ItemWithQuantityPresentation
+import com.sergeyrodin.matchesboxes.data.QuantityItemModel
 
 class DisplayQuantityAdapter(
     private val displayQuantityListener: DisplayQuantityListener,
-    private val itemIconResource: Int) : ListAdapter<ItemWithQuantityPresentation, DisplayQuantityAdapter.ViewHolder>(BagDiffCallback()) {
+    private val itemIconResource: Int) : ListAdapter<QuantityItemModel, DisplayQuantityAdapter.ViewHolder>(BagDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
     }
@@ -23,11 +22,11 @@ class DisplayQuantityAdapter(
 
     class ViewHolder private constructor(private val binding: DisplayQuantityListItemBinding): RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(itemWithQuantityPresentation: ItemWithQuantityPresentation,
+        fun bind(quantityItemModel: QuantityItemModel,
                  displayQuantityListener: DisplayQuantityListener,
                  itemIconResource: Int) {
             setItemIcon(itemIconResource)
-            setItemDataAndListener(itemWithQuantityPresentation, displayQuantityListener)
+            setItemDataAndListener(quantityItemModel, displayQuantityListener)
         }
 
         private fun setItemIcon(itemIconResource: Int) {
@@ -36,10 +35,10 @@ class DisplayQuantityAdapter(
         }
 
         private fun setItemDataAndListener(
-            itemWithQuantityPresentation: ItemWithQuantityPresentation,
+            quantityItemModel: QuantityItemModel,
             displayQuantityListener: DisplayQuantityListener
         ) {
-            binding.displayQuantity = itemWithQuantityPresentation
+            binding.displayQuantity = quantityItemModel
             binding.clickListener = displayQuantityListener
             binding.executePendingBindings()
         }
@@ -54,12 +53,12 @@ class DisplayQuantityAdapter(
     }
 }
 
-class BagDiffCallback: DiffUtil.ItemCallback<ItemWithQuantityPresentation>() {
-    override fun areItemsTheSame(oldItem: ItemWithQuantityPresentation, newItem: ItemWithQuantityPresentation): Boolean {
+class BagDiffCallback: DiffUtil.ItemCallback<QuantityItemModel>() {
+    override fun areItemsTheSame(oldItem: QuantityItemModel, newItem: QuantityItemModel): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: ItemWithQuantityPresentation, newItem: ItemWithQuantityPresentation): Boolean {
+    override fun areContentsTheSame(oldItem: QuantityItemModel, newItem: QuantityItemModel): Boolean {
         return oldItem == newItem
     }
 }

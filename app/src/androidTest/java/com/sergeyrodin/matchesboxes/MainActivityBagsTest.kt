@@ -1,22 +1,23 @@
 package com.sergeyrodin.matchesboxes
 
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.sergeyrodin.matchesboxes.data.*
-import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
 import com.sergeyrodin.matchesboxes.di.TestModule
-import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
-import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,216 +30,165 @@ import javax.inject.Inject
 @UninstallModules(TestModule::class)
 class MainActivityBagsTest {
 
-    @get:Rule
+    @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 2)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
     lateinit var dataSource: RadioComponentsDataSource
 
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
+    private var addBagDescription = ""
+    private var emptyText = ""
 
     @Before
     fun initDataSource() {
         hiltRule.inject()
+        addBagDescription = composeTestRule.activity.getString(R.string.add_bag)
+        emptyText = composeTestRule.activity.getString(R.string.no_bags_added)
         runBlocking {
             dataSource.clearDatabase()
         }
     }
 
-    @Before
-    fun registerIdlingResource() {
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
-    }
-
-    @After
-    fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
-    }
-
     @Test
     fun addBag_bagNameDisplayed() {
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-
-        Espresso.onView(ViewMatchers.withId(R.id.add_bag_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.bag_edit))
-            .perform(ViewActions.typeText("New bag"), ViewActions.closeSoftKeyboard())
-        Espresso.onView(ViewMatchers.withId(R.id.save_bag_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText("New bag"))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        activityScenario.close()
+        composeTestRule.onNodeWithContentDescription(addBagDescription).performClick()
+        onView(withId(R.id.bag_edit)).perform(typeText("New bag"), closeSoftKeyboard())
+        onView(withId(R.id.save_bag_fab)).perform(click())
+        composeTestRule.onNodeWithText("New bag").assertIsDisplayed()
     }
 
     @Test
     fun addBag_deleteButtonIsNotDisplayed() {
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-
-        Espresso.onView(ViewMatchers.withId(R.id.add_bag_fab)).perform(ViewActions.click())
-
-        Espresso.onView(ViewMatchers.withId(R.id.action_delete))
-            .check(ViewAssertions.doesNotExist())
-
-        activityScenario.close()
+        composeTestRule.onNodeWithContentDescription(addBagDescription).performClick()
+        onView(withId(R.id.action_delete)).check(doesNotExist())
     }
 
     @Test
     fun noBags_addBagClick_textEquals() {
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-
-        Espresso.onView(ViewMatchers.withId(R.id.no_bags_added_text))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.add_bag_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.bag_edit))
-            .check(ViewAssertions.matches(ViewMatchers.withHint(R.string.enter_bag_name)))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText(emptyText).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescription(addBagDescription).performClick()
+        onView(withId(R.id.bag_edit)).check(matches(withHint(R.string.enter_bag_name)))
     }
 
     @Test
-    fun editBagClick_editBag_nameEquals() = runBlocking{
+    fun editBagClick_editBag_nameEquals() {
         val bag = Bag(1, "Bag")
-        dataSource.insertBag(bag)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+        }
 
-        Espresso.onView(ViewMatchers.withText(bag.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.action_edit)).perform(ViewActions.click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
+        onView(withId(R.id.action_edit)).perform(click())
 
-        Espresso.onView(ViewMatchers.withId(R.id.bag_edit))
-            .perform(ViewActions.replaceText("Bag updated"))
-        Espresso.onView(ViewMatchers.withId(R.id.save_bag_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText("Bag updated"))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withText(R.string.no_matches_box_sets_added))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-
-        activityScenario.close()
+        onView(withId(R.id.bag_edit)).perform(replaceText("Bag updated"))
+        onView(withId(R.id.save_bag_fab)).perform(click())
+        onView(withText("Bag updated")).check(matches(isDisplayed()))
+        onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun updateBag_nameInListUpdated() = runBlocking{
+    fun updateBag_nameInListUpdated() {
         val bag = Bag(1, "Bag")
-        dataSource.insertBag(bag)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+        }
 
-        Espresso.onView(ViewMatchers.withText(bag.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.action_edit)).perform(ViewActions.click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
+        onView(withId(R.id.action_edit)).perform(click())
 
-        Espresso.onView(ViewMatchers.withId(R.id.bag_edit))
-            .perform(ViewActions.replaceText("Bag updated"))
-        Espresso.onView(ViewMatchers.withId(R.id.save_bag_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withContentDescription(R.string.abc_action_bar_up_description))
-            .perform(ViewActions.click())
+        onView(withId(R.id.bag_edit)).perform(replaceText("Bag updated"))
+        onView(withId(R.id.save_bag_fab)).perform(click())
+        onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        Espresso.onView(ViewMatchers.withText("Bag updated"))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText("Bag updated").assertIsDisplayed()
     }
 
     @Test
-    fun editBagClick_nameEquals() = runBlocking{
+    fun editBagClick_nameEquals() {
         val bag = Bag(1, "Bag")
-        dataSource.insertBag(bag)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+        }
 
-        Espresso.onView(ViewMatchers.withText(bag.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.action_edit)).perform(ViewActions.click())
+        composeTestRule.onNodeWithText(bag.name).performClick()
+        onView(withId(R.id.action_edit)).perform(click())
 
-        Espresso.onView(ViewMatchers.withId(R.id.bag_edit))
-            .check(ViewAssertions.matches(ViewMatchers.withText(bag.name)))
-
-        activityScenario.close()
+        onView(withId(R.id.bag_edit)).check(matches(withText(bag.name)))
     }
 
     @Test
-    fun editBagClick_deleteBag() = runBlocking{
-        dataSource.insertBag(Bag(1, "Bag"))
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+    fun editBagClick_deleteBag() {
+        runBlocking {
+            dataSource.insertBag(Bag(1, "Bag"))
+        }
 
-        Espresso.onView(ViewMatchers.withText("Bag")).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.action_edit)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.action_delete)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(R.string.no_bags_added))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText("Bag").performClick()
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.action_delete)).perform(click())
+        composeTestRule.onNodeWithText(emptyText).assertIsDisplayed()
     }
 
     @Test
-    fun bagClick_titleEquals() = runBlocking{
+    fun bagClick_titleEquals() {
         val bag = Bag(1, "Bag")
-        dataSource.insertBag(bag)
+        runBlocking {
+            dataSource.insertBag(bag)
+        }
 
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-
-        Espresso.onView(ViewMatchers.withText(bag.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(bag.name))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText(bag.name).performClick()
+        onView(withText(bag.name)).check(matches(isDisplayed()))
     }
 
     @Test
     fun addBag_titleEquals() {
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-
-        Espresso.onView(ViewMatchers.withId(R.id.add_bag_fab)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(R.string.add_bag))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithContentDescription(addBagDescription).performClick()
+        onView(withText(R.string.add_bag)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun editBag_titleEquals() = runBlocking{
+    fun editBag_titleEquals() {
         val bag = Bag(1, "Bag")
-        dataSource.insertBag(bag)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+        }
 
-        Espresso.onView(ViewMatchers.withText(bag.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.action_edit)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withText(R.string.update_bag))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText(bag.name).performClick()
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withText(R.string.update_bag)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun editBag_nameEquals() = runBlocking{
+    fun editBag_nameEquals() {
         val bag = Bag(1, "Bag")
-        dataSource.insertBag(bag)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+        }
 
-        Espresso.onView(ViewMatchers.withText(bag.name)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.action_edit)).perform(ViewActions.click())
-        Espresso.onView(ViewMatchers.withId(R.id.bag_edit))
-            .check(ViewAssertions.matches(ViewMatchers.withText(bag.name)))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText(bag.name).performClick()
+        onView(withId(R.id.action_edit)).perform(click())
+        onView(withId(R.id.bag_edit)).check(matches(withText(bag.name)))
     }
 
     @Test
-    fun bagsListFragmentClick_bagNameDisplayed() = runBlocking{
+    fun bagsListFragmentClick_bagNameDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
+        }
 
         moveToPopular()
-        Espresso.onView(ViewMatchers.withId(R.id.bagsListFragment)).perform(ViewActions.click())
-
-        Espresso.onView(ViewMatchers.withText(bag.name))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-
-        activityScenario.close()
+        onView(withId(R.id.bagsListFragment)).perform(click())
+        composeTestRule.onNodeWithText(bag.name).assertIsDisplayed()
     }
 }

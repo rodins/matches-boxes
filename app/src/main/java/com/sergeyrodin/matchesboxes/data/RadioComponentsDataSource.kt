@@ -54,11 +54,11 @@ interface RadioComponentsDataSource {
 
     // DisplayQuantity
 
-    suspend fun getDisplayQuantityListBySetId(setId: Int): List<ItemWithQuantityPresentation>
+    suspend fun getDisplayQuantityListBySetId(setId: Int): List<QuantityItemModel>
 
-    suspend fun getDisplayQuantityListByBagId(bagId: Int): List<ItemWithQuantityPresentation>
+    suspend fun getDisplayQuantityListByBagId(bagId: Int): List<QuantityItemModel>
 
-    fun getBagsQuantityPresentationList(): LiveData<List<ItemWithQuantityPresentation>>
+    fun getBagsQuantityPresentationList(): LiveData<List<QuantityItemModel>>
 
     // RadioComponentsDetails
 
