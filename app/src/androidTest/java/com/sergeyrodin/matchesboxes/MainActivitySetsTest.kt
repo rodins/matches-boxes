@@ -1,6 +1,8 @@
 package com.sergeyrodin.matchesboxes
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.onView
@@ -39,9 +41,14 @@ class MainActivitySetsTest {
     @Inject
     lateinit var dataSource: RadioComponentsDataSource
 
+    private var addSetDescription = ""
+    private var emptyText = ""
+
     @Before
     fun initDataSource() {
         hiltRule.inject()
+        addSetDescription = composeTestRule.activity.getString(R.string.add_set)
+        emptyText = composeTestRule.activity.getString(R.string.no_matches_box_sets_added)
         runBlocking {
             dataSource.clearDatabase()
         }
@@ -55,14 +62,14 @@ class MainActivitySetsTest {
 
         composeTestRule.onNodeWithText("Bag").performClick()
 
-        onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText(emptyText).assertIsDisplayed()
 
-        onView(withId(R.id.add_set_fab)).perform(click())
-        onView(withId(R.id.set_edit)).perform(typeText("MBS1"))
+        composeTestRule.onNodeWithContentDescription(addSetDescription).performClick()
+        onView(withId(R.id.set_edit)).perform(typeText("MBS1"), closeSoftKeyboard())
         onView(withId(R.id.save_set_fab)).perform(click())
 
         onView(withText("Bag")).check(matches(isDisplayed()))
-        onView(withText("MBS1")).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText("MBS1").assertIsDisplayed()
     }
 
     @Test
@@ -73,21 +80,21 @@ class MainActivitySetsTest {
 
         composeTestRule.onNodeWithText("Bag").performClick()
 
-        onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText(emptyText).assertIsDisplayed()
 
-        onView(withId(R.id.add_set_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(addSetDescription).performClick()
         onView(withId(R.id.set_edit))
             .perform(typeText("Set"), closeSoftKeyboard())
         onView(withId(R.id.save_set_fab)).perform(click())
 
-        onView(withText("Set")).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText("Set").assertIsDisplayed()
 
-        onView(withId(R.id.add_set_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(addSetDescription).performClick()
         onView(withId(R.id.set_edit))
             .perform(typeText("Set2"), closeSoftKeyboard())
         onView(withId(R.id.save_set_fab)).perform(click())
 
-        onView(withText("Set2")).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText("Set2").assertIsDisplayed()
     }
 
     @Test
@@ -97,7 +104,7 @@ class MainActivitySetsTest {
         }
 
         composeTestRule.onNodeWithText("Bag").performClick()
-        onView(withId(R.id.add_set_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(addSetDescription).performClick()
         onView(withId(R.id.action_delete)).check(doesNotExist())
     }
 
@@ -111,7 +118,7 @@ class MainActivitySetsTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.set_edit)).perform(replaceText("Set updated"))
         onView(withId(R.id.save_set_fab)).perform(click())
@@ -130,13 +137,13 @@ class MainActivitySetsTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.set_edit)).perform(replaceText("Set updated"))
         onView(withId(R.id.save_set_fab)).perform(click())
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        onView(withText("Set updated")).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText("Set updated").assertIsDisplayed()
     }
 
     @Test
@@ -149,7 +156,7 @@ class MainActivitySetsTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withText(set.name)).check(matches(isDisplayed()))
     }
 
@@ -161,7 +168,7 @@ class MainActivitySetsTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withId(R.id.add_set_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(addSetDescription).performClick()
         onView(withText(R.string.add_set)).check(matches(isDisplayed()))
     }
 
@@ -175,7 +182,7 @@ class MainActivitySetsTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         onView(withText(R.string.update_set)).perform(click())
     }
@@ -190,7 +197,7 @@ class MainActivitySetsTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.set_edit)).check(matches(withText(set.name)))
     }
@@ -205,7 +212,7 @@ class MainActivitySetsTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.action_delete)).perform(click())
 

@@ -67,6 +67,7 @@
     <string name="save_box">Save matches box</string>
     <string name="bag_icon_description">Bag icon</string>
     <string name="loading_indicator">Loading indicator</string>
+    <string name="set_icon_description">Matches box set icon description</string>
     <plurals name="components_quantity">
         <item quantity="one">%s component</item>
         <item quantity="other">%s components</item>

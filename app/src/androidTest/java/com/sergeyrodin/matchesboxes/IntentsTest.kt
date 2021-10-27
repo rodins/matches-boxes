@@ -73,7 +73,7 @@ class IntentsTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withText(box.name)).perform(click())
         onView(withText(component.name)).perform(click())
         onView(withId(R.id.action_info)).perform(click())

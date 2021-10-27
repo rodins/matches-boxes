@@ -58,7 +58,7 @@ class MainActivityBoxesTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withId(R.id.add_box_fab)).perform(click())
         onView(withId(R.id.box_edit)).perform(typeText("Box"))
         onView(withId(R.id.save_box_fab)).perform(click())
@@ -77,7 +77,7 @@ class MainActivityBoxesTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withId(R.id.add_box_fab)).perform(click())
         onView(withId(R.id.box_edit))
             .perform(typeText("Box"), closeSoftKeyboard())
@@ -103,7 +103,7 @@ class MainActivityBoxesTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withId(R.id.add_box_fab)).perform(click())
 
         onView(withId(R.id.action_delete)).check(doesNotExist())
@@ -121,7 +121,7 @@ class MainActivityBoxesTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.box_edit)).perform(replaceText("Updated box"))
@@ -142,7 +142,7 @@ class MainActivityBoxesTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withText(box.name)).perform(click())
         onView(withText(box.name)).check(matches(isDisplayed()))
     }
@@ -157,7 +157,7 @@ class MainActivityBoxesTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withId(R.id.add_box_fab)).perform(click())
         onView(withText(R.string.add_box)).check(matches(isDisplayed()))
     }
@@ -174,7 +174,7 @@ class MainActivityBoxesTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
         onView(withText(R.string.update_box)).check(matches(isDisplayed()))
@@ -192,7 +192,7 @@ class MainActivityBoxesTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.box_edit)).check(matches(withText(box.name)))
@@ -210,7 +210,7 @@ class MainActivityBoxesTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.box_edit)).perform(replaceText("Updated box"))
@@ -231,7 +231,7 @@ class MainActivityBoxesTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
         onView(withText(box.name)).perform(click())
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.action_delete)).perform(click())

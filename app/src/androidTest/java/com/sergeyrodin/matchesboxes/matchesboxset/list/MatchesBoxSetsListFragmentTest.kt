@@ -3,25 +3,26 @@ package com.sergeyrodin.matchesboxes.matchesboxset.list
 import android.content.Context
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
+import com.sergeyrodin.matchesboxes.HiltTestActivity
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
-import com.sergeyrodin.matchesboxes.launchFragmentInHiltContainer
+import com.sergeyrodin.matchesboxes.launchFragment
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,11 +37,14 @@ import javax.inject.Inject
 @UninstallModules(RadioComponentsDataSourceModule::class)
 class MatchesBoxSetsListFragmentTest {
 
-    @get:Rule
+    @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule(order = 2)
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
+
+    @get:Rule(order = 3)
+    var instantExecutorRule = InstantTaskExecutorRule()
 
     @Inject
     lateinit var dataSource: FakeDataSource
@@ -60,11 +64,11 @@ class MatchesBoxSetsListFragmentTest {
         )
 
         val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id, "Title").build().toBundle()
-        launchFragmentInHiltContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme)
+        launchFragment<MatchesBoxSetsListFragment>(composeTestRule.activityRule.scenario, bundle)
 
-        onView(withText("MBS1")).check(matches(isDisplayed()))
-        onView(withText("MBS2")).check(matches(isDisplayed()))
-        onView(withText("MBS3")).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText("MBS1").assertIsDisplayed()
+        composeTestRule.onNodeWithText("MBS2").assertIsDisplayed()
+        composeTestRule.onNodeWithText("MBS3").assertIsDisplayed()
     }
 
     @Test
@@ -72,9 +76,10 @@ class MatchesBoxSetsListFragmentTest {
         val bag = Bag(1, "Bag")
         dataSource.addMatchesBoxSets()
         val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id, "Title").build().toBundle()
-        launchFragmentInHiltContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme)
+        launchFragment<MatchesBoxSetsListFragment>(composeTestRule.activityRule.scenario, bundle)
 
-        onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
+        val setsEmptyText = composeTestRule.activity.getString(R.string.no_matches_box_sets_added)
+        composeTestRule.onNodeWithText(setsEmptyText).assertIsDisplayed()
     }
 
     @Test
@@ -85,16 +90,21 @@ class MatchesBoxSetsListFragmentTest {
         var title = ""
 
         val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id, "Title").build().toBundle()
-        launchFragmentInHiltContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme) {
+        launchFragment<MatchesBoxSetsListFragment>(composeTestRule.activityRule.scenario, bundle) {
             Navigation.setViewNavController(requireView(), navController)
             title = getString(R.string.add_set)
         }
 
-        onView(withId(R.id.add_set_fab)).perform(click())
+        val addSetDescription = composeTestRule.activity.getString(R.string.add_set)
+        composeTestRule.onNodeWithContentDescription(addSetDescription).performClick()
 
         verify(navController).navigate(
             MatchesBoxSetsListFragmentDirections
-                .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(bag.id, ADD_NEW_ITEM_ID, title)
+                .actionMatchesBoxSetsListFragmentToAddEditDeleteMatchesBoxSetFragment(
+                    bag.id,
+                    ADD_NEW_ITEM_ID,
+                    title
+                )
         )
     }
 
@@ -107,11 +117,11 @@ class MatchesBoxSetsListFragmentTest {
         val navController = Mockito.mock(NavController::class.java)
 
         val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id, "Title").build().toBundle()
-        launchFragmentInHiltContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme) {
+        launchFragment<MatchesBoxSetsListFragment>(composeTestRule.activityRule.scenario, bundle) {
             Navigation.setViewNavController(requireView(), navController)
         }
 
-        onView(withText(set.name)).perform(click())
+        composeTestRule.onNodeWithText(set.name).performClick()
 
         verify(navController).navigate(
             MatchesBoxSetsListFragmentDirections
@@ -127,7 +137,7 @@ class MatchesBoxSetsListFragmentTest {
         var title = ""
 
         val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id, "Title").build().toBundle()
-        launchFragmentInHiltContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme) {
+        launchFragment<MatchesBoxSetsListFragment>(composeTestRule.activityRule.scenario, bundle) {
             Navigation.setViewNavController(requireView(), navController)
             title = getString(R.string.update_bag)
             clickEditAction(this)
@@ -164,13 +174,30 @@ class MatchesBoxSetsListFragmentTest {
         val component8 = RadioComponent(8, "Component8", 8, box4.id)
         dataSource.addMatchesBoxSets(set1, set2)
         dataSource.addMatchesBoxes(box1, box2, box3, box4)
-        dataSource.addRadioComponents(component1, component2, component3, component4,
-            component5, component6, component7, component8)
+        dataSource.addRadioComponents(
+            component1, component2, component3, component4,
+            component5, component6, component7, component8
+        )
         val bundle = MatchesBoxSetsListFragmentArgs.Builder(bag.id, "Title").build().toBundle()
-        launchFragmentInHiltContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme)
+        launchFragment<MatchesBoxSetsListFragment>(composeTestRule.activityRule.scenario, bundle)
 
-        onView(withText("10")).check(matches(isDisplayed()))
-        onView(withText("26")).check(matches(isDisplayed()))
+        val quantity1 = "10"
+        val quantity2 = "26"
+
+        val result1 = composeTestRule.activity.resources.getQuantityString(
+            R.plurals.components_quantity,
+            quantity1.toInt(),
+            quantity1
+        )
+
+        val result2 = composeTestRule.activity.resources.getQuantityString(
+            R.plurals.components_quantity,
+            quantity2.toInt(),
+            quantity2
+        )
+
+        composeTestRule.onNodeWithText(result1).assertIsDisplayed()
+        composeTestRule.onNodeWithText(result2).assertIsDisplayed()
     }
 
     @Test
@@ -179,8 +206,9 @@ class MatchesBoxSetsListFragmentTest {
         val set = MatchesBoxSet(1, "Set", bagId)
         dataSource.addMatchesBoxSets(set)
         val bundle = MatchesBoxSetsListFragmentArgs.Builder(bagId, "Title").build().toBundle()
-        launchFragmentInHiltContainer<MatchesBoxSetsListFragment>(bundle, R.style.AppTheme)
+        launchFragment<MatchesBoxSetsListFragment>(composeTestRule.activityRule.scenario, bundle)
 
-        onView(withId(R.id.items)).check(matches(hasDescendant(withTagValue(equalTo(R.drawable.ic_set)))))
+        val setIconDescription = composeTestRule.activity.getString(R.string.set_icon_description)
+        composeTestRule.onNodeWithContentDescription(setIconDescription).assertIsDisplayed()
     }
 }

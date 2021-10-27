@@ -3,18 +3,16 @@ package com.sergeyrodin.matchesboxes.matchesboxset.list
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
-import com.sergeyrodin.matchesboxes.MatchesBoxesApplication
 import com.sergeyrodin.matchesboxes.R
-import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityAdapter
-import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityListener
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
-import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxSetsListBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,33 +25,22 @@ class MatchesBoxSetsListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = createBinding(inflater)
+        val view = inflater.inflate(R.layout.fragment_matches_box_sets_list, container, false)
+        view.findViewById<ComposeView>(R.id.sets_compose_view).setContent {
+            AppCompatTheme {
+                SetsScreen(viewModel)
+            }
+        }
+
         startViewModel()
-        setupBinding(binding)
         observeAddEvent()
         observeSelectEvent()
         setHasOptionsMenu(true)
-        return binding.root
-    }
-
-    private fun createBinding(inflater: LayoutInflater): FragmentMatchesBoxSetsListBinding {
-        return FragmentMatchesBoxSetsListBinding.inflate(inflater)
+        return view
     }
 
     private fun startViewModel() {
         viewModel.startSet(args.bagId)
-    }
-
-    private fun setupBinding(binding: FragmentMatchesBoxSetsListBinding) {
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
-        binding.items.adapter = createAdapter()
-    }
-
-    private fun createAdapter(): DisplayQuantityAdapter {
-        return DisplayQuantityAdapter(DisplayQuantityListener {
-            viewModel.selectSet(it)
-        }, R.drawable.ic_set)
     }
 
     private fun observeAddEvent() {

@@ -31,10 +31,10 @@ import javax.inject.Inject
 @UninstallModules(RadioComponentsDataSourceModule::class)
 class BagsScreenTest {
 
-    @get:Rule
+    @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
+    @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @get:Rule

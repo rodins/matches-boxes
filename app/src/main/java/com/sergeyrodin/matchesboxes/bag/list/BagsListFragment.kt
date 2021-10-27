@@ -25,7 +25,7 @@ class BagsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_bags_list, container, false)
-        view.findViewById<ComposeView>(R.id.compose_view).setContent {
+        view.findViewById<ComposeView>(R.id.bags_compose_view).setContent {
             AppCompatTheme {
                 BagsScreen(viewModel)
             }

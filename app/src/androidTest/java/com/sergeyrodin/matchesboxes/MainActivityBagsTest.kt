@@ -86,7 +86,8 @@ class MainActivityBagsTest {
         onView(withId(R.id.bag_edit)).perform(replaceText("Bag updated"))
         onView(withId(R.id.save_bag_fab)).perform(click())
         onView(withText("Bag updated")).check(matches(isDisplayed()))
-        onView(withText(R.string.no_matches_box_sets_added)).check(matches(isDisplayed()))
+        val setsEmptyText = composeTestRule.activity.getString(R.string.no_matches_box_sets_added)
+        composeTestRule.onNodeWithText(setsEmptyText).assertIsDisplayed()
     }
 
     @Test
