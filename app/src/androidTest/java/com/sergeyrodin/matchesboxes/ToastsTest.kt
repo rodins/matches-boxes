@@ -1,7 +1,6 @@
 package com.sergeyrodin.matchesboxes
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.onView
@@ -51,8 +50,7 @@ class ToastsTest {
 
     @Test
     fun addBag_showToast() {
-        val addBagDescription = composeTestRule.activity.getString(R.string.add_bag)
-        composeTestRule.onNodeWithContentDescription(addBagDescription).performClick()
+        composeTestRule.onNodeWithContentDescription(R.string.add_bag).performClick()
         onView(withId(R.id.bag_edit)).perform(typeText("New bag"), closeSoftKeyboard())
         onView(withId(R.id.save_bag_fab)).perform(click())
 
@@ -103,8 +101,7 @@ class ToastsTest {
         }
 
         composeTestRule.onNodeWithText("Bag").performClick()
-        val addSetDescription = composeTestRule.activity.getString(R.string.add_set)
-        composeTestRule.onNodeWithContentDescription(addSetDescription).performClick()
+        composeTestRule.onNodeWithContentDescription(R.string.add_set).performClick()
         onView(withId(R.id.set_edit)).perform(typeText("MBS1"), closeSoftKeyboard())
         onView(withId(R.id.save_set_fab)).perform(click())
 
@@ -160,9 +157,9 @@ class ToastsTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withId(R.id.add_box_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
 
-        onView(withId(R.id.box_edit)).perform(typeText("New box"))
+        onView(withId(R.id.box_edit)).perform(typeText("New box"), closeSoftKeyboard())
         onView(withId(R.id.save_box_fab)).perform(click())
 
         checkToastIsDisplayed(R.string.box_added)
@@ -181,7 +178,7 @@ class ToastsTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withText(box.name)).perform(click())
+        composeTestRule.onNodeWithText(box.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.box_edit))
             .perform(replaceText("Updated box"))
@@ -203,7 +200,7 @@ class ToastsTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withText(box.name)).perform(click())
+        composeTestRule.onNodeWithText(box.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.action_delete)).perform(click())
 
@@ -225,7 +222,7 @@ class ToastsTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withText(box.name)).perform(click())
+        composeTestRule.onNodeWithText(box.name).performClick()
         onView(withId(R.id.add_component_fab)).perform(click())
         onView(withId(R.id.component_edit))
             .perform(typeText("Component"))
@@ -247,7 +244,7 @@ class ToastsTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withText(box.name)).perform(click())
+        composeTestRule.onNodeWithText(box.name).performClick()
         onView(withId(R.id.add_component_fab)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
 
@@ -269,7 +266,7 @@ class ToastsTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withText(box.name)).perform(click())
+        composeTestRule.onNodeWithText(box.name).performClick()
         onView(withText(component.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
 
@@ -295,7 +292,7 @@ class ToastsTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withText(box.name)).perform(click())
+        composeTestRule.onNodeWithText(box.name).performClick()
         onView(withText(component.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
 

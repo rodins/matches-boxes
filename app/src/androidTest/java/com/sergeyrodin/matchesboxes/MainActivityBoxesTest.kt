@@ -1,5 +1,6 @@
 package com.sergeyrodin.matchesboxes
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -59,12 +60,11 @@ class MainActivityBoxesTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withId(R.id.add_box_fab)).perform(click())
-        onView(withId(R.id.box_edit)).perform(typeText("Box"))
+        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
+        onView(withId(R.id.box_edit)).perform(typeText("Box"), closeSoftKeyboard())
         onView(withId(R.id.save_box_fab)).perform(click())
 
-        onView(withText("Box"))
-            .check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText("Box").assertIsDisplayed()
     }
 
     @Test
@@ -78,19 +78,19 @@ class MainActivityBoxesTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withId(R.id.add_box_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
         onView(withId(R.id.box_edit))
             .perform(typeText("Box"), closeSoftKeyboard())
         onView(withId(R.id.save_box_fab)).perform(click())
 
-        onView(withText("Box")).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText("Box").assertIsDisplayed()
 
-        onView(withId(R.id.add_box_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
         onView(withId(R.id.box_edit))
             .perform(typeText("Box2"), closeSoftKeyboard())
         onView(withId(R.id.save_box_fab)).perform(click())
 
-        onView(withText("Box2")).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText("Box2").assertIsDisplayed()
     }
 
     @Test
@@ -104,7 +104,7 @@ class MainActivityBoxesTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withId(R.id.add_box_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
 
         onView(withId(R.id.action_delete)).check(doesNotExist())
     }
@@ -122,12 +122,12 @@ class MainActivityBoxesTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withText(box.name)).perform(click())
+        composeTestRule.onNodeWithText(box.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.box_edit)).perform(replaceText("Updated box"))
         onView(withId(R.id.save_box_fab)).perform(click())
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
-        onView(withText("Updated box")).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText("Updated box").assertIsDisplayed()
     }
 
     @Test
@@ -143,7 +143,7 @@ class MainActivityBoxesTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withText(box.name)).perform(click())
+        composeTestRule.onNodeWithText(box.name).performClick()
         onView(withText(box.name)).check(matches(isDisplayed()))
     }
 
@@ -158,7 +158,7 @@ class MainActivityBoxesTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withId(R.id.add_box_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
         onView(withText(R.string.add_box)).check(matches(isDisplayed()))
     }
 
@@ -175,7 +175,7 @@ class MainActivityBoxesTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withText(box.name)).perform(click())
+        composeTestRule.onNodeWithText(box.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         onView(withText(R.string.update_box)).check(matches(isDisplayed()))
     }
@@ -193,7 +193,7 @@ class MainActivityBoxesTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withText(box.name)).perform(click())
+        composeTestRule.onNodeWithText(box.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.box_edit)).check(matches(withText(box.name)))
     }
@@ -211,7 +211,7 @@ class MainActivityBoxesTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withText(box.name)).perform(click())
+        composeTestRule.onNodeWithText(box.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.box_edit)).perform(replaceText("Updated box"))
         onView(withId(R.id.save_box_fab)).perform(click())
@@ -232,7 +232,7 @@ class MainActivityBoxesTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        onView(withText(box.name)).perform(click())
+        composeTestRule.onNodeWithText(box.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.action_delete)).perform(click())
 

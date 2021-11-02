@@ -3,16 +3,16 @@ package com.sergeyrodin.matchesboxes.matchesbox.list
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.sergeyrodin.matchesboxes.*
-import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityAdapter
-import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityListener
+import com.google.accompanist.appcompattheme.AppCompatTheme
+import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
+import com.sergeyrodin.matchesboxes.EventObserver
+import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.data.MatchesBox
-
-import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxListBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,32 +25,21 @@ class MatchesBoxListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = createBinding(inflater)
+        val view = inflater.inflate(R.layout.fragment_matches_box_list, container, false)
+        view.findViewById<ComposeView>(R.id.sets_compose_view).setContent {
+            AppCompatTheme {
+                BoxesScreen(viewModel)
+            }
+        }
         startViewModel()
-        setupBinding(binding)
         observeAddEvent()
         observeSelectEvent()
         setHasOptionsMenu(true)
-        return binding.root
+        return view
     }
-
-    private fun createBinding(inflater: LayoutInflater) =
-        FragmentMatchesBoxListBinding.inflate(inflater)
 
     private fun startViewModel() {
         viewModel.startBox(args.setId)
-    }
-
-    private fun setupBinding(binding: FragmentMatchesBoxListBinding) {
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
-        binding.items.adapter = createAdapter()
-    }
-
-    private fun createAdapter(): DisplayQuantityAdapter {
-        return DisplayQuantityAdapter(DisplayQuantityListener {
-            viewModel.selectBox(it)
-        }, R.drawable.ic_matchesbox)
     }
 
     private fun observeSelectEvent() {
@@ -119,5 +108,4 @@ class MatchesBoxListFragment : Fragment() {
                 )
         )
     }
-
 }

@@ -113,7 +113,7 @@ class MainActivityTest {
 
         composeTestRule.onNodeWithText(bag1.name).performClick()
         composeTestRule.onNodeWithText(set1.name).performClick()
-        onView(withText(box1.name)).perform(click())
+        composeTestRule.onNodeWithText(box1.name).performClick()
         onView(withText(component1.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(R.string.button_plus)).perform(click())
@@ -125,7 +125,7 @@ class MainActivityTest {
 
         composeTestRule.onNodeWithText(bag2.name).performClick()
         composeTestRule.onNodeWithText(set3.name).performClick()
-        onView(withText(box5.name)).perform(click())
+        composeTestRule.onNodeWithText(box5.name).performClick()
         onView(withText(component9.name)).perform(click())
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(R.string.button_plus)).perform(click())
