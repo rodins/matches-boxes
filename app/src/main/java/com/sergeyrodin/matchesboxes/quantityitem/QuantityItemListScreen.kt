@@ -18,9 +18,12 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.bag.list.BagIcon
 import com.sergeyrodin.matchesboxes.data.QuantityItemModel
+import com.sergeyrodin.matchesboxes.matchesbox.list.BoxIcon
+import com.sergeyrodin.matchesboxes.matchesboxset.list.SetIcon
 
 @Composable
 fun QuantityItemListScreen(
@@ -122,11 +125,13 @@ fun QuantityItem(
         modifier = Modifier
             .clickable(onClick = onClick)
             .padding(all = 8.dp)
-            .background(Color.White)
+            .background(Color.White),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         icon()
         Spacer(modifier = Modifier.width(8.dp))
         Column(modifier = Modifier.fillMaxWidth()) {
+            Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = name,
                 style = MaterialTheme.typography.subtitle1
@@ -138,13 +143,14 @@ fun QuantityItem(
                     style = MaterialTheme.typography.body1
                 )
             }
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
 
 @Preview
 @Composable
-fun DisplayQuantityItemPreview() {
+fun BagPreview() {
     QuantityItem("Bag 1", "5") {
         BagIcon()
     }
@@ -152,7 +158,23 @@ fun DisplayQuantityItemPreview() {
 
 @Preview
 @Composable
-fun QuantityItemListPreview() {
+fun SetPreview() {
+    QuantityItem("Bag 1", "5") {
+        SetIcon()
+    }
+}
+
+@Preview
+@Composable
+fun BoxPreview() {
+    QuantityItem("Bag 1", "5") {
+        BoxIcon()
+    }
+}
+
+@Preview
+@Composable
+fun BagsListPreview() {
     val items = listOf(
         QuantityItemModel(1, "Bag1", "5"),
         QuantityItemModel(2, "Bag2", "6")
@@ -170,7 +192,9 @@ fun QuantityItemListPreview() {
 @Preview
 @Composable
 fun QuantityItemListEmptyPreview() {
-    QuantityItemListScreen(listOf())
+    AppCompatTheme {
+        QuantityItemListScreen(listOf())
+    }
 }
 
 @Preview
