@@ -223,9 +223,9 @@ class ToastsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        onView(withId(R.id.add_component_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
         onView(withId(R.id.component_edit))
-            .perform(typeText("Component"))
+            .perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
         checkToastIsDisplayed(R.string.component_added)
@@ -245,7 +245,7 @@ class ToastsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        onView(withId(R.id.add_component_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
         onView(withId(R.id.save_component_fab)).perform(click())
 
         checkToastIsDisplayed(R.string.save_component_error)
@@ -267,7 +267,7 @@ class ToastsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
 
         onView(withId(R.id.component_edit))
@@ -293,7 +293,7 @@ class ToastsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
 
         onView(withId(R.id.action_delete)).perform(click())

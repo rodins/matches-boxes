@@ -192,6 +192,14 @@ class FakeDataSource @Inject constructor() : RadioComponentsDataSource{
         }
     }
 
+    override suspend fun getDisplayQuantityListByBoxId(boxId: Int): List<QuantityItemModel> {
+        return radioComponentsList.filter {
+            it.matchesBoxId == boxId
+        }.map {
+            QuantityItemModel(it.id, it.name, it.quantity.toString())
+        }
+    }
+
     override suspend fun getDisplayQuantityListBySetId(setId: Int): List<QuantityItemModel> {
         val output = mutableListOf<QuantityItemModel>()
         matchesBoxList.filter { box ->

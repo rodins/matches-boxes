@@ -4,11 +4,9 @@ import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.sergeyrodin.matchesboxes.bag.list.DisplayQuantityAdapter
 import com.sergeyrodin.matchesboxes.component.list.RadioComponentAdapter
 import com.sergeyrodin.matchesboxes.data.History
 import com.sergeyrodin.matchesboxes.data.HistoryModel
-import com.sergeyrodin.matchesboxes.data.QuantityItemModel
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.history.all.HistoryModelAdapter
 import com.sergeyrodin.matchesboxes.history.component.HistoryAdapter
@@ -17,12 +15,6 @@ import com.sergeyrodin.matchesboxes.popular.PopularPresentationAdapter
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 import com.sergeyrodin.matchesboxes.util.getDeltaById
 import com.sergeyrodin.matchesboxes.util.getHighlightedBackgroundById
-
-@BindingAdapter("displayQuantityListData")
-fun bindBagRecyclerView(recyclerView: RecyclerView, list: List<QuantityItemModel>?) {
-    val adapter = recyclerView.adapter as DisplayQuantityAdapter
-    adapter.submitList(list)
-}
 
 @BindingAdapter("radioComponentsListData")
 fun bindRadioComponentRecyclerView(recyclerView: RecyclerView, list: List<RadioComponent>?) {

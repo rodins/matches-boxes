@@ -54,6 +54,8 @@ interface RadioComponentsDataSource {
 
     // DisplayQuantity
 
+    suspend fun getDisplayQuantityListByBoxId(boxId: Int): List<QuantityItemModel>
+
     suspend fun getDisplayQuantityListBySetId(setId: Int): List<QuantityItemModel>
 
     suspend fun getDisplayQuantityListByBagId(bagId: Int): List<QuantityItemModel>

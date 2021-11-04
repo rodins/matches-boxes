@@ -6,7 +6,8 @@ import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import org.hamcrest.CoreMatchers
-import org.junit.Assert.assertThat
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -15,13 +16,13 @@ class RadioComponentsListViewModelTest{
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var subject: RadioComponentsListViewModel
+    private lateinit var viewModel: RadioComponentsListViewModel
     private lateinit var dataSource: FakeDataSource
 
     @Before
     fun init() {
         dataSource = FakeDataSource()
-        subject = RadioComponentsListViewModel(dataSource)
+        viewModel = RadioComponentsListViewModel(dataSource)
     }
 
     @Test
@@ -29,11 +30,11 @@ class RadioComponentsListViewModelTest{
         val setId = 1
         val box = MatchesBox(1, "Box", setId)
         dataSource.addRadioComponents()
-        subject.startComponent(box.id)
+        viewModel.startComponent(box.id)
 
-        val items = subject.componentsList.getOrAwaitValue()
+        val items = viewModel.componentsList.getOrAwaitValue()
 
-        assertThat(items.size, CoreMatchers.`is`(0))
+        assertThat(items.size, `is`(0))
     }
 
     @Test
@@ -45,11 +46,11 @@ class RadioComponentsListViewModelTest{
             RadioComponent(2, "Component2", 2, box.id),
             RadioComponent(3, "Component3", 3, box.id)
         )
-        subject.startComponent(box.id)
+        viewModel.startComponent(box.id)
 
-        val items = subject.componentsList.getOrAwaitValue()
+        val items = viewModel.componentsList.getOrAwaitValue()
 
-        assertThat(items.size, CoreMatchers.`is`(3))
+        assertThat(items.size, `is`(3))
     }
 
     @Test
@@ -57,11 +58,11 @@ class RadioComponentsListViewModelTest{
         val setId = 1
         val box = MatchesBox(1, "Box", setId)
         dataSource.addRadioComponents()
-        subject.startComponent(box.id)
+        viewModel.startComponent(box.id)
 
-        val visible = subject.noComponentsTextVisible.getOrAwaitValue()
+        val visible = viewModel.noComponentsTextVisible.getOrAwaitValue()
 
-        assertThat(visible, CoreMatchers.`is`(true))
+        assertThat(visible, `is`(true))
     }
 
     @Test
@@ -73,11 +74,11 @@ class RadioComponentsListViewModelTest{
             RadioComponent(2, "Component2", 2, box.id),
             RadioComponent(3, "Component3", 3, box.id)
         )
-        subject.startComponent(box.id)
+        viewModel.startComponent(box.id)
 
-        val visible = subject.noComponentsTextVisible.getOrAwaitValue()
+        val visible = viewModel.noComponentsTextVisible.getOrAwaitValue()
 
-        assertThat(visible, CoreMatchers.`is`(false))
+        assertThat(visible, `is`(false))
     }
 
     @Test
@@ -85,11 +86,48 @@ class RadioComponentsListViewModelTest{
         val setId = 1
         val box = MatchesBox(1, "Box", setId)
         dataSource.addRadioComponents()
-        subject.startComponent(box.id)
+        viewModel.startComponent(box.id)
 
-        subject.addComponent()
+        viewModel.addComponent()
 
-        val value = subject.addComponentEvent.getOrAwaitValue().getContentIfNotHandled()
-        assertThat(value, CoreMatchers.`is`(CoreMatchers.not(CoreMatchers.nullValue())))
+        val value = viewModel.addComponentEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(value, `is`(CoreMatchers.not(CoreMatchers.nullValue())))
+    }
+
+    @Test
+    fun quantityItems_namesEqual() {
+        val setId = 1
+        val box = MatchesBox(1, "Box", setId)
+        val component1 =  RadioComponent(1, "Component1", 2, box.id)
+        val component2 =  RadioComponent(2, "Component2", 2, box.id)
+        val component3 =  RadioComponent(3, "Component3", 2, box.id)
+        dataSource.addRadioComponents(component1, component2, component3)
+        viewModel.startComponent(box.id)
+
+        val items = viewModel.componentsList.getOrAwaitValue()
+        assertThat(items[0].name, `is`(component1.name))
+        assertThat(items[0].componentsQuantity, `is`(component1.quantity.toString()))
+
+        assertThat(items[1].name, `is`(component2.name))
+        assertThat(items[1].componentsQuantity, `is`(component2.quantity.toString()))
+
+        assertThat(items[2].name, `is`(component3.name))
+        assertThat(items[2].componentsQuantity, `is`(component3.quantity.toString()))
+    }
+
+    @Test
+    fun selectComponent_selectedComponentEventIdEquals() {
+        val setId = 1
+        val box = MatchesBox(1, "Box", setId)
+        val component1 =  RadioComponent(1, "Component1", 2, box.id)
+        val component2 =  RadioComponent(2, "Component2", 2, box.id)
+        val component3 =  RadioComponent(3, "Component3", 2, box.id)
+        dataSource.addRadioComponents(component1, component2, component3)
+        viewModel.startComponent(box.id)
+
+        viewModel.selectComponent(component2.id)
+
+        val selectedId = viewModel.selectedComponentEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(selectedId, `is`(component2.id))
     }
 }

@@ -10,8 +10,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.nullValue
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
-import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -73,7 +74,7 @@ class RealDataSourceTest{
         subject.deleteBag(BAG)
         val loaded = subject.getBagById(BAG.id)
 
-        assertThat(loaded, `is`(CoreMatchers.nullValue()))
+        assertThat(loaded, `is`(nullValue()))
     }
 
     // MatchesBoxSet
@@ -301,6 +302,18 @@ class RealDataSourceTest{
 
         assertThat(loaded1.size, `is`(2))
         assertThat(loaded2.size, `is`(3))
+    }
+
+    @Test
+    fun getDisplayQuantityByBoxId() = runBlockingTest {
+        subject.insertBag(BAG)
+        subject.insertMatchesBoxSet(MATCHES_BOX_SET)
+        subject.insertMatchesBox(MATCHES_BOX)
+        subject.insertRadioComponent(RADIO_COMPONENT)
+
+        val items = subject.getDisplayQuantityListByBoxId(MATCHES_BOX.id)
+        assertThat(items[0].name, `is`(RADIO_COMPONENT.name))
+        assertThat(items[0].componentsQuantity, `is`(RADIO_COMPONENT.quantity.toString()))
     }
 
     @Test

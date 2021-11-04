@@ -1,5 +1,6 @@
 package com.sergeyrodin.matchesboxes
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -62,7 +63,7 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
 
         onView(withText(bag.name)).check(matches(isDisplayed()))
         onView(withText(set.name)).check(matches(isDisplayed()))
@@ -89,7 +90,7 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
 
         onView(withId(R.id.edit_component_fab)).perform(click())
 
@@ -139,7 +140,7 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag1.name).performClick()
         composeTestRule.onNodeWithText(set1.name).performClick()
         composeTestRule.onNodeWithText(box2.name).performClick()
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(bag1.name)).perform(click())
         onView(withText(bag2.name)).perform(click())
@@ -148,7 +149,7 @@ class MainActivityComponentsTest {
         onView(withText(box7.name)).perform(click())
         onView(withText(box8.name)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
 
         onView(withText(box8.name)).check(matches(isDisplayed()))
     }
@@ -189,7 +190,7 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag1.name).performClick()
         composeTestRule.onNodeWithText(set1.name).performClick()
         composeTestRule.onNodeWithText(box2.name).performClick()
-        onView(withId(R.id.add_component_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
         onView(withText(bag1.name)).perform(click())
         onView(withText(bag2.name)).perform(click())
         onView(withText(set3.name)).perform(click())
@@ -198,7 +199,7 @@ class MainActivityComponentsTest {
         onView(withText(box8.name)).perform(click())
         onView(withId(R.id.component_edit)).perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
-        onView(withText("Component")).perform(click())
+        composeTestRule.onNodeWithText("Component").performClick()
 
         onView(withText(box8.name)).check(matches(isDisplayed()))
     }
@@ -224,13 +225,13 @@ class MainActivityComponentsTest {
 
         // Add component
         composeTestRule.onNodeWithText("Box").performClick()
-        onView(withId(R.id.add_component_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
         onView(withId(R.id.component_edit))
             .perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
-        onView(withId(R.id.items)).check(matches(isDisplayed()))
-        onView(withText("Component")).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).assertIsDisplayed()
+        composeTestRule.onNodeWithText("Component").assertIsDisplayed()
     }
 
     @Test
@@ -248,18 +249,18 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
 
-        onView(withId(R.id.add_component_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
         onView(withId(R.id.component_edit))
             .perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
-        onView(withId(R.id.add_component_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
         onView(withId(R.id.component_edit))
             .perform(typeText("Component2"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
-        onView(withText("Component")).check(matches(isDisplayed()))
-        onView(withText("Component2")).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText("Component").assertIsDisplayed()
+        composeTestRule.onNodeWithText("Component2").assertIsDisplayed()
     }
 
     @Test
@@ -276,7 +277,7 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        onView(withId(R.id.add_component_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
         onView(withId(R.id.action_delete)).check(ViewAssertions.doesNotExist())
     }
 
@@ -296,7 +297,7 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.action_delete))
             .check(matches(isDisplayed()))
@@ -316,7 +317,7 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        onView(withId(R.id.add_component_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
         onView(withText(R.string.add_component)).check(matches(isDisplayed()))
     }
 
@@ -334,12 +335,12 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        onView(withId(R.id.add_component_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
         onView(withId(R.id.component_edit))
             .perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.buy_checkbox)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
-        onView(withText("Component")).perform(click())
+        composeTestRule.onNodeWithText("Component").performClick()
 
         onView(withId(R.id.buy_checkbox)).check(matches(isChecked()))
     }
@@ -360,7 +361,7 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(R.string.update_component)).check(matches(isDisplayed()))
     }
@@ -381,13 +382,13 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.component_edit))
             .perform(replaceText("Component updated"))
         onView(withId(R.id.save_component_fab)).perform(click())
 
-        onView(withText("Component updated")).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText("Component updated").assertIsDisplayed()
     }
 
     @Test
@@ -406,7 +407,7 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
         onView(withText(component.name)).check(matches(isDisplayed()))
     }
 
@@ -424,13 +425,13 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        onView(withId(R.id.add_component_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
         onView(withId(R.id.component_edit))
             .perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.quantity_edit))
             .perform(replaceText(""))
         onView(withId(R.id.save_component_fab)).perform(click())
-        onView(withText("Component")).perform(click())
+        composeTestRule.onNodeWithText("Component").performClick()
 
         onView(withText("0")).check(matches(isDisplayed()))
     }

@@ -10,8 +10,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
-import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -207,6 +207,18 @@ class RadioComponentsDaoTest {
             RADIO_COMPONENT.id)
 
         assertThat(loaded, `is`(nullValue()))
+    }
+
+    @Test
+    fun getDisplayQuantityListByBoxId() = runBlockingTest {
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(RADIO_COMPONENT)
+
+        val quantityItemModels = radioComponentsDatabase.radioComponentsDatabaseDao.getDisplayQuantityListByBoxId(MATCHES_BOX.id)
+        assertThat(quantityItemModels[0].name, `is`(RADIO_COMPONENT.name))
+        assertThat(quantityItemModels[0].componentsQuantity, `is`(RADIO_COMPONENT.quantity.toString()))
     }
 
     @Test

@@ -80,6 +80,9 @@ interface RadioComponentsDatabaseDao {
 
     // Display quantity
 
+    @Query("SELECT r.id, r.name, r.quantity as componentsQuantity FROM radio_components r WHERE matches_box_id = :id")
+    suspend fun getDisplayQuantityListByBoxId(id: Int): List<QuantityItemModel>
+
     @Query("SELECT b.id, b.name, TOTAL(quantity) as componentsQuantity FROM matches_boxes b LEFT JOIN radio_components ON matches_box_id = b.id GROUP BY b.id HAVING matches_box_set_id = :setId")
     suspend fun getDisplayQuantityListBySetId(setId: Int): List<QuantityItemModel>
 

@@ -9,10 +9,15 @@ import javax.inject.Inject
 @HiltViewModel
 class RadioComponentsListViewModel @Inject constructor(
     private val dataSource: RadioComponentsDataSource): ViewModel() {
+
+    private val _selectedComponentEvent = MutableLiveData<Event<Int>>()
+    val selectedComponentEvent: LiveData<Event<Int>>
+        get() = _selectedComponentEvent
+
     private val boxId = MutableLiveData<Int>()
     val componentsList = boxId.switchMap{
         liveData{
-            emit(dataSource.getRadioComponentsByMatchesBoxId(it))
+            emit(dataSource.getDisplayQuantityListByBoxId(it))
         }
     }
 
@@ -31,5 +36,9 @@ class RadioComponentsListViewModel @Inject constructor(
 
     fun addComponent() {
         _addComponentEvent.value = Event(Unit)
+    }
+
+    fun selectComponent(id: Int) {
+        _selectedComponentEvent.value = Event(id)
     }
 }

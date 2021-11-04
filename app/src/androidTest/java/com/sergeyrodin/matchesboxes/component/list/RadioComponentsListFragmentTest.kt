@@ -4,27 +4,24 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
-import com.sergeyrodin.matchesboxes.R
+import com.sergeyrodin.matchesboxes.*
 import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
-import com.sergeyrodin.matchesboxes.launchFragmentInHiltContainer
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,11 +36,14 @@ import javax.inject.Inject
 @UninstallModules(RadioComponentsDataSourceModule::class)
 class RadioComponentsListFragmentTest {
 
-    @get:Rule
+    @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule(order = 2)
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
+
+    @get:Rule(order = 3)
+    var instantExecutorRule = InstantTaskExecutorRule()
 
     @Inject
     lateinit var dataSource: FakeDataSource
@@ -61,7 +61,7 @@ class RadioComponentsListFragmentTest {
         dataSource.addRadioComponents()
         launchFragment(box)
 
-        onView(withId(R.id.no_components_added_text)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText(R.string.no_components_added).assertIsDisplayed()
     }
 
     @Test
@@ -77,7 +77,7 @@ class RadioComponentsListFragmentTest {
 
         launchFragment(box)
 
-        onView(withId(R.id.no_components_added_text)).check(matches(not(isDisplayed())))
+        composeTestRule.onNodeWithText(R.string.no_components_added).assertDoesNotExist()
     }
 
     @Test
@@ -92,9 +92,9 @@ class RadioComponentsListFragmentTest {
 
         launchFragment(box)
 
-        onView(withText(component1.name)).check(matches(isDisplayed()))
-        onView(withText(component2.name)).check(matches(isDisplayed()))
-        onView(withText(component3.name)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText(component1.name).assertIsDisplayed()
+        composeTestRule.onNodeWithText(component2.name).assertIsDisplayed()
+        composeTestRule.onNodeWithText(component3.name).assertIsDisplayed()
     }
 
     @Test
@@ -107,7 +107,13 @@ class RadioComponentsListFragmentTest {
 
         launchFragment(box)
 
-        onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
+        val result = composeTestRule.activity.resources.getQuantityString(
+            R.plurals.components_quantity,
+            component.quantity,
+            component.quantity.toString()
+        )
+
+        composeTestRule.onNodeWithText(result).assertIsDisplayed()
     }
 
     @Test
@@ -120,12 +126,12 @@ class RadioComponentsListFragmentTest {
         val bundle = createBundle(box)
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
-        launchFragmentInHiltContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme) {
+        launchFragment<RadioComponentsListFragment>(composeTestRule.activityRule.scenario, bundle) {
             Navigation.setViewNavController(view!!, navController)
             title = getString(R.string.add_component)
         }
 
-        onView(withId(R.id.add_component_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
 
         verify(navController).navigate(
             RadioComponentsListFragmentDirections
@@ -150,11 +156,11 @@ class RadioComponentsListFragmentTest {
         val navController = Mockito.mock(NavController::class.java)
         val bundle = createBundle(box)
 
-        launchFragmentInHiltContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme) {
+        launchFragment<RadioComponentsListFragment>(composeTestRule.activityRule.scenario, bundle) {
             Navigation.setViewNavController(requireView(), navController)
         }
 
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
 
         verify(navController).navigate(
             RadioComponentsListFragmentDirections
@@ -176,7 +182,7 @@ class RadioComponentsListFragmentTest {
         var title = ""
 
         val bundle = createBundle(box)
-        launchFragmentInHiltContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme) {
+        launchFragment<RadioComponentsListFragment>(composeTestRule.activityRule.scenario, bundle) {
             Navigation.setViewNavController(view!!, navController)
             title = getString(R.string.update_box)
             clickEditAction(this)
@@ -196,7 +202,7 @@ class RadioComponentsListFragmentTest {
     }
 
     private fun launchFragment(bundle: Bundle){
-        launchFragmentInHiltContainer<RadioComponentsListFragment>(bundle, R.style.AppTheme)
+        launchFragment<RadioComponentsListFragment>(composeTestRule.activityRule.scenario, bundle)
     }
 
     private fun createBundle(box: MatchesBox): Bundle {

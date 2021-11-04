@@ -3,13 +3,17 @@ package com.sergeyrodin.matchesboxes.component.list
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.sergeyrodin.matchesboxes.*
+import com.google.accompanist.appcompattheme.AppCompatTheme
+import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
+import com.sergeyrodin.matchesboxes.DO_NOT_NEED_THIS_VARIABLE
+import com.sergeyrodin.matchesboxes.EventObserver
+import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns
-import com.sergeyrodin.matchesboxes.databinding.FragmentRadioComponentsListBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,43 +25,37 @@ class RadioComponentsListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = createBinding(inflater)
+        val view = inflater.inflate(R.layout.fragment_radio_components_list, container, false)
+        view.findViewById<ComposeView>(R.id.components_compose_view).setContent {
+            AppCompatTheme {
+                ComponentsScreen(viewModel)
+            }
+        }
+
         startViewModel()
-        setupBinding(binding)
+
         observeAddComponentEvent()
+        observeSelectComponentEvent()
 
         setHasOptionsMenu(true)
-        return binding.root
+        return view
     }
 
-    private fun createBinding(inflater: LayoutInflater) =
-        FragmentRadioComponentsListBinding.inflate(inflater)
-
-    private fun startViewModel() {
-        viewModel.startComponent(args.boxId)
-    }
-
-    private fun setupBinding(binding: FragmentRadioComponentsListBinding) {
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
-        binding.items.adapter = createAdapter()
-    }
-
-    private fun createAdapter(): RadioComponentAdapter {
-        return RadioComponentAdapter(RadioComponentListener { id ->
-            navigateToDetailsFragment(id)
+    private fun observeSelectComponentEvent() {
+        viewModel.selectedComponentEvent.observe(viewLifecycleOwner, EventObserver { id ->
+            findNavController().navigate(
+                RadioComponentsListFragmentDirections
+                    .actionRadioComponentsListFragmentToRadioComponentDetailsFragment(
+                        id,
+                        "",
+                        RadioComponentManipulatorReturns.TO_COMPONENTS_LIST
+                    )
+            )
         })
     }
 
-    private fun navigateToDetailsFragment(id: Int) {
-        findNavController().navigate(
-            RadioComponentsListFragmentDirections
-                .actionRadioComponentsListFragmentToRadioComponentDetailsFragment(
-                    id,
-                    "",
-                    RadioComponentManipulatorReturns.TO_COMPONENTS_LIST
-                )
-        )
+    private fun startViewModel() {
+        viewModel.startComponent(args.boxId)
     }
 
     private fun observeAddComponentEvent() {

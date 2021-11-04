@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.bag.list.BagIcon
+import com.sergeyrodin.matchesboxes.component.list.ComponentIcon
 import com.sergeyrodin.matchesboxes.data.QuantityItemModel
 import com.sergeyrodin.matchesboxes.matchesbox.list.BoxIcon
 import com.sergeyrodin.matchesboxes.matchesboxset.list.SetIcon
@@ -159,7 +160,7 @@ fun BagPreview() {
 @Preview
 @Composable
 fun SetPreview() {
-    QuantityItem("Bag 1", "5") {
+    QuantityItem("Set 1", "5") {
         SetIcon()
     }
 }
@@ -167,8 +168,16 @@ fun SetPreview() {
 @Preview
 @Composable
 fun BoxPreview() {
-    QuantityItem("Bag 1", "5") {
+    QuantityItem("Box 1", "5") {
         BoxIcon()
+    }
+}
+
+@Preview
+@Composable
+fun ComponentPreview() {
+    QuantityItem("Component 1", "5") {
+        ComponentIcon()
     }
 }
 

@@ -143,6 +143,10 @@ class RealDataSource @Inject constructor(
 
     // DisplayQuantity
 
+    override suspend fun getDisplayQuantityListByBoxId(boxId: Int): List<QuantityItemModel> {
+        return radioComponentsDatabaseDao.getDisplayQuantityListByBoxId(boxId)
+    }
+
     override suspend fun getDisplayQuantityListBySetId(setId: Int): List<QuantityItemModel> {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getDisplayQuantityListBySetId(setId)
