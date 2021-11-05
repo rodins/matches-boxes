@@ -30,20 +30,20 @@ fun moveToPopular() {
 fun rotateDeviceToLandscape(
     activity: Activity?,
     activityScenario: ActivityScenario<MainActivity>,
-    dataBindingIdlingResource: DataBindingIdlingResource
+    dataBindingIdlingResource: DataBindingIdlingResource? = null
 ) {
     activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-    dataBindingIdlingResource.monitorActivity(activityScenario)
+    dataBindingIdlingResource?.monitorActivity(activityScenario)
 }
 
 
 fun rotateDeviceToPortrait(
     activity: Activity?,
     activityScenario: ActivityScenario<MainActivity>,
-    dataBindingIdlingResource: DataBindingIdlingResource
+    dataBindingIdlingResource: DataBindingIdlingResource? = null
 ) {
     activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-    dataBindingIdlingResource.monitorActivity(activityScenario)
+    dataBindingIdlingResource?.monitorActivity(activityScenario)
 }
 
 fun typeQuery(query: String) {

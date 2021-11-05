@@ -1,27 +1,22 @@
 package com.sergeyrodin.matchesboxes.needed
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
-import com.sergeyrodin.matchesboxes.R
+import com.sergeyrodin.matchesboxes.*
 import com.sergeyrodin.matchesboxes.component.addeditdelete.NO_ID_SET
 import com.sergeyrodin.matchesboxes.component.addeditdelete.RadioComponentManipulatorReturns
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
-import com.sergeyrodin.matchesboxes.launchFragmentInHiltContainer
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import org.hamcrest.CoreMatchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,11 +31,14 @@ import javax.inject.Inject
 @UninstallModules(RadioComponentsDataSourceModule::class)
 class NeededComponentsFragmentTest {
 
-    @get:Rule
+    @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule(order = 2)
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
+
+    @get:Rule(order = 3)
+    var instantExecutorRule = InstantTaskExecutorRule()
 
     @Inject
     lateinit var dataSource: FakeDataSource
@@ -53,9 +51,9 @@ class NeededComponentsFragmentTest {
     @Test
     fun nothingFound_textEquals() {
         dataSource.addRadioComponents()
-        launchFragmentInHiltContainer<NeededComponentsFragment>(null, R.style.AppTheme)
+        launchFragment<NeededComponentsFragment>(composeTestRule.activityRule.scenario, null)
 
-        onView(withText(R.string.no_components_found)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText(R.string.no_components_found).assertIsDisplayed()
     }
 
     @Test
@@ -63,9 +61,9 @@ class NeededComponentsFragmentTest {
         val bagId = 1
         val component = RadioComponent(1, "Component", 3, bagId, true)
         dataSource.addRadioComponents(component)
-        launchFragmentInHiltContainer<NeededComponentsFragment>(null, R.style.AppTheme)
+        launchFragment<NeededComponentsFragment>(composeTestRule.activityRule.scenario, null)
 
-        onView(withText(R.string.no_components_found)).check(matches(CoreMatchers.not(isDisplayed())))
+        composeTestRule.onNodeWithText(R.string.no_components_found).assertDoesNotExist()
     }
 
     @Test
@@ -75,10 +73,10 @@ class NeededComponentsFragmentTest {
         val component2 = RadioComponent(2, "Component2", 3, bagId)
         val component3 = RadioComponent(3, "Component3", 3, bagId, true)
         dataSource.addRadioComponents(component1, component2, component3)
-        launchFragmentInHiltContainer<NeededComponentsFragment>(null, R.style.AppTheme)
+        launchFragment<NeededComponentsFragment>(composeTestRule.activityRule.scenario, null)
 
-        onView(withText(component1.name)).check(matches(isDisplayed()))
-        onView(withText(component3.name)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText(component1.name).assertIsDisplayed()
+        composeTestRule.onNodeWithText(component3.name).assertIsDisplayed()
     }
 
     @Test
@@ -91,11 +89,11 @@ class NeededComponentsFragmentTest {
 
         val navController = Mockito.mock(NavController::class.java)
 
-        launchFragmentInHiltContainer<NeededComponentsFragment>(null, R.style.AppTheme) {
+        launchFragment<NeededComponentsFragment>(composeTestRule.activityRule.scenario, null) {
             Navigation.setViewNavController(requireView(), navController)
         }
 
-        onView(withText(component2.name)).perform(ViewActions.click())
+        composeTestRule.onNodeWithText(component2.name).performClick()
         verify(navController).navigate(
             NeededComponentsFragmentDirections.actionNeededComponentsFragmentToRadioComponentDetailsFragment(
                 component2.id, "", RadioComponentManipulatorReturns.TO_NEEDED_LIST
@@ -108,9 +106,15 @@ class NeededComponentsFragmentTest {
         val bagId = 1
         val component = RadioComponent(1, "Component", 12, bagId, true)
         dataSource.addRadioComponents(component)
-        launchFragmentInHiltContainer<NeededComponentsFragment>(null, R.style.AppTheme)
+        launchFragment<NeededComponentsFragment>(composeTestRule.activityRule.scenario, null)
 
-        onView(withText(component.quantity.toString())).check(matches(isDisplayed()))
+        val result = composeTestRule.activity.resources.getQuantityString(
+            R.plurals.components_quantity,
+            component.quantity,
+            component.quantity.toString()
+        )
+
+        composeTestRule.onNodeWithText(result).assertIsDisplayed()
     }
 
     @Test
@@ -127,12 +131,12 @@ class NeededComponentsFragmentTest {
         val navController = Mockito.mock(NavController::class.java)
         var title = ""
 
-        launchFragmentInHiltContainer<NeededComponentsFragment>(null, R.style.AppTheme) {
+        launchFragment<NeededComponentsFragment>(composeTestRule.activityRule.scenario, null) {
             Navigation.setViewNavController(requireView(), navController)
             title = getString(R.string.add_component)
         }
 
-        onView(ViewMatchers.withId(R.id.add_needed_component_fab)).perform(ViewActions.click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
 
         verify(navController).navigate(
             NeededComponentsFragmentDirections.actionNeededComponentsFragmentToAddEditDeleteRadioComponentFragment(

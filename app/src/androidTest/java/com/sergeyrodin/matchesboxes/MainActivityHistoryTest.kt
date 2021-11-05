@@ -1,10 +1,10 @@
 package com.sergeyrodin.matchesboxes
 
-import android.app.Activity
 import android.widget.AutoCompleteTextView
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -16,15 +16,12 @@ import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.di.TestModule
 import com.sergeyrodin.matchesboxes.history.all.HistoryModelAdapter
 import com.sergeyrodin.matchesboxes.history.hasBackgroundColor
-import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
-import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
 import com.sergeyrodin.matchesboxes.util.convertLongToDateString
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.not
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,13 +34,14 @@ import javax.inject.Inject
 @UninstallModules(TestModule::class)
 class MainActivityHistoryTest {
 
-    @get:Rule
+    @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 2)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
     lateinit var dataSource: RadioComponentsDataSource
-
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
 
     @Before
     fun initDataSource() {
@@ -53,40 +51,24 @@ class MainActivityHistoryTest {
         }
     }
 
-    @Before
-    fun registerIdlingResource() {
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
-    }
-
-    @After
-    fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
-    }
-
     @Test
-    fun noHistory_historyActionClick_noHistoryTextDisplayed() = runBlocking{
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-
+    fun noHistory_historyActionClick_noHistoryTextDisplayed() {
         onView(withId(R.id.historyAllFragment)).perform(click())
-
         onView(withText(R.string.no_history)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun componentQuantityChanged_historyList_nameEquals() = runBlocking{
+    fun componentQuantityChanged_historyList_nameEquals() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+        }
 
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
@@ -101,39 +83,32 @@ class MainActivityHistoryTest {
         onView(withId(R.id.historyAllFragment)).perform(click())
 
         onView(withText(component.name)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
 
     @Test
-    fun addComponent_insertHistory_componentNameDisplayed() = runBlocking {
+    fun addComponent_insertHistory_componentNameDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+        }
 
-
-        onView(withId(R.id.neededComponentsFragment))
-            .perform(click())
-        onView(withId(R.id.add_needed_component_fab))
-            .perform(click())
+        onView(withId(R.id.neededComponentsFragment)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
         onView(withId(R.id.component_edit))
             .perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
         Espresso.pressBack()
 
         onView(withId(R.id.historyAllFragment)).perform(click())
-        onView(withText("Component"))
-            .check(matches(isDisplayed()))
-
-        activityScenario.close()
+        onView(withText("Component")).check(matches(isDisplayed()))
     }
 
     @Test
-    fun historyItemClick_dateNotDisplayed() = runBlocking {
+    fun historyItemClick_dateNotDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
@@ -141,60 +116,58 @@ class MainActivityHistoryTest {
         val component2 = RadioComponent(2, "BUH1015", 1, box.id)
         val history1 = History(1, component1.id, component1.quantity)
         val history2 = History(2, component2.id, component2.quantity, 1595999582038L)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertHistory(history1)
-        dataSource.insertHistory(history2)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertHistory(history1)
+            dataSource.insertHistory(history2)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component1.name)).perform(click())
 
         onView(withText(convertLongToDateString(history2.date)))
             .check(doesNotExist())
-
-        activityScenario.close()
     }
 
     @Test
-    fun historyItemClick_titleEquals() = runBlocking {
+    fun historyItemClick_titleEquals() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(click())
 
-        onView(withText(component.name))
-            .check(matches(isDisplayed()))
-
-        activityScenario.close()
+        onView(withText(component.name)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun componentDetails_historyActionClick_dateDisplayed() = runBlocking {
+    fun componentDetails_historyActionClick_dateDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
+        }
 
         moveToSearch()
         typeQuery("78041")
@@ -202,94 +175,86 @@ class MainActivityHistoryTest {
 
         onView(withId(R.id.action_history)).perform(click())
 
-        onView(withText(convertLongToDateString(history.date)))
-            .check(matches(isDisplayed()))
-
-        activityScenario.close()
+        onView(withText(convertLongToDateString(history.date))).check(matches(isDisplayed()))
     }
 
     @Test
-    fun historyItemLongClick_deleteActionDisplayed() = runBlocking{
+    fun historyItemLongClick_deleteActionDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(longClick())
 
-        onView(withId(R.id.action_delete))
-            .check(matches(isDisplayed()))
-
-        activityScenario.close()
+        onView(withId(R.id.action_delete)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun historyList_actionDeleteNotDisplayed() = runBlocking{
+    fun historyList_actionDeleteNotDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
 
-        onView(withId(R.id.action_delete))
-            .check(doesNotExist())
-
-        activityScenario.close()
+        onView(withId(R.id.action_delete)).check(doesNotExist())
     }
 
     @Test
-    fun highlightedItemClick_actionDeleteIsNotDisplayed() = runBlocking {
+    fun highlightedItemClick_actionDeleteIsNotDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(longClick())
         onView(withText(component.name)).perform(click())
 
-        onView(withId(R.id.action_delete))
-            .check(matches(not(isDisplayed())))
-
-        activityScenario.close()
+        onView(withId(R.id.action_delete)).check(matches(not(isDisplayed())))
     }
 
     @Test
-    fun exitHistoryAllActionModeByItemClick_navigateBackFromComponentHistory_actionDeleteIsNotDisplayed() = runBlocking {
+    fun exitHistoryAllActionModeByItemClick_navigateBackFromComponentHistory_actionDeleteIsNotDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(longClick())
@@ -297,25 +262,23 @@ class MainActivityHistoryTest {
         onView(withText(component.name)).perform(click())
         Espresso.pressBack()
 
-        onView(withId(R.id.action_delete))
-            .check(matches(not(isDisplayed())))
-
-        activityScenario.close()
+        onView(withId(R.id.action_delete)).check(matches(not(isDisplayed())))
     }
 
     @Test
-    fun exitHistoryAllActionModeByPressBack_navigateBackFromComponentHistory_actionDeleteIsNotDisplayed() = runBlocking {
+    fun exitHistoryAllActionModeByPressBack_navigateBackFromComponentHistory_actionDeleteIsNotDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
 
@@ -328,8 +291,6 @@ class MainActivityHistoryTest {
         Espresso.pressBack()
 
         onView(withId(R.id.action_delete)).check(matches(not(isDisplayed())))
-
-        activityScenario.close()
     }
 
     private fun clickOn(component: RadioComponent) {
@@ -361,18 +322,19 @@ class MainActivityHistoryTest {
     }
 
     @Test
-    fun contextualUpClicked_itemNotHighlighted() = runBlocking {
+    fun contextualUpClicked_itemNotHighlighted() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(longClick())
@@ -380,60 +342,48 @@ class MainActivityHistoryTest {
 
         onView(withId(R.id.display_history_list))
             .check(matches(hasDescendant(hasBackgroundColor(R.color.design_default_color_background))))
-
-        activityScenario.close()
     }
 
     @Test
-    fun actionMode_rotateDevice_actionDeleteDisplayed() = runBlocking {
+    fun actionMode_rotateDevice_actionDeleteDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-        var activity: Activity? = null
-        activityScenario.onActivity {
-            activity = it
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
         }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(longClick())
 
-        rotateDeviceToLandscape(activity, activityScenario, dataBindingIdlingResource)
+        rotateDeviceToLandscape(composeTestRule.activity, composeTestRule.activityRule.scenario)
 
-        onView(withId(R.id.action_delete))
-            .check(matches(isDisplayed()))
+        onView(withId(R.id.action_delete)).check(matches(isDisplayed()))
 
-        rotateDeviceToPortrait(activity, activityScenario, dataBindingIdlingResource)
+        rotateDeviceToPortrait(composeTestRule.activity, composeTestRule.activityRule.scenario)
 
-        onView(withId(R.id.action_delete))
-            .check(matches(isDisplayed()))
-
-        activityScenario.close()
+        onView(withId(R.id.action_delete)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun componentHistoryActionMode_rotateDevice_presentationIsHighlighted() = runBlocking {
+    fun componentHistoryActionMode_rotateDevice_presentationIsHighlighted() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-        var activity: Activity? = null
-        activityScenario.onActivity {
-            activity = it
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
         }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
@@ -441,55 +391,48 @@ class MainActivityHistoryTest {
         onView(withText(convertLongToDateString(history.date)))
             .perform(longClick())
 
-        rotateDeviceToLandscape(activity, activityScenario, dataBindingIdlingResource)
+        rotateDeviceToLandscape(composeTestRule.activity, composeTestRule.activityRule.scenario)
 
         onView(withId(R.id.display_component_history_list))
             .check(matches(hasDescendant(hasBackgroundColor(R.color.secondaryLightColor))))
 
-        rotateDeviceToPortrait(activity, activityScenario, dataBindingIdlingResource)
+        rotateDeviceToPortrait(composeTestRule.activity, composeTestRule.activityRule.scenario)
 
         onView(withId(R.id.display_component_history_list))
             .check(matches(hasDescendant(hasBackgroundColor(R.color.secondaryLightColor))))
-
-        activityScenario.close()
     }
 
     @Test
-    fun historyAllActionMode_rotateDevice_presentationIsHighlighted() = runBlocking{
+    fun historyAllActionMode_rotateDevice_presentationIsHighlighted() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-        var activity: Activity? = null
-        activityScenario.onActivity {
-            activity = it
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
         }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(longClick())
 
-        rotateDeviceToLandscape(activity, activityScenario, dataBindingIdlingResource)
+        rotateDeviceToLandscape(composeTestRule.activity, composeTestRule.activityRule.scenario)
 
         onView(withId(R.id.display_history_list))
             .check(matches(hasDescendant(hasBackgroundColor(R.color.secondaryLightColor))))
 
-        rotateDeviceToPortrait(activity, activityScenario, dataBindingIdlingResource)
+        rotateDeviceToPortrait(composeTestRule.activity, composeTestRule.activityRule.scenario)
 
         onView(withId(R.id.display_history_list))
             .check(matches(hasDescendant(hasBackgroundColor(R.color.secondaryLightColor))))
-
-        activityScenario.close()
     }
 
     @Test
-    fun historyAll_orderDescending() = runBlocking {
+    fun historyAll_orderDescending() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
@@ -497,14 +440,15 @@ class MainActivityHistoryTest {
         val component2 = RadioComponent(2, "BUH808", 3, box.id)
         val history1 = History(1, component1.id, component1.quantity)
         val history2 = History(2, component2.id, component2.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertHistory(history1)
-        dataSource.insertHistory(history2)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertHistory(history1)
+            dataSource.insertHistory(history2)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
 
@@ -513,8 +457,6 @@ class MainActivityHistoryTest {
 
         onView(withRecyclerView(R.id.display_history_list).atPosition(1))
             .check(matches(hasDescendant(withText(component1.name))))
-
-        activityScenario.close()
     }
 
     private fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher {
@@ -522,21 +464,18 @@ class MainActivityHistoryTest {
     }
 
     @Test
-    fun componentHistoryActionMode_rotateDevice_actionDeleteDisplayed() = runBlocking{
+    fun componentHistoryActionMode_rotateDevice_actionDeleteDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-        var activity: Activity? = null
-        activityScenario.onActivity {
-            activity = it
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
         }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
@@ -544,21 +483,17 @@ class MainActivityHistoryTest {
         onView(withText(convertLongToDateString(history.date)))
             .perform(longClick())
 
-        rotateDeviceToLandscape(activity, activityScenario, dataBindingIdlingResource)
+        rotateDeviceToLandscape(composeTestRule.activity, composeTestRule.activityRule.scenario)
 
-        onView(withId(R.id.action_delete))
-            .check(matches(isDisplayed()))
+        onView(withId(R.id.action_delete)).check(matches(isDisplayed()))
 
-        rotateDeviceToPortrait(activity, activityScenario, dataBindingIdlingResource)
+        rotateDeviceToPortrait(composeTestRule.activity, composeTestRule.activityRule.scenario)
 
-        onView(withId(R.id.action_delete))
-            .check(matches(isDisplayed()))
-
-        activityScenario.close()
+        onView(withId(R.id.action_delete)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun notHighlightedItemClick_actionDeleteNotDisplayed() = runBlocking {
+    fun notHighlightedItemClick_actionDeleteNotDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
@@ -566,27 +501,25 @@ class MainActivityHistoryTest {
         val component2 = RadioComponent(2, "BUH1015HI", 4, box.id)
         val history1 = History(1, component1.id, component1.quantity)
         val history2 = History(2, component2.id, component2.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertHistory(history1)
-        dataSource.insertHistory(history2)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertHistory(history1)
+            dataSource.insertHistory(history2)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component1.name)).perform(longClick())
         onView(withText(component2.name)).perform(click())
 
-        onView(withId(R.id.action_delete))
-            .check(matches(not(isDisplayed())))
-
-        activityScenario.close()
+        onView(withId(R.id.action_delete)).check(matches(not(isDisplayed())))
     }
 
     @Test
-    fun actionDeleteClick_highlightedNameNotDisplayed() = runBlocking{
+    fun actionDeleteClick_highlightedNameNotDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
@@ -594,25 +527,24 @@ class MainActivityHistoryTest {
         val component2 = RadioComponent(2, "BUH1015HI", 4, box.id)
         val history1 = History(1, component1.id, component1.quantity)
         val history2 = History(2, component2.id, component2.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertHistory(history1)
-        dataSource.insertHistory(history2)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertHistory(history1)
+            dataSource.insertHistory(history2)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component1.name)).perform(longClick())
         onView(withId(R.id.action_delete)).perform(click())
         onView(withText(component1.name)).check(doesNotExist())
-
-        activityScenario.close()
     }
 
     @Test
-    fun deleteHistoryItem_actionDeleteNotDisplayed() = runBlocking{
+    fun deleteHistoryItem_actionDeleteNotDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
@@ -620,105 +552,94 @@ class MainActivityHistoryTest {
         val component2 = RadioComponent(2, "BUH1015HI", 4, box.id)
         val history1 = History(1, component1.id, component1.quantity)
         val history2 = History(2, component2.id, component2.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertHistory(history1)
-        dataSource.insertHistory(history2)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertHistory(history1)
+            dataSource.insertHistory(history2)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component1.name)).perform(longClick())
         onView(withId(R.id.action_delete)).perform(click())
 
-        onView(withId(R.id.action_delete))
-            .check(matches(not(isDisplayed())))
-
-        activityScenario.close()
+        onView(withId(R.id.action_delete)).check(matches(not(isDisplayed())))
     }
 
     @Test
-    fun componentHistoryPresentationLongClick_actionDeleteVisible() = runBlocking {
+    fun componentHistoryPresentationLongClick_actionDeleteVisible() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(click())
-        onView(withText(convertLongToDateString(history.date)))
-            .perform(longClick())
+        onView(withText(convertLongToDateString(history.date))).perform(longClick())
 
-        onView(withId(R.id.action_delete))
-            .check(matches(isDisplayed()))
-
-        activityScenario.close()
+        onView(withId(R.id.action_delete)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun highlightedComponentHistoryPresentationClick_actionDeleteNotVisible() = runBlocking{
+    fun highlightedComponentHistoryPresentationClick_actionDeleteNotVisible() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(click())
-        onView(withText(convertLongToDateString(history.date)))
-            .perform(longClick())
-        onView(withText(convertLongToDateString(history.date)))
-            .perform(click())
+        onView(withText(convertLongToDateString(history.date))).perform(longClick())
+        onView(withText(convertLongToDateString(history.date))).perform(click())
 
-        onView(withId(R.id.action_delete))
-            .check(matches(not(isDisplayed())))
-
-        activityScenario.close()
+        onView(withId(R.id.action_delete)).check(matches(not(isDisplayed())))
     }
 
     @Test
-    fun deleteComponentHistory_itemNotDisplayed() = runBlocking{
+    fun deleteComponentHistory_itemNotDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history = History(1, component.id, component.quantity)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
         onView(withText(component.name)).perform(click())
-        onView(withText(convertLongToDateString(history.date)))
-            .perform(longClick())
+        onView(withText(convertLongToDateString(history.date))).perform(longClick())
         onView(withId(R.id.action_delete)).perform(click())
 
-        onView(withText(convertLongToDateString(history.date)))
-            .check(doesNotExist())
-
-        activityScenario.close()
+        onView(withText(convertLongToDateString(history.date))).check(doesNotExist())
     }
 
     @Test
-    fun deleteOneOfTwoComponentHistoryPresentations_deletedItemNotVisible() = runBlocking {
+    fun deleteOneOfTwoComponentHistoryPresentations_deletedItemNotVisible() {
         val date = 123456789L
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
@@ -726,23 +647,20 @@ class MainActivityHistoryTest {
         val component = RadioComponent(1, "LA78041", 1, box.id)
         val history1 = History(1, component.id, component.quantity)
         val history2 = History(2, component.id, component.quantity, date)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        dataSource.insertHistory(history1)
-        dataSource.insertHistory(history2)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+            dataSource.insertHistory(history1)
+            dataSource.insertHistory(history2)
+        }
 
         onView(withId(R.id.historyAllFragment)).perform(click())
-        onView(withText(convertLongToDateString(history1.date)))
-            .perform(longClick())
+        onView(withText(convertLongToDateString(history1.date))).perform(longClick())
         onView(withId(R.id.action_delete)).perform(click())
 
-        onView(withText(convertLongToDateString(history1.date)))
-            .check(doesNotExist())
-
-        activityScenario.close()
+        onView(withText(convertLongToDateString(history1.date))).check(doesNotExist())
     }
 
 }

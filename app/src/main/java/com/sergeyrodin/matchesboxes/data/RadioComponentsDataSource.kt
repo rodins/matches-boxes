@@ -54,6 +54,8 @@ interface RadioComponentsDataSource {
 
     // DisplayQuantity
 
+    fun getDisplayQuantityListToBuy(): LiveData<List<QuantityItemModel>>
+
     suspend fun getDisplayQuantityListByBoxId(boxId: Int): List<QuantityItemModel>
 
     suspend fun getDisplayQuantityListBySetId(setId: Int): List<QuantityItemModel>

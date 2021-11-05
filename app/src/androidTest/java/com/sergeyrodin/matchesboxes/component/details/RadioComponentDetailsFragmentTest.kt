@@ -1,5 +1,6 @@
 package com.sergeyrodin.matchesboxes.component.details
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.espresso.Espresso.onView
@@ -30,8 +31,11 @@ import javax.inject.Inject
 @UninstallModules(RadioComponentsDataSourceModule::class)
 class RadioComponentDetailsFragmentTest {
 
-    @get:Rule
+    @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 2)
+    var instantExecutorRule = InstantTaskExecutorRule()
 
     @Inject
     lateinit var dataSource: FakeDataSource

@@ -13,6 +13,7 @@ class FakeDataSource @Inject constructor() : RadioComponentsDataSource{
     private val matchesBoxSetList = mutableListOf<MatchesBoxSet>()
     private val matchesBoxList = mutableListOf<MatchesBox>()
     private val radioComponentsList = mutableListOf<RadioComponent>()
+    private val observableQuantityItems = MutableLiveData<List<QuantityItemModel>>(listOf())
     private var radioComponentId = 0L
     private val historyList = mutableListOf<History>()
     private val observableHistoryList = MutableLiveData<List<History>>()
@@ -146,6 +147,7 @@ class FakeDataSource @Inject constructor() : RadioComponentsDataSource{
         for(component in components) {
             radioComponentsList.add(component)
         }
+        updateQuiantityItemsToBuy()
     }
 
     override suspend fun insertRadioComponent(radioComponent: RadioComponent): Long {
@@ -189,6 +191,18 @@ class FakeDataSource @Inject constructor() : RadioComponentsDataSource{
     override suspend fun getRadioComponentsToBuy(): List<RadioComponent> {
         return radioComponentsList.filter{
             it.isBuy
+        }
+    }
+
+    override fun getDisplayQuantityListToBuy(): LiveData<List<QuantityItemModel>> {
+        return observableQuantityItems
+    }
+
+    private fun updateQuiantityItemsToBuy() {
+        observableQuantityItems.value = radioComponentsList.filter {
+            it.isBuy
+        }.map {
+            QuantityItemModel(it.id, it.name, it.quantity.toString())
         }
     }
 

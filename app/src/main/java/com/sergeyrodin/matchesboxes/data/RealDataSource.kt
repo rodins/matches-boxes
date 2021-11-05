@@ -24,7 +24,7 @@ class RealDataSource @Inject constructor(
         }
     }
 
-    override suspend fun getBagById(bagId: Int): Bag? {
+    override suspend fun getBagById(bagId: Int): Bag {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getBagById(bagId)
         }
@@ -56,7 +56,7 @@ class RealDataSource @Inject constructor(
 
     }
 
-    override suspend fun getMatchesBoxSetById(matchesBoxSetId: Int): MatchesBoxSet? {
+    override suspend fun getMatchesBoxSetById(matchesBoxSetId: Int): MatchesBoxSet {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getMatchesBoxSetById(matchesBoxSetId)
         }
@@ -78,7 +78,6 @@ class RealDataSource @Inject constructor(
         wrapEspressoIdlingResource {
             radioComponentsDatabaseDao.updateMatchesBox(matchesBox)
         }
-
     }
 
     override suspend fun deleteMatchesBox(matchesBox: MatchesBox) {
@@ -87,7 +86,7 @@ class RealDataSource @Inject constructor(
         }
     }
 
-    override suspend fun getMatchesBoxById(matchesBoxId: Int): MatchesBox? {
+    override suspend fun getMatchesBoxById(matchesBoxId: Int): MatchesBox {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getMatchesBoxById(matchesBoxId)
         }
@@ -117,7 +116,7 @@ class RealDataSource @Inject constructor(
         }
     }
 
-    override suspend fun getRadioComponentById(radioComponentId: Int): RadioComponent? {
+    override suspend fun getRadioComponentById(radioComponentId: Int): RadioComponent {
         wrapEspressoIdlingResource {
             return radioComponentsDatabaseDao.getRadioComponentById(radioComponentId)
         }
@@ -142,6 +141,10 @@ class RealDataSource @Inject constructor(
     }
 
     // DisplayQuantity
+
+    override fun getDisplayQuantityListToBuy(): LiveData<List<QuantityItemModel>> {
+        return radioComponentsDatabaseDao.getDisplayQuantityListToBuy()
+    }
 
     override suspend fun getDisplayQuantityListByBoxId(boxId: Int): List<QuantityItemModel> {
         return radioComponentsDatabaseDao.getDisplayQuantityListByBoxId(boxId)

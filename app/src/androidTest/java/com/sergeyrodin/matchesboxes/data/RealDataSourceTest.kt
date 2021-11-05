@@ -8,7 +8,6 @@ import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -110,7 +109,7 @@ class RealDataSourceTest{
 
         val loaded = subject.getMatchesBoxSetById(MATCHES_BOX_SET.id)
 
-        assertThat(loaded, `is`(CoreMatchers.nullValue()))
+        assertThat(loaded, `is`(nullValue()))
     }
 
     // MatchesBox
@@ -149,7 +148,7 @@ class RealDataSourceTest{
 
         val loaded = subject.getMatchesBoxById(MATCHES_BOX.id)
 
-        assertThat(loaded, `is`(CoreMatchers.nullValue()))
+        assertThat(loaded, `is`(nullValue()))
     }
 
     // Component
@@ -196,7 +195,7 @@ class RealDataSourceTest{
 
         val loaded = subject.getRadioComponentById(RADIO_COMPONENT.id)
 
-        assertThat(loaded, `is`(CoreMatchers.nullValue()))
+        assertThat(loaded, `is`(nullValue()))
     }
 
     @Test
@@ -209,7 +208,7 @@ class RealDataSourceTest{
 
         val loaded = subject.getRadioComponentById(RADIO_COMPONENT.id)
 
-        assertThat(loaded, `is`(CoreMatchers.nullValue()))
+        assertThat(loaded, `is`(nullValue()))
     }
 
     // LiveData tests
@@ -302,6 +301,21 @@ class RealDataSourceTest{
 
         assertThat(loaded1.size, `is`(2))
         assertThat(loaded2.size, `is`(3))
+    }
+
+    @Test
+    fun getDisplayQuantityListToBuy() = runBlockingTest {
+        subject.insertBag(BAG)
+        subject.insertMatchesBoxSet(MATCHES_BOX_SET)
+        subject.insertMatchesBox(MATCHES_BOX)
+        val component1 = RadioComponent(1, "RC1", 4, MATCHES_BOX.id)
+        val component2 = RadioComponent(2, "RC2", 6, MATCHES_BOX.id, true)
+        subject.insertRadioComponent(component1)
+        subject.insertRadioComponent(component2)
+
+        val items = subject.getDisplayQuantityListToBuy().getOrAwaitValue()
+        assertThat(items[0].name, `is`(component2.name))
+        assertThat(items[0].componentsQuantity, `is`(component2.quantity.toString()))
     }
 
     @Test

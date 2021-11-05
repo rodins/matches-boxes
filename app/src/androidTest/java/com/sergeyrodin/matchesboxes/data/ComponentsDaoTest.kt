@@ -151,7 +151,7 @@ class RadioComponentsDaoTest {
 
     // Component
     @Test
-    fun insertAndGetRadioComponenById() = runBlockingTest {
+    fun insertAndGetRadioComponentById() = runBlockingTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
@@ -207,6 +207,22 @@ class RadioComponentsDaoTest {
             RADIO_COMPONENT.id)
 
         assertThat(loaded, `is`(nullValue()))
+    }
+
+    @Test
+    fun getDisplayQuantityListToBuy() = runBlockingTest {
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
+        val component1 = RadioComponent(1, "Component1", 1, MATCHES_BOX.id)
+        val component2 = RadioComponent(2, "Component1", 2, MATCHES_BOX.id, true)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component1)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component2)
+
+        val items = radioComponentsDatabase.radioComponentsDatabaseDao.getDisplayQuantityListToBuy().getOrAwaitValue()
+
+        assertThat(items[0].name, `is`(component2.name))
+        assertThat(items[0].componentsQuantity, `is`(component2.quantity.toString()))
     }
 
     @Test
