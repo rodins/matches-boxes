@@ -1,44 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <data>
-        <variable
-            name="viewModel"
-            type="com.sergeyrodin.matchesboxes.search.SearchViewModel" />
-    </data>
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/coordinator_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/items"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/list_margin"
-            app:radioComponentsListData="@{viewModel.items}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/no_components_found"
-            android:textSize="@dimen/no_items_text_size"
-            app:noDataTextVisible="@{viewModel.noComponentsTextVisible}" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_search_buy_component_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@drawable/ic_add"
-            android:onClick="@{()->viewModel.addComponent()}"
-            app:fabSize="normal"
-            app:layout_anchor="@id/items"
-            app:layout_anchorGravity="bottom|right|end"
-            android:contentDescription="@string/add_component" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</layout>
+<androidx.compose.ui.platform.ComposeView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_compose_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />

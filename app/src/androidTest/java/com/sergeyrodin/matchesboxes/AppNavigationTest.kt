@@ -621,7 +621,7 @@ class AppNavigationTest {
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
-        onView(withText(component3.name)).perform(click())
+        composeTestRule.onNodeWithText(component3.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.quantity_edit)).perform(replaceText("3"))
         onView(withId(R.id.save_component_fab)).perform(click())
@@ -654,7 +654,7 @@ class AppNavigationTest {
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
-        onView(withText(component3.name)).perform(click())
+        composeTestRule.onNodeWithText(component3.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.quantity_edit)).perform(replaceText("3"))
         onView(withId(R.id.save_component_fab)).perform(click())
@@ -687,7 +687,7 @@ class AppNavigationTest {
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
-        onView(withId(R.id.add_search_buy_component_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
         onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
@@ -719,7 +719,7 @@ class AppNavigationTest {
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
-        onView(withId(R.id.add_search_buy_component_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
         onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
@@ -746,11 +746,11 @@ class AppNavigationTest {
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78"))
             .perform(pressKey(KeyEvent.KEYCODE_ENTER))
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
 
         pressBack()
 
-        onView(withText(component.name)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText(component.name).assertIsDisplayed()
     }
 
     @SearchTest
@@ -771,11 +771,11 @@ class AppNavigationTest {
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78"))
             .perform(pressKey(KeyEvent.KEYCODE_ENTER))
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        onView(withText(component.name)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText(component.name).assertIsDisplayed()
     }
 
     @Test

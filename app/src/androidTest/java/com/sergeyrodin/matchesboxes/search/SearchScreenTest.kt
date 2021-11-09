@@ -1,4 +1,4 @@
-package com.sergeyrodin.matchesboxes.needed
+package com.sergeyrodin.matchesboxes.search
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.compose.ui.test.assertIsDisplayed
@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @HiltAndroidTest
 @UninstallModules(RadioComponentsDataSourceModule::class)
-class NeededComponentsScreenTest {
+class SearchScreenTest {
 
     @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
@@ -45,19 +45,20 @@ class NeededComponentsScreenTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        val component1 = RadioComponent(1, "Component1", 3,  box.id, true)
-        val component2 = RadioComponent(2, "Component2", 4,  box.id, true)
+        val component1 = RadioComponent(1, "LA78041", 3, box.id)
+        val component2 = RadioComponent(2, "KIA7812", 4, box.id)
 
         dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component1, component2)
 
-        val viewModel = NeededComponentsViewModel(dataSource)
+        val viewModel = SearchViewModel(dataSource)
+        viewModel.start("78")
 
         composeTestRule.setContent {
             AppCompatTheme {
-                NeededComponentsScreen(viewModel)
+                SearchScreen(viewModel)
             }
         }
 
@@ -70,18 +71,19 @@ class NeededComponentsScreenTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        val component1 = RadioComponent(1, "Component1", 3,  box.id, true)
+        val component1 = RadioComponent(1, "LA78041", 3, box.id)
 
         dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component1)
 
-        val viewModel = NeededComponentsViewModel(dataSource)
+        val viewModel = SearchViewModel(dataSource)
+        viewModel.start("78")
 
         composeTestRule.setContent {
             AppCompatTheme {
-                NeededComponentsScreen(viewModel)
+                SearchScreen(viewModel)
             }
         }
 
@@ -93,19 +95,20 @@ class NeededComponentsScreenTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
-        val component1 = RadioComponent(1, "Component1", 3,  box.id, true)
-        val component2 = RadioComponent(2, "Component2", 4,  box.id, true)
+        val component1 = RadioComponent(1, "LA78041", 3, box.id)
+        val component2 = RadioComponent(2, "KIA7812", 4, box.id)
 
         dataSource.addBags(bag)
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
         dataSource.addRadioComponents(component1, component2)
 
-        val viewModel = NeededComponentsViewModel(dataSource)
+        val viewModel = SearchViewModel(dataSource)
+        viewModel.start("78")
 
         composeTestRule.setContent {
             AppCompatTheme {
-                NeededComponentsScreen(viewModel)
+                SearchScreen(viewModel)
             }
         }
 
@@ -125,11 +128,12 @@ class NeededComponentsScreenTest {
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
 
-        val viewModel = NeededComponentsViewModel(dataSource)
+        val viewModel = SearchViewModel(dataSource)
+        viewModel.start("78")
 
         composeTestRule.setContent {
             AppCompatTheme {
-                NeededComponentsScreen(viewModel)
+                SearchScreen(viewModel)
             }
         }
 
@@ -146,11 +150,12 @@ class NeededComponentsScreenTest {
         dataSource.addMatchesBoxSets(set)
         dataSource.addMatchesBoxes(box)
 
-        val viewModel = NeededComponentsViewModel(dataSource)
+        val viewModel = SearchViewModel(dataSource)
+        viewModel.start("78")
 
         composeTestRule.setContent {
             AppCompatTheme {
-                NeededComponentsScreen(viewModel)
+                SearchScreen(viewModel)
             }
         }
 

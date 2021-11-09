@@ -153,7 +153,7 @@ class RealDataSourceTest{
 
     // Component
     @Test
-    fun insertAndGetRadioComponenById() = runBlockingTest {
+    fun insertAndGetRadioComponentById() = runBlockingTest {
         subject.insertBag(BAG)
         subject.insertMatchesBoxSet(MATCHES_BOX_SET)
         subject.insertMatchesBox(MATCHES_BOX)
@@ -301,6 +301,20 @@ class RealDataSourceTest{
 
         assertThat(loaded1.size, `is`(2))
         assertThat(loaded2.size, `is`(3))
+    }
+
+    @Test
+    fun getDisplayQuantityListByQuery() = runBlockingTest {
+        subject.insertBag(BAG)
+        subject.insertMatchesBoxSet(MATCHES_BOX_SET)
+        subject.insertMatchesBox(MATCHES_BOX)
+        val component1 = RadioComponent(1, "BUH1015", 4, MATCHES_BOX.id)
+        val component2 = RadioComponent(2, "LA78041", 6, MATCHES_BOX.id, true)
+        subject.insertRadioComponent(component1)
+        subject.insertRadioComponent(component2)
+
+        val items = subject.getDisplayQuantityListByQuery("78")
+        assertThat(items[0].name, `is`(component2.name))
     }
 
     @Test

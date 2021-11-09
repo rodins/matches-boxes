@@ -4,9 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.RadioComponent
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert.*
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -33,6 +32,7 @@ class SearchViewModelTest{
 
         val items = subject.items.getOrAwaitValue()
         assertThat(items[0].name, `is`(component.name))
+        assertThat(items[0].componentsQuantity, `is`(component.quantity.toString()))
     }
 
     @Test
@@ -93,5 +93,20 @@ class SearchViewModelTest{
         subject.start("15")
         val items2 = subject.items.getOrAwaitValue()
         assertThat(items2[0].name, `is`(component2.name))
+    }
+
+    @Test
+    fun selectItem_selectedItemIdEquals() {
+        val boxId = 1
+        val component1 = RadioComponent(1, "LA78040", 3, boxId)
+        val component2 = RadioComponent(2, "KIA7805", 3, boxId)
+        dataSource.addRadioComponents(component1, component2)
+
+        subject.start("78")
+
+        subject.selectComponent(component2.id)
+
+        val componentId = subject.selectedComponentEvent.getOrAwaitValue().getContentIfNotHandled()
+        assertThat(componentId, `is`(component2.id))
     }
 }

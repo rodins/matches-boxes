@@ -210,12 +210,29 @@ class RadioComponentsDaoTest {
     }
 
     @Test
+    fun getDisplayQuantityListByQuery() = runBlockingTest {
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
+        val component1 = RadioComponent(1, "BUH1015", 1, MATCHES_BOX.id)
+        val component2 = RadioComponent(2, "LA78041", 2, MATCHES_BOX.id)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component1)
+        radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component2)
+
+        val items = radioComponentsDatabase.radioComponentsDatabaseDao
+            .getDisplayQuantityListByQuery("78")
+
+        assertThat(items[0].name, `is`(component2.name))
+        assertThat(items[0].componentsQuantity, `is`(component2.quantity.toString()))
+    }
+
+    @Test
     fun getDisplayQuantityListToBuy() = runBlockingTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)
         val component1 = RadioComponent(1, "Component1", 1, MATCHES_BOX.id)
-        val component2 = RadioComponent(2, "Component1", 2, MATCHES_BOX.id, true)
+        val component2 = RadioComponent(2, "Component2", 2, MATCHES_BOX.id, true)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component1)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertRadioComponent(component2)
 
@@ -704,7 +721,7 @@ class RadioComponentsDaoTest {
     }
 
     @Test
-    fun obsereveHistoryListByComponentId() = runBlockingTest {
+    fun observeHistoryListByComponentId() = runBlockingTest {
         radioComponentsDatabase.radioComponentsDatabaseDao.insertBag(BAG)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBoxSet(MATCHES_BOX_SET)
         radioComponentsDatabase.radioComponentsDatabaseDao.insertMatchesBox(MATCHES_BOX)

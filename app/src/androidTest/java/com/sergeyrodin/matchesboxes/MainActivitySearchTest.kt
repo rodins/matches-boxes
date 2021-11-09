@@ -1,9 +1,11 @@
 package com.sergeyrodin.matchesboxes
 
-import android.app.Activity
 import android.widget.AutoCompleteTextView
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -12,13 +14,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.di.TestModule
-import com.sergeyrodin.matchesboxes.util.DataBindingIdlingResource
-import com.sergeyrodin.matchesboxes.util.EspressoIdlingResource
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -33,13 +32,14 @@ annotation class SearchTest
 @UninstallModules(TestModule::class)
 class MainActivitySearchTest {
 
-    @get:Rule
+    @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 2)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
     lateinit var dataSource: RadioComponentsDataSource
-
-    private val dataBindingIdlingResource = DataBindingIdlingResource()
 
     @Before
     fun initDataSource() {
@@ -49,409 +49,374 @@ class MainActivitySearchTest {
         }
     }
 
-    @Before
-    fun registerIdlingResource() {
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
-    }
-
-    @After
-    fun unregisterIdlingResource() {
-        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
-        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
-    }
-
     @SearchTest
     @Test
     fun searchFragmentBottomNavigation_isDisplayed() {
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-
         onView(withId(R.id.searchFragment)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
+
     @SearchTest
     @Test
     fun navigateToSearchFragment_titleDisplayed() {
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-
         moveToSearch()
         onView(withText(R.string.components)).check(matches(isEnabled()))
-
-        activityScenario.close()
     }
+
     @SearchTest
     @Test
-    fun searchQuery_nameMatches() = runBlocking{
+    fun searchQuery_nameMatches() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
         val component2 = RadioComponent(2, "D2499", 3, box.id)
         val component3 = RadioComponent(3, "LA78041", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertRadioComponent(component3)
-        val query = "78041"
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertRadioComponent(component3)
+        }
 
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        val query = "78041"
 
         moveToSearch()
         typeQuery(query)
-        onView(withText(component3.name)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText(component3.name).assertIsDisplayed()
     }
 
     @SearchTest
     @Test
-    fun searchQueryFromBagFragment_nameMatches() = runBlocking{
+    fun searchQueryFromBagFragment_nameMatches() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
         val component2 = RadioComponent(2, "D2499", 3, box.id)
         val component3 = RadioComponent(3, "LA78041", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertRadioComponent(component3)
-        val query = "78041"
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertRadioComponent(component3)
+        }
 
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        val query = "78041"
 
         onView(withId(R.id.action_search)).perform(click())
         typeQuery(query)
-        onView(withText(component3.name)).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText(component3.name).assertIsDisplayed()
     }
 
     @SearchTest
     @Test
-    fun searchQuery_selectComponent_nameEquals() = runBlocking{
+    fun searchQuery_selectComponent_nameEquals() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
         val component2 = RadioComponent(2, "D2499", 3, box.id)
         val component3 = RadioComponent(3, "LA78041", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertRadioComponent(component3)
-
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertRadioComponent(component3)
+        }
 
         moveToSearch()
         typeQuery("78041")
-        onView(withText(component3.name)).perform(click())
+        composeTestRule.onNodeWithText(component3.name).performClick()
         onView(withId(R.id.component_name)).check(matches(withText(component3.name)))
-
-        activityScenario.close()
     }
     @SearchTest
     @Test
-    fun searchQuery_quantityPlus_quantityEquals() = runBlocking{
+    fun searchQuery_quantityPlus_quantityEquals() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
         val component2 = RadioComponent(2, "D2499", 3, box.id)
         val component3 = RadioComponent(3, "LA78041", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertRadioComponent(component3)
-
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertRadioComponent(component3)
+        }
 
         moveToSearch()
         typeQuery("78041")
-        onView(withText(component3.name)).perform(click())
+        composeTestRule.onNodeWithText(component3.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(R.string.button_plus)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
-        onView(withText(component3.name)).perform(click())
+        composeTestRule.onNodeWithText(component3.name).performClick()
         onView(withText("4")).check(matches(isDisplayed()))
         onView(withId(R.id.quantity_text)).check(matches(withText("4")))
-
-        activityScenario.close()
     }
+
     @SearchTest
     @Test
-    fun searchQuery_typeQuantity_quantityEquals() = runBlocking{
+    fun searchQuery_typeQuantity_quantityEquals() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
         val component2 = RadioComponent(2, "D2499", 3, box.id)
         val component3 = RadioComponent(3, "LA78041", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertRadioComponent(component3)
-
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertRadioComponent(component3)
+        }
 
         moveToSearch()
         typeQuery("78041")
-        onView(withText(component3.name)).perform(click())
+        composeTestRule.onNodeWithText(component3.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.quantity_edit)).perform(replaceText("6"))
         onView(withId(R.id.save_component_fab)).perform(click())
-        onView(withText(component3.name)).perform(click())
+        composeTestRule.onNodeWithText(component3.name).performClick()
         onView(withText("6")).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
     @SearchTest
     @Test
-    fun searchQuery_typeSameQuantity_quantityEquals() = runBlocking{
+    fun searchQuery_typeSameQuantity_quantityEquals() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
         val component2 = RadioComponent(2, "D2499", 3, box.id)
         val component3 = RadioComponent(3, "LA78041", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertRadioComponent(component3)
-
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertRadioComponent(component3)
+        }
 
         moveToSearch()
         typeQuery("78041")
-        onView(withText(component3.name)).perform(click())
+        composeTestRule.onNodeWithText(component3.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.quantity_edit)).perform(replaceText("3"))
         onView(withId(R.id.save_component_fab)).perform(click())
-        onView(withText(component3.name)).perform(click())
+        composeTestRule.onNodeWithText(component3.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.quantity_edit)).check(matches(withText("3")))
-
-        activityScenario.close()
     }
 
     @SearchTest
     @Test
-    fun searchComponent_titleEquals() = runBlocking{
+    fun searchComponent_titleEquals() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component1 = RadioComponent(1, "BUH1015HI", 3, box.id)
         val component2 = RadioComponent(2, "D2499", 3, box.id)
         val component3 = RadioComponent(3, "LA78041", 3, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        dataSource.insertRadioComponent(component3)
-
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+            dataSource.insertRadioComponent(component3)
+        }
 
         moveToSearch()
         typeQuery("78041")
-        onView(withText(component3.name)).perform(click())
+        composeTestRule.onNodeWithText(component3.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(R.string.update_component)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
+
     @SearchTest
     @Test
-    fun searchComponent_changeQuantity_navigateToSearchComponents() = runBlocking {
+    fun searchComponent_changeQuantity_navigateToSearchComponents() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+        }
 
         moveToSearch()
         typeQuery("78041")
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withText(R.string.button_plus)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
 
         onView(withText(R.string.components)).check(matches(isEnabled()))
-
-        activityScenario.close()
     }
 
     @SearchTest
     @Test
-    fun searchMode_deleteComponent_navigateToSearchComponents() = runBlocking {
+    fun searchMode_deleteComponent_navigateToSearchComponents() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+        }
 
         moveToSearch()
         typeQuery("78041")
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.action_delete)).perform(click())
 
         onView(withText(R.string.components)).check(matches(isEnabled()))
-
-        activityScenario.close()
     }
+
     @SearchTest
     @Test
-    fun navigateToSearchFragment_actionSearchIsDisplayed() = runBlocking{
+    fun navigateToSearchFragment_actionSearchIsDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+        }
 
         moveToSearch()
         typeQuery("78041")
 
-        onView(withText(component.name)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText(component.name).assertIsDisplayed()
         onView(withId(R.id.app_bar_search)).check(matches(isDisplayed()))
-
-        activityScenario.close()
     }
+
     @SearchTest
     @Test
-    fun searchInSearchFragment_nameDisplayed() = runBlocking {
+    fun searchInSearchFragment_nameDisplayed() {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component1 = RadioComponent(1, "LA78041", 1, box.id)
         val component2 = RadioComponent(2, "BUH1015", 1, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component1)
-        dataSource.insertRadioComponent(component2)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component1)
+            dataSource.insertRadioComponent(component2)
+        }
 
         moveToSearch()
         typeQuery("78041")
 
-        onView(withText(component1.name)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithText(component1.name).assertIsDisplayed()
 
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(clearText(), typeText("15\n"))
 
-        onView(withText(component2.name))
-            .check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText(component2.name).assertIsDisplayed()
     }
+
     @SearchTest
     @Test
-    fun startSearchFragment_queryDisplayed() = runBlocking{
+    fun startSearchFragment_queryDisplayed() {
         val query = "78041"
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val box = MatchesBox(1, "Box", set.id)
         val component = RadioComponent(1, "LA78041", 1, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-
-        moveToSearch()
-        typeQuery(query)
-
-        onView(withText(query)).check(matches(isDisplayed()))
-
-        activityScenario.close()
-    }
-    @SearchTest
-    @Test
-    fun navigateBackToSearchFragment_queryDisplayed() = runBlocking{
-        val query = "78041"
-        val bag = Bag(1, "Bag")
-        val set = MatchesBoxSet(1, "Set", bag.id)
-        val box = MatchesBox(1, "Box", set.id)
-        val component = RadioComponent(1, "LA78041", 1, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-
-        moveToSearch()
-        typeQuery(query)
-
-        onView(withText(component.name)).perform(click())
-        onView(withId(R.id.edit_component_fab)).perform(click())
-        onView(withText(R.string.button_plus)).perform(click())
-        onView(withId(R.id.save_component_fab)).perform(click())
-
-        onView(withText(query)).check(matches(isDisplayed()))
-
-        activityScenario.close()
-    }
-    @SearchTest
-    @Test
-    fun searchFragmentRotation_queryIsDisplayed() = runBlocking{
-        val query = "78041"
-        val bag = Bag(1, "Bag")
-        val set = MatchesBoxSet(1, "Set", bag.id)
-        val box = MatchesBox(1, "Box", set.id)
-        val component = RadioComponent(1, "LA78041", 1, box.id)
-        dataSource.insertBag(bag)
-        dataSource.insertMatchesBoxSet(set)
-        dataSource.insertMatchesBox(box)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-        var activity: Activity? = null
-        activityScenario.onActivity {
-            activity = it
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
         }
 
         moveToSearch()
         typeQuery(query)
 
-        rotateDeviceToLandscape(activity, activityScenario, dataBindingIdlingResource)
+        onView(withText(query)).check(matches(isDisplayed()))
+    }
 
-        onView(withText(query))
-            .check(matches(isDisplayed()))
+    @SearchTest
+    @Test
+    fun navigateBackToSearchFragment_queryDisplayed() {
+        val query = "78041"
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+        }
 
-        rotateDeviceToPortrait(activity, activityScenario, dataBindingIdlingResource)
+        moveToSearch()
+        typeQuery(query)
+
+        composeTestRule.onNodeWithText(component.name).performClick()
+        onView(withId(R.id.edit_component_fab)).perform(click())
+        onView(withText(R.string.button_plus)).perform(click())
+        onView(withId(R.id.save_component_fab)).perform(click())
+
+        onView(withText(query)).check(matches(isDisplayed()))
+    }
+
+    @SearchTest
+    @Test
+    fun searchFragmentRotation_queryIsDisplayed() {
+        val query = "78041"
+        val bag = Bag(1, "Bag")
+        val set = MatchesBoxSet(1, "Set", bag.id)
+        val box = MatchesBox(1, "Box", set.id)
+        val component = RadioComponent(1, "LA78041", 1, box.id)
+        runBlocking {
+            dataSource.insertBag(bag)
+            dataSource.insertMatchesBoxSet(set)
+            dataSource.insertMatchesBox(box)
+            dataSource.insertRadioComponent(component)
+        }
+
+        moveToSearch()
+        typeQuery(query)
+
+        rotateDeviceToLandscape(composeTestRule.activity, composeTestRule.activityRule.scenario)
 
         onView(withText(query)).check(matches(isDisplayed()))
 
-        activityScenario.close()
+        rotateDeviceToPortrait(composeTestRule.activity, composeTestRule.activityRule.scenario)
+
+        onView(withText(query)).check(matches(isDisplayed()))
     }
+
     @SearchTest
     @Test
-    fun searchMode_addComponent_nameEquals() = runBlocking{
+    fun searchMode_addComponent_nameEquals() {
         val bag1 = Bag(1, "Bag1")
         val bag2 = Bag(2, "Bag2")
         val set1 = MatchesBoxSet(1, "Set1", bag1.id)
@@ -467,67 +432,52 @@ class MainActivitySearchTest {
         val box7 = MatchesBox(7, "Box7", set4.id)
         val box8 = MatchesBox(8, "Box8", set4.id)
         val component = RadioComponent(1, "LA78041", 3, box1.id)
-        dataSource.insertBag(bag1)
-        dataSource.insertBag(bag2)
-        dataSource.insertMatchesBoxSet(set1)
-        dataSource.insertMatchesBoxSet(set2)
-        dataSource.insertMatchesBoxSet(set3)
-        dataSource.insertMatchesBoxSet(set4)
-        dataSource.insertMatchesBox(box1)
-        dataSource.insertMatchesBox(box2)
-        dataSource.insertMatchesBox(box3)
-        dataSource.insertMatchesBox(box4)
-        dataSource.insertMatchesBox(box5)
-        dataSource.insertMatchesBox(box6)
-        dataSource.insertMatchesBox(box7)
-        dataSource.insertMatchesBox(box8)
-        dataSource.insertRadioComponent(component)
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
+        runBlocking {
+            dataSource.insertBag(bag1)
+            dataSource.insertBag(bag2)
+            dataSource.insertMatchesBoxSet(set1)
+            dataSource.insertMatchesBoxSet(set2)
+            dataSource.insertMatchesBoxSet(set3)
+            dataSource.insertMatchesBoxSet(set4)
+            dataSource.insertMatchesBox(box1)
+            dataSource.insertMatchesBox(box2)
+            dataSource.insertMatchesBox(box3)
+            dataSource.insertMatchesBox(box4)
+            dataSource.insertMatchesBox(box5)
+            dataSource.insertMatchesBox(box6)
+            dataSource.insertMatchesBox(box7)
+            dataSource.insertMatchesBox(box8)
+            dataSource.insertRadioComponent(component)
+        }
 
         moveToSearch()
         typeQuery("78")
-        onView(withId(R.id.add_search_buy_component_fab))
-            .perform(click())
-        onView(withId(R.id.component_edit))
-            .perform(typeText("KIA7805"), closeSoftKeyboard())
+        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        onView(withId(R.id.component_edit)).perform(typeText("KIA7805"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
-        onView(withText("KIA7805")).check(matches(isDisplayed()))
-
-        activityScenario.close()
+        composeTestRule.onNodeWithText("KIA7805").assertIsDisplayed()
     }
 
     @SearchTest
     @Test
     fun switchFromSearchToPopularAndBack_quotesNotDisplayed() {
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-
         moveToSearch()
         moveToPopular()
         moveToSearch()
 
         onView(withText("\"\"")).check(ViewAssertions.doesNotExist())
-
-        activityScenario.close()
     }
 
     @SearchTest
     @Test
     fun searchModeHintDisplayed_rotateDevice_queriesNotDisplayed() {
-        val activityScenario = launchAndMonitorMainActivity(dataBindingIdlingResource)
-        var activity: Activity? = null
-        activityScenario.onActivity {
-            activity = it
-        }
-
         moveToSearch()
-        rotateDeviceToLandscape(activity, activityScenario, dataBindingIdlingResource)
+        rotateDeviceToLandscape(composeTestRule.activity, composeTestRule.activityRule.scenario)
 
         onView(withText("\"\"")).check(ViewAssertions.doesNotExist())
 
-        rotateDeviceToPortrait(activity, activityScenario, dataBindingIdlingResource)
+        rotateDeviceToPortrait(composeTestRule.activity, composeTestRule.activityRule.scenario)
 
         onView(withText("\"\"")).check(ViewAssertions.doesNotExist())
-
-        activityScenario.close()
     }
 }

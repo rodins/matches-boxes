@@ -2,6 +2,7 @@ package com.sergeyrodin.matchesboxes
 
 import android.widget.AutoCompleteTextView
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
@@ -73,7 +74,7 @@ class MainActivityHistoryTest {
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.buttonPlus)).perform(click())
         onView(withId(R.id.save_component_fab)).perform(click())
@@ -171,7 +172,7 @@ class MainActivityHistoryTest {
 
         moveToSearch()
         typeQuery("78041")
-        onView(withText(component.name)).perform(click())
+        composeTestRule.onNodeWithText(component.name).performClick()
 
         onView(withId(R.id.action_history)).perform(click())
 

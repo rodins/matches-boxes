@@ -2,7 +2,7 @@ package com.sergeyrodin.matchesboxes.search
 
 import androidx.lifecycle.*
 import com.sergeyrodin.matchesboxes.Event
-import com.sergeyrodin.matchesboxes.data.RadioComponent
+import com.sergeyrodin.matchesboxes.data.QuantityItemModel
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -12,15 +12,19 @@ class SearchViewModel @Inject constructor(
     private val dataSource: RadioComponentsDataSource) : ViewModel() {
 
     private val searchQuery = MutableLiveData<String>()
-    val items = searchQuery.switchMap{ query ->
+    val items = searchQuery.switchMap { query ->
         liveData {
-            if (query.trim() != "") {
-                emit(dataSource.getRadioComponentsByQuery(query))
+            if (query != "") {
+                emit(dataSource.getDisplayQuantityListByQuery(query))
             } else {
-                emit(listOf<RadioComponent>())
+                emit(listOf<QuantityItemModel>())
             }
         }
     }
+
+    private val _selectedComponentEvent = MutableLiveData<Event<Int>>()
+    val selectedComponentEvent: LiveData<Event<Int>>
+        get() = _selectedComponentEvent
 
     val noComponentsTextVisible = Transformations.map(items) {
         it.isEmpty()
@@ -38,5 +42,9 @@ class SearchViewModel @Inject constructor(
 
     fun addComponent() {
         _addComponentEvent.value = Event(Unit)
+    }
+
+    fun selectComponent(id: Int) {
+        _selectedComponentEvent.value = Event(id)
     }
 }

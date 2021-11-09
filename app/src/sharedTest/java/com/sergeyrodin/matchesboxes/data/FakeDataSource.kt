@@ -147,7 +147,7 @@ class FakeDataSource @Inject constructor() : RadioComponentsDataSource{
         for(component in components) {
             radioComponentsList.add(component)
         }
-        updateQuiantityItemsToBuy()
+        updateQuantityItemsToBuy()
     }
 
     override suspend fun insertRadioComponent(radioComponent: RadioComponent): Long {
@@ -194,11 +194,19 @@ class FakeDataSource @Inject constructor() : RadioComponentsDataSource{
         }
     }
 
+    override suspend fun getDisplayQuantityListByQuery(query: String): List<QuantityItemModel> {
+        return radioComponentsList.filter{
+            it.name.contains(query, true)
+        }.map {
+            QuantityItemModel(it.id, it.name, it.quantity.toString())
+        }
+    }
+
     override fun getDisplayQuantityListToBuy(): LiveData<List<QuantityItemModel>> {
         return observableQuantityItems
     }
 
-    private fun updateQuiantityItemsToBuy() {
+    private fun updateQuantityItemsToBuy() {
         observableQuantityItems.value = radioComponentsList.filter {
             it.isBuy
         }.map {

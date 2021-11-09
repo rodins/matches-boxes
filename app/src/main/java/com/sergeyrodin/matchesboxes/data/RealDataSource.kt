@@ -142,6 +142,10 @@ class RealDataSource @Inject constructor(
 
     // DisplayQuantity
 
+    override suspend fun getDisplayQuantityListByQuery(query: String): List<QuantityItemModel> {
+        return radioComponentsDatabaseDao.getDisplayQuantityListByQuery(query)
+    }
+
     override fun getDisplayQuantityListToBuy(): LiveData<List<QuantityItemModel>> {
         return radioComponentsDatabaseDao.getDisplayQuantityListToBuy()
     }

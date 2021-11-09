@@ -79,6 +79,9 @@ interface RadioComponentsDatabaseDao {
     suspend fun getRadioComponentsToBuy(): List<RadioComponent>
 
     // Display quantity
+    @Query("SELECT r.id, r.name, r.quantity as componentsQuantity FROM radio_components r WHERE name LIKE '%' || :query || '%'")
+    suspend fun getDisplayQuantityListByQuery(query: String): List<QuantityItemModel>
+
     @Query("SELECT r.id, r.name, r.quantity as componentsQuantity FROM radio_components r WHERE buy = 1")
     fun getDisplayQuantityListToBuy(): LiveData<List<QuantityItemModel>>
 
