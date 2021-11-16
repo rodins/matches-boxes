@@ -1,8 +1,7 @@
 package com.sergeyrodin.matchesboxes
 
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -10,6 +9,7 @@ import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.sergeyrodin.matchesboxes.bag.addeditdelete.NAME_TEXT_FIELD_TAG
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.di.TestModule
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -50,9 +50,10 @@ class ToastsTest {
 
     @Test
     fun addBag_showToast() {
-        composeTestRule.onNodeWithContentDescription(R.string.add_bag).performClick()
-        onView(withId(R.id.bag_edit)).perform(typeText("New bag"), closeSoftKeyboard())
-        onView(withId(R.id.save_bag_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).performClick()
+
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("New bag")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
 
         checkToastIsDisplayed(R.string.bag_added)
     }
@@ -72,9 +73,9 @@ class ToastsTest {
 
         composeTestRule.onNodeWithText("Bag").performClick()
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.bag_edit))
-            .perform(replaceText("Bag updated"))
-        onView(withId(R.id.save_bag_fab)).perform(click())
+
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement("Bag updated")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
 
         checkToastIsDisplayed(R.string.bag_updated)
     }
@@ -101,7 +102,7 @@ class ToastsTest {
         }
 
         composeTestRule.onNodeWithText("Bag").performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_set).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).performClick()
         onView(withId(R.id.set_edit)).perform(typeText("MBS1"), closeSoftKeyboard())
         onView(withId(R.id.save_set_fab)).perform(click())
 
@@ -157,7 +158,7 @@ class ToastsTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
 
         onView(withId(R.id.box_edit)).perform(typeText("New box"), closeSoftKeyboard())
         onView(withId(R.id.save_box_fab)).perform(click())
@@ -223,7 +224,7 @@ class ToastsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withId(R.id.component_edit))
             .perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
@@ -245,7 +246,7 @@ class ToastsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withId(R.id.save_component_fab)).perform(click())
 
         checkToastIsDisplayed(R.string.save_component_error)

@@ -3,29 +3,25 @@ package com.sergeyrodin.matchesboxes.bag.addeditdelete
 import android.content.Context
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.compose.ui.test.*
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.replaceText
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
+import com.sergeyrodin.matchesboxes.*
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
-import com.sergeyrodin.matchesboxes.launchFragmentInHiltContainer
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,11 +36,14 @@ import javax.inject.Inject
 @UninstallModules(RadioComponentsDataSourceModule::class)
 class BagManipulatorFragmentTest {
 
-    @get:Rule
+    @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
-    val instantExecutorRule = InstantTaskExecutorRule()
+    @get:Rule(order = 2)
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
+
+    @get:Rule(order = 3)
+    var instantExecutorRule = InstantTaskExecutorRule()
 
     @Inject
     lateinit var dataSource: FakeDataSource
@@ -57,9 +56,9 @@ class BagManipulatorFragmentTest {
     @Test
     fun nulArg_enterNameTextEquals() {
         val bundle = BagManipulatorFragmentArgs.Builder(ADD_NEW_ITEM_ID, "Title").build().toBundle()
-        launchFragmentInHiltContainer<BagManipulatorFragment>(bundle, R.style.AppTheme)
+        launchFragment<BagManipulatorFragment>(composeTestRule.activityRule.scenario, bundle)
 
-        onView(withHint(R.string.enter_bag_name)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithTextResource(R.string.enter_bag_name).assertIsDisplayed()
     }
 
     @Test
@@ -67,27 +66,27 @@ class BagManipulatorFragmentTest {
         val bag = Bag(1, "New bag")
         dataSource.addBags(bag)
         val bundle = BagManipulatorFragmentArgs.Builder(bag.id, "Title").build().toBundle()
-        launchFragmentInHiltContainer<BagManipulatorFragment>(bundle, R.style.AppTheme)
+        launchFragment<BagManipulatorFragment>(composeTestRule.activityRule.scenario, bundle)
 
-        onView(withId(R.id.bag_edit)).check(matches(withText(bag.name)))
+        composeTestRule.onNodeWithText(bag.name).assertIsDisplayed()
     }
 
     @Test
-    fun nullArg_addNewBag() = runBlocking{
+    fun nullArg_addNewBag() {
         dataSource.addBags()
 
         val navController = Mockito.mock(NavController::class.java)
 
         val bundle = BagManipulatorFragmentArgs.Builder(ADD_NEW_ITEM_ID, "Title").build().toBundle()
-        launchFragmentInHiltContainer<BagManipulatorFragment>(bundle, R.style.AppTheme) {
+        launchFragment<BagManipulatorFragment>(composeTestRule.activityRule.scenario, bundle) {
             Navigation.setViewNavController(view!!, navController)
         }
 
-        onView(withId(R.id.bag_edit)).perform(replaceText("New bag"))
-        onView(withId(R.id.save_bag_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("New bag")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
 
-        val bag = dataSource.getBags()[0]
-        Assert.assertThat(bag.name, `is`("New bag"))
+        val bag = runBlocking { dataSource.getBags()[0] }
+        assertThat(bag.name, `is`("New bag"))
 
         verify(navController).navigate(
             BagManipulatorFragmentDirections.actionAddEditDeleteBagFragmentToBagsListFragment()
@@ -103,12 +102,12 @@ class BagManipulatorFragmentTest {
         val navController = Mockito.mock(NavController::class.java)
 
         val bundle = BagManipulatorFragmentArgs.Builder(bag.id, "Title").build().toBundle()
-        launchFragmentInHiltContainer<BagManipulatorFragment>(bundle, R.style.AppTheme) {
+        launchFragment<BagManipulatorFragment>(composeTestRule.activityRule.scenario, bundle) {
             Navigation.setViewNavController(view!!, navController)
         }
 
-        onView(withId(R.id.bag_edit)).perform(replaceText(bagUpdated.name))
-        onView(withId(R.id.save_bag_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement(bagUpdated.name)
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
 
         verify(navController).navigate(
             BagManipulatorFragmentDirections
@@ -117,47 +116,48 @@ class BagManipulatorFragmentTest {
     }
 
     @Test
-    fun nullArg_emptyInput_sizeZero() = runBlocking{
+    fun nullArg_emptyInput_sizeZero() {
         dataSource.addBags()
         val bundle = BagManipulatorFragmentArgs.Builder(ADD_NEW_ITEM_ID, "Title").build().toBundle()
-        launchFragmentInHiltContainer<BagManipulatorFragment>(bundle, R.style.AppTheme)
+        launchFragment<BagManipulatorFragment>(composeTestRule.activityRule.scenario, bundle)
 
-        onView(withId(R.id.bag_edit)).perform(replaceText(" "))
-        onView(withId(R.id.save_bag_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput(" ")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
 
-        val bags = dataSource.getBags()
-        Assert.assertThat(bags.size, `is`(0))
+        val bags = runBlocking { dataSource.getBags() }
+        assertThat(bags.size, `is`(0))
     }
 
     @Test
-    fun bagIdArg_emptyInput_nameNotChanged() = runBlocking{
+    fun bagIdArg_emptyInput_nameNotChanged() {
         val bag = Bag(1, "Old bag")
         dataSource.addBags(bag)
+
         val bundle = BagManipulatorFragmentArgs.Builder(bag.id, "Title").build().toBundle()
-        launchFragmentInHiltContainer<BagManipulatorFragment>(bundle, R.style.AppTheme)
+        launchFragment<BagManipulatorFragment>(composeTestRule.activityRule.scenario, bundle)
 
-        onView(withId(R.id.bag_edit)).perform(replaceText(" "))
-        onView(withId(R.id.save_bag_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement(" ")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
 
-        val updatedBag = dataSource.getBags()[0]
-        Assert.assertThat(updatedBag.name, `is`("Old bag"))
+        val updatedBag = runBlocking { dataSource.getBags()[0] }
+        assertThat(updatedBag.name, `is`("Old bag"))
     }
 
     @Test
-    fun deleteBagAndNavigate() = runBlocking{
+    fun deleteBagAndNavigate() {
         val bag = Bag(1, "Bag to delete")
         dataSource.addBags(bag)
 
         val navController = Mockito.mock(NavController::class.java)
 
         val bundle = BagManipulatorFragmentArgs.Builder(bag.id, "Title").build().toBundle()
-        launchFragmentInHiltContainer<BagManipulatorFragment>(bundle, R.style.AppTheme) {
+        launchFragment<BagManipulatorFragment>(composeTestRule.activityRule.scenario, bundle) {
             Navigation.setViewNavController(view!!, navController)
             clickDeleteAction(this)
         }
 
-        val bags = dataSource.getBags()
-        Assert.assertThat(bags.size, `is`(0))
+        val bags = runBlocking { dataSource.getBags() }
+        assertThat(bags.size, `is`(0))
         verify(navController).navigate(
             BagManipulatorFragmentDirections.actionAddEditDeleteBagFragmentToBagsListFragment()
         )

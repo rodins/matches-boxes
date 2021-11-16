@@ -2,10 +2,8 @@ package com.sergeyrodin.matchesboxes
 
 import android.view.KeyEvent
 import android.widget.AutoCompleteTextView
-import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.*
@@ -13,6 +11,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.sergeyrodin.matchesboxes.bag.addeditdelete.NAME_TEXT_FIELD_TAG
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.di.TestModule
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -54,26 +53,27 @@ class AppNavigationTest {
 
     @Test
     fun addBag_navigateBack() {
-        composeTestRule.onNodeWithContentDescription(R.string.add_bag).performClick()
-        onView(withId(R.id.bag_edit)).check(matches(withHint(R.string.enter_bag_name)))
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).performClick()
+        composeTestRule.onNodeWithTextResource(R.string.enter_bag_name).assertIsDisplayed()
         pressBack()
 
-        composeTestRule.onNodeWithText(R.string.no_bags_added).assertIsDisplayed()
+        composeTestRule.onNodeWithTextResource(R.string.no_bags_added).assertIsDisplayed()
     }
 
     @Test
     fun addBag_navigateUp() {
-        composeTestRule.onNodeWithContentDescription(R.string.add_bag).performClick()
-        onView(withId(R.id.bag_edit)).check(matches(withHint(R.string.enter_bag_name)))
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).performClick()
+        composeTestRule.onNodeWithTextResource(R.string.enter_bag_name).assertIsDisplayed()
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
-        composeTestRule.onNodeWithText(R.string.no_bags_added).assertIsDisplayed()
+        composeTestRule.onNodeWithTextResource(R.string.no_bags_added).assertIsDisplayed()
     }
 
     @Test
     fun addBagSaved_navigationBack() {
-        composeTestRule.onNodeWithContentDescription(R.string.add_bag).performClick()
-        onView(withId(R.id.bag_edit)).perform(typeText("New bag"), closeSoftKeyboard())
-        onView(withId(R.id.save_bag_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).performClick()
+
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("New bag")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
 
         try {
             pressBack()
@@ -92,12 +92,12 @@ class AppNavigationTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.bag_edit)).perform(replaceText("Bag updated"))
-        onView(withId(R.id.save_bag_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement("Bag updated")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
 
         pressBack()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_bag).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).assertIsDisplayed()
     }
 
     @Test
@@ -109,12 +109,12 @@ class AppNavigationTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.bag_edit)).perform(replaceText("Bag updated"))
-        onView(withId(R.id.save_bag_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement("Bag updated")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_bag).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).assertIsDisplayed()
     }
 
     @Test
@@ -155,11 +155,11 @@ class AppNavigationTest {
         }
 
         composeTestRule.onNodeWithText("Bag").performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_set).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).performClick()
 
         pressBack()
 
-        composeTestRule.onNodeWithText(R.string.no_matches_box_sets_added).assertIsDisplayed()
+        composeTestRule.onNodeWithTextResource(R.string.no_matches_box_sets_added).assertIsDisplayed()
     }
 
     @Test
@@ -169,11 +169,11 @@ class AppNavigationTest {
         }
 
         composeTestRule.onNodeWithText("Bag").performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_set).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).performClick()
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        composeTestRule.onNodeWithText(R.string.no_matches_box_sets_added).assertIsDisplayed()
+        composeTestRule.onNodeWithTextResource(R.string.no_matches_box_sets_added).assertIsDisplayed()
     }
 
     @Test
@@ -183,13 +183,13 @@ class AppNavigationTest {
         }
 
         composeTestRule.onNodeWithText("Bag").performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_set).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).performClick()
         onView(withId(R.id.set_edit)).perform(typeText("New set"), closeSoftKeyboard())
         onView(withId(R.id.save_set_fab)).perform(click())
 
         pressBack()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_bag).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).assertIsDisplayed()
     }
 
     @Test
@@ -199,13 +199,13 @@ class AppNavigationTest {
         }
 
         composeTestRule.onNodeWithText("Bag").performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_set).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).performClick()
         onView(withId(R.id.set_edit)).perform(typeText("New set"), closeSoftKeyboard())
         onView(withId(R.id.save_set_fab)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_bag).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).assertIsDisplayed()
     }
 
     @Test
@@ -225,7 +225,7 @@ class AppNavigationTest {
 
         pressBack()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_set).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).assertIsDisplayed()
     }
 
     @Test
@@ -245,7 +245,7 @@ class AppNavigationTest {
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_set).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).assertIsDisplayed()
     }
 
     @Test
@@ -264,7 +264,7 @@ class AppNavigationTest {
 
         pressBack()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_bag).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).assertIsDisplayed()
     }
 
     @Test
@@ -283,7 +283,7 @@ class AppNavigationTest {
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_bag).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).assertIsDisplayed()
     }
 
     // Box
@@ -298,13 +298,13 @@ class AppNavigationTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
         onView(withId(R.id.box_edit)).perform(typeText("New box"), closeSoftKeyboard())
         onView(withId(R.id.save_box_fab)).perform(click())
 
         pressBack()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_set).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).assertIsDisplayed()
     }
 
     @Test
@@ -318,13 +318,13 @@ class AppNavigationTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
         onView(withId(R.id.box_edit)).perform(typeText("New box"), closeSoftKeyboard())
         onView(withId(R.id.save_box_fab)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_set).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).assertIsDisplayed()
     }
 
     @Test
@@ -347,7 +347,7 @@ class AppNavigationTest {
 
         pressBack()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).assertIsDisplayed()
     }
 
     @Test
@@ -370,7 +370,7 @@ class AppNavigationTest {
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).assertIsDisplayed()
     }
 
     @Test
@@ -392,7 +392,7 @@ class AppNavigationTest {
 
         pressBack()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_set).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).assertIsDisplayed()
     }
 
     @Test
@@ -414,7 +414,7 @@ class AppNavigationTest {
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_set).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).assertIsDisplayed()
     }
 
     // Component
@@ -433,13 +433,13 @@ class AppNavigationTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withId(R.id.component_edit)).perform(typeText("New component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
         pressBack()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).assertIsDisplayed()
     }
 
     @Test
@@ -456,13 +456,13 @@ class AppNavigationTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withId(R.id.component_edit)).perform(typeText("New component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).assertIsDisplayed()
     }
 
     @Test
@@ -488,7 +488,7 @@ class AppNavigationTest {
 
         pressBack()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).assertIsDisplayed()
     }
 
     @Test
@@ -513,11 +513,11 @@ class AppNavigationTest {
         onView(withId(R.id.save_component_fab)).perform(click())
 
         pressBack()
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).assertIsDisplayed()
         pressBack()
-        composeTestRule.onNodeWithContentDescription(R.string.add_set).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).assertIsDisplayed()
         pressBack()
-        composeTestRule.onNodeWithContentDescription(R.string.add_bag).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).assertIsDisplayed()
     }
 
     @Test
@@ -543,7 +543,7 @@ class AppNavigationTest {
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).assertIsDisplayed()
     }
 
     @Test
@@ -568,7 +568,7 @@ class AppNavigationTest {
 
         pressBack()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).assertIsDisplayed()
     }
 
     @Test
@@ -593,7 +593,7 @@ class AppNavigationTest {
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).assertIsDisplayed()
     }
 
     // Search
@@ -687,7 +687,7 @@ class AppNavigationTest {
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
@@ -719,7 +719,7 @@ class AppNavigationTest {
         onView(withId(R.id.action_search)).perform(click())
         onView(isAssignableFrom(AutoCompleteTextView::class.java))
             .perform(typeText("78041\n"))
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withId(R.id.component_edit)).perform(typeText("STRW6753"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 

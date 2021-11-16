@@ -2,13 +2,16 @@ package com.sergeyrodin.matchesboxes.bag.addeditdelete
 
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.Toast
+import androidx.compose.ui.platform.ComposeView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.sergeyrodin.matchesboxes.*
-import com.sergeyrodin.matchesboxes.databinding.FragmentBagManipulatorBinding
+import com.google.accompanist.appcompattheme.AppCompatTheme
+import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
+import com.sergeyrodin.matchesboxes.EventObserver
+import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,24 +25,19 @@ class BagManipulatorFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = createBinding(inflater)
-        setupBinding(binding)
+        val view = inflater.inflate(R.layout.fragment_bag_manipulator, container, false)
+        view.findViewById<ComposeView>(R.id.bag_compose_view).setContent {
+            AppCompatTheme {
+                BagScreen(viewModel)
+            }
+        }
         setupIsActionDeleteVisible()
         startViewModel()
         observeAddedEvent()
         observeEditedEvent()
         observeDeletedEvent()
         setHasOptionsMenu(true)
-        return binding.root
-    }
-
-    private fun createBinding(inflater: LayoutInflater): FragmentBagManipulatorBinding {
-        return FragmentBagManipulatorBinding.inflate(inflater)
-    }
-
-    private fun setupBinding(binding: FragmentBagManipulatorBinding) {
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
+        return view
     }
 
     private fun setupIsActionDeleteVisible() {
@@ -117,5 +115,4 @@ class BagManipulatorFragment : Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 }

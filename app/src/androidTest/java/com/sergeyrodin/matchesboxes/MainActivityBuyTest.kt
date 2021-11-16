@@ -155,6 +155,6 @@ class MainActivityBuyTest {
         onView(withId(R.id.edit_component_fab)).perform(click())
         onView(withId(R.id.action_delete)).perform(click())
 
-        composeTestRule.onNodeWithText(R.string.no_components_found).assertIsDisplayed()
+        composeTestRule.onNodeWithTextResource(R.string.no_components_found).assertIsDisplayed()
     }
 }

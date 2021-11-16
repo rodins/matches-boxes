@@ -87,7 +87,7 @@ class SearchScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithContentDescription(R.string.component_icon_description).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.component_icon_description).assertIsDisplayed()
     }
 
     @Test
@@ -137,7 +137,7 @@ class SearchScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithText(R.string.no_components_found).assertIsDisplayed()
+        composeTestRule.onNodeWithTextResource(R.string.no_components_found).assertIsDisplayed()
     }
 
     @Test
@@ -159,7 +159,7 @@ class SearchScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
 
         val event = viewModel.addComponentEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(event, `is`(not(nullValue())))

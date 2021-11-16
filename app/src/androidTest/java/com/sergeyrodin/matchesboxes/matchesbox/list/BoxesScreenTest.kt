@@ -86,7 +86,7 @@ class BoxesScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithContentDescription(R.string.box_icon_description).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.box_icon_description).assertIsDisplayed()
     }
 
     @Test
@@ -132,7 +132,7 @@ class BoxesScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithText(R.string.no_matches_boxes_added).assertIsDisplayed()
+        composeTestRule.onNodeWithTextResource(R.string.no_matches_boxes_added).assertIsDisplayed()
     }
 
     @Test
@@ -152,7 +152,7 @@ class BoxesScreenTest {
             }
         }
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
 
         val event = viewModel.addBoxEvent.getOrAwaitValue().getContentIfNotHandled()
         assertThat(event, `is`(not(nullValue())))

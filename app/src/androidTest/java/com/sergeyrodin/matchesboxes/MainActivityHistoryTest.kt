@@ -98,7 +98,7 @@ class MainActivityHistoryTest {
         }
 
         onView(withId(R.id.neededComponentsFragment)).perform(click())
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withId(R.id.component_edit))
             .perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())

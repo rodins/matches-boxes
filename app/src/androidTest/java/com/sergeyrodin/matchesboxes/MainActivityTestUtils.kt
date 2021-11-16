@@ -56,20 +56,20 @@ fun moveToSearch() {
     onView(withId(R.id.searchFragment)).perform(click())
 }
 
-fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.onNodeWithContentDescription(
+fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.onNodeWithContentDescriptionResource(
     resource: Int
 ) = onNodeWithContentDescription(activity.getString(resource))
 
-@JvmName("onNodeWithContentDescriptionHiltTestActivityHiltTestActivity")
-fun AndroidComposeTestRule<ActivityScenarioRule<HiltTestActivity>, HiltTestActivity>.onNodeWithContentDescription(
+@JvmName("onNodeWithContentDescriptionResourceHiltTestActivityHiltTestActivity")
+fun AndroidComposeTestRule<ActivityScenarioRule<HiltTestActivity>, HiltTestActivity>.onNodeWithContentDescriptionResource(
     resource: Int
 ) = onNodeWithContentDescription(activity.getString(resource))
 
-fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.onNodeWithText(
+fun AndroidComposeTestRule<ActivityScenarioRule<MainActivity>, MainActivity>.onNodeWithTextResource(
     resource: Int
 ) = onNodeWithText(activity.getString(resource))
 
-@JvmName("onNodeWithTextHiltTestActivityHiltTestActivity")
-fun AndroidComposeTestRule<ActivityScenarioRule<HiltTestActivity>, HiltTestActivity>.onNodeWithText(
+@JvmName("onNodeWithTextResourceHiltTestActivityHiltTestActivity")
+fun AndroidComposeTestRule<ActivityScenarioRule<HiltTestActivity>, HiltTestActivity>.onNodeWithTextResource(
     resource: Int
 ) = onNodeWithText(activity.getString(resource))

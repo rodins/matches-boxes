@@ -58,7 +58,7 @@ class MatchesBoxListFragmentTest {
         val bundle = MatchesBoxListFragmentArgs.Builder(set.id, "Title").build().toBundle()
         launchFragment<MatchesBoxListFragment>(composeTestRule.activityRule.scenario, bundle)
 
-        composeTestRule.onNodeWithText(R.string.no_matches_boxes_added).assertIsDisplayed()
+        composeTestRule.onNodeWithTextResource(R.string.no_matches_boxes_added).assertIsDisplayed()
     }
 
     @Test
@@ -69,7 +69,7 @@ class MatchesBoxListFragmentTest {
         val bundle = MatchesBoxListFragmentArgs.Builder(set.id, "Title").build().toBundle()
         launchFragment<MatchesBoxListFragment>(composeTestRule.activityRule.scenario, bundle)
 
-        composeTestRule.onNodeWithText(R.string.no_matches_boxes_added).assertDoesNotExist()
+        composeTestRule.onNodeWithTextResource(R.string.no_matches_boxes_added).assertDoesNotExist()
     }
 
     @Test
@@ -107,7 +107,7 @@ class MatchesBoxListFragmentTest {
             title = getString(R.string.add_box)
         }
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
 
         verify(navController).navigate(
             MatchesBoxListFragmentDirections
@@ -195,6 +195,6 @@ class MatchesBoxListFragmentTest {
         val bundle = MatchesBoxListFragmentArgs.Builder(setId, "Title").build().toBundle()
         launchFragment<MatchesBoxListFragment>(composeTestRule.activityRule.scenario, bundle)
 
-        composeTestRule.onNodeWithContentDescription(R.string.box_icon_description).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.box_icon_description).assertIsDisplayed()
     }
 }

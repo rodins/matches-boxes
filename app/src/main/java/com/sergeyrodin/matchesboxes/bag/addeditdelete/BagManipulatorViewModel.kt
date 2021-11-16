@@ -15,7 +15,9 @@ import javax.inject.Inject
 class BagManipulatorViewModel @Inject constructor(
     private val dataSource: RadioComponentsDataSource) : ViewModel() {
 
-    val name = MutableLiveData<String>()
+    private val _name = MutableLiveData<String>()
+    val name: LiveData<String>
+        get() = _name
 
     private val _eventAdded = MutableLiveData<Event<Unit>>()
     val eventAdded: LiveData<Event<Unit>>
@@ -45,11 +47,11 @@ class BagManipulatorViewModel @Inject constructor(
     }
 
     private fun getBagNameToDisplay() {
-        name.value = bag?.name ?: ""
+        _name.value = bag?.name ?: ""
     }
 
     fun saveBag() {
-        if(name.value?.trim() != "") {
+        if(_name.value?.trim() != "") {
             addOrUpdateBag()
         }
     }
@@ -70,7 +72,7 @@ class BagManipulatorViewModel @Inject constructor(
     }
 
     private suspend fun insertBagToDb() {
-        val newBag = Bag(name = name.value!!)
+        val newBag = Bag(name = _name.value!!)
         dataSource.insertBag(newBag)
     }
 
@@ -86,12 +88,12 @@ class BagManipulatorViewModel @Inject constructor(
     }
 
     private suspend fun updateBagInDb() {
-        bag?.name = name.value!!
+        bag?.name = _name.value!!
         dataSource.updateBag(bag!!)
     }
 
     private fun callUpdateEvent() {
-        _eventEdited.value = Event(name.value!!)
+        _eventEdited.value = Event(_name.value!!)
     }
 
     fun deleteBag(){
@@ -107,5 +109,9 @@ class BagManipulatorViewModel @Inject constructor(
 
     private fun callDeleteEvent() {
         _eventDeleted.value = Event(Unit)
+    }
+
+    fun setNewName(newName: String) {
+        _name.value = newName
     }
 }

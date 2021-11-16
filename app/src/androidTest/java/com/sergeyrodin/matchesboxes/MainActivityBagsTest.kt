@@ -1,10 +1,9 @@
 package com.sergeyrodin.matchesboxes
 
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -12,6 +11,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.sergeyrodin.matchesboxes.bag.addeditdelete.NAME_TEXT_FIELD_TAG
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.di.TestModule
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -39,14 +39,9 @@ class MainActivityBagsTest {
     @Inject
     lateinit var dataSource: RadioComponentsDataSource
 
-    private var addBagDescription = ""
-    private var emptyText = ""
-
     @Before
     fun initDataSource() {
         hiltRule.inject()
-        addBagDescription = composeTestRule.activity.getString(R.string.add_bag)
-        emptyText = composeTestRule.activity.getString(R.string.no_bags_added)
         runBlocking {
             dataSource.clearDatabase()
         }
@@ -54,23 +49,25 @@ class MainActivityBagsTest {
 
     @Test
     fun addBag_bagNameDisplayed() {
-        composeTestRule.onNodeWithContentDescription(addBagDescription).performClick()
-        onView(withId(R.id.bag_edit)).perform(typeText("New bag"), closeSoftKeyboard())
-        onView(withId(R.id.save_bag_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).performClick()
+
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("New bag")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
+
         composeTestRule.onNodeWithText("New bag").assertIsDisplayed()
     }
 
     @Test
     fun addBag_deleteButtonIsNotDisplayed() {
-        composeTestRule.onNodeWithContentDescription(addBagDescription).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).performClick()
         onView(withId(R.id.action_delete)).check(doesNotExist())
     }
 
     @Test
     fun noBags_addBagClick_textEquals() {
-        composeTestRule.onNodeWithText(emptyText).assertIsDisplayed()
-        composeTestRule.onNodeWithContentDescription(addBagDescription).performClick()
-        onView(withId(R.id.bag_edit)).check(matches(withHint(R.string.enter_bag_name)))
+        composeTestRule.onNodeWithTextResource(R.string.no_bags_added).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).performClick()
+        composeTestRule.onNodeWithTextResource(R.string.enter_bag_name).assertIsDisplayed()
     }
 
     @Test
@@ -83,11 +80,11 @@ class MainActivityBagsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
 
-        onView(withId(R.id.bag_edit)).perform(replaceText("Bag updated"))
-        onView(withId(R.id.save_bag_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement("Bag updated")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
+
         onView(withText("Bag updated")).check(matches(isDisplayed()))
-        val setsEmptyText = composeTestRule.activity.getString(R.string.no_matches_box_sets_added)
-        composeTestRule.onNodeWithText(setsEmptyText).assertIsDisplayed()
+        composeTestRule.onNodeWithTextResource(R.string.no_matches_box_sets_added).assertIsDisplayed()
     }
 
     @Test
@@ -100,8 +97,8 @@ class MainActivityBagsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
 
-        onView(withId(R.id.bag_edit)).perform(replaceText("Bag updated"))
-        onView(withId(R.id.save_bag_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement("Bag updated")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
         composeTestRule.onNodeWithText("Bag updated").assertIsDisplayed()
@@ -117,7 +114,7 @@ class MainActivityBagsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
 
-        onView(withId(R.id.bag_edit)).check(matches(withText(bag.name)))
+        composeTestRule.onNodeWithText(bag.name).assertIsDisplayed()
     }
 
     @Test
@@ -129,7 +126,7 @@ class MainActivityBagsTest {
         composeTestRule.onNodeWithText("Bag").performClick()
         onView(withId(R.id.action_edit)).perform(click())
         onView(withId(R.id.action_delete)).perform(click())
-        composeTestRule.onNodeWithText(emptyText).assertIsDisplayed()
+        composeTestRule.onNodeWithTextResource(R.string.no_bags_added).assertIsDisplayed()
     }
 
     @Test
@@ -145,7 +142,7 @@ class MainActivityBagsTest {
 
     @Test
     fun addBag_titleEquals() {
-        composeTestRule.onNodeWithContentDescription(addBagDescription).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).performClick()
         onView(withText(R.string.add_bag)).check(matches(isDisplayed()))
     }
 
@@ -159,18 +156,6 @@ class MainActivityBagsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         onView(withText(R.string.update_bag)).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun editBag_nameEquals() {
-        val bag = Bag(1, "Bag")
-        runBlocking {
-            dataSource.insertBag(bag)
-        }
-
-        composeTestRule.onNodeWithText(bag.name).performClick()
-        onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.bag_edit)).check(matches(withText(bag.name)))
     }
 
     @Test

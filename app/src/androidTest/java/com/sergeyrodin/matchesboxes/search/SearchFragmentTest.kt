@@ -7,10 +7,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import com.sergeyrodin.matchesboxes.*
@@ -21,7 +17,6 @@ import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import org.hamcrest.CoreMatchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -60,7 +55,7 @@ class SearchFragmentTest {
         val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
         launchFragment<SearchFragment>(composeTestRule.activityRule.scenario, bundle)
 
-        composeTestRule.onNodeWithText(R.string.no_components_found).assertIsDisplayed()
+        composeTestRule.onNodeWithTextResource(R.string.no_components_found).assertIsDisplayed()
     }
 
     @Test
@@ -72,7 +67,7 @@ class SearchFragmentTest {
         val bundle = SearchFragmentArgs.Builder().setQuery(query).build().toBundle()
         launchFragment<SearchFragment>(composeTestRule.activityRule.scenario, bundle)
 
-        composeTestRule.onNodeWithText(R.string.no_components_found).assertDoesNotExist()
+        composeTestRule.onNodeWithTextResource(R.string.no_components_found).assertDoesNotExist()
     }
 
     @Test
@@ -157,7 +152,7 @@ class SearchFragmentTest {
             title = getString(R.string.add_component)
         }
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
 
         verify(navController).navigate(
             SearchFragmentDirections.actionSearchFragmentToAddEditDeleteRadioComponentFragment(

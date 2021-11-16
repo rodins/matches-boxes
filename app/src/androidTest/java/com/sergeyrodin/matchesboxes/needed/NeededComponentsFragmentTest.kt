@@ -53,7 +53,7 @@ class NeededComponentsFragmentTest {
         dataSource.addRadioComponents()
         launchFragment<NeededComponentsFragment>(composeTestRule.activityRule.scenario, null)
 
-        composeTestRule.onNodeWithText(R.string.no_components_found).assertIsDisplayed()
+        composeTestRule.onNodeWithTextResource(R.string.no_components_found).assertIsDisplayed()
     }
 
     @Test
@@ -63,7 +63,7 @@ class NeededComponentsFragmentTest {
         dataSource.addRadioComponents(component)
         launchFragment<NeededComponentsFragment>(composeTestRule.activityRule.scenario, null)
 
-        composeTestRule.onNodeWithText(R.string.no_components_found).assertDoesNotExist()
+        composeTestRule.onNodeWithTextResource(R.string.no_components_found).assertDoesNotExist()
     }
 
     @Test
@@ -136,7 +136,7 @@ class NeededComponentsFragmentTest {
             title = getString(R.string.add_component)
         }
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
 
         verify(navController).navigate(
             NeededComponentsFragmentDirections.actionNeededComponentsFragmentToAddEditDeleteRadioComponentFragment(

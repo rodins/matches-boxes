@@ -452,7 +452,7 @@ class MainActivitySearchTest {
 
         moveToSearch()
         typeQuery("78")
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withId(R.id.component_edit)).perform(typeText("KIA7805"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
         composeTestRule.onNodeWithText("KIA7805").assertIsDisplayed()

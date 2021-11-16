@@ -124,7 +124,7 @@ class MainActivitySetsTest {
         onView(withId(R.id.save_set_fab)).perform(click())
 
         onView(withText("Set updated")).check(matches(isDisplayed()))
-        composeTestRule.onNodeWithText(R.string.no_matches_boxes_added).assertIsDisplayed()
+        composeTestRule.onNodeWithTextResource(R.string.no_matches_boxes_added).assertIsDisplayed()
     }
 
     @Test

@@ -1,9 +1,7 @@
 package com.sergeyrodin.matchesboxes
 
-import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions
@@ -11,6 +9,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.sergeyrodin.matchesboxes.bag.addeditdelete.NAME_TEXT_FIELD_TAG
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.di.TestModule
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -190,7 +189,7 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag1.name).performClick()
         composeTestRule.onNodeWithText(set1.name).performClick()
         composeTestRule.onNodeWithText(box2.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withText(bag1.name)).perform(click())
         onView(withText(bag2.name)).perform(click())
         onView(withText(set3.name)).perform(click())
@@ -207,30 +206,31 @@ class MainActivityComponentsTest {
     @Test
     fun addComponent_nameEquals() {
         // Add bag
-        composeTestRule.onNodeWithContentDescription(R.string.add_bag).performClick()
-        onView(withId(R.id.bag_edit)).perform(typeText("Bag"), closeSoftKeyboard())
-        onView(withId(R.id.save_bag_fab)).perform(click())
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).performClick()
+
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("Bag")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
 
         // Add matches box set
         composeTestRule.onNodeWithText("Bag").performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_set).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).performClick()
         onView(withId(R.id.set_edit)).perform(typeText("Set"), closeSoftKeyboard())
         onView(withId(R.id.save_set_fab)).perform(click())
 
         // Add matches box
         composeTestRule.onNodeWithText("Set").performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
         onView(withId(R.id.box_edit)).perform(typeText("Box"), closeSoftKeyboard())
         onView(withId(R.id.save_box_fab)).perform(click())
 
         // Add component
         composeTestRule.onNodeWithText("Box").performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withId(R.id.component_edit))
             .perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).assertIsDisplayed()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).assertIsDisplayed()
         composeTestRule.onNodeWithText("Component").assertIsDisplayed()
     }
 
@@ -249,12 +249,12 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withId(R.id.component_edit))
             .perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withId(R.id.component_edit))
             .perform(typeText("Component2"), closeSoftKeyboard())
         onView(withId(R.id.save_component_fab)).perform(click())
@@ -277,7 +277,7 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withId(R.id.action_delete)).check(ViewAssertions.doesNotExist())
     }
 
@@ -317,7 +317,7 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withText(R.string.add_component)).check(matches(isDisplayed()))
     }
 
@@ -335,7 +335,7 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withId(R.id.component_edit))
             .perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.buy_checkbox)).perform(click())
@@ -425,7 +425,7 @@ class MainActivityComponentsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
         onView(withId(R.id.component_edit))
             .perform(typeText("Component"), closeSoftKeyboard())
         onView(withId(R.id.quantity_edit))

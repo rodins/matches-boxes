@@ -5,10 +5,11 @@ import com.sergeyrodin.matchesboxes.MainCoroutineRule
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
+import junit.framework.Assert.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
-import org.junit.Assert.assertThat
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,7 +35,7 @@ class BagManipulatorViewModelTest {
     @Test
     fun addNewBag_nameEquals() = runBlocking{
         subject.start(-1)
-        subject.name.value = "New bag"
+        subject.setNewName("New bag")
         subject.saveBag()
 
         val bag = dataSource.getBags()[0]
@@ -46,7 +47,7 @@ class BagManipulatorViewModelTest {
         val bag = Bag(1, "Bag")
         dataSource.addBags(bag)
         subject.start(bag.id)
-        subject.name.value = "Updated bag"
+        subject.setNewName("Updated bag")
         subject.saveBag()
 
         val bagUpdated = dataSource.getBags()[0]
@@ -90,7 +91,7 @@ class BagManipulatorViewModelTest {
     fun bagAdded_eventTrue() {
         dataSource.addBags()
         subject.start(-1)
-        subject.name.value = "New bag"
+        subject.setNewName("New bag")
         subject.saveBag()
 
         val added = subject.eventAdded.getOrAwaitValue().getContentIfNotHandled()
@@ -102,7 +103,7 @@ class BagManipulatorViewModelTest {
         val bag = Bag(1, "Bag")
         dataSource.addBags(bag)
         subject.start(bag.id)
-        subject.name.value = "Updated bag"
+        subject.setNewName("Updated bag")
         subject.saveBag()
 
         val edited = subject.eventEdited.getOrAwaitValue().getContentIfNotHandled()
@@ -126,10 +127,37 @@ class BagManipulatorViewModelTest {
         val bag = Bag(1, "Bag")
         dataSource.addBags(bag)
         subject.start(bag.id)
-        subject.name.value = "Updated bag"
+        subject.setNewName("Updated bag")
         subject.saveBag()
 
         val edited = subject.eventEdited.getOrAwaitValue().getContentIfNotHandled()
         assertThat(edited, `is`("Updated bag"))
+    }
+
+    @Test
+    fun updateWithEmptyName_oldNameEquals() {
+        val bag = Bag(1, "Bag")
+        dataSource.addBags(bag)
+        subject.start(bag.id)
+        subject.setNewName(" ")
+        subject.saveBag()
+
+        try {
+            subject.eventEdited.getOrAwaitValue().getContentIfNotHandled()
+            fail()
+        } catch (exc: Exception) {
+            // test successful
+        }
+    }
+
+    @Test
+    fun setNewName_nameEquals() {
+        val bag = Bag(1, "Bag")
+        dataSource.addBags(bag)
+        subject.start(bag.id)
+        subject.setNewName("New bag")
+
+        val name = subject.name.getOrAwaitValue()
+        assertThat(name, `is`("New bag"))
     }
 }

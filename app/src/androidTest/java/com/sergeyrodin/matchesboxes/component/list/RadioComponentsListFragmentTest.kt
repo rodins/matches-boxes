@@ -61,7 +61,7 @@ class RadioComponentsListFragmentTest {
         dataSource.addRadioComponents()
         launchFragment(box)
 
-        composeTestRule.onNodeWithText(R.string.no_components_added).assertIsDisplayed()
+        composeTestRule.onNodeWithTextResource(R.string.no_components_added).assertIsDisplayed()
     }
 
     @Test
@@ -77,7 +77,7 @@ class RadioComponentsListFragmentTest {
 
         launchFragment(box)
 
-        composeTestRule.onNodeWithText(R.string.no_components_added).assertDoesNotExist()
+        composeTestRule.onNodeWithTextResource(R.string.no_components_added).assertDoesNotExist()
     }
 
     @Test
@@ -131,7 +131,7 @@ class RadioComponentsListFragmentTest {
             title = getString(R.string.add_component)
         }
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_component).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_component).performClick()
 
         verify(navController).navigate(
             RadioComponentsListFragmentDirections

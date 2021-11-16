@@ -60,7 +60,7 @@ class MainActivityBoxesTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
         onView(withId(R.id.box_edit)).perform(typeText("Box"), closeSoftKeyboard())
         onView(withId(R.id.save_box_fab)).perform(click())
 
@@ -78,14 +78,14 @@ class MainActivityBoxesTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
         onView(withId(R.id.box_edit))
             .perform(typeText("Box"), closeSoftKeyboard())
         onView(withId(R.id.save_box_fab)).perform(click())
 
         composeTestRule.onNodeWithText("Box").assertIsDisplayed()
 
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
         onView(withId(R.id.box_edit))
             .perform(typeText("Box2"), closeSoftKeyboard())
         onView(withId(R.id.save_box_fab)).perform(click())
@@ -104,7 +104,7 @@ class MainActivityBoxesTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
 
         onView(withId(R.id.action_delete)).check(doesNotExist())
     }
@@ -158,7 +158,7 @@ class MainActivityBoxesTest {
 
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
-        composeTestRule.onNodeWithContentDescription(R.string.add_box).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
         onView(withText(R.string.add_box)).check(matches(isDisplayed()))
     }
 
