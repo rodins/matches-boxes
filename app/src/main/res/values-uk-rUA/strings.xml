@@ -59,7 +59,7 @@
     <string name="navigation_error">Помилка навігації</string>
     <string name="edit_component">Редагувати компонент</string>
     <string name="save_component">Зберегти компонент</string>
-    <string name="save_bag">Зберегти сумку</string>
+    <string name="save_name">Зберегти сумку</string>
     <string name="save_set">Зберегти набір коробок</string>
     <string name="save_box">Зберегти коробку</string>
     <string name="bag_icon_description">Іконка сумки</string>

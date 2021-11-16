@@ -11,9 +11,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.sergeyrodin.matchesboxes.bag.addeditdelete.NAME_TEXT_FIELD_TAG
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.di.TestModule
+import com.sergeyrodin.matchesboxes.nametextfield.NAME_TEXT_FIELD_TAG
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -24,7 +24,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import javax.inject.Inject
-
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -73,7 +72,7 @@ class AppNavigationTest {
         composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).performClick()
 
         composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("New bag")
-        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         try {
             pressBack()
@@ -93,7 +92,7 @@ class AppNavigationTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement("Bag updated")
-        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         pressBack()
 
@@ -110,7 +109,7 @@ class AppNavigationTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
         composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement("Bag updated")
-        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 

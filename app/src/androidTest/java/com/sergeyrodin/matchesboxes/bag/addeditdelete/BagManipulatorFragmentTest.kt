@@ -17,6 +17,7 @@ import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
+import com.sergeyrodin.matchesboxes.nametextfield.NAME_TEXT_FIELD_TAG
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -83,7 +84,7 @@ class BagManipulatorFragmentTest {
         }
 
         composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("New bag")
-        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         val bag = runBlocking { dataSource.getBags()[0] }
         assertThat(bag.name, `is`("New bag"))
@@ -107,7 +108,7 @@ class BagManipulatorFragmentTest {
         }
 
         composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement(bagUpdated.name)
-        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         verify(navController).navigate(
             BagManipulatorFragmentDirections
@@ -122,7 +123,7 @@ class BagManipulatorFragmentTest {
         launchFragment<BagManipulatorFragment>(composeTestRule.activityRule.scenario, bundle)
 
         composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput(" ")
-        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         val bags = runBlocking { dataSource.getBags() }
         assertThat(bags.size, `is`(0))
@@ -137,7 +138,7 @@ class BagManipulatorFragmentTest {
         launchFragment<BagManipulatorFragment>(composeTestRule.activityRule.scenario, bundle)
 
         composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement(" ")
-        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         val updatedBag = runBlocking { dataSource.getBags()[0] }
         assertThat(updatedBag.name, `is`("Old bag"))

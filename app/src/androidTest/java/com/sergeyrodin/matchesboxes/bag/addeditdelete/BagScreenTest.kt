@@ -10,6 +10,7 @@ import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
+import com.sergeyrodin.matchesboxes.nametextfield.NAME_TEXT_FIELD_TAG
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -109,7 +110,7 @@ class BagScreenTest {
         }
 
         composeTestRule.onNodeWithText(bag.name).performTextReplacement(updatedBagName)
-        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         val updatedBag = runBlocking { dataSource.getBags()[0] }
         assertThat(updatedBag.name, `is`(updatedBagName))
@@ -128,7 +129,7 @@ class BagScreenTest {
         }
 
         composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput(newBagName)
-        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         val bag = runBlocking { dataSource.getBags()[0] }
         assertThat(bag.name, `is`(newBagName))

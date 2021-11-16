@@ -9,9 +9,9 @@ import androidx.test.espresso.matcher.RootMatchers.withDecorView
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.sergeyrodin.matchesboxes.bag.addeditdelete.NAME_TEXT_FIELD_TAG
 import com.sergeyrodin.matchesboxes.data.*
 import com.sergeyrodin.matchesboxes.di.TestModule
+import com.sergeyrodin.matchesboxes.nametextfield.NAME_TEXT_FIELD_TAG
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -53,7 +53,7 @@ class ToastsTest {
         composeTestRule.onNodeWithContentDescriptionResource(R.string.add_bag).performClick()
 
         composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("New bag")
-        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         checkToastIsDisplayed(R.string.bag_added)
     }
@@ -75,7 +75,7 @@ class ToastsTest {
         onView(withId(R.id.action_edit)).perform(click())
 
         composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement("Bag updated")
-        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_bag).performClick()
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         checkToastIsDisplayed(R.string.bag_updated)
     }
