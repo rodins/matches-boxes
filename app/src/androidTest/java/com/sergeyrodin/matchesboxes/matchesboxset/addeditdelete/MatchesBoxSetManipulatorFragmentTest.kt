@@ -3,25 +3,21 @@ package com.sergeyrodin.matchesboxes.matchesboxset.addeditdelete
 import android.content.Context
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.compose.ui.test.*
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.replaceText
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
-import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
-import com.sergeyrodin.matchesboxes.DO_NOT_NEED_THIS_VARIABLE
+import com.sergeyrodin.matchesboxes.*
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.FakeDataSource
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.di.RadioComponentsDataSourceModule
-import com.sergeyrodin.matchesboxes.launchFragmentInHiltContainer
+import com.sergeyrodin.matchesboxes.nametextfield.NAME_TEXT_FIELD_TAG
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -40,11 +36,14 @@ import javax.inject.Inject
 @UninstallModules(RadioComponentsDataSourceModule::class)
 class MatchesBoxSetManipulatorFragmentTest {
 
-    @get:Rule
+    @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
-    val instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule(order = 2)
+    val composeTestRule = createAndroidComposeRule<HiltTestActivity>()
+
+    @get:Rule(order = 3)
+    var instantExecutorRule = InstantTaskExecutorRule()
 
     @Inject
     lateinit var dataSource: FakeDataSource
@@ -59,10 +58,16 @@ class MatchesBoxSetManipulatorFragmentTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "MBS1", bag.id)
         dataSource.addMatchesBoxSets(set)
-        val bundle = MatchesBoxSetManipulatorFragmentArgs.Builder(bag.id, ADD_NEW_ITEM_ID, "Title").build().toBundle()
-        launchFragmentInHiltContainer<MatchesBoxSetManipulatorFragment>(bundle, R.style.AppTheme)
+        val bundle =
+            MatchesBoxSetManipulatorFragmentArgs.Builder(bag.id, ADD_NEW_ITEM_ID, "Title").build()
+                .toBundle()
+        launchFragment<MatchesBoxSetManipulatorFragment>(
+            composeTestRule.activityRule.scenario,
+            bundle
+        )
 
-        onView(withHint(R.string.enter_matches_box_set_name)).check(matches(isDisplayed()))
+        composeTestRule.onNodeWithTextResource(R.string.enter_matches_box_set_name)
+            .assertIsDisplayed()
     }
 
     @Test
@@ -70,14 +75,18 @@ class MatchesBoxSetManipulatorFragmentTest {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(15, "MBS1", 2)
         dataSource.addMatchesBoxSets(set)
-        val bundle = MatchesBoxSetManipulatorFragmentArgs.Builder(bag.id, set.id, "Title").build().toBundle()
-        launchFragmentInHiltContainer<MatchesBoxSetManipulatorFragment>(bundle, R.style.AppTheme)
+        val bundle =
+            MatchesBoxSetManipulatorFragmentArgs.Builder(bag.id, set.id, "Title").build().toBundle()
+        launchFragment<MatchesBoxSetManipulatorFragment>(
+            composeTestRule.activityRule.scenario,
+            bundle
+        )
 
-        onView(withId(R.id.set_edit)).check(matches(withText(set.name)))
+        composeTestRule.onNodeWithText(set.name).assertIsDisplayed()
     }
 
     @Test
-    fun addNewSet_navigationCalled() = runBlocking{
+    fun addNewSet_navigationCalled() = runBlocking {
         val bag = Bag(1, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         dataSource.addBags(bag)
@@ -85,23 +94,31 @@ class MatchesBoxSetManipulatorFragmentTest {
 
         val navController = Mockito.mock(NavController::class.java)
 
-        val bundle = MatchesBoxSetManipulatorFragmentArgs.Builder(bag.id, ADD_NEW_ITEM_ID, "Title").build().toBundle()
-        launchFragmentInHiltContainer<MatchesBoxSetManipulatorFragment>(bundle, R.style.AppTheme) {
+        val bundle =
+            MatchesBoxSetManipulatorFragmentArgs.Builder(bag.id, ADD_NEW_ITEM_ID, "Title").build()
+                .toBundle()
+        launchFragment<MatchesBoxSetManipulatorFragment>(
+            composeTestRule.activityRule.scenario,
+            bundle
+        ) {
             Navigation.setViewNavController(requireView(), navController)
         }
 
-        onView(withId(R.id.set_edit)).perform(replaceText("New set"))
-        onView(withId(R.id.save_set_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("New set")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         // Test navigation
         verify(navController).navigate(
             MatchesBoxSetManipulatorFragmentDirections
-                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(bag.id, bag.name)
+                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(
+                    bag.id,
+                    bag.name
+                )
         )
     }
 
     @Test
-    fun updateSet_navigationCalled() = runBlocking{
+    fun updateSet_navigationCalled() = runBlocking {
         val bag = Bag(2, "Bag")
         val set = MatchesBoxSet(1, "Set", bag.id)
         val setUpdated = MatchesBoxSet(1, "Set updated", bag.id)
@@ -109,17 +126,24 @@ class MatchesBoxSetManipulatorFragmentTest {
 
         val navController = Mockito.mock(NavController::class.java)
 
-        val bundle = MatchesBoxSetManipulatorFragmentArgs.Builder(bag.id, set.id, "Title").build().toBundle()
-        launchFragmentInHiltContainer<MatchesBoxSetManipulatorFragment>(bundle, R.style.AppTheme) {
+        val bundle =
+            MatchesBoxSetManipulatorFragmentArgs.Builder(bag.id, set.id, "Title").build().toBundle()
+        launchFragment<MatchesBoxSetManipulatorFragment>(
+            composeTestRule.activityRule.scenario,
+            bundle
+        ) {
             Navigation.setViewNavController(requireView(), navController)
         }
 
-        onView(withId(R.id.set_edit)).perform(replaceText(setUpdated.name))
-        onView(withId(R.id.save_set_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement(setUpdated.name)
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         verify(navController).navigate(
             MatchesBoxSetManipulatorFragmentDirections
-                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(setUpdated.id, setUpdated.name)
+                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxListFragment(
+                    setUpdated.id,
+                    setUpdated.name
+                )
         )
     }
 
@@ -132,15 +156,23 @@ class MatchesBoxSetManipulatorFragmentTest {
 
         val navController = Mockito.mock(NavController::class.java)
 
-        val bundle = MatchesBoxSetManipulatorFragmentArgs.Builder(DO_NOT_NEED_THIS_VARIABLE, set.id, "Title").build().toBundle()
-        launchFragmentInHiltContainer<MatchesBoxSetManipulatorFragment>(bundle, R.style.AppTheme) {
+        val bundle =
+            MatchesBoxSetManipulatorFragmentArgs.Builder(DO_NOT_NEED_THIS_VARIABLE, set.id, "Title")
+                .build().toBundle()
+        launchFragment<MatchesBoxSetManipulatorFragment>(
+            composeTestRule.activityRule.scenario,
+            bundle
+        ) {
             Navigation.setViewNavController(requireView(), navController)
             clickDeleteAction(this)
         }
 
         verify(navController).navigate(
             MatchesBoxSetManipulatorFragmentDirections
-                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(bag.id, bag.name)
+                .actionAddEditDeleteMatchesBoxSetFragmentToMatchesBoxSetsListFragment(
+                    bag.id,
+                    bag.name
+                )
         )
     }
 

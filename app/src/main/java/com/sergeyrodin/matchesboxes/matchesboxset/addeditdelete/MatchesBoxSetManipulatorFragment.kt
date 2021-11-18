@@ -3,16 +3,17 @@ package com.sergeyrodin.matchesboxes.matchesboxset.addeditdelete
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.google.accompanist.appcompattheme.AppCompatTheme
 import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
 import com.sergeyrodin.matchesboxes.EventObserver
 import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
-import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxSetManipulatorBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,23 +28,19 @@ class MatchesBoxSetManipulatorFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = createBinding(inflater)
-        setupBinding(binding)
+        val view = inflater.inflate(R.layout.fragment_matches_box_set_manipulator, container, false)
+        view.findViewById<ComposeView>(R.id.set_compose_view).setContent {
+            AppCompatTheme {
+                SetNameScreen(viewModel = viewModel)
+            }
+        }
         setupIsDeleteVisible()
         startViewModel()
         observeAddEvent()
         observeUpdateEvent()
         observeDeleteEvent()
         setHasOptionsMenu(true)
-        return binding.root
-    }
-
-    private fun createBinding(inflater: LayoutInflater) =
-        FragmentMatchesBoxSetManipulatorBinding.inflate(inflater)
-
-    private fun setupBinding(binding: FragmentMatchesBoxSetManipulatorBinding) {
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
+        return view
     }
 
     private fun setupIsDeleteVisible() {
@@ -137,5 +134,4 @@ class MatchesBoxSetManipulatorFragment : Fragment() {
         }
         return super.onOptionsItemSelected(item)
     }
-
 }

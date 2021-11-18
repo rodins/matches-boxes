@@ -8,7 +8,7 @@ import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
-import org.junit.Assert.*
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,7 +30,7 @@ class MatchesBoxSetManipulatorViewModelTest {
     fun addNewSet_nameEquals() = runBlocking{
         val bagId = 1
         subject.start(bagId, ADD_NEW_ITEM_ID)
-        subject.name.value = "MBS1"
+        subject.setNewName("MBS1")
         subject.saveMatchesBoxSet()
 
         val set = dataSource.getMatchesBoxSetsByBagId(bagId)[0]
@@ -42,7 +42,7 @@ class MatchesBoxSetManipulatorViewModelTest {
     fun addNewSet_addEventNotNull() {
         val bagId = 1
         subject.start(bagId, ADD_NEW_ITEM_ID)
-        subject.name.value = "MBS1"
+        subject.setNewName("MBS1")
         subject.saveMatchesBoxSet()
 
         val added = subject.addedEvent.getOrAwaitValue().getContentIfNotHandled()
@@ -56,7 +56,7 @@ class MatchesBoxSetManipulatorViewModelTest {
         val set = MatchesBoxSet(2, "MBS2", bagId)
         dataSource.addMatchesBoxSets(set)
         subject.start(bagId, set.id)
-        subject.name.value = "MBS2 updated"
+        subject.setNewName("MBS2 updated")
         subject.saveMatchesBoxSet()
 
         val setUpdated = dataSource.getMatchesBoxSetById(set.id)
@@ -111,7 +111,7 @@ class MatchesBoxSetManipulatorViewModelTest {
         val bag = Bag(1, "Bag")
         dataSource.addBags(bag)
         subject.start(bag.id, ADD_NEW_ITEM_ID)
-        subject.name.value = "MBS1"
+        subject.setNewName("MBS1")
         subject.saveMatchesBoxSet()
 
         val title = subject.addedEvent.getOrAwaitValue().getContentIfNotHandled()

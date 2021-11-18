@@ -214,8 +214,8 @@ class MainActivityComponentsTest {
         // Add matches box set
         composeTestRule.onNodeWithText("Bag").performClick()
         composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).performClick()
-        onView(withId(R.id.set_edit)).perform(typeText("Set"), closeSoftKeyboard())
-        onView(withId(R.id.save_set_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("Set")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         // Add matches box
         composeTestRule.onNodeWithText("Set").performClick()

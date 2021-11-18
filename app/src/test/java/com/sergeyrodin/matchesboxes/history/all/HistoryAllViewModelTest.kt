@@ -119,7 +119,7 @@ class HistoryAllViewModelTest {
         dataSource.addHistory(history)
 
         val items = subject.historyItems.getOrAwaitValue()
-        assertThat(convertLongToDateString(items[0].date), `is`("середа лип.-29-2020 08:13"))
+        assertThat(convertLongToDateString(items[0].date), `is`("Wednesday Jul-29-2020 08:13"))
     }
 
     @Test

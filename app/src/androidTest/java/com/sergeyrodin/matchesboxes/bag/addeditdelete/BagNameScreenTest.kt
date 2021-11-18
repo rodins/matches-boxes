@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @HiltAndroidTest
 @UninstallModules(RadioComponentsDataSourceModule::class)
-class BagScreenTest {
+class BagNameScreenTest {
     @get:Rule(order = 1)
     val hiltRule = HiltAndroidRule(this)
 
@@ -49,7 +49,7 @@ class BagScreenTest {
 
         composeTestRule.setContent {
             AppCompatTheme {
-                BagScreen(viewModel)
+                BagNameScreen(viewModel)
             }
         }
 
@@ -66,7 +66,7 @@ class BagScreenTest {
 
         composeTestRule.setContent {
             AppCompatTheme {
-                BagScreen(viewModel)
+                BagNameScreen(viewModel)
             }
         }
 
@@ -85,7 +85,7 @@ class BagScreenTest {
 
         composeTestRule.setContent {
             AppCompatTheme {
-                BagScreen(viewModel)
+                BagNameScreen(viewModel)
             }
         }
 
@@ -105,7 +105,7 @@ class BagScreenTest {
 
         composeTestRule.setContent {
             AppCompatTheme {
-                BagScreen(viewModel)
+                BagNameScreen(viewModel)
             }
         }
 
@@ -124,7 +124,7 @@ class BagScreenTest {
 
         composeTestRule.setContent {
             AppCompatTheme {
-                BagScreen(viewModel)
+                BagNameScreen(viewModel)
             }
         }
 

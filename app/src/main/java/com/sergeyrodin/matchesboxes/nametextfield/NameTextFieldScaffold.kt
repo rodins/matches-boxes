@@ -23,6 +23,7 @@ const val NAME_TEXT_FIELD_TAG = "nameTextFieldTag"
 @Composable
 fun NameTextFieldScaffold(
     name: String?,
+    placeHolderTextRes: Int = R.string.enter_name,
     onValueChange: (String) -> Unit = {},
     saveItemClick: () -> Unit = {}
 ) {
@@ -39,7 +40,7 @@ fun NameTextFieldScaffold(
         NameTextField(
             name = name,
             onValueChange = onValueChange,
-            placeHolderTextRes = R.string.enter_bag_name
+            placeHolderTextRes = placeHolderTextRes
         )
     }
 }

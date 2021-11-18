@@ -137,4 +137,8 @@ class MatchesBoxSetManipulatorViewModel @Inject constructor(
             _deletedEvent.value = Event(bag)
         }
     }
+
+    fun setNewName(newName: String) {
+        name.value = newName
+    }
 }

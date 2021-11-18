@@ -1,10 +1,7 @@
 package com.sergeyrodin.matchesboxes
 
-import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -16,6 +13,7 @@ import com.sergeyrodin.matchesboxes.data.Bag
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.di.TestModule
+import com.sergeyrodin.matchesboxes.nametextfield.NAME_TEXT_FIELD_TAG
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -65,8 +63,8 @@ class MainActivitySetsTest {
         composeTestRule.onNodeWithText(emptyText).assertIsDisplayed()
 
         composeTestRule.onNodeWithContentDescription(addSetDescription).performClick()
-        onView(withId(R.id.set_edit)).perform(typeText("MBS1"), closeSoftKeyboard())
-        onView(withId(R.id.save_set_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("MBS1")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         onView(withText("Bag")).check(matches(isDisplayed()))
         composeTestRule.onNodeWithText("MBS1").assertIsDisplayed()
@@ -83,16 +81,16 @@ class MainActivitySetsTest {
         composeTestRule.onNodeWithText(emptyText).assertIsDisplayed()
 
         composeTestRule.onNodeWithContentDescription(addSetDescription).performClick()
-        onView(withId(R.id.set_edit))
-            .perform(typeText("Set"), closeSoftKeyboard())
-        onView(withId(R.id.save_set_fab)).perform(click())
+
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("Set")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         composeTestRule.onNodeWithText("Set").assertIsDisplayed()
 
         composeTestRule.onNodeWithContentDescription(addSetDescription).performClick()
-        onView(withId(R.id.set_edit))
-            .perform(typeText("Set2"), closeSoftKeyboard())
-        onView(withId(R.id.save_set_fab)).perform(click())
+
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("Set2")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         composeTestRule.onNodeWithText("Set2").assertIsDisplayed()
     }
@@ -120,8 +118,9 @@ class MainActivitySetsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.set_edit)).perform(replaceText("Set updated"))
-        onView(withId(R.id.save_set_fab)).perform(click())
+
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement("Set updated")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         onView(withText("Set updated")).check(matches(isDisplayed()))
         composeTestRule.onNodeWithTextResource(R.string.no_matches_boxes_added).assertIsDisplayed()
@@ -139,8 +138,8 @@ class MainActivitySetsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.set_edit)).perform(replaceText("Set updated"))
-        onView(withId(R.id.save_set_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement("Set updated")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
         composeTestRule.onNodeWithText("Set updated").assertIsDisplayed()
@@ -199,7 +198,7 @@ class MainActivitySetsTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.set_edit)).check(matches(withText(set.name)))
+        composeTestRule.onNodeWithText(set.name).assertIsDisplayed()
     }
 
     @Test

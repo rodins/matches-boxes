@@ -28,7 +28,7 @@ class BagManipulatorFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_bag_manipulator, container, false)
         view.findViewById<ComposeView>(R.id.bag_compose_view).setContent {
             AppCompatTheme {
-                BagScreen(viewModel)
+                BagNameScreen(viewModel)
             }
         }
         setupIsActionDeleteVisible()

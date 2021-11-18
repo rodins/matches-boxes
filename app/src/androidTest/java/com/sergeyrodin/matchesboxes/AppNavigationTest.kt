@@ -183,8 +183,8 @@ class AppNavigationTest {
 
         composeTestRule.onNodeWithText("Bag").performClick()
         composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).performClick()
-        onView(withId(R.id.set_edit)).perform(typeText("New set"), closeSoftKeyboard())
-        onView(withId(R.id.save_set_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("New set")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         pressBack()
 
@@ -199,8 +199,8 @@ class AppNavigationTest {
 
         composeTestRule.onNodeWithText("Bag").performClick()
         composeTestRule.onNodeWithContentDescriptionResource(R.string.add_set).performClick()
-        onView(withId(R.id.set_edit)).perform(typeText("New set"), closeSoftKeyboard())
-        onView(withId(R.id.save_set_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("New set")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
@@ -219,8 +219,8 @@ class AppNavigationTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.set_edit)).perform(replaceText("Set updated"))
-        onView(withId(R.id.save_set_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement("Set updated")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         pressBack()
 
@@ -239,8 +239,8 @@ class AppNavigationTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.set_edit)).perform(replaceText("Set updated"))
-        onView(withId(R.id.save_set_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement("Set updated")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
 
