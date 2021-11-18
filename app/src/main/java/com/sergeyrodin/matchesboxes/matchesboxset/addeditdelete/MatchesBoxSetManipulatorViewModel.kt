@@ -31,10 +31,12 @@ class MatchesBoxSetManipulatorViewModel @Inject constructor(
     val deletedEvent: LiveData<Event<Bag>>
         get() = _deletedEvent
 
-    val name = MutableLiveData<String>()
+    private val _name = MutableLiveData<String>()
+    val name: LiveData<String>
+        get() = _name
 
     fun start(bagId: Int, setId: Int) {
-        if(name.value == null) {
+        if(_name.value == null) {
             bagIdForNewMatchesBoxSet = bagId
             viewModelScope.launch {
                 getMatchesBoxSetById(setId)
@@ -48,11 +50,11 @@ class MatchesBoxSetManipulatorViewModel @Inject constructor(
     }
 
     private fun getMatchesBoxSetNameToDisplay() {
-        name.value = matchesBoxSet?.name ?: ""
+        _name.value = matchesBoxSet?.name ?: ""
     }
 
     fun saveMatchesBoxSet() {
-        if(name.value?.trim() != "") {
+        if(_name.value?.trim() != "") {
             addOrUpdateMatchesBoxSet()
         }
     }
@@ -73,7 +75,7 @@ class MatchesBoxSetManipulatorViewModel @Inject constructor(
     }
 
     private suspend fun insertMatchesBoxSetToDb() {
-        val newMatchesBoxSet = MatchesBoxSet(name = name.value!!, bagId = bagIdForNewMatchesBoxSet)
+        val newMatchesBoxSet = MatchesBoxSet(name = _name.value!!, bagId = bagIdForNewMatchesBoxSet)
         dataSource.insertMatchesBoxSet(newMatchesBoxSet)
     }
 
@@ -99,7 +101,7 @@ class MatchesBoxSetManipulatorViewModel @Inject constructor(
     }
 
     private suspend fun updateMatchesBoxSetInDb() {
-        matchesBoxSet?.name = name.value!!
+        matchesBoxSet?.name = _name.value!!
         dataSource.updateMatchesBoxSet(matchesBoxSet!!)
     }
 
@@ -139,6 +141,6 @@ class MatchesBoxSetManipulatorViewModel @Inject constructor(
     }
 
     fun setNewName(newName: String) {
-        name.value = newName
+        _name.value = newName
     }
 }

@@ -8,7 +8,7 @@ import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.getOrAwaitValue
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.*
-import org.junit.Assert.*
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -55,7 +55,7 @@ class MatchesBoxManipulatorViewModelTest {
         dataSource.addMatchesBoxes()
         subject.start(setId, ADD_NEW_ITEM_ID)
 
-        subject.name.value = "New box"
+        subject.setNewName("New box")
 
         subject.saveMatchesBox()
 
@@ -72,13 +72,13 @@ class MatchesBoxManipulatorViewModelTest {
         dataSource.addMatchesBoxes()
         subject.start(setId, ADD_NEW_ITEM_ID)
 
-        subject.name.value = "Box"
+        subject.setNewName("Box")
         subject.saveMatchesBox()
 
         val item = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)[0]
         assertThat(item.name, `is`("Box"))
 
-        subject.name.value = "Box2"
+        subject.setNewName("Box2")
         subject.saveMatchesBox()
 
         val item2 = dataSource.getMatchesBoxesByMatchesBoxSetId(setId)[1]
@@ -92,7 +92,7 @@ class MatchesBoxManipulatorViewModelTest {
         dataSource.addMatchesBoxes(box)
         subject.start(setId, box.id)
 
-        subject.name.value = "Box updated"
+        subject.setNewName("Box updated")
         subject.saveMatchesBox()
 
         val item = dataSource.getMatchesBoxById(box.id)
@@ -127,7 +127,7 @@ class MatchesBoxManipulatorViewModelTest {
         dataSource.addMatchesBoxes(box)
         subject.start(setId, box.id)
 
-        subject.name.value = "Box updated"
+        subject.setNewName("Box updated")
         subject.saveMatchesBox()
 
         val title = subject.updateEvent.getOrAwaitValue().getContentIfNotHandled()
@@ -142,7 +142,7 @@ class MatchesBoxManipulatorViewModelTest {
         dataSource.addMatchesBoxes()
         subject.start(set.id, ADD_NEW_ITEM_ID)
 
-        subject.name.value = "New box"
+        subject.setNewName("New box")
 
         subject.saveMatchesBox()
 

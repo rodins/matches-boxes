@@ -3,13 +3,16 @@ package com.sergeyrodin.matchesboxes.matchesbox.addeditdelete
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.sergeyrodin.matchesboxes.*
+import com.google.accompanist.appcompattheme.AppCompatTheme
+import com.sergeyrodin.matchesboxes.ADD_NEW_ITEM_ID
+import com.sergeyrodin.matchesboxes.EventObserver
+import com.sergeyrodin.matchesboxes.R
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
-import com.sergeyrodin.matchesboxes.databinding.FragmentMatchesBoxManipulatorBinding
 import com.sergeyrodin.matchesboxes.util.hideKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,19 +27,19 @@ class MatchesBoxManipulatorFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = createBinding(inflater)
+        val view = inflater.inflate(R.layout.fragment_matches_box_manipulator, container, false)
+        view.findViewById<ComposeView>(R.id.box_compose_view).setContent {
+            AppCompatTheme {
+                BoxNameScreen(viewModel = viewModel)
+            }
+        }
         setupHideDeleteButton()
         startViewModel()
-        setupBinding(binding)
         observeAddEvent()
         observeUpdateEvent()
         observeDeleteEvent()
         setHasOptionsMenu(true)
-        return binding.root
-    }
-
-    private fun createBinding(inflater: LayoutInflater): FragmentMatchesBoxManipulatorBinding {
-        return FragmentMatchesBoxManipulatorBinding.inflate(inflater)
+        return view
     }
 
     private fun setupHideDeleteButton() {
@@ -45,11 +48,6 @@ class MatchesBoxManipulatorFragment : Fragment() {
 
     private fun startViewModel() {
         viewModel.start(args.setId, args.boxId)
-    }
-
-    private fun setupBinding(binding: FragmentMatchesBoxManipulatorBinding) {
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = viewLifecycleOwner
     }
 
     private fun observeAddEvent() {

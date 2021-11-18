@@ -1,9 +1,7 @@
 package com.sergeyrodin.matchesboxes
 
-import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -16,6 +14,7 @@ import com.sergeyrodin.matchesboxes.data.MatchesBox
 import com.sergeyrodin.matchesboxes.data.MatchesBoxSet
 import com.sergeyrodin.matchesboxes.data.RadioComponentsDataSource
 import com.sergeyrodin.matchesboxes.di.TestModule
+import com.sergeyrodin.matchesboxes.nametextfield.NAME_TEXT_FIELD_TAG
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
@@ -61,8 +60,8 @@ class MainActivityBoxesTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
-        onView(withId(R.id.box_edit)).perform(typeText("Box"), closeSoftKeyboard())
-        onView(withId(R.id.save_box_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("Box")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         composeTestRule.onNodeWithText("Box").assertIsDisplayed()
     }
@@ -79,16 +78,14 @@ class MainActivityBoxesTest {
         composeTestRule.onNodeWithText(bag.name).performClick()
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
-        onView(withId(R.id.box_edit))
-            .perform(typeText("Box"), closeSoftKeyboard())
-        onView(withId(R.id.save_box_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("Box")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         composeTestRule.onNodeWithText("Box").assertIsDisplayed()
 
         composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
-        onView(withId(R.id.box_edit))
-            .perform(typeText("Box2"), closeSoftKeyboard())
-        onView(withId(R.id.save_box_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("Box2")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         composeTestRule.onNodeWithText("Box2").assertIsDisplayed()
     }
@@ -124,8 +121,10 @@ class MainActivityBoxesTest {
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.box_edit)).perform(replaceText("Updated box"))
-        onView(withId(R.id.save_box_fab)).perform(click())
+
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement("Updated box")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
+
         onView(withContentDescription(R.string.abc_action_bar_up_description)).perform(click())
         composeTestRule.onNodeWithText("Updated box").assertIsDisplayed()
     }
@@ -195,7 +194,7 @@ class MainActivityBoxesTest {
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.box_edit)).check(matches(withText(box.name)))
+        composeTestRule.onNodeWithText(box.name).assertIsDisplayed()
     }
 
     @Test
@@ -213,8 +212,8 @@ class MainActivityBoxesTest {
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.box_edit)).perform(replaceText("Updated box"))
-        onView(withId(R.id.save_box_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement("Updated box")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         onView(withText("Updated box")).check(matches(isDisplayed()))
     }

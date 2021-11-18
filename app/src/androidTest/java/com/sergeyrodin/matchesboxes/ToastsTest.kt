@@ -161,8 +161,8 @@ class ToastsTest {
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
 
-        onView(withId(R.id.box_edit)).perform(typeText("New box"), closeSoftKeyboard())
-        onView(withId(R.id.save_box_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("New box")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         checkToastIsDisplayed(R.string.box_added)
     }
@@ -182,9 +182,8 @@ class ToastsTest {
         composeTestRule.onNodeWithText(set.name).performClick()
         composeTestRule.onNodeWithText(box.name).performClick()
         onView(withId(R.id.action_edit)).perform(click())
-        onView(withId(R.id.box_edit))
-            .perform(replaceText("Updated box"))
-        onView(withId(R.id.save_box_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextReplacement("Updated box")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         checkToastIsDisplayed(R.string.box_updated)
     }

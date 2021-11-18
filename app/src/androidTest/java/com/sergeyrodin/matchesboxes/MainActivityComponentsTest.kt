@@ -220,8 +220,8 @@ class MainActivityComponentsTest {
         // Add matches box
         composeTestRule.onNodeWithText("Set").performClick()
         composeTestRule.onNodeWithContentDescriptionResource(R.string.add_box).performClick()
-        onView(withId(R.id.box_edit)).perform(typeText("Box"), closeSoftKeyboard())
-        onView(withId(R.id.save_box_fab)).perform(click())
+        composeTestRule.onNodeWithTag(NAME_TEXT_FIELD_TAG).performTextInput("Box")
+        composeTestRule.onNodeWithContentDescriptionResource(R.string.save_name).performClick()
 
         // Add component
         composeTestRule.onNodeWithText("Box").performClick()

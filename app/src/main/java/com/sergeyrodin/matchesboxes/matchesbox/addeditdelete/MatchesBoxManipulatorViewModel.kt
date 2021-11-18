@@ -16,7 +16,9 @@ import javax.inject.Inject
 class MatchesBoxManipulatorViewModel @Inject constructor(
     private val dataSource: RadioComponentsDataSource) :
     ViewModel() {
-    val name = MutableLiveData<String>()
+    private val _name = MutableLiveData<String>()
+    val name: LiveData<String>
+        get() = _name
 
     private var matchesBox: MatchesBox? = null
     private var matchesBoxSetIdForNewMatchesBox: Int = 0
@@ -34,7 +36,7 @@ class MatchesBoxManipulatorViewModel @Inject constructor(
         get() = _deleteEvent
 
     fun start(setId: Int, boxId: Int) {
-        if(name.value == null) {
+        if(_name.value == null) {
             matchesBoxSetIdForNewMatchesBox = setId
             viewModelScope.launch {
                 getMatchesBoxById(boxId)
@@ -44,7 +46,7 @@ class MatchesBoxManipulatorViewModel @Inject constructor(
     }
 
     private fun displayMatchesBoxName() {
-        name.value = matchesBox?.name ?: ""
+        _name.value = matchesBox?.name ?: ""
     }
 
     private suspend fun getMatchesBoxById(boxId: Int) {
@@ -52,9 +54,13 @@ class MatchesBoxManipulatorViewModel @Inject constructor(
     }
 
     fun saveMatchesBox() {
-        if (name.value?.trim() != "") {
+        if (_name.value?.trim() != "") {
             addOrUpdateMatchesBox()
         }
+    }
+
+    fun setNewName(newName: String) {
+        _name.value = newName
     }
 
     private fun addOrUpdateMatchesBox() {
@@ -73,7 +79,7 @@ class MatchesBoxManipulatorViewModel @Inject constructor(
     }
 
     private suspend fun insertMatchesBox() {
-        val box = MatchesBox(name = name.value!!, matchesBoxSetId = matchesBoxSetIdForNewMatchesBox)
+        val box = MatchesBox(name = _name.value!!, matchesBoxSetId = matchesBoxSetIdForNewMatchesBox)
         dataSource.insertMatchesBox(box)
     }
 
@@ -99,12 +105,12 @@ class MatchesBoxManipulatorViewModel @Inject constructor(
     }
 
     private suspend fun updateMatchesBoxInDb() {
-        matchesBox?.name = name.value!!
+        matchesBox?.name = _name.value!!
         dataSource.updateMatchesBox(matchesBox!!)
     }
 
     private fun callUpdateEvent() {
-        _updateEvent.value = Event(name.value!!)
+        _updateEvent.value = Event(_name.value!!)
     }
 
     fun deleteMatchesBox() {
